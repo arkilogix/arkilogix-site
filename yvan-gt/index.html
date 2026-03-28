@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerard Yvan Tayao</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* BACKGROUND */
+
+body{
+margin:0;
+font-family:'Montserrat',sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+
+background: linear-gradient(
+135deg,
+rgba(37,99,235,0.08),
+rgba(255,255,255,0.9)
+);
+}
+
+/* CARD */
+
+.card{
+width:92%;
+max-width:420px;
+padding:40px 28px 36px;
+border-radius:20px;
+text-align:center;
+
+background:rgba(255,255,255,0.6);
+backdrop-filter:blur(10px);
+border:1px solid rgba(37,99,235,0.15);
+}
+
+/* LOGO */
+
+.logo-wrap{
+width:120px;
+height:120px;
+margin:auto;
+border-radius:50%;
+border:1.5px solid rgba(37,99,235,.4);
+display:flex;
+justify-content:center;
+align-items:center;
+margin-bottom:20px;
+background:rgba(255,255,255,.4);
+}
+
+.logo-wrap img{
+width:72%;
+}
+
+/* TEXT */
+
+.name{
+font-size:24px;
+font-weight:700;
+color:#0f172a;
+}
+
+.position{
+margin-top:8px;
+font-size:14px;
+color:#334155;
+}
+
+.company{
+margin-top:4px;
+font-size:12px;
+letter-spacing:1.2px;
+color:#64748b;
+}
+
+/* DIVIDER */
+
+.divider{
+width:50px;
+height:2px;
+background:#2563eb;
+margin:24px auto;
+border-radius:3px;
+opacity:.7;
+}
+
+/* ACTIONS */
+
+.actions{
+display:flex;
+justify-content:center;
+gap:30px;
+margin-bottom:24px;
+}
+
+.icon{
+width:24px;
+height:24px;
+stroke:#2563eb;
+transition:.25s;
+}
+
+.icon:hover{
+transform:scale(1.15);
+stroke:#1e40af;
+}
+
+/* BUTTONS */
+
+.save, .profile{
+display:inline-block;
+padding:11px 22px;
+border-radius:30px;
+border:1.5px solid #2563eb;
+color:#2563eb;
+text-decoration:none;
+font-size:12px;
+font-weight:600;
+letter-spacing:.6px;
+background:rgba(255,255,255,.4);
+margin:6px 4px 0;
+}
+
+.profile{
+border-color:#0f172a;
+color:#0f172a;
+}
+
+.profile:hover{
+background:#0f172a;
+color:white;
+}
+
+.save:hover{
+background:#2563eb;
+color:white;
+}
+
+/* SERVICES */
+
+.services-box{
+margin-top:30px;
+padding:20px 18px;
+border-radius:16px;
+background:rgba(255,255,255,0.7);
+border:1px solid rgba(37,99,235,0.15);
+text-align:left;
+}
+
+.services-header{
+font-size:11px;
+letter-spacing:2px;
+font-weight:600;
+color:#2563eb;
+margin-bottom:12px;
+text-transform:uppercase;
+}
+
+.services-list{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.service-item{
+display:flex;
+align-items:flex-start;
+gap:10px;
+font-size:13px;
+color:#0f172a;
+line-height:1.5;
+}
+
+.sicon{
+width:18px;
+height:18px;
+stroke:#2563eb;
+stroke-width:2;
+fill:none;
+margin-top:2px;
+flex-shrink:0;
+}
+
+/* FOOTER */
+
+.footer-divider{
+margin-top:28px;
+height:1px;
+background:rgba(37,99,235,0.2);
+}
+
+.footer{
+margin-top:12px;
+font-size:11px;
+letter-spacing:2px;
+color:#2563eb;
+text-align:center;
+font-weight:600;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="logo-wrap">
+<img src="https://res.cloudinary.com/dwvl1wbp4/image/upload/v1774574755/fd2dd366-6bab-4589-9a1d-48270e98b299_gf5a1g.png">
+</div>
+
+<div class="name">Gerard Yvan Tayao</div>
+<div class="position">President / CEO</div>
+<div class="company">GT TRADES CORP</div>
+
+<div class="divider"></div>
+
+<div class="actions">
+
+<a href="tel:09761459796">
+<svg class="icon" fill="none" stroke-width="2" viewBox="0 0 24 24">
+<path d="M3 5a2 2 0 0 1 2-2h2.28a2 2 0 0 1 2 1.72c.12.9.37 1.78.73 2.6a2 2 0 0 1-.45 2.11L8.09 10.91a16 16 0 0 0 5 5l1.48-1.48a2 2 0 0 1 2.11-.45c.82.36 1.7.61 2.6.73A2 2 0 0 1 21 16.72V19a2 2 0 0 1-2.18 2A19 19 0 0 1 3 5z"/>
+</svg>
+</a>
+
+<a href="sms:09761459796">
+<svg class="icon" fill="none" stroke-width="2" viewBox="0 0 24 24">
+<path d="M21 15a4 4 0 0 1-4 4H7l-4 4V5a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
+</svg>
+</a>
+
+<a href="mailto:gy.tayao@gmail.com">
+<svg class="icon" fill="none" stroke-width="2" viewBox="0 0 24 24">
+<path d="M4 4h16v16H4z"/>
+<path d="M22 6l-10 7L2 6"/>
+</svg>
+</a>
+
+</div>
+
+<a class="save" href="#">
+Save Contact
+</a>
+
+<a class="profile" href="https://res.cloudinary.com/dwvl1wbp4/raw/upload/v1774606917/yvan_wcxlcp.vcf" target="_blank">
+Company Profile
+</a>
+
+<div class="services-box">
+
+<div class="services-header">Services</div>
+
+<div class="services-list">
+
+<div class="service-item">
+<svg class="sicon" viewBox="0 0 24 24"><path d="M14 7l-7 7 3 3 7-7M2 22l6-6"/></svg>
+<span>Mechanical Works</span>
+</div>
+
+<div class="service-item">
+<svg class="sicon" viewBox="0 0 24 24"><path d="M13 2L3 14h7v8l10-12h-7z"/></svg>
+<span>Electrical Troubleshooting & Harness Fabrication</span>
+</div>
+
+<div class="service-item">
+<svg class="sicon" viewBox="0 0 24 24"><path d="M3 10h18M6 6h12M6 14h12M6 18h12"/></svg>
+<span>Air-conditioning Installation, Repair & Troubleshooting</span>
+</div>
+
+<div class="service-item">
+<svg class="sicon" viewBox="0 0 24 24"><path d="M4 20l4-4 4 4 8-8"/></svg>
+<span>Detailing & Restoration (Optional)</span>
+</div>
+
+<div class="service-item">
+<svg class="sicon" viewBox="0 0 24 24"><path d="M3 21l3-3 4 4 10-10-4-4-10 10z"/></svg>
+<span>Painting</span>
+</div>
+
+<div class="service-item">
+<svg class="sicon" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg>
+<span>Air-conditioning Rehabilitation</span>
+</div>
+
+<div class="service-item">
+<svg class="sicon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+<span>General Assessment & Diagnostic</span>
+</div>
+
+<div class="service-item">
+<svg class="sicon" viewBox="0 0 24 24"><path d="M8 17l4 4 4-4M12 3v18"/></svg>
+<span>Customer A/C & Driver Usage Training</span>
+</div>
+
+<div class="service-item">
+<svg class="sicon" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 9h6v6H9z"/></svg>
+<span>Techtool Proprietary Diagnostics</span>
+</div>
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer-divider"></div>
+<div class="footer">ARKILOGIX</div>
+
+</div>
+
+</body>
+</html>
