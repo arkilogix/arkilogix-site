@@ -22,18 +22,15 @@ body {
   top: 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 18px 60px;
   background: rgba(0,0,0,0.4);
   backdrop-filter: blur(10px);
   color: white;
   z-index: 1000;
-  transition: 0.3s;
 }
 
 .header.scrolled {
   background: rgba(0,0,0,0.9);
-  padding: 12px 60px;
 }
 
 .logo-wrap {
@@ -56,33 +53,12 @@ body {
   color: white;
   text-decoration: none;
   font-size: 13px;
-  position: relative;
-}
-
-.nav a::after {
-  content:"";
-  position:absolute;
-  bottom:-4px;
-  left:0;
-  width:0;
-  height:1px;
-  background:white;
-  transition:0.3s;
-}
-
-.nav a:hover::after {
-  width:100%;
 }
 
 .cta {
   border:1px solid white;
   padding:6px 14px;
   border-radius:20px;
-}
-
-.cta:hover {
-  background:white;
-  color:black;
 }
 
 /* HERO */
@@ -105,15 +81,6 @@ body {
 }
 
 .hero * { position:relative; }
-
-.btn {
-  margin-top:20px;
-  padding:10px 25px;
-  border:1px solid white;
-  border-radius:30px;
-  color:white;
-  text-decoration:none;
-}
 
 /* SECTION */
 .section {
@@ -143,50 +110,33 @@ body {
 }
 
 /* PRICING */
-.pricing-tabs {
-  display:inline-flex;
-  border:1px solid #ddd;
-  border-radius:30px;
-  padding:5px;
-  margin-bottom:40px;
-}
-
-.pricing-tabs button {
-  border:none;
-  background:none;
-  padding:10px 20px;
-  border-radius:30px;
-  cursor:pointer;
-}
-
-.pricing-tabs .active {
-  background:black;
-  color:white;
-}
-
-.pricing-wrapper {
+.pricing {
   display:flex;
   justify-content:center;
-  gap:60px;
+  gap:30px;
   flex-wrap:wrap;
 }
 
-.pricing-content {
+.plan {
   border:1px solid #ddd;
   border-radius:16px;
-  padding:40px;
-  max-width:420px;
-  text-align:left;
+  padding:30px;
+  width:240px;
 }
 
-#plan-price {
-  font-size:42px;
-  font-family:'Playfair Display', serif;
+.plan h3 {
+  margin-bottom:5px;
 }
 
-.pricing-image img {
-  width:260px;
-  border-radius:14px;
+.plan-price {
+  font-size:26px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.plan p {
+  font-size:13px;
+  color:#666;
 }
 
 /* PREVIEW */
@@ -201,6 +151,23 @@ body {
 .preview-inputs {
   max-width:300px;
   width:100%;
+  text-align:left;
+}
+
+/* PRICING INFO INSIDE PREVIEW */
+.preview-plan {
+  margin-top:20px;
+  border-top:1px solid #ddd;
+  padding-top:15px;
+}
+
+.preview-plan h4 {
+  margin:0;
+}
+
+.preview-plan p {
+  font-size:13px;
+  color:#666;
 }
 
 .preview-phone {
@@ -211,58 +178,40 @@ body {
   width:300px;
 }
 
-/* OVERLAY */
+/* OVERLAY TEXT */
 .overlay {
   position:absolute;
-  color:white;
+  left:0;
   width:100%;
   text-align:center;
-  left:0;
+  color:white;
 }
 
-/* POSITIONING BASED ON YOUR MOCKUP */
+/* ADJUSTED POSITIONS */
 .overlay.name {
-  top: 155px;
+  top: 150px;
   font-weight:700;
 }
 
 .overlay.profession {
-  top: 180px;
-  font-size:13px;
+  top: 175px;
+  font-size:12px;
   color:#ccc;
 }
 
 .overlay.about {
-  top: 300px;
-  font-size:12px;
+  top: 270px; /* 🔥 moved UP */
+  font-size:11px; /* 🔥 smaller */
   width:80%;
   left:10%;
   color:#bbb;
+  line-height:1.4;
 }
 
-/* FAQ */
-.faq {
-  max-width:600px;
-  margin:auto;
-  text-align:left;
-}
-
-.faq-item {
-  border-bottom:1px solid #ddd;
-  padding:15px 0;
-}
-
-/* CONTACT */
-.contact-wrapper {
-  display:flex;
-  justify-content:center;
-  gap:40px;
-  flex-wrap:wrap;
-}
-
+/* FORM */
 form {
   max-width:400px;
-  width:100%;
+  margin:auto;
 }
 
 input, textarea, select {
@@ -312,7 +261,6 @@ input, textarea, select {
 <div class="hero">
   <h1>ARKILOGIX</h1>
   <p>SMART DIGITAL NFC CARDS</p>
-  <a href="#products" class="btn">Explore</a>
 </div>
 
 <div class="section-divider"></div>
@@ -332,35 +280,64 @@ input, textarea, select {
 <!-- PRICING -->
 <div class="section" id="pricing">
   <h2>Pricing</h2>
-  <div class="pricing-tabs">
-    <button>Basic</button>
-    <button class="active">Pro</button>
-    <button>Elite</button>
+
+  <div class="pricing">
+    <div class="plan">
+      <h3>Basic</h3>
+      <div class="plan-price">₱600</div>
+      <p>Simple digital contact sharing.</p>
+    </div>
+
+    <div class="plan">
+      <h3>Pro</h3>
+      <div class="plan-price">₱1,200</div>
+      <p>Portfolio + professional profile.</p>
+    </div>
+
+    <div class="plan">
+      <h3>Elite</h3>
+      <div class="plan-price">₱2,000</div>
+      <p>Premium branding experience.</p>
+    </div>
   </div>
+
+  <p style="margin-top:30px;color:#777;">
+    Not sure? Try your digital card below ↓
+  </p>
 </div>
 
 <div class="section-divider"></div>
 
-<!-- 🔥 PREVIEW SECTION -->
+<!-- 🔥 PREVIEW -->
 <div class="section" id="preview">
   <h2>Preview Your Digital Card</h2>
 
   <div class="preview-wrapper">
 
+    <!-- INPUT -->
     <div class="preview-inputs">
       <input type="text" id="inputName" placeholder="Your Name">
       <input type="text" id="inputProfession" placeholder="Your Profession">
       <textarea id="inputAbout" placeholder="About you"></textarea>
 
+      <!-- 🔥 PLAN INFO -->
+      <div class="preview-plan">
+        <h4>Pro — ₱1,200</h4>
+        <p>Portfolio + professional profile.</p>
+      </div>
+
       <button class="submit-btn" onclick="continueOrder()">Continue with this design</button>
     </div>
 
+    <!-- PHONE -->
     <div class="preview-phone">
       <img src="phone-pro.png">
 
       <div class="overlay name" id="previewName">Juan Dela Cruz</div>
       <div class="overlay profession" id="previewProfession">Architect</div>
-      <div class="overlay about" id="previewAbout">Designing modern spaces.</div>
+      <div class="overlay about" id="previewAbout">
+        Designing modern and functional spaces.
+      </div>
     </div>
 
   </div>
@@ -372,20 +349,18 @@ input, textarea, select {
 <div class="section" id="contact">
   <h2>Get Started</h2>
 
-  <div class="contact-wrapper">
-    <form id="orderForm">
-      <input type="text" id="formName" placeholder="Your Name">
-      <input type="email" placeholder="Your Email">
+  <form>
+    <input type="text" id="formName" placeholder="Your Name">
+    <input type="email" placeholder="Your Email">
 
-      <select id="formPlan">
-        <option>Basic</option>
-        <option selected>Pro</option>
-        <option>Elite</option>
-      </select>
+    <select id="formPlan">
+      <option>Basic</option>
+      <option selected>Pro</option>
+      <option>Elite</option>
+    </select>
 
-      <button class="submit-btn">Submit Order</button>
-    </form>
-  </div>
+    <button class="submit-btn">Submit Order</button>
+  </form>
 </div>
 
 <div class="footer">
@@ -409,10 +384,11 @@ document.getElementById("inputProfession").oninput = e=>{
 };
 
 document.getElementById("inputAbout").oninput = e=>{
-  document.getElementById("previewAbout").innerText = e.target.value || "Designing modern spaces.";
+  document.getElementById("previewAbout").innerText =
+    e.target.value || "Designing modern and functional spaces.";
 };
 
-// CONTINUE BUTTON
+// CONTINUE
 function continueOrder(){
   document.getElementById("formName").value =
     document.getElementById("inputName").value;
