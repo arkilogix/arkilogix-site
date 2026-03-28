@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ArkiLogix</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
 html { scroll-behavior: smooth; }
@@ -122,10 +122,30 @@ body {
 
 .pricing-content {
   border:1px solid #ddd;
-  border-radius:14px;
-  padding:30px;
-  max-width:400px;
+  border-radius:16px;
+  padding:40px;
+  max-width:420px;
   text-align:left;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center; /* 🔥 vertical centering */
+}
+
+/* PRICE UPGRADE */
+#plan-price {
+  font-size: 40px;
+  font-weight: 700;
+  margin: 10px 0;
+  font-family: 'Playfair Display', serif;
+}
+
+.pricing-content h3 {
+  font-size: 26px;
+}
+
+.pricing-content p {
+  color:#555;
 }
 
 .pricing-image img {
@@ -139,6 +159,11 @@ body {
   max-width:600px;
   margin:auto;
   text-align:left;
+}
+
+.faq-item {
+  border-bottom:1px solid #ddd;
+  padding:15px 0;
 }
 
 /* CONTACT */
@@ -159,20 +184,25 @@ form {
   width:100%;
 }
 
+/* FULL WIDTH INPUTS */
 input, select, textarea {
   width:100%;
-  padding:10px;
-  margin-bottom:10px;
+  padding:12px;
+  margin-bottom:15px;
   border:1px solid #ccc;
-  border-radius:6px;
+  border-radius:8px;
+  box-sizing:border-box;
 }
 
+/* BUTTON FIX */
 .submit-btn {
   background:black;
   color:white;
   border:none;
-  padding:12px;
+  padding:14px;
   width:100%;
+  border-radius:30px;
+  cursor:pointer;
 }
 
 /* FOOTER */
@@ -233,10 +263,8 @@ input, select, textarea {
 
     <div class="pricing-content">
       <h3 id="plan-title">Pro</h3>
-      <p id="plan-price"><strong>₱1,200</strong></p>
-      <p id="plan-desc">
-        Turn your NFC card into a powerful portfolio that builds trust instantly.
-      </p>
+      <p id="plan-price">₱1,200</p>
+      <p id="plan-desc">Turn your NFC card into a powerful portfolio that builds trust instantly.</p>
 
       <ul id="plan-features">
         <li>Everything in Basic</li>
@@ -252,7 +280,6 @@ input, select, textarea {
     </div>
 
   </div>
-
 </div>
 
 <div class="section-divider"></div>
@@ -262,17 +289,25 @@ input, select, textarea {
   <h2>FAQ</h2>
 
   <div class="faq">
-    <h4>Do I need an app?</h4>
-    <p>No, it works instantly on most smartphones.</p>
+    <div class="faq-item">
+      <h4>Do I need an app?</h4>
+      <p>No, it works instantly on most smartphones.</p>
+    </div>
 
-    <h4>Can I update my information?</h4>
-    <p>Yes, anytime.</p>
+    <div class="faq-item">
+      <h4>Can I update my information?</h4>
+      <p>Yes, anytime.</p>
+    </div>
 
-    <h4>How long is setup?</h4>
-    <p>24–48 hours.</p>
+    <div class="faq-item">
+      <h4>How long is setup?</h4>
+      <p>24–48 hours.</p>
+    </div>
 
-    <h4>Is this one-time payment?</h4>
-    <p>Yes, no subscriptions.</p>
+    <div class="faq-item">
+      <h4>Is this one-time payment?</h4>
+      <p>Yes, no subscriptions.</p>
+    </div>
   </div>
 </div>
 
