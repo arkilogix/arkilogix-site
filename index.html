@@ -6,8 +6,7 @@
 <title>ArkiLogix</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
-
-<link rel="icon" type="image/png" href="/42895b06-99f6-4362-ad71-da9424d31c63.png">
+<link rel="icon" type="image/png" href="logo.png">
 
 <style>
 body {
@@ -15,6 +14,7 @@ body {
   font-family: 'Montserrat', sans-serif;
   background: #000;
   color: #fff;
+  letter-spacing: 0.5px;
 }
 
 /* HERO */
@@ -28,29 +28,34 @@ body {
 
 /* LOGO */
 .logo {
-  width: 140px;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 1s ease forwards;
+  width: 120px;
 }
 
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* BRAND */
+.brand {
+  margin-top: 15px;
+  font-size: 20px;
+  letter-spacing: 6px;
+  font-weight: 500;
 }
 
+/* LINE */
+.line {
+  width: 40px;
+  height: 1px;
+  background: white;
+  margin: 15px auto;
+  opacity: 0.5;
+}
+
+/* TAGLINE */
 .tagline {
-  margin-top: 20px;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 2px;
   color: #aaa;
-  opacity: 0;
-  animation: fadeUp 1s ease forwards;
-  animation-delay: 0.3s;
 }
 
+/* BUTTON */
 .btn {
   margin-top: 30px;
   padding: 12px 28px;
@@ -61,14 +66,31 @@ body {
   font-size: 13px;
   letter-spacing: 1px;
   transition: 0.3s;
-  opacity: 0;
-  animation: fadeUp 1s ease forwards;
-  animation-delay: 0.6s;
 }
 
 .btn:hover {
   background: #fff;
   color: #000;
+}
+
+/* ANIMATION */
+.hero * {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.logo { animation-delay: 0.1s; }
+.brand { animation-delay: 0.2s; }
+.line { animation-delay: 0.3s; }
+.tagline { animation-delay: 0.4s; }
+.btn { animation-delay: 0.5s; }
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* SECTION */
@@ -100,7 +122,8 @@ body {
 
 .card:hover {
   transform: translateY(-6px);
-  border-color: rgba(255,255,255,0.3);
+  border-color: white;
+  box-shadow: 0 0 20px rgba(255,255,255,0.1);
 }
 
 /* CLIENTS */
@@ -126,6 +149,7 @@ body {
 
 .client-card:hover {
   background: white;
+  transform: scale(1.05);
 }
 
 .client-card:hover a {
@@ -148,6 +172,11 @@ input, textarea {
   color: white;
 }
 
+input:focus, textarea:focus {
+  outline: none;
+  border-color: white;
+}
+
 button {
   width: 100%;
   padding: 12px;
@@ -156,6 +185,7 @@ button {
   border: none;
   border-radius: 6px;
   font-weight: 600;
+  letter-spacing: 1px;
 }
 
 /* FOOTER */
@@ -172,7 +202,9 @@ button {
 
 <!-- HERO -->
 <div class="hero">
-  <img src="/42895b06-99f6-4362-ad71-da9424d31c63.png" class="logo">
+  <img src="logo.png" class="logo">
+  <div class="brand">ARKILOGIX</div>
+  <div class="line"></div>
   <div class="tagline">SMART DIGITAL NFC CARDS</div>
   <a href="#order" class="btn">GET YOUR CARD</a>
 </div>
@@ -182,17 +214,9 @@ button {
   <h2>What We Do</h2>
 
   <div class="features">
-    <div class="card">
-      NFC-powered business cards for instant sharing
-    </div>
-
-    <div class="card">
-      Custom digital profiles for every client
-    </div>
-
-    <div class="card">
-      Modern branding for professionals
-    </div>
+    <div class="card">NFC Tap Technology</div>
+    <div class="card">Custom Digital Profiles</div>
+    <div class="card">Modern Professional Branding</div>
   </div>
 </div>
 
@@ -201,8 +225,8 @@ button {
   <h2>Clients</h2>
 
   <div class="clients">
-    <div class="client-card"><a href="/client1/">Client One</a></div>
-    <div class="client-card"><a href="/client2/">Client Two</a></div>
+    <div class="client-card"><a href="/client1/">Juan Dela Cruz</a></div>
+    <div class="client-card"><a href="/client2/">Maria Santos</a></div>
   </div>
 </div>
 
@@ -220,7 +244,7 @@ button {
 
 <!-- FOOTER -->
 <div class="footer">
-  ArkiLogix © 2026
+  ARKILOGIX — DIGITAL NFC SYSTEMS
 </div>
 
 </body>
