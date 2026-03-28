@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch(`clients/${client}.json`)
       .then(res => res.json())
       .then(profile => {
-
+        console.log("PROFILE DATA:", profile);
         // BASIC INFO
         document.getElementById("name").innerText = profile.name;
         document.getElementById("title").innerText = profile.title;
@@ -66,9 +66,10 @@ END:VCARD
         }
 
       })
-      .catch(err => {
-        console.error("ERROR:", err);
-      });
+.catch(err => {
+  console.error("ERROR:", err);
+  document.getElementById("name").innerText = "ERROR LOADING PROFILE";
+});
   }
 
 });
