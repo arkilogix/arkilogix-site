@@ -45,14 +45,29 @@ body {
 /* HERO */
 .hero {
   height: 100vh;
-  background: black;
-  color: white;
+  background: url('hero.jpg') center/cover no-repeat;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding-top: 60px;
   text-align: center;
+  color: white;
+}
+
+/* DARK OVERLAY */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+
+/* KEEP CONTENT ABOVE OVERLAY */
+.hero * {
+  position: relative;
+  z-index: 2;
 }
 
 .logo {
@@ -139,6 +154,25 @@ body {
   font-size: 12px;
   background: black;
   color: #777;
+
+/* PHONE SCREEN */
+.phone-screen {
+  width: 120px;
+  height: 240px;
+  background: #e5e5e5;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.phone-logo {
+  width: 50px;
+  opacity: 0.8;
+}
+
 }
 </style>
 
@@ -159,10 +193,16 @@ body {
 
 <!-- HERO -->
 <div class="hero">
-  <img src="logo.png" class="logo">
+
+  <div class="phone-screen">
+    <img src="logo.png" class="phone-logo">
+  </div>
+
   <div class="brand">ARKILOGIX</div>
   <div class="tagline">SMART DIGITAL NFC CARDS</div>
+
   <a href="#products" class="btn">Explore</a>
+
 </div>
 
 <!-- PRODUCTS -->
