@@ -8,9 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
-html {
-  scroll-behavior: smooth; /* smooth scroll */
-}
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -24,19 +22,16 @@ body {
   top: 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 15px 40px;
   background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
   color: white;
   z-index: 1000;
 }
 
 .nav a {
-  margin-left: 25px;
-  text-decoration: none;
+  margin-left: 20px;
   color: white;
-  font-size: 13px;
+  text-decoration: none;
 }
 
 /* HERO */
@@ -52,130 +47,144 @@ body {
 }
 
 .hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.75);
 }
 
-.hero * {
-  position: relative;
-}
+.hero * { position:relative; }
 
 .btn {
-  margin-top: 20px;
-  padding: 10px 25px;
-  border: 1px solid white;
-  border-radius: 30px;
-  text-decoration: none;
-  color: white;
+  margin-top:20px;
+  padding:10px 25px;
+  border:1px solid white;
+  border-radius:30px;
+  color:white;
+  text-decoration:none;
+}
+
+/* DIVIDER */
+.section-divider {
+  width: 80%;
+  height: 1px;
+  background: #ddd;
+  margin: 80px auto 0;
 }
 
 /* SECTION */
 .section {
-  padding: 120px 20px;
-  text-align: center;
-}
-
-/* DIVIDER */
-.divider {
-  width: 60px;
-  height: 2px;
-  background: black;
-  margin: 20px auto 40px;
+  padding: 80px 20px;
+  text-align:center;
 }
 
 /* PRODUCTS */
 .products {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
+  display:flex;
+  justify-content:center;
+  gap:30px;
 }
 
 .product {
-  border: 1px solid #eee;
-  padding: 30px;
-  border-radius: 10px;
+  border:1px solid #eee;
+  padding:30px;
+  border-radius:10px;
 }
 
 /* PRICING */
-.pricing-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 60px;
-  flex-wrap: wrap;
-}
-
-.pricing-content {
-  max-width: 400px;
-  text-align: left;
-}
-
-.pricing-image img {
-  width: 260px;
-  border-radius: 12px;
-}
-
-/* TABS */
 .pricing-tabs {
-  margin-bottom: 40px;
+  display:inline-flex;
+  border:1px solid #ddd;
+  border-radius:30px;
+  padding:5px;
+  margin-bottom:40px;
 }
 
 .pricing-tabs button {
-  margin: 5px;
-  padding: 10px 20px;
-  border-radius: 20px;
-  border: 1px solid black;
-  background: transparent;
-  cursor: pointer;
+  border:none;
+  background:none;
+  padding:10px 20px;
+  border-radius:30px;
+  cursor:pointer;
 }
 
 .pricing-tabs .active {
-  background: black;
-  color: white;
+  background:black;
+  color:white;
+}
+
+.pricing-wrapper {
+  display:flex;
+  justify-content:center;
+  gap:60px;
+  flex-wrap:wrap;
+}
+
+.pricing-content {
+  border:1px solid #ddd;
+  border-radius:14px;
+  padding:30px;
+  max-width:400px;
+  text-align:left;
+}
+
+.pricing-image img {
+  width:260px;
+  border-radius:14px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.2);
 }
 
 /* FAQ */
 .faq {
-  max-width: 600px;
-  margin: auto;
-  text-align: left;
+  max-width:600px;
+  margin:auto;
+  text-align:left;
 }
 
-/* FORM */
+/* CONTACT */
+.contact-wrapper {
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  flex-wrap:wrap;
+}
+
+.contact-info {
+  max-width:300px;
+  text-align:left;
+}
+
 form {
-  max-width: 500px;
-  margin: auto;
-  text-align: left;
+  max-width:400px;
+  width:100%;
 }
 
 input, select, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border:1px solid #ccc;
+  border-radius:6px;
 }
 
-button.submit-btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  background: black;
-  color: white;
-  cursor: pointer;
+.submit-btn {
+  background:black;
+  color:white;
+  border:none;
+  padding:12px;
+  width:100%;
 }
 
 /* FOOTER */
 .footer {
-  background: black;
-  color: #777;
-  text-align: center;
-  padding: 20px;
+  background:black;
+  color:#777;
+  text-align:center;
+  padding:20px;
 }
 </style>
-
 </head>
+
 <body>
 
 <!-- HEADER -->
@@ -196,10 +205,11 @@ button.submit-btn {
   <a href="#products" class="btn">Explore</a>
 </div>
 
+<div class="section-divider"></div>
+
 <!-- PRODUCTS -->
 <div class="section" id="products">
   <h2>Products</h2>
-  <div class="divider"></div>
   <div class="products">
     <div class="product">Black Card</div>
     <div class="product">White Card</div>
@@ -207,10 +217,11 @@ button.submit-btn {
   </div>
 </div>
 
+<div class="section-divider"></div>
+
 <!-- PRICING -->
 <div class="section" id="pricing">
   <h2>Pricing</h2>
-  <div class="divider"></div>
 
   <div class="pricing-tabs">
     <button onclick="selectPlan('basic', this)">Basic</button>
@@ -223,12 +234,17 @@ button.submit-btn {
     <div class="pricing-content">
       <h3 id="plan-title">Pro</h3>
       <p id="plan-price"><strong>₱1,200</strong></p>
-      <p id="plan-desc">Showcase your work and convert clients.</p>
+      <p id="plan-desc">
+        Turn your NFC card into a powerful portfolio that builds trust instantly.
+      </p>
 
       <ul id="plan-features">
-        <li>Portfolio</li>
-        <li>Projects</li>
+        <li>Everything in Basic</li>
+        <li>3 Highlighted Projects</li>
+        <li>Portfolio Section</li>
       </ul>
+
+      <a href="#contact" class="btn">Get Started</a>
     </div>
 
     <div class="pricing-image">
@@ -236,46 +252,66 @@ button.submit-btn {
     </div>
 
   </div>
+
 </div>
+
+<div class="section-divider"></div>
 
 <!-- FAQ -->
 <div class="section" id="faq">
   <h2>FAQ</h2>
-  <div class="divider"></div>
+
   <div class="faq">
-    <h4>Does it work on all phones?</h4>
-    <p>Yes, most modern devices support NFC.</p>
+    <h4>Do I need an app?</h4>
+    <p>No, it works instantly on most smartphones.</p>
+
+    <h4>Can I update my information?</h4>
+    <p>Yes, anytime.</p>
+
+    <h4>How long is setup?</h4>
+    <p>24–48 hours.</p>
+
+    <h4>Is this one-time payment?</h4>
+    <p>Yes, no subscriptions.</p>
   </div>
 </div>
 
-<!-- CONTACT FORM -->
+<div class="section-divider"></div>
+
+<!-- CONTACT -->
 <div class="section" id="contact">
   <h2>Get Started</h2>
-  <div class="divider"></div>
 
-  <form action="mailto:edxermagpantay@gmail.com" method="POST" enctype="text/plain">
-    
-    <input type="text" name="Name" placeholder="Your Name" required>
-    
-    <input type="email" name="Email" placeholder="Your Email" required>
+  <div class="contact-wrapper">
 
-    <select name="Card Type">
-      <option>Black Card</option>
-      <option>White Card</option>
-      <option>Wood Card</option>
-    </select>
+    <div class="contact-info">
+      <h3>Start your digital card today</h3>
+      <p>Fill out the form and we’ll set up your NFC profile.</p>
+    </div>
 
-    <select name="Plan">
-      <option>Basic</option>
-      <option>Pro</option>
-      <option>Elite</option>
-    </select>
+    <form action="mailto:edxermagpantay@gmail.com" method="POST" enctype="text/plain">
 
-    <textarea name="Notes" placeholder="Additional details"></textarea>
+      <input type="text" name="Name" placeholder="Your Name" required>
+      <input type="email" name="Email" placeholder="Your Email" required>
 
-    <button type="submit" class="submit-btn">Submit Order</button>
+      <select name="Card">
+        <option>Black Card</option>
+        <option>White Card</option>
+        <option>Wood Card</option>
+      </select>
 
-  </form>
+      <select name="Plan">
+        <option>Basic</option>
+        <option>Pro</option>
+        <option>Elite</option>
+      </select>
+
+      <textarea name="Notes" placeholder="Additional details"></textarea>
+
+      <button type="submit" class="submit-btn">Submit Order</button>
+    </form>
+
+  </div>
 </div>
 
 <!-- FOOTER -->
@@ -295,22 +331,22 @@ function selectPlan(plan, el) {
     basic: {
       title: "Basic",
       price: "₱600",
-      desc: "Simple digital contact.",
-      features: ["Contact Info", "Email", "SMS"],
+      desc: "A fast and modern way to share your contact details.",
+      features: ["Save Contact", "Email, SMS", "Services"],
       image: "basic.png"
     },
     pro: {
       title: "Pro",
       price: "₱1,200",
-      desc: "Showcase your work.",
-      features: ["Portfolio", "Projects"],
+      desc: "Turn your NFC card into a powerful portfolio that builds trust instantly.",
+      features: ["Portfolio", "Projects", "Branding"],
       image: "pro.png"
     },
     elite: {
       title: "Elite",
       price: "₱2,000",
-      desc: "Full branding experience.",
-      features: ["Custom Design", "Priority"],
+      desc: "A complete digital identity for professionals who want to stand out.",
+      features: ["Custom Design", "Brand Identity", "Priority"],
       image: "elite.png"
     }
   };
