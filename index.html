@@ -58,7 +58,6 @@ body {
   color: white;
 }
 
-/* DARKER OVERLAY */
 .hero::before {
   content: "";
   position: absolute;
@@ -71,22 +70,14 @@ body {
   z-index: 2;
 }
 
-/* LOGO */
 .logo {
   width: 80px;
   margin-bottom: 20px;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeUp 1s ease forwards;
 }
 
-/* TEXT */
 .brand {
   letter-spacing: 6px;
   font-size: 18px;
-  opacity: 0;
-  animation: fadeUp 1s ease forwards;
-  animation-delay: 0.2s;
 }
 
 .tagline {
@@ -94,12 +85,8 @@ body {
   margin-top: 10px;
   font-size: 13px;
   letter-spacing: 2px;
-  opacity: 0;
-  animation: fadeUp 1s ease forwards;
-  animation-delay: 0.4s;
 }
 
-/* BUTTON */
 .btn {
   margin-top: 30px;
   padding: 10px 26px;
@@ -108,22 +95,11 @@ body {
   text-decoration: none;
   color: white;
   transition: 0.3s;
-  opacity: 0;
-  animation: fadeUp 1s ease forwards;
-  animation-delay: 0.6s;
 }
 
 .btn:hover {
   background: white;
   color: black;
-}
-
-/* ANIMATION */
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* SECTION */
@@ -152,32 +128,70 @@ body {
   padding: 30px;
   border-radius: 14px;
   width: 220px;
-  transition: 0.3s;
 }
 
-.product:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-/* PRICING */
-.pricing {
+/* PRICING INTERACTIVE */
+.pricing-wrapper {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 80px;
+  margin-top: 50px;
   flex-wrap: wrap;
 }
 
-.plan {
-  border: 1px solid #ddd;
-  padding: 40px;
-  border-radius: 14px;
-  width: 240px;
+.pricing-content {
+  max-width: 420px;
+  text-align: left;
+}
+
+.pricing-content h3 {
+  font-size: 28px;
+}
+
+.pricing-content p {
+  color: #555;
+}
+
+.pricing-content ul {
+  margin-top: 15px;
+  padding-left: 18px;
+}
+
+.pricing-content li {
+  margin-bottom: 8px;
+}
+
+.pricing-image img {
+  width: 280px;
+  border-radius: 16px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.2);
   transition: 0.3s;
 }
 
-.plan:hover {
-  transform: scale(1.03);
+/* SELECTOR */
+.pricing-tabs {
+  margin-top: 40px;
+}
+
+.pricing-tabs button {
+  margin: 6px;
+  padding: 10px 22px;
+  border-radius: 25px;
+  border: 1px solid black;
+  background: transparent;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pricing-tabs button:hover {
+  background: black;
+  color: white;
+}
+
+.pricing-tabs .active {
+  background: black;
+  color: white;
 }
 
 /* FAQ */
@@ -185,10 +199,6 @@ body {
   max-width: 650px;
   margin: auto;
   text-align: left;
-}
-
-.faq h4 {
-  margin-bottom: 5px;
 }
 
 /* FOOTER */
@@ -218,14 +228,10 @@ body {
 
 <!-- HERO -->
 <div class="hero">
-
   <img src="logo.png" class="logo">
-
   <div class="brand">ARKILOGIX</div>
   <div class="tagline">SMART DIGITAL NFC CARDS</div>
-
   <a href="#products" class="btn">Explore</a>
-
 </div>
 
 <!-- PRODUCTS -->
@@ -241,20 +247,37 @@ body {
 <!-- PRICING -->
 <div class="section" id="pricing">
   <h2>Pricing</h2>
-  <div class="pricing">
-    <div class="plan">
-      <h3>Basic</h3>
-      <p>NFC Card<br>Simple Profile</p>
+  <p style="color:#777; font-size:13px;">One-time payment. No subscriptions.</p>
+
+  <div class="pricing-wrapper">
+
+    <div class="pricing-content">
+      <h3 id="plan-title">Pro</h3>
+      <p id="plan-price"><strong>₱1,200</strong></p>
+      <p id="plan-desc">A powerful digital profile designed to showcase your work and convert clients.</p>
+
+      <ul id="plan-features">
+        <li>Everything in Basic</li>
+        <li>3 Highlighted Projects</li>
+        <li>Portfolio Section</li>
+        <li>Enhanced Layout Design</li>
+      </ul>
+
+      <a href="#contact" class="btn">Get Started</a>
     </div>
-    <div class="plan">
-      <h3>Pro</h3>
-      <p>Custom Design<br>Portfolio</p>
+
+    <div class="pricing-image">
+      <img id="plan-image" src="pro.jpg">
     </div>
-    <div class="plan">
-      <h3>Elite</h3>
-      <p>Premium Setup<br>Branding</p>
-    </div>
+
   </div>
+
+  <div class="pricing-tabs">
+    <button onclick="selectPlan('basic', this)">Basic</button>
+    <button class="active" onclick="selectPlan('pro', this)">Pro</button>
+    <button onclick="selectPlan('elite', this)">Elite</button>
+  </div>
+
 </div>
 
 <!-- FAQ -->
@@ -262,20 +285,13 @@ body {
   <h2>FAQ</h2>
   <div class="faq">
     <h4>Does it work on all phones?</h4>
-    <p>Yes, most modern iPhone and Android devices support NFC.</p>
-
-    <h4>Do I need internet?</h4>
-    <p>The tap works instantly, but loading your page requires internet.</p>
-
-    <h4>Can I update my info?</h4>
-    <p>Yes, your digital profile can be updated anytime.</p>
+    <p>Yes, most modern devices support NFC.</p>
   </div>
 </div>
 
 <!-- CONTACT -->
 <div class="section dark" id="contact">
   <h2>Get Started</h2>
-  <p>Contact us to get your digital card.</p>
   <a href="mailto:your@email.com" class="btn">Email Us</a>
 </div>
 
@@ -283,6 +299,72 @@ body {
 <div class="footer">
   ARKILOGIX — DIGITAL NFC SYSTEMS
 </div>
+
+<!-- SCRIPT -->
+<script>
+function selectPlan(plan, el) {
+
+  document.querySelectorAll('.pricing-tabs button')
+    .forEach(btn => btn.classList.remove('active'));
+
+  el.classList.add('active');
+
+  const plans = {
+    basic: {
+      title: "Basic",
+      price: "₱600",
+      desc: "A simple and efficient way to share your contact details instantly.",
+      features: [
+        "Save Contact Button",
+        "Call, Email, SMS",
+        "Name & Company",
+        "Services Overview"
+      ],
+      image: "basic.jpg"
+    },
+    pro: {
+      title: "Pro",
+      price: "₱1,200",
+      desc: "A powerful digital profile designed to showcase your work and convert clients.",
+      features: [
+        "Everything in Basic",
+        "3 Highlighted Projects",
+        "Portfolio Section",
+        "Enhanced Layout"
+      ],
+      image: "pro.jpg"
+    },
+    elite: {
+      title: "Elite",
+      price: "₱2,000",
+      desc: "A premium digital experience built for serious professionals and brands.",
+      features: [
+        "Everything in Pro",
+        "Custom Design",
+        "Branding Setup",
+        "Priority Support"
+      ],
+      image: "elite.jpg"
+    }
+  };
+
+  const selected = plans[plan];
+
+  document.getElementById("plan-title").innerText = selected.title;
+  document.getElementById("plan-price").innerText = selected.price;
+  document.getElementById("plan-desc").innerText = selected.desc;
+
+  const ul = document.getElementById("plan-features");
+  ul.innerHTML = "";
+  selected.features.forEach(f => {
+    const li = document.createElement("li");
+    li.innerText = f;
+    ul.appendChild(li);
+  });
+
+  document.getElementById("plan-image").src = selected.image;
+}
+</script>
 
 </body>
 </html>
