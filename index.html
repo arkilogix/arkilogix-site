@@ -6,187 +6,130 @@
 <title>ArkiLogix</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="shortcut icon" href="logo.png">
+<link rel="icon" href="logo.png">
 
 <style>
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
-  background: #000;
-  color: #fff;
-  letter-spacing: 0.5px;
+}
+
+/* HEADER */
+.header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  color: white;
+  z-index: 1000;
+}
+
+.nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+}
+
+.cta {
+  border: 1px solid white;
+  padding: 6px 14px;
+  border-radius: 20px;
 }
 
 /* HERO */
 .hero {
   height: 100vh;
+  background: black;
+  color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-top: 60px;
+  text-align: center;
 }
 
-/* LOGO */
 .logo {
-  width: 120px;
+  width: 110px;
 }
 
-/* BRAND */
 .brand {
-  margin-top: 15px;
-  font-size: 20px;
   letter-spacing: 6px;
-  font-weight: 500;
+  margin-top: 10px;
 }
 
-/* LINE */
-.line {
-  width: 40px;
-  height: 1px;
-  background: white;
-  margin: 15px auto;
-  opacity: 0.5;
-}
-
-/* TAGLINE */
 .tagline {
-  font-size: 13px;
-  letter-spacing: 2px;
   color: #aaa;
+  margin-top: 10px;
 }
 
-/* BUTTON */
 .btn {
-  margin-top: 30px;
-  padding: 12px 28px;
-  border: 1px solid #fff;
-  color: #fff;
-  text-decoration: none;
+  margin-top: 20px;
+  padding: 10px 24px;
+  border: 1px solid white;
   border-radius: 30px;
-  font-size: 13px;
-  letter-spacing: 1px;
-  transition: 0.3s;
-}
-
-.btn:hover {
-  background: #fff;
-  color: #000;
-}
-
-/* ANIMATION */
-.hero * {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeUp 0.8s ease forwards;
-}
-
-.logo { animation-delay: 0.1s; }
-.brand { animation-delay: 0.2s; }
-.line { animation-delay: 0.3s; }
-.tagline { animation-delay: 0.4s; }
-.btn { animation-delay: 0.5s; }
-
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  text-decoration: none;
+  color: white;
 }
 
 /* SECTION */
 .section {
   padding: 100px 20px;
   text-align: center;
+  background: white;
+  color: black;
 }
 
-.section h2 {
-  font-weight: 500;
-  margin-bottom: 40px;
+.section.dark {
+  background: black;
+  color: white;
 }
 
-/* FEATURES */
-.features {
+/* PRODUCTS */
+.products {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px;
-}
-
-.card {
-  max-width: 260px;
-  padding: 30px;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 14px;
-  transition: 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  border-color: white;
-  box-shadow: 0 0 20px rgba(255,255,255,0.1);
-}
-
-/* CLIENTS */
-.clients {
-  display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
-.client-card {
-  padding: 18px 24px;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 30px;
-  transition: 0.3s;
+.product {
+  border: 1px solid #eee;
+  padding: 20px;
+  border-radius: 12px;
+  width: 200px;
 }
 
-.client-card a {
-  text-decoration: none;
-  color: white;
-  font-size: 14px;
+/* PRICING */
+.pricing {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.client-card:hover {
-  background: white;
-  transform: scale(1.05);
+.plan {
+  border: 1px solid #ddd;
+  padding: 30px;
+  border-radius: 12px;
+  width: 220px;
 }
 
-.client-card:hover a {
-  color: black;
-}
-
-/* FORM */
-form {
-  max-width: 400px;
+/* FAQ */
+.faq {
+  max-width: 600px;
   margin: auto;
+  text-align: left;
 }
 
-input, textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 6px;
-  color: white;
-}
-
-input:focus, textarea:focus {
-  outline: none;
-  border-color: white;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  background: white;
-  color: black;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  letter-spacing: 1px;
+.faq h4 {
+  margin-bottom: 5px;
 }
 
 /* FOOTER */
@@ -194,6 +137,7 @@ button {
   padding: 20px;
   text-align: center;
   font-size: 12px;
+  background: black;
   color: #777;
 }
 </style>
@@ -201,46 +145,75 @@ button {
 </head>
 <body>
 
+<!-- HEADER -->
+<div class="header">
+  <div>ARKILOGIX</div>
+  <div class="nav">
+    <a href="#">Home</a>
+    <a href="#products">Products</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact" class="cta">Get Started</a>
+  </div>
+</div>
+
 <!-- HERO -->
 <div class="hero">
   <img src="logo.png" class="logo">
   <div class="brand">ARKILOGIX</div>
-  <div class="line"></div>
   <div class="tagline">SMART DIGITAL NFC CARDS</div>
-  <a href="#order" class="btn">GET YOUR CARD</a>
+  <a href="#products" class="btn">Explore</a>
 </div>
 
-<!-- FEATURES -->
-<div class="section">
-  <h2>What We Do</h2>
-
-  <div class="features">
-    <div class="card">NFC Tap Technology</div>
-    <div class="card">Custom Digital Profiles</div>
-    <div class="card">Modern Professional Branding</div>
+<!-- PRODUCTS -->
+<div class="section" id="products">
+  <h2>Our Cards</h2>
+  <div class="products">
+    <div class="product">Black Card</div>
+    <div class="product">White Card</div>
+    <div class="product">Wood Card</div>
   </div>
 </div>
 
-<!-- CLIENTS -->
-<div class="section">
-  <h2>Clients</h2>
-
-  <div class="clients">
-    <div class="client-card"><a href="/client1/">Juan Dela Cruz</a></div>
-    <div class="client-card"><a href="/client2/">Maria Santos</a></div>
+<!-- PRICING -->
+<div class="section" id="pricing">
+  <h2>Pricing</h2>
+  <div class="pricing">
+    <div class="plan">
+      <h3>Basic</h3>
+      <p>NFC Card<br>Simple Profile</p>
+    </div>
+    <div class="plan">
+      <h3>Pro</h3>
+      <p>Custom Design<br>Portfolio</p>
+    </div>
+    <div class="plan">
+      <h3>Elite</h3>
+      <p>Premium Setup<br>Branding</p>
+    </div>
   </div>
 </div>
 
-<!-- ORDER -->
-<div class="section" id="order">
+<!-- FAQ -->
+<div class="section" id="faq">
+  <h2>FAQ</h2>
+  <div class="faq">
+    <h4>Does it work on all phones?</h4>
+    <p>Yes, most modern iPhone and Android devices support NFC.</p>
+
+    <h4>Do I need internet?</h4>
+    <p>The tap works instantly, but loading your page requires internet.</p>
+
+    <h4>Can I update my info?</h4>
+    <p>Yes, your digital profile can be updated anytime.</p>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="section dark" id="contact">
   <h2>Get Started</h2>
-
-  <form action="https://formspree.io/f/yourformid" method="POST">
-    <input type="text" name="name" placeholder="Name" required>
-    <input type="email" name="email" placeholder="Email" required>
-    <textarea name="message" placeholder="What do you need?"></textarea>
-    <button type="submit">Send Request</button>
-  </form>
+  <p>Contact us to get your digital card.</p>
+  <a href="mailto:your@email.com" class="btn">Email Us</a>
 </div>
 
 <!-- FOOTER -->
