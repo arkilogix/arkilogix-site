@@ -56,12 +56,12 @@ body {
   color: white;
 }
 
-/* DARK OVERLAY */
+/* DARKER OVERLAY (UPDATED) */
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.7); /* darker than before */
 }
 
 .hero * {
@@ -69,44 +69,33 @@ body {
   z-index: 2;
 }
 
-/* PHONE MOCK */
-.phone-screen {
-  width: 110px;
-  height: 220px;
-  background: #e5e5e5;
-  border-radius: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-.phone-logo {
-  width: 35px;
-  max-width: 35px;
-  height: auto;
-  opacity: 0.85;
+/* LOGO */
+.logo {
+  width: 90px;
+  margin-bottom: 15px;
 }
 
 /* TEXT */
 .brand {
   letter-spacing: 6px;
-  margin-top: 10px;
+  font-size: 18px;
 }
 
 .tagline {
   color: #ccc;
   margin-top: 10px;
+  font-size: 13px;
+  letter-spacing: 2px;
 }
 
 .btn {
-  margin-top: 20px;
-  padding: 10px 24px;
+  margin-top: 25px;
+  padding: 10px 26px;
   border: 1px solid white;
   border-radius: 30px;
   text-decoration: none;
   color: white;
+  transition: 0.3s;
 }
 
 .btn:hover {
@@ -196,9 +185,7 @@ body {
 <!-- HERO -->
 <div class="hero">
 
-  <div class="phone-screen">
-    <img src="logo.png" class="phone-logo">
-  </div>
+  <img src="logo.png" class="logo">
 
   <div class="brand">ARKILOGIX</div>
   <div class="tagline">SMART DIGITAL NFC CARDS</div>
