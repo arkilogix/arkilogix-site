@@ -5,13 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ArkiLogix</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="/logo.png">
 
 <style>
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
-  color: #111;
+  background: #000;
+  color: #fff;
 }
 
 /* HERO */
@@ -21,41 +24,62 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: black;
-  color: white;
-  text-align: center;
-  padding: 20px;
 }
 
-.hero h1 {
-  font-size: 48px;
-  margin: 0;
+/* LOGO */
+.logo {
+  width: 140px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 1s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tagline {
+  margin-top: 20px;
+  font-size: 14px;
   letter-spacing: 2px;
-}
-
-.hero p {
-  margin-top: 10px;
-  color: #bbb;
+  color: #aaa;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards;
+  animation-delay: 0.3s;
 }
 
 .btn {
-  margin-top: 25px;
-  padding: 12px 26px;
-  background: white;
-  color: black;
+  margin-top: 30px;
+  padding: 12px 28px;
+  border: 1px solid #fff;
+  color: #fff;
   text-decoration: none;
-  border-radius: 6px;
-  font-weight: 600;
+  border-radius: 30px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  transition: 0.3s;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards;
+  animation-delay: 0.6s;
+}
+
+.btn:hover {
+  background: #fff;
+  color: #000;
 }
 
 /* SECTION */
 .section {
-  padding: 70px 20px;
+  padding: 100px 20px;
   text-align: center;
 }
 
 .section h2 {
-  margin-bottom: 30px;
+  font-weight: 500;
+  margin-bottom: 40px;
 }
 
 /* FEATURES */
@@ -63,19 +87,20 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 30px;
 }
 
 .card {
   max-width: 260px;
-  padding: 25px;
-  border: 1px solid #eee;
-  border-radius: 12px;
+  padding: 30px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
   transition: 0.3s;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  border-color: rgba(255,255,255,0.3);
 }
 
 /* CLIENTS */
@@ -87,40 +112,48 @@ body {
 }
 
 .client-card {
-  padding: 20px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  width: 200px;
+  padding: 18px 24px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 30px;
+  transition: 0.3s;
 }
 
 .client-card a {
   text-decoration: none;
+  color: white;
+  font-size: 14px;
+}
+
+.client-card:hover {
+  background: white;
+}
+
+.client-card:hover a {
   color: black;
-  font-weight: 600;
 }
 
 /* FORM */
 form {
   max-width: 400px;
   margin: auto;
-  text-align: left;
 }
 
 input, textarea {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 6px;
-  font-family: inherit;
+  color: white;
 }
 
 button {
   width: 100%;
   padding: 12px;
+  background: white;
+  color: black;
   border: none;
-  background: black;
-  color: white;
   border-radius: 6px;
   font-weight: 600;
 }
@@ -129,8 +162,7 @@ button {
 .footer {
   padding: 20px;
   text-align: center;
-  border-top: 1px solid #eee;
-  font-size: 14px;
+  font-size: 12px;
   color: #777;
 }
 </style>
@@ -140,59 +172,49 @@ button {
 
 <!-- HERO -->
 <div class="hero">
-  <h1>ArkiLogix</h1>
-  <p>Smart Digital Calling Cards using NFC</p>
-  <a href="#order" class="btn">Get Your Card</a>
+  <img src="/logo.png" class="logo">
+  <div class="tagline">SMART DIGITAL NFC CARDS</div>
+  <a href="#order" class="btn">GET YOUR CARD</a>
 </div>
 
 <!-- FEATURES -->
 <div class="section">
-  <h2>What We Offer</h2>
+  <h2>What We Do</h2>
 
   <div class="features">
     <div class="card">
-      <h3>NFC Tap Cards</h3>
-      <p>Instantly share your contact with one tap.</p>
+      NFC-powered business cards for instant sharing
     </div>
 
     <div class="card">
-      <h3>Custom Digital Profile</h3>
-      <p>Your own professional page.</p>
+      Custom digital profiles for every client
     </div>
 
     <div class="card">
-      <h3>Modern Branding</h3>
-      <p>Stand out from traditional business cards.</p>
+      Modern branding for professionals
     </div>
   </div>
 </div>
 
-<!-- SAMPLE CLIENTS -->
+<!-- CLIENTS -->
 <div class="section">
-  <h2>Our Clients</h2>
+  <h2>Clients</h2>
 
   <div class="clients">
-    <div class="client-card">
-      <a href="/client1/">Client One</a>
-    </div>
-
-    <div class="client-card">
-      <a href="/client2/">Client Two</a>
-    </div>
-
-    <!-- ADD MORE HERE -->
+    <div class="client-card"><a href="/client1/">Client One</a></div>
+    <div class="client-card"><a href="/client2/">Client Two</a></div>
   </div>
 </div>
 
-<!-- ORDER FORM -->
+<!-- ORDER -->
 <div class="section" id="order">
-  <h2>Get Your Digital Card</h2>
+  <h2>Get Started</h2>
 
   <form action="https://formspree.io/f/yourformid" method="POST">
-    <input type="text" name="name" placeholder="Your Name" required>
-    <input type="email" name="email" placeholder="Your Email" required>
-    <textarea name="message" placeholder="Tell us what you need"></textarea>
-    <button type="submit">Submit Request</button>
+    <input type="text" name="name" placeholder="Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <textarea name="message" placeholder="What do you need?"></textarea>
+    <button type="submit">Send Request</button>
   </form>
 </div>
 
