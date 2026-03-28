@@ -12,6 +12,7 @@
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
+  scroll-behavior: smooth;
 }
 
 /* HEADER */
@@ -22,7 +23,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
+  padding: 15px 40px;
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(10px);
   color: white;
@@ -30,10 +31,11 @@ body {
 }
 
 .nav a {
-  margin-left: 20px;
+  margin-left: 25px;
   text-decoration: none;
   color: white;
-  font-size: 14px;
+  font-size: 13px;
+  letter-spacing: 1px;
 }
 
 .cta {
@@ -56,12 +58,12 @@ body {
   color: white;
 }
 
-/* DARKER OVERLAY (UPDATED) */
+/* DARKER OVERLAY */
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.7); /* darker than before */
+  background: rgba(0,0,0,0.75);
 }
 
 .hero * {
@@ -71,14 +73,20 @@ body {
 
 /* LOGO */
 .logo {
-  width: 90px;
-  margin-bottom: 15px;
+  width: 80px;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 1s ease forwards;
 }
 
 /* TEXT */
 .brand {
   letter-spacing: 6px;
   font-size: 18px;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards;
+  animation-delay: 0.2s;
 }
 
 .tagline {
@@ -86,16 +94,23 @@ body {
   margin-top: 10px;
   font-size: 13px;
   letter-spacing: 2px;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards;
+  animation-delay: 0.4s;
 }
 
+/* BUTTON */
 .btn {
-  margin-top: 25px;
+  margin-top: 30px;
   padding: 10px 26px;
   border: 1px solid white;
   border-radius: 30px;
   text-decoration: none;
   color: white;
   transition: 0.3s;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards;
+  animation-delay: 0.6s;
 }
 
 .btn:hover {
@@ -103,9 +118,17 @@ body {
   color: black;
 }
 
+/* ANIMATION */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* SECTION */
 .section {
-  padding: 100px 20px;
+  padding: 120px 20px;
   text-align: center;
   background: white;
   color: black;
@@ -120,35 +143,46 @@ body {
 .products {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 30px;
   flex-wrap: wrap;
 }
 
 .product {
   border: 1px solid #eee;
-  padding: 20px;
-  border-radius: 12px;
-  width: 200px;
+  padding: 30px;
+  border-radius: 14px;
+  width: 220px;
+  transition: 0.3s;
+}
+
+.product:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 /* PRICING */
 .pricing {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 30px;
   flex-wrap: wrap;
 }
 
 .plan {
   border: 1px solid #ddd;
-  padding: 30px;
-  border-radius: 12px;
-  width: 220px;
+  padding: 40px;
+  border-radius: 14px;
+  width: 240px;
+  transition: 0.3s;
+}
+
+.plan:hover {
+  transform: scale(1.03);
 }
 
 /* FAQ */
 .faq {
-  max-width: 600px;
+  max-width: 650px;
   margin: auto;
   text-align: left;
 }
@@ -159,7 +193,7 @@ body {
 
 /* FOOTER */
 .footer {
-  padding: 20px;
+  padding: 25px;
   text-align: center;
   font-size: 12px;
   background: black;
