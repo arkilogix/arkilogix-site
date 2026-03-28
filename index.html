@@ -32,8 +32,8 @@ body {
 }
 
 .header.scrolled {
+  background: rgba(0,0,0,0.9);
   padding: 12px 60px;
-  background: rgba(0,0,0,0.85);
 }
 
 .logo-wrap {
@@ -43,19 +43,18 @@ body {
 }
 
 .logo-wrap img {
-  height: 34px;
+  height: 32px;
 }
 
 .logo-wrap span {
   letter-spacing: 3px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-/* NAV */
 .nav a {
   margin-left: 30px;
-  text-decoration: none;
   color: white;
+  text-decoration: none;
   font-size: 13px;
   position: relative;
 }
@@ -63,8 +62,8 @@ body {
 .nav a::after {
   content:"";
   position:absolute;
-  left:0;
   bottom:-4px;
+  left:0;
   width:0;
   height:1px;
   background:white;
@@ -77,7 +76,7 @@ body {
 
 .cta {
   border:1px solid white;
-  padding:6px 16px;
+  padding:6px 14px;
   border-radius:20px;
 }
 
@@ -91,9 +90,9 @@ body {
   height:100vh;
   background:url('hero.jpg') center/cover no-repeat;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
+  flex-direction:column;
   color:white;
   position:relative;
 }
@@ -120,14 +119,6 @@ body {
 .section {
   padding:100px 20px;
   text-align:center;
-  opacity:0;
-  transform:translateY(20px);
-  transition:0.6s;
-}
-
-.section.show {
-  opacity:1;
-  transform:translateY(0);
 }
 
 /* DIVIDER */
@@ -186,28 +177,67 @@ body {
   padding:40px;
   max-width:420px;
   text-align:left;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  transition:0.3s;
 }
 
 #plan-price {
   font-size:42px;
   font-family:'Playfair Display', serif;
-  margin:10px 0;
-}
-
-.fade {
-  opacity:0;
-  transform:translateY(10px);
 }
 
 .pricing-image img {
   width:260px;
   border-radius:14px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.2);
-  transition:0.3s;
+}
+
+/* PREVIEW */
+.preview-wrapper {
+  display:flex;
+  justify-content:center;
+  gap:60px;
+  margin-top:40px;
+  flex-wrap:wrap;
+}
+
+.preview-inputs {
+  max-width:300px;
+  width:100%;
+}
+
+.preview-phone {
+  position:relative;
+}
+
+.preview-phone img {
+  width:300px;
+}
+
+/* OVERLAY */
+.overlay {
+  position:absolute;
+  color:white;
+  width:100%;
+  text-align:center;
+  left:0;
+}
+
+/* POSITIONING BASED ON YOUR MOCKUP */
+.overlay.name {
+  top: 155px;
+  font-weight:700;
+}
+
+.overlay.profession {
+  top: 180px;
+  font-size:13px;
+  color:#ccc;
+}
+
+.overlay.about {
+  top: 300px;
+  font-size:12px;
+  width:80%;
+  left:10%;
+  color:#bbb;
 }
 
 /* FAQ */
@@ -230,23 +260,17 @@ body {
   flex-wrap:wrap;
 }
 
-.contact-info {
-  max-width:300px;
-  text-align:left;
-}
-
 form {
   max-width:400px;
   width:100%;
 }
 
-input, select, textarea {
+input, textarea, select {
   width:100%;
   padding:12px;
   margin-bottom:15px;
   border:1px solid #ccc;
   border-radius:8px;
-  box-sizing:border-box;
 }
 
 .submit-btn {
@@ -276,11 +300,10 @@ input, select, textarea {
     <img src="logo.png">
     <span>ARKILOGIX</span>
   </div>
-
   <div class="nav">
     <a href="#products">Products</a>
     <a href="#pricing">Pricing</a>
-    <a href="#faq">FAQ</a>
+    <a href="#preview">Preview</a>
     <a href="#contact" class="cta">Get Started</a>
   </div>
 </div>
@@ -309,45 +332,37 @@ input, select, textarea {
 <!-- PRICING -->
 <div class="section" id="pricing">
   <h2>Pricing</h2>
-
   <div class="pricing-tabs">
-    <button onclick="selectPlan('basic', this)">Basic</button>
-    <button class="active" onclick="selectPlan('pro', this)">Pro</button>
-    <button onclick="selectPlan('elite', this)">Elite</button>
-  </div>
-
-  <div class="pricing-wrapper">
-    <div class="pricing-content" id="pricingBox">
-      <h3 id="plan-title">Pro</h3>
-      <p id="plan-price">₱1,200</p>
-      <p id="plan-desc">Turn your NFC card into a powerful portfolio that builds trust instantly.</p>
-
-      <ul id="plan-features">
-        <li>Everything in Basic</li>
-        <li>3 Highlighted Projects</li>
-        <li>Portfolio Section</li>
-      </ul>
-
-      <a href="#contact" class="btn">Get Started</a>
-    </div>
-
-    <div class="pricing-image">
-      <img id="plan-image" src="pro.png">
-    </div>
+    <button>Basic</button>
+    <button class="active">Pro</button>
+    <button>Elite</button>
   </div>
 </div>
 
 <div class="section-divider"></div>
 
-<!-- FAQ -->
-<div class="section" id="faq">
-  <h2>FAQ</h2>
+<!-- 🔥 PREVIEW SECTION -->
+<div class="section" id="preview">
+  <h2>Preview Your Digital Card</h2>
 
-  <div class="faq">
-    <div class="faq-item"><h4>Do I need an app?</h4><p>No, works instantly.</p></div>
-    <div class="faq-item"><h4>Can I update?</h4><p>Yes anytime.</p></div>
-    <div class="faq-item"><h4>Setup time?</h4><p>24–48 hours.</p></div>
-    <div class="faq-item"><h4>One-time payment?</h4><p>Yes.</p></div>
+  <div class="preview-wrapper">
+
+    <div class="preview-inputs">
+      <input type="text" id="inputName" placeholder="Your Name">
+      <input type="text" id="inputProfession" placeholder="Your Profession">
+      <textarea id="inputAbout" placeholder="About you"></textarea>
+
+      <button class="submit-btn" onclick="continueOrder()">Continue with this design</button>
+    </div>
+
+    <div class="preview-phone">
+      <img src="phone-pro.png">
+
+      <div class="overlay name" id="previewName">Juan Dela Cruz</div>
+      <div class="overlay profession" id="previewProfession">Architect</div>
+      <div class="overlay about" id="previewAbout">Designing modern spaces.</div>
+    </div>
+
   </div>
 </div>
 
@@ -358,87 +373,53 @@ input, select, textarea {
   <h2>Get Started</h2>
 
   <div class="contact-wrapper">
-    <div class="contact-info">
-      <h3>Start your digital card today</h3>
-      <p>Fill out the form and we’ll set it up.</p>
-    </div>
+    <form id="orderForm">
+      <input type="text" id="formName" placeholder="Your Name">
+      <input type="email" placeholder="Your Email">
 
-    <form action="mailto:edxermagpantay@gmail.com" method="POST" enctype="text/plain" id="orderForm">
-
-      <input type="text" name="Name" placeholder="Your Name" required>
-      <input type="email" name="Email" placeholder="Your Email" required>
-
-      <select name="Card">
-        <option>Black Card</option>
-        <option>White Card</option>
-        <option>Wood Card</option>
-      </select>
-
-      <select name="Plan" id="planSelect">
+      <select id="formPlan">
         <option>Basic</option>
-        <option>Pro</option>
+        <option selected>Pro</option>
         <option>Elite</option>
       </select>
 
-      <textarea name="Notes" placeholder="Additional details"></textarea>
-
-      <button type="submit" class="submit-btn">Submit Order</button>
+      <button class="submit-btn">Submit Order</button>
     </form>
   </div>
 </div>
 
 <div class="footer">
-  ARKILOGIX — DIGITAL NFC SYSTEMS
+ARKILOGIX — DIGITAL NFC SYSTEMS
 </div>
 
 <script>
 // HEADER SCROLL
-window.addEventListener("scroll", ()=>{
-  document.getElementById("header").classList.toggle("scrolled", window.scrollY>50);
+window.addEventListener("scroll",()=>{
+  document.getElementById("header")
+  .classList.toggle("scrolled", window.scrollY>50);
 });
 
-// SECTION REVEAL
-const sections = document.querySelectorAll(".section");
-window.addEventListener("scroll", ()=>{
-  sections.forEach(sec=>{
-    const top = sec.getBoundingClientRect().top;
-    if(top < window.innerHeight - 100){
-      sec.classList.add("show");
-    }
-  });
-});
+// LIVE PREVIEW
+document.getElementById("inputName").oninput = e=>{
+  document.getElementById("previewName").innerText = e.target.value || "Juan Dela Cruz";
+};
 
-// PLAN SWITCH
-function selectPlan(plan, el) {
+document.getElementById("inputProfession").oninput = e=>{
+  document.getElementById("previewProfession").innerText = e.target.value || "Architect";
+};
 
-  document.querySelectorAll('.pricing-tabs button')
-    .forEach(btn => btn.classList.remove('active'));
-  el.classList.add('active');
+document.getElementById("inputAbout").oninput = e=>{
+  document.getElementById("previewAbout").innerText = e.target.value || "Designing modern spaces.";
+};
 
-  const plans = {
-    basic: {title:"Basic",price:"₱600",desc:"Simple sharing.",features:["Contact","Email"],image:"basic.png"},
-    pro: {title:"Pro",price:"₱1,200",desc:"Portfolio power.",features:["Projects","Portfolio"],image:"pro.png"},
-    elite: {title:"Elite",price:"₱2,000",desc:"Full branding.",features:["Custom","Priority"],image:"elite.png"}
-  };
+// CONTINUE BUTTON
+function continueOrder(){
+  document.getElementById("formName").value =
+    document.getElementById("inputName").value;
 
-  const p = plans[plan];
+  document.getElementById("formPlan").value = "Pro";
 
-  document.getElementById("plan-title").innerText = p.title;
-  document.getElementById("plan-price").innerText = p.price;
-  document.getElementById("plan-desc").innerText = p.desc;
-
-  const ul = document.getElementById("plan-features");
-  ul.innerHTML="";
-  p.features.forEach(f=>{
-    const li=document.createElement("li");
-    li.innerText=f;
-    ul.appendChild(li);
-  });
-
-  document.getElementById("plan-image").src = p.image;
-
-  // AUTO SELECT IN FORM
-  document.getElementById("planSelect").value = p.title;
+  document.getElementById("contact").scrollIntoView({behavior:"smooth"});
 }
 </script>
 
