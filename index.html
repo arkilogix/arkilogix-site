@@ -1,111 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>ArkiLogix</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArkiLogix</title>
 
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 50px;
+}
+h1 {
+  font-size: 32px;
+}
+p {
+  color: #666;
+}
+</style>
+
+</head>
 <body>
 
-<div id="app">Loading...</div>
-
-<script>
-const params = new URLSearchParams(window.location.search);
-const client = params.get("client");
-
-// 👉 HOMEPAGE (no client)
-if (!client) {
-  document.getElementById("app").innerHTML = `
-    <h1>ArkiLogix</h1>
-    <p>We build smart digital systems.</p>
-  `;
-}
-
-// 👉 CLIENT PAGE
-else {
-
-  // STEP 1: LOAD TEMPLATE
-  fetch("arc-one.html")
-    .then(res => {
-      if (!res.ok) throw new Error("Template not found");
-      return res.text();
-    })
-    .then(html => {
-      document.getElementById("app").innerHTML = html;
-
-      // STEP 2: LOAD CLIENT DATA
-      return fetch(`clients/${client}.json`);
-    })
-    .then(res => {
-      if (!res.ok) throw new Error("Client not found");
-      return res.json();
-    })
-    .then(profile => {
-
-      // STEP 3: INJECT DATA
-
-      // BASIC
-      document.getElementById("name").innerText = profile.name;
-      document.getElementById("title").innerText = profile.title;
-      document.getElementById("profileImg").src = profile.profileImage;
-      document.getElementById("banner").style.backgroundImage = `url(${profile.bannerImage})`;
-
-      // LINKS
-      document.getElementById("website").href = profile.website;
-      document.getElementById("call").href = `tel:${profile.phone}`;
-      document.getElementById("sms").href = `sms:${profile.phone}`;
-      document.getElementById("email").href = `mailto:${profile.email}`;
-      document.getElementById("instagram").href = profile.instagram;
-      document.getElementById("facebook").href = profile.facebook;
-
-      // SAVE CONTACT
-      document.getElementById("saveContact").onclick = () => {
-        const vCard = `
-BEGIN:VCARD
-VERSION:3.0
-FN:${profile.name}
-ORG:${profile.title}
-TEL:${profile.phone}
-EMAIL:${profile.email}
-END:VCARD
-        `;
-
-        const blob = new Blob([vCard], { type: 'text/vcard' });
-        const url = window.URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${profile.name}.vcf`;
-        a.click();
-      };
-
-      // ABOUT
-      if (profile.about) {
-        const aboutEl = document.querySelector(".section p");
-        if (aboutEl) aboutEl.innerText = profile.about;
-      }
-
-      // PROJECTS
-      if (profile.projects) {
-        const container = document.querySelector(".portfolio");
-        if (container) {
-          container.innerHTML = "";
-          profile.projects.forEach(img => {
-            const el = document.createElement("img");
-            el.src = img;
-            el.onclick = () => openLightbox(img);
-            container.appendChild(el);
-          });
-        }
-      }
-
-    })
-    .catch(err => {
-      document.getElementById("app").innerHTML = "<h1>Error loading profile</h1>";
-      console.error(err);
-    });
-}
-</script>
+<h1>ArkiLogix</h1>
+<p>We build smart digital calling cards.</p>
 
 </body>
 </html>
