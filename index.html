@@ -22,28 +22,80 @@ body {
   top: 0;
   display: flex;
   justify-content: space-between;
-  padding: 15px 40px;
-  background: rgba(0,0,0,0.6);
+  align-items: center;
+  padding: 18px 60px;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
   color: white;
   z-index: 1000;
+  transition: 0.3s;
 }
 
+.header.scrolled {
+  padding: 12px 60px;
+  background: rgba(0,0,0,0.85);
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-wrap img {
+  height: 34px;
+}
+
+.logo-wrap span {
+  letter-spacing: 3px;
+  font-size: 14px;
+}
+
+/* NAV */
 .nav a {
-  margin-left: 20px;
-  color: white;
+  margin-left: 30px;
   text-decoration: none;
+  color: white;
+  font-size: 13px;
+  position: relative;
+}
+
+.nav a::after {
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-4px;
+  width:0;
+  height:1px;
+  background:white;
+  transition:0.3s;
+}
+
+.nav a:hover::after {
+  width:100%;
+}
+
+.cta {
+  border:1px solid white;
+  padding:6px 16px;
+  border-radius:20px;
+}
+
+.cta:hover {
+  background:white;
+  color:black;
 }
 
 /* HERO */
 .hero {
-  height: 100vh;
-  background: url('hero.jpg') center/cover no-repeat;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  position: relative;
+  height:100vh;
+  background:url('hero.jpg') center/cover no-repeat;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  position:relative;
 }
 
 .hero::before {
@@ -64,18 +116,26 @@ body {
   text-decoration:none;
 }
 
-/* DIVIDER */
-.section-divider {
-  width: 80%;
-  height: 1px;
-  background: #ddd;
-  margin: 80px auto 0;
-}
-
 /* SECTION */
 .section {
-  padding: 80px 20px;
+  padding:100px 20px;
   text-align:center;
+  opacity:0;
+  transform:translateY(20px);
+  transition:0.6s;
+}
+
+.section.show {
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* DIVIDER */
+.section-divider {
+  width:80%;
+  height:1px;
+  background:#ddd;
+  margin:80px auto 0;
 }
 
 /* PRODUCTS */
@@ -126,32 +186,28 @@ body {
   padding:40px;
   max-width:420px;
   text-align:left;
-
   display:flex;
   flex-direction:column;
-  justify-content:center; /* 🔥 vertical centering */
+  justify-content:center;
+  transition:0.3s;
 }
 
-/* PRICE UPGRADE */
 #plan-price {
-  font-size: 40px;
-  font-weight: 700;
-  margin: 10px 0;
-  font-family: 'Playfair Display', serif;
+  font-size:42px;
+  font-family:'Playfair Display', serif;
+  margin:10px 0;
 }
 
-.pricing-content h3 {
-  font-size: 26px;
-}
-
-.pricing-content p {
-  color:#555;
+.fade {
+  opacity:0;
+  transform:translateY(10px);
 }
 
 .pricing-image img {
   width:260px;
   border-radius:14px;
   box-shadow:0 15px 40px rgba(0,0,0,0.2);
+  transition:0.3s;
 }
 
 /* FAQ */
@@ -184,7 +240,6 @@ form {
   width:100%;
 }
 
-/* FULL WIDTH INPUTS */
 input, select, textarea {
   width:100%;
   padding:12px;
@@ -194,7 +249,6 @@ input, select, textarea {
   box-sizing:border-box;
 }
 
-/* BUTTON FIX */
 .submit-btn {
   background:black;
   color:white;
@@ -202,7 +256,6 @@ input, select, textarea {
   padding:14px;
   width:100%;
   border-radius:30px;
-  cursor:pointer;
 }
 
 /* FOOTER */
@@ -218,13 +271,17 @@ input, select, textarea {
 <body>
 
 <!-- HEADER -->
-<div class="header">
-  <div>ARKILOGIX</div>
+<div class="header" id="header">
+  <div class="logo-wrap">
+    <img src="logo.png">
+    <span>ARKILOGIX</span>
+  </div>
+
   <div class="nav">
     <a href="#products">Products</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
-    <a href="#contact">Get Started</a>
+    <a href="#contact" class="cta">Get Started</a>
   </div>
 </div>
 
@@ -260,8 +317,7 @@ input, select, textarea {
   </div>
 
   <div class="pricing-wrapper">
-
-    <div class="pricing-content">
+    <div class="pricing-content" id="pricingBox">
       <h3 id="plan-title">Pro</h3>
       <p id="plan-price">₱1,200</p>
       <p id="plan-desc">Turn your NFC card into a powerful portfolio that builds trust instantly.</p>
@@ -278,7 +334,6 @@ input, select, textarea {
     <div class="pricing-image">
       <img id="plan-image" src="pro.png">
     </div>
-
   </div>
 </div>
 
@@ -289,25 +344,10 @@ input, select, textarea {
   <h2>FAQ</h2>
 
   <div class="faq">
-    <div class="faq-item">
-      <h4>Do I need an app?</h4>
-      <p>No, it works instantly on most smartphones.</p>
-    </div>
-
-    <div class="faq-item">
-      <h4>Can I update my information?</h4>
-      <p>Yes, anytime.</p>
-    </div>
-
-    <div class="faq-item">
-      <h4>How long is setup?</h4>
-      <p>24–48 hours.</p>
-    </div>
-
-    <div class="faq-item">
-      <h4>Is this one-time payment?</h4>
-      <p>Yes, no subscriptions.</p>
-    </div>
+    <div class="faq-item"><h4>Do I need an app?</h4><p>No, works instantly.</p></div>
+    <div class="faq-item"><h4>Can I update?</h4><p>Yes anytime.</p></div>
+    <div class="faq-item"><h4>Setup time?</h4><p>24–48 hours.</p></div>
+    <div class="faq-item"><h4>One-time payment?</h4><p>Yes.</p></div>
   </div>
 </div>
 
@@ -318,13 +358,12 @@ input, select, textarea {
   <h2>Get Started</h2>
 
   <div class="contact-wrapper">
-
     <div class="contact-info">
       <h3>Start your digital card today</h3>
-      <p>Fill out the form and we’ll set up your NFC profile.</p>
+      <p>Fill out the form and we’ll set it up.</p>
     </div>
 
-    <form action="mailto:edxermagpantay@gmail.com" method="POST" enctype="text/plain">
+    <form action="mailto:edxermagpantay@gmail.com" method="POST" enctype="text/plain" id="orderForm">
 
       <input type="text" name="Name" placeholder="Your Name" required>
       <input type="email" name="Email" placeholder="Your Email" required>
@@ -335,7 +374,7 @@ input, select, textarea {
         <option>Wood Card</option>
       </select>
 
-      <select name="Plan">
+      <select name="Plan" id="planSelect">
         <option>Basic</option>
         <option>Pro</option>
         <option>Elite</option>
@@ -345,62 +384,61 @@ input, select, textarea {
 
       <button type="submit" class="submit-btn">Submit Order</button>
     </form>
-
   </div>
 </div>
 
-<!-- FOOTER -->
 <div class="footer">
   ARKILOGIX — DIGITAL NFC SYSTEMS
 </div>
 
 <script>
+// HEADER SCROLL
+window.addEventListener("scroll", ()=>{
+  document.getElementById("header").classList.toggle("scrolled", window.scrollY>50);
+});
+
+// SECTION REVEAL
+const sections = document.querySelectorAll(".section");
+window.addEventListener("scroll", ()=>{
+  sections.forEach(sec=>{
+    const top = sec.getBoundingClientRect().top;
+    if(top < window.innerHeight - 100){
+      sec.classList.add("show");
+    }
+  });
+});
+
+// PLAN SWITCH
 function selectPlan(plan, el) {
 
   document.querySelectorAll('.pricing-tabs button')
     .forEach(btn => btn.classList.remove('active'));
-
   el.classList.add('active');
 
   const plans = {
-    basic: {
-      title: "Basic",
-      price: "₱600",
-      desc: "A fast and modern way to share your contact details.",
-      features: ["Save Contact", "Email, SMS", "Services"],
-      image: "basic.png"
-    },
-    pro: {
-      title: "Pro",
-      price: "₱1,200",
-      desc: "Turn your NFC card into a powerful portfolio that builds trust instantly.",
-      features: ["Portfolio", "Projects", "Branding"],
-      image: "pro.png"
-    },
-    elite: {
-      title: "Elite",
-      price: "₱2,000",
-      desc: "A complete digital identity for professionals who want to stand out.",
-      features: ["Custom Design", "Brand Identity", "Priority"],
-      image: "elite.png"
-    }
+    basic: {title:"Basic",price:"₱600",desc:"Simple sharing.",features:["Contact","Email"],image:"basic.png"},
+    pro: {title:"Pro",price:"₱1,200",desc:"Portfolio power.",features:["Projects","Portfolio"],image:"pro.png"},
+    elite: {title:"Elite",price:"₱2,000",desc:"Full branding.",features:["Custom","Priority"],image:"elite.png"}
   };
 
-  const selected = plans[plan];
+  const p = plans[plan];
 
-  document.getElementById("plan-title").innerText = selected.title;
-  document.getElementById("plan-price").innerText = selected.price;
-  document.getElementById("plan-desc").innerText = selected.desc;
+  document.getElementById("plan-title").innerText = p.title;
+  document.getElementById("plan-price").innerText = p.price;
+  document.getElementById("plan-desc").innerText = p.desc;
 
   const ul = document.getElementById("plan-features");
-  ul.innerHTML = "";
-  selected.features.forEach(f => {
-    const li = document.createElement("li");
-    li.innerText = f;
+  ul.innerHTML="";
+  p.features.forEach(f=>{
+    const li=document.createElement("li");
+    li.innerText=f;
     ul.appendChild(li);
   });
 
-  document.getElementById("plan-image").src = selected.image;
+  document.getElementById("plan-image").src = p.image;
+
+  // AUTO SELECT IN FORM
+  document.getElementById("planSelect").value = p.title;
 }
 </script>
 
