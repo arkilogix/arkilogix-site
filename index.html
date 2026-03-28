@@ -2,22 +2,56 @@
 <html>
 <head>
   <title>ArkiLogix</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body style="font-family: Arial; text-align:center; padding:40px;">
+<body>
 
-  <h1 id="name">ArkiLogix</h1>
-  <p id="title">We build smart digital systems.</p>
+<div id="app">Loading...</div>
 
-  <img id="profile" width="150" style="border-radius:50%" />
+<script>
+const params = new URLSearchParams(window.location.search);
+const client = params.get("client");
 
-  <br><br>
+// If no client → show homepage
+if (!client) {
+  document.getElementById("app").innerHTML = `
+    <h1>ArkiLogix</h1>
+    <p>We build smart digital systems.</p>
+  `;
+} else {
 
-  <a id="phone">Call</a><br>
-  <a id="email">Email</a>
+  // STEP 1: Load template
+  fetch("templates/arc-one.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("app").innerHTML = html;
 
-  <script src="script.js"></script>
+      // STEP 2: Load client data
+      return fetch(`clients/${client}.json`);
+    })
+    .then(res => res.json())
+    .then(profile => {
+
+      // STEP 3: Inject data
+      document.getElementById("name").innerText = profile.name;
+      document.getElementById("title").innerText = profile.title;
+      document.getElementById("profileImg").src = profile.profileImage;
+      document.getElementById("banner").style.backgroundImage = `url(${profile.bannerImage})`;
+
+      document.getElementById("website").href = profile.website;
+      document.getElementById("call").href = `tel:${profile.phone}`;
+      document.getElementById("sms").href = `sms:${profile.phone}`;
+      document.getElementById("email").href = `mailto:${profile.email}`;
+      document.getElementById("instagram").href = profile.instagram;
+      document.getElementById("facebook").href = profile.facebook;
+
+    })
+    .catch(err => {
+      document.getElementById("app").innerHTML = "<h1>Error loading profile</h1>";
+      console.error(err);
+    });
+}
+</script>
 
 </body>
 </html>
