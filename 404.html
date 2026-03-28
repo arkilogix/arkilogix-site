@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    const path = window.location.pathname.replace("/", "");
+    if (path) {
+      window.location.href = "/?client=" + path;
+    }
+  </script>
+</head>
+<body></body>
+</html>
