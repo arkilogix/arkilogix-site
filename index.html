@@ -311,20 +311,20 @@ input,textarea{
 /* ===== ELITE TEMPLATE ===== */
 
 .elite .name{
-  top:460px;
-  color:#bfa27a; /* dark beige */
+  top:125px; 
+  color:#bfa27a;
   font-size:13px;
   font-weight:600;
 }
 
 .elite .profession{
-  top:478px;
+  top:143px;
   color:#bfa27a;
   font-size:10px;
 }
 
 .elite .company{
-  top:492px;
+  top:158px;
   color:#bfa27a;
   font-size:9px;
 }
@@ -672,7 +672,10 @@ let basePrices={basic:599,pro:1199,elite:1999};
 let selectedPlan="pro";
 let cardPrice=0;
 
-function setPlan(plan,index,el){
+previewAbout.classList.add("hidden");
+previewServices.classList.add("hidden");
+
+  function setPlan(plan,index,el){
 document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
 el.classList.add("active");
 slider.style.left=(index*33.33)+"%";
@@ -692,6 +695,13 @@ previewAbout.classList.remove("hidden");
 }else{
 phoneImage.src="/phone-elite.png";
 phoneBox.className="preview-phone elite";
+}
+}else if(plan==="elite"){
+  phoneImage.src="phone-elite.png";
+  phoneBox.className="preview-phone elite";
+
+  previewServices.classList.add("hidden");
+  previewAbout.classList.add("hidden"); // 👈 hide about
 }
 }
 
