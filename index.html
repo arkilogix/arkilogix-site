@@ -248,9 +248,6 @@ input,textarea{
   border:1px solid #ccc;
   border-radius:30px;
   overflow:hidden;
-
-  margin-top:-5px;   /* raise */
-  margin-left:14px;  /* move right */
 }
 
 .selector span{
@@ -266,6 +263,9 @@ input,textarea{
   color:#fff;
 }
 
+  .selector-wrapper{
+  margin-top:5px;
+}
 .slider{
   position:absolute;
   width:33.33%;
@@ -411,6 +411,17 @@ input,textarea{
 .plan:hover{
   transform:translateY(-5px);
 }
+  /* ===== SELECTOR WRAPPER ===== */
+.selector-wrapper{
+  width:100%;
+  margin-bottom:15px;
+}
+
+/* MATCH INPUT WIDTH */
+.selector{
+  width:100%;
+}
+  
 </style>
 <!-- ===================== CSS END ===================== -->
 
@@ -491,11 +502,13 @@ input,textarea{
 
 <div class="preview-inputs">
 
-<div class="selector">
-<div class="slider" id="slider" style="left:33.33%;"></div>
-<span onclick="setPlan('basic',0,this)">Basic</span>
-<span class="active" onclick="setPlan('pro',1,this)">Pro</span>
-<span onclick="setPlan('elite',2,this)">Elite</span>
+<div class="selector-wrapper">
+  <div class="selector">
+    <div class="slider" id="slider" style="left:33.33%;"></div>
+    <span onclick="setPlan('basic',0,this)">Basic</span>
+    <span class="active" onclick="setPlan('pro',1,this)">Pro</span>
+    <span onclick="setPlan('elite',2,this)">Elite</span>
+  </div>
 </div>
 
 <input id="inputName" placeholder="Your Name">
