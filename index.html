@@ -369,25 +369,21 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
   font-size:14px;
 }
 
-  /* ===== CARD SELECTOR ===== */
+/* ===== SINGLE CARD DISPLAY ===== */
 .card-stage{
   display:flex;
   justify-content:center;
-  gap:14px;
   margin-top:-90px;
   position:relative;
   z-index:2;
 }
 
-/* EACH CARD */
-.card-item{
-  width:120px;
-  border-radius:12px;
-  cursor:pointer;
-  opacity:.5;
-  transform:scale(.9);
-  transition:.3s ease;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+.card-stage img{
+  width:260px;
+  max-width:90%;
+  border-radius:14px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.25);
+  transition:.25s ease;
 }
 
 /* ACTIVE */
@@ -402,7 +398,9 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
   opacity:1;
   transform:scale(1.08) translateY(-12px);
 }
-  
+html {
+  scroll-behavior: smooth;
+}
 </style>
 </head>
 
@@ -491,10 +489,10 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
 <textarea id="inputAbout"></textarea>
 
 <div class="card-options">
-<button onclick="selectCard(0,this)">White (+₱0)</button>
-<button onclick="selectCard(99,this)">Black (+₱99)</button>
-<button onclick="selectCard(299,this)">Wood (+₱299)</button>
-<button onclick="selectCard(599,this)">Metal (+₱599)</button>
+<button onclick="selectCard(0,this,'white')">White</button>
+<button onclick="selectCard(99,this,'black')">Black</button>
+<button onclick="selectCard(299,this,'wood')">Wood</button>
+<button onclick="selectCard(599,this,'metal')">Metal</button>
 </div>
 
 <div class="total-box">
@@ -520,14 +518,10 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
 <div class="service-item">✔ Renovation</div>
 </div>
 </div>
-<!-- ===== CARD MOCKUP SELECTOR ===== -->
+
+<!-- ===== CARD DISPLAY ===== -->
 <div class="card-stage">
-
-  <img src="white-front.png" class="card-item active" onclick="selectCard(0,this,'white')">
-  <img src="black-front.png" class="card-item" onclick="selectCard(99,this,'black')">
-  <img src="wood-front.png" class="card-item" onclick="selectCard(299,this,'wood')">
-  <img src="metal-front.png" class="card-item" onclick="selectCard(599,this,'metal')">
-
+  <img id="cardDisplay" src="white-front.png">
 </div>
   
 </div>
@@ -653,21 +647,27 @@ function selectCard(price,el,type){
 
 cardPrice=price;
 
-/* REMOVE ACTIVE STATES */
-document.querySelectorAll(".card-item").forEach(c=>c.classList.remove("active"));
+/* REMOVE ACTIVE STATES (BUTTONS ONLY NOW) */
 document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
-
-/* ACTIVATE CLICKED CARD */
 el.classList.add("active");
 
-/* SYNC BUTTONS */
-let buttons=document.querySelectorAll(".card-options button");
-if(price===0) buttons[0].classList.add("active");
-if(price===99) buttons[1].classList.add("active");
-if(price===299) buttons[2].classList.add("active");
-if(price===599) buttons[3].classList.add("active");
+/* CHANGE CARD IMAGE */
+if(type==="white"){
+  cardDisplay.src="white-front.png";
+}else if(type==="black"){
+  cardDisplay.src="black-front.png";
+}else if(type==="wood"){
+  cardDisplay.src="wood-front.png";
+}else if(type==="metal"){
+  cardDisplay.src="metal-front.png";
+}
 
-/* UPDATE TOTAL */
+/* SUBTLE FADE EFFECT */
+cardDisplay.style.opacity="0";
+setTimeout(()=>{
+  cardDisplay.style.opacity="1";
+},150);
+
 updateTotal();
 }
 </script>
