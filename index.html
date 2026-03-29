@@ -20,15 +20,15 @@
 body{
   margin:0;
   font-family:'Montserrat',sans-serif;
+  background:#fff;
 }
 
-/* ===== HEADER START ===== */
+/* ===== HEADER ===== */
 .header{
   position:fixed;
-  top:0;
   width:100%;
   background:rgba(0,0,0,0.75);
-  backdrop-filter: blur(10px);
+  backdrop-filter:blur(10px);
   z-index:1000;
 }
 
@@ -41,16 +41,10 @@ body{
   padding:15px 20px;
 }
 
-/* LOGO */
-.logo img{
-  height:24px;
-  width:auto;
-}
+.logo img{height:24px;}
 
-/* NAV */
 .nav{
   display:flex;
-  align-items:center;
   gap:20px;
 }
 
@@ -58,20 +52,16 @@ body{
   color:#ccc;
   text-decoration:none;
   font-size:13px;
-  transition:0.2s;
 }
 
-.nav a:hover{
-  color:#fff;
-}
+.nav a:hover{color:#fff;}
 
-/* CTA */
 .cta{
   border:1px solid #fff;
   padding:6px 14px;
   border-radius:20px;
   color:#fff;
-  transition:all 0.25s ease;
+  transition:.25s;
 }
 
 .cta:hover{
@@ -79,20 +69,17 @@ body{
   color:#000;
   transform:translateY(-2px);
 }
-/* ===== HEADER END ===== */
 
-
-/* ===== HERO START ===== */
+/* ===== HERO ===== */
 .hero{
   height:100vh;
-  background:url('hero.jpg') center/cover no-repeat;
   display:flex;
   justify-content:center;
   align-items:center;
   text-align:center;
   position:relative;
   color:#fff;
-  padding:0 20px;
+  background:url('hero.jpg') center/cover no-repeat;
 }
 
 .hero::before{
@@ -105,47 +92,40 @@ body{
 .hero-content{
   position:relative;
   max-width:700px;
+  padding:20px;
 }
 
-/* BRAND */
 .brand{
-  font-size:12px;
+  font-size:14px;
   letter-spacing:6px;
-  color:#aaa;
-  margin-bottom:20px;
+  margin-bottom:15px;
+  color:#ddd;
 }
 
-/* TITLE */
 .hero-title{
-  font-size:42px;
+  font-size:44px;
   font-weight:700;
-  line-height:1.2;
   margin-bottom:20px;
+  line-height:1.2;
 }
 
-/* SUB */
 .hero-sub{
   font-size:16px;
   color:#ccc;
   margin-bottom:30px;
 }
-/* ===== HERO END ===== */
 
-
-/* ===== BUTTONS START ===== */
+/* ===== BUTTONS ===== */
 .btn{
-  display:inline-block;
   padding:12px 28px;
   border-radius:30px;
   text-decoration:none;
-  font-size:14px;
-  transition:all 0.25s ease;
+  transition:.25s;
 }
 
 .primary-btn{
   background:#fff;
   color:#000;
-  border:1px solid #fff;
 }
 
 .primary-btn:hover{
@@ -155,10 +135,8 @@ body{
 }
 
 .primary-btn:active{
-  transform:scale(0.97);
+  transform:scale(0.96);
 }
-/* ===== BUTTONS END ===== */
-
 
 /* ===== SECTIONS ===== */
 .section{
@@ -173,12 +151,11 @@ body{
   margin:80px auto;
 }
 
-
 /* ===== PRICING ===== */
 .pricing{
   display:flex;
-  justify-content:center;
   gap:20px;
+  justify-content:center;
   flex-wrap:wrap;
 }
 
@@ -194,28 +171,17 @@ body{
   font-weight:700;
 }
 
-.limited{
-  color:red;
-  font-size:12px;
-}
-
-
 /* ===== PREVIEW ===== */
 .preview-wrapper{
   display:flex;
   justify-content:center;
   gap:60px;
   flex-wrap:wrap;
-  margin-top:40px;
 }
 
-.preview-inputs{
-  max-width:300px;
-  text-align:left;
-}
+.preview-inputs{max-width:300px;}
 
-
-/* ===== INPUTS ===== */
+/* ===== INPUT ===== */
 input,textarea{
   width:100%;
   padding:12px;
@@ -224,132 +190,120 @@ input,textarea{
   border-radius:8px;
 }
 
-
-/* ===== PLAN SELECTOR ===== */
+/* ===== SELECTOR ===== */
 .selector{
   position:relative;
   display:flex;
   border:1px solid #ccc;
   border-radius:30px;
   overflow:hidden;
-  margin-bottom:10px;
 }
 
 .selector span{
   flex:1;
-  text-align:center;
   padding:8px;
   cursor:pointer;
-  z-index:1;
 }
 
 .slider{
   position:absolute;
-  top:0;
-  left:0;
-  height:100%;
   width:50%;
+  height:100%;
   background:#000;
-  border-radius:30px;
-  transition:0.3s;
+  transition:.3s;
 }
 
 .selector span.active{color:#fff;}
 
-
-/* ===== CARD OPTIONS ===== */
-.card-options button{
-  padding:8px 12px;
-  margin:5px;
-  border:1px solid #ccc;
-  border-radius:20px;
-  background:#fff;
-  cursor:pointer;
-}
-
-.card-options .active{
-  background:#000;
-  color:#fff;
-}
-
-
-/* ===== TOTAL ===== */
-.total-box{
-  margin-top:10px;
-  border-top:1px solid #ddd;
-  padding-top:10px;
-}
-
-.total{
-  font-size:26px;
-  font-weight:700;
-}
-
-
-/* ===== BUTTON ===== */
-.submit-btn{
-  margin-top:10px;
-  background:#000;
-  color:#fff;
-  border:none;
-  padding:12px;
-  border-radius:30px;
-  width:100%;
-}
-
-
-/* ===== PHONE PREVIEW ===== */
-.preview-phone{
-  position:relative;
-}
-
-.preview-phone img{
-  width:300px;
-}
+/* ===== PHONE ===== */
+.preview-phone{position:relative;}
+.preview-phone img{width:300px;}
 
 .overlay{
   position:absolute;
   width:100%;
   text-align:center;
-  left:0;
 }
 
-
-/* ===== PRO STYLE ===== */
+/* ===== PRO ===== */
 .pro .name{top:150px;color:#fff;font-size:13px;}
 .pro .profession{top:165px;color:#ccc;font-size:10px;}
-.pro .company{top:178px;color:#999;font-size:9px;}
+.pro .company{top:178px;color:#aaa;font-size:9px;}
 .pro .about{top:270px;color:#bbb;font-size:11px;width:80%;left:10%;}
 
-
-/* ===== BASIC STYLE ===== */
-.basic .info-box{
-  position:absolute;
-  top:200px;
-  left:50%;
-  transform:translateX(-50%);
-  width:185px;
-  height:40px;
-  border:1px solid #2563EB;
-  border-radius:12px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-}
-
-.basic .name{color:#2563EB;font-size:12px;}
-.basic .profession{color:#3B82F6;font-size:10px;}
-.basic .company{color:#6B7280;font-size:9px;}
+/* ===== BASIC CLEAN ===== */
+.basic .name{top:190px;color:#0f172a;font-size:13px;}
+.basic .profession{top:210px;color:#0f172a;font-size:11px;}
+.basic .company{top:225px;color:#555;font-size:10px;}
 
 .basic .services{
   position:absolute;
-  top:355px;
-  font-size:10px;
-  color:#555;
-  width:70%;
-  left:15%;
+  top:350px;
+  left:18%;
   text-align:left;
+  font-size:11px;
+  color:#333;
+}
+
+.service-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-bottom:4px;
+}
+
+.service-item svg{
+  width:12px;
+  height:12px;
+}
+
+/* ===== CONTINUE BUTTON ===== */
+.submit-btn{
+  margin-top:15px;
+  background:#000;
+  color:#fff;
+  padding:12px;
+  border-radius:30px;
+  border:none;
+  width:100%;
+  transition:.25s;
+}
+
+.submit-btn:hover{
+  transform:translateY(-2px) scale(1.02);
+}
+
+.submit-btn:active{
+  transform:scale(0.96);
+}
+
+/* ===== FAQ ===== */
+.faq{
+  max-width:700px;
+  margin:auto;
+  text-align:left;
+}
+
+.faq-item{
+  border-bottom:1px solid #ddd;
+  padding:15px 0;
+  cursor:pointer;
+}
+
+.faq-question{
+  font-weight:600;
+}
+
+.faq-answer{
+  max-height:0;
+  overflow:hidden;
+  transition:.3s;
+  color:#555;
+}
+
+.faq-item.active .faq-answer{
+  max-height:100px;
+  margin-top:10px;
 }
 
 .hidden{display:none;}
@@ -361,73 +315,54 @@ input,textarea{
 
 <body>
 
-<!-- ===================== HEADER ===================== -->
+<!-- HEADER -->
 <div class="header">
-  <div class="header-inner">
-
-    <div class="logo">
-      <img src="logo.png" alt="ArkiLogix Logo">
-    </div>
-
-    <div class="nav">
-      <a href="#">Home</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#preview">Preview</a>
-      <a href="#preview" class="cta">Get Started</a>
-    </div>
-
-  </div>
+<div class="header-inner">
+<div class="logo"><img src="logo.png"></div>
+<div class="nav">
+<a href="#">Home</a>
+<a href="#pricing">Pricing</a>
+<a href="#preview">Preview</a>
+<a href="#preview" class="cta">Get Started</a>
+</div>
+</div>
 </div>
 
-
-<!-- ===================== HERO ===================== -->
+<!-- HERO -->
 <div class="hero">
+<div class="hero-content">
 
-  <div class="hero-content">
+<div class="brand">ARKILOGIX</div>
 
-    <div class="brand">ARKILOGIX</div>
-
-    <h1 class="hero-title">
-      Digital Business Cards<br>
-      That Work Instantly
-    </h1>
-
-    <p class="hero-sub">
-      Tap. Share. Impress.
-    </p>
-
-    <a href="#preview" class="btn primary-btn">Get Started</a>
-
-  </div>
-
+<div class="hero-title">
+Digital Business Cards<br>
+That Work Instantly
 </div>
 
+<div class="hero-sub">Tap. Share. Impress.</div>
 
-<!-- ===================== PRICING ===================== -->
+<a href="#preview" class="btn primary-btn">Get Started</a>
+
+</div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- PRICING -->
 <div class="section" id="pricing">
-  <h2>Pricing</h2>
+<h2>Pricing</h2>
 
-  <div class="pricing">
-    <div class="plan">
-      <h3>Basic</h3>
-      <div class="plan-price">₱599</div>
-    </div>
-
-    <div class="plan">
-      <h3>Pro</h3>
-      <div class="plan-price">₱1,199</div>
-    </div>
-
-    <div class="plan">
-      <h3>Elite</h3>
-      <div class="plan-price">₱1,999</div>
-      <div class="limited">LIMITED</div>
-    </div>
-  </div>
+<div class="pricing">
+<div class="plan"><h3>Basic</h3><div class="plan-price">₱599</div></div>
+<div class="plan"><h3>Pro</h3><div class="plan-price">₱1,199</div></div>
+<div class="plan"><h3>Elite</h3><div class="plan-price">₱1,999</div></div>
 </div>
 
+</div>
 
-<!-- ===================== PREVIEW ===================== -->
+<div class="section-divider"></div>
+
+<!-- PREVIEW -->
 <div class="section" id="preview">
 <h2>Preview Your Digital Card</h2>
 
@@ -446,6 +381,8 @@ input,textarea{
 <input id="inputCompany" placeholder="Company Name">
 <textarea id="inputAbout" placeholder="About"></textarea>
 
+<button class="submit-btn">Continue with Design</button>
+
 </div>
 
 <div class="preview-phone" id="phoneBox">
@@ -455,85 +392,102 @@ input,textarea{
 <div class="overlay name" id="previewName">Juan Dela Cruz</div>
 <div class="overlay profession" id="previewProfession">Architect</div>
 <div class="overlay company" id="previewCompany">Arki Studio</div>
-
 <div class="overlay about" id="previewAbout">Designing modern spaces.</div>
 
-<div class="info-box hidden" id="basicBox">
-  <div class="name" id="basicName">Juan Dela Cruz</div>
-  <div class="profession" id="basicProfession">Architect</div>
-  <div class="company" id="basicCompany">Arki Studio</div>
-</div>
-
 <div class="overlay services hidden" id="previewServices">
-• Design<br>• Planning<br>• Renovation<br>• Consultation
+
+<div class="service-item">
+<svg fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
+<span>Design</span>
+</div>
+
+<div class="service-item">
+<svg fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
+<span>Planning</span>
+</div>
+
+<div class="service-item">
+<svg fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
+<span>Renovation</span>
+</div>
+
+<div class="service-item">
+<svg fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
+<span>Consultation</span>
 </div>
 
 </div>
 
 </div>
+
+</div>
 </div>
 
+<div class="section-divider"></div>
 
-<!-- ===================== JAVASCRIPT ===================== -->
+<!-- FAQ -->
+<div class="section">
+<h2>Frequently Asked Questions</h2>
+
+<div class="faq">
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<div class="faq-question">Do I need an app?</div>
+<div class="faq-answer">No, it works instantly via browser.</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<div class="faq-question">Does it work on iPhone and Android?</div>
+<div class="faq-answer">Yes, fully compatible with both.</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<div class="faq-question">Can I update my info?</div>
+<div class="faq-answer">Yes, anytime.</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- JAVASCRIPT -->
 <script>
 
-let currentPlan="pro";
-
 function setPlan(plan,index,el){
-
-document.querySelectorAll(".selector span")
-.forEach(s=>s.classList.remove("active"));
-
+document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
 el.classList.add("active");
 slider.style.left=(index*50)+"%";
 
 if(plan==="basic"){
-phoneImage.src="phone-basic.png";
-
-previewAbout.classList.add("hidden");
-previewServices.classList.remove("hidden");
-basicBox.classList.remove("hidden");
-
-previewName.style.display="none";
-previewProfession.style.display="none";
-previewCompany.style.display="none";
-
 phoneBox.className="preview-phone basic";
-
+previewServices.classList.remove("hidden");
+previewAbout.classList.add("hidden");
 }else{
-
-phoneImage.src="phone-pro.png";
-
-previewAbout.classList.remove("hidden");
-previewServices.classList.add("hidden");
-basicBox.classList.add("hidden");
-
-previewName.style.display="block";
-previewProfession.style.display="block";
-previewCompany.style.display="block";
-
 phoneBox.className="preview-phone pro";
+previewServices.classList.add("hidden");
+previewAbout.classList.remove("hidden");
 }
 }
 
 inputName.oninput=e=>{
 previewName.innerText=e.target.value||"Juan Dela Cruz";
-basicName.innerText=e.target.value||"Juan Dela Cruz";
 };
 
 inputProfession.oninput=e=>{
 previewProfession.innerText=e.target.value||"Architect";
-basicProfession.innerText=e.target.value||"Architect";
 };
 
 inputCompany.oninput=e=>{
 previewCompany.innerText=e.target.value||"Arki Studio";
-basicCompany.innerText=e.target.value||"Arki Studio";
 };
 
 inputAbout.oninput=e=>{
 previewAbout.innerText=e.target.value||"Designing modern spaces.";
 };
+
+function toggleFAQ(el){
+el.classList.toggle("active");
+}
 
 </script>
 
