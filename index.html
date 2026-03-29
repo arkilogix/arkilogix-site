@@ -1,133 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<!-- ===================== META ===================== -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ArkiLogix</title>
 
+<!-- FAVICON -->
+<link rel="icon" type="image/png" href="logo.png">
+
+<!-- ===================== FONTS ===================== -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 
+<!-- ===================== CSS START ===================== -->
 <style>
-body{margin:0;font-family:'Montserrat',sans-serif;}
 
-/* HEADER */
+/* ===== GLOBAL ===== */
+body{
+  margin:0;
+  font-family:'Montserrat',sans-serif;
+}
+
+/* ===== HEADER START ===== */
 .header{
-position:fixed;top:0;width:100%;
-display:flex;justify-content:space-between;
-padding:15px 40px;
-background:rgba(0,0,0,0.6);
-color:#fff;z-index:1000;
+  position:fixed;
+  top:0;
+  width:100%;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter: blur(10px);
+  z-index:1000;
+}
+
+.header-inner{
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+}
+
+/* LOGO */
+.logo img{
+  height:24px;
+  width:auto;
+}
+
+/* NAV */
+.nav{
+  display:flex;
+  align-items:center;
+  gap:20px;
 }
 
 .nav a{
-margin-left:20px;
-color:#fff;
-text-decoration:none;
-font-size:13px;
+  color:#ccc;
+  text-decoration:none;
+  font-size:13px;
+  transition:0.2s;
 }
 
+.nav a:hover{
+  color:#fff;
+}
+
+/* CTA */
 .cta{
-border:1px solid #fff;
-padding:5px 12px;
-border-radius:20px;
+  border:1px solid #fff;
+  padding:6px 14px;
+  border-radius:20px;
+  color:#fff;
+  transition:all 0.25s ease;
 }
 
-/* HERO */
+.cta:hover{
+  background:#fff;
+  color:#000;
+  transform:translateY(-2px);
+}
+/* ===== HEADER END ===== */
+
+
+/* ===== HERO START ===== */
 .hero{
-height:100vh;
-background:url('hero.jpg') center/cover no-repeat;
-display:flex;flex-direction:column;
-justify-content:center;align-items:center;
-color:white;text-align:center;position:relative;
+  height:100vh;
+  background:url('hero.jpg') center/cover no-repeat;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  position:relative;
+  color:#fff;
+  padding:0 20px;
 }
-.hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.7);}
-.hero *{position:relative;}
 
-.brand{font-size:48px;letter-spacing:6px;}
-.tagline{font-size:18px;}
-.sub{font-size:14px;color:#ccc;}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.75);
+}
 
+.hero-content{
+  position:relative;
+  max-width:700px;
+}
+
+/* BRAND */
+.brand{
+  font-size:12px;
+  letter-spacing:6px;
+  color:#aaa;
+  margin-bottom:20px;
+}
+
+/* TITLE */
+.hero-title{
+  font-size:42px;
+  font-weight:700;
+  line-height:1.2;
+  margin-bottom:20px;
+}
+
+/* SUB */
+.hero-sub{
+  font-size:16px;
+  color:#ccc;
+  margin-bottom:30px;
+}
+/* ===== HERO END ===== */
+
+
+/* ===== BUTTONS START ===== */
 .btn{
-margin-top:20px;padding:10px 25px;
-border:1px solid white;border-radius:30px;
-color:white;text-decoration:none;
+  display:inline-block;
+  padding:12px 28px;
+  border-radius:30px;
+  text-decoration:none;
+  font-size:14px;
+  transition:all 0.25s ease;
 }
 
-/* SECTION */
-.section{padding:100px 20px;text-align:center;}
-.section-divider{width:80%;height:1px;background:#ddd;margin:80px auto;}
+.primary-btn{
+  background:#fff;
+  color:#000;
+  border:1px solid #fff;
+}
 
-/* PRICING */
-.pricing{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
-.plan{border:1px solid #ddd;padding:25px;border-radius:14px;width:220px;}
-.plan-price{font-size:24px;font-weight:700;}
-.limited{color:red;font-size:12px;}
+.primary-btn:hover{
+  background:#000;
+  color:#fff;
+  transform:translateY(-2px) scale(1.03);
+}
 
-/* PREVIEW */
-.preview-wrapper{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;margin-top:40px;}
-.preview-inputs{max-width:300px;text-align:left;}
+.primary-btn:active{
+  transform:scale(0.97);
+}
+/* ===== BUTTONS END ===== */
 
+
+/* ===== SECTIONS ===== */
+.section{
+  padding:100px 20px;
+  text-align:center;
+}
+
+.section-divider{
+  width:80%;
+  height:1px;
+  background:#ddd;
+  margin:80px auto;
+}
+
+
+/* ===== PRICING ===== */
+.pricing{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.plan{
+  border:1px solid #ddd;
+  padding:25px;
+  border-radius:14px;
+  width:220px;
+}
+
+.plan-price{
+  font-size:24px;
+  font-weight:700;
+}
+
+.limited{
+  color:red;
+  font-size:12px;
+}
+
+
+/* ===== PREVIEW ===== */
+.preview-wrapper{
+  display:flex;
+  justify-content:center;
+  gap:60px;
+  flex-wrap:wrap;
+  margin-top:40px;
+}
+
+.preview-inputs{
+  max-width:300px;
+  text-align:left;
+}
+
+
+/* ===== INPUTS ===== */
 input,textarea{
-width:100%;padding:12px;margin-bottom:12px;
-border:1px solid #ccc;border-radius:8px;
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
 }
 
-/* SELECTOR */
+
+/* ===== PLAN SELECTOR ===== */
 .selector{
-position:relative;display:flex;
-border:1px solid #ccc;border-radius:30px;
-overflow:hidden;margin-bottom:10px;
+  position:relative;
+  display:flex;
+  border:1px solid #ccc;
+  border-radius:30px;
+  overflow:hidden;
+  margin-bottom:10px;
 }
+
 .selector span{
-flex:1;text-align:center;padding:8px;cursor:pointer;z-index:1;
+  flex:1;
+  text-align:center;
+  padding:8px;
+  cursor:pointer;
+  z-index:1;
 }
+
 .slider{
-position:absolute;top:0;left:0;height:100%;width:50%;
-background:#000;border-radius:30px;transition:0.3s;
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:50%;
+  background:#000;
+  border-radius:30px;
+  transition:0.3s;
 }
+
 .selector span.active{color:#fff;}
 
-/* CARD */
+
+/* ===== CARD OPTIONS ===== */
 .card-options button{
-padding:8px 12px;margin:5px;
-border:1px solid #ccc;border-radius:20px;background:#fff;cursor:pointer;
+  padding:8px 12px;
+  margin:5px;
+  border:1px solid #ccc;
+  border-radius:20px;
+  background:#fff;
+  cursor:pointer;
 }
-.card-options .active{background:#000;color:#fff;}
 
-/* TOTAL */
-.total-box{margin-top:10px;border-top:1px solid #ddd;padding-top:10px;}
-.total{font-size:26px;font-weight:700;}
+.card-options .active{
+  background:#000;
+  color:#fff;
+}
 
+
+/* ===== TOTAL ===== */
+.total-box{
+  margin-top:10px;
+  border-top:1px solid #ddd;
+  padding-top:10px;
+}
+
+.total{
+  font-size:26px;
+  font-weight:700;
+}
+
+
+/* ===== BUTTON ===== */
 .submit-btn{
-margin-top:10px;background:#000;color:#fff;
-border:none;padding:12px;border-radius:30px;width:100%;
+  margin-top:10px;
+  background:#000;
+  color:#fff;
+  border:none;
+  padding:12px;
+  border-radius:30px;
+  width:100%;
 }
 
-/* PHONE */
-.preview-phone{position:relative;}
-.preview-phone img{width:300px;}
-.overlay{position:absolute;width:100%;text-align:center;left:0;}
 
-/* PRO (compressed spacing) */
+/* ===== PHONE PREVIEW ===== */
+.preview-phone{
+  position:relative;
+}
+
+.preview-phone img{
+  width:300px;
+}
+
+.overlay{
+  position:absolute;
+  width:100%;
+  text-align:center;
+  left:0;
+}
+
+
+/* ===== PRO STYLE ===== */
 .pro .name{top:150px;color:#fff;font-size:13px;}
 .pro .profession{top:165px;color:#ccc;font-size:10px;}
 .pro .company{top:178px;color:#999;font-size:9px;}
 .pro .about{top:270px;color:#bbb;font-size:11px;width:80%;left:10%;}
 
-/* BASIC (BOXED 🔥) */
+
+/* ===== BASIC STYLE ===== */
 .basic .info-box{
-position:absolute;
-top:200px;
-left:50%;
-transform:translateX(-50%);
-width:185px;
-height:40px;
-border:1px solid #2563EB;
-border-radius:12px;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
+  position:absolute;
+  top:200px;
+  left:50%;
+  transform:translateX(-50%);
+  width:185px;
+  height:40px;
+  border:1px solid #2563EB;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
 }
 
 .basic .name{color:#2563EB;font-size:12px;}
@@ -135,75 +343,91 @@ align-items:center;
 .basic .company{color:#6B7280;font-size:9px;}
 
 .basic .services{
-top:355px;
-font-size:10px;
-color:#555;
-text-align:left;
-width:70%;
-left:15%;
-position:absolute;
+  position:absolute;
+  top:355px;
+  font-size:10px;
+  color:#555;
+  width:70%;
+  left:15%;
+  text-align:left;
 }
 
 .hidden{display:none;}
+
 </style>
+<!-- ===================== CSS END ===================== -->
+
 </head>
 
 <body>
 
-<!-- HEADER -->
+<!-- ===================== HEADER ===================== -->
 <div class="header">
-<div>ARKILOGIX</div>
-<div class="nav">
-<a href="#">Home</a>
-<a href="#pricing">Pricing</a>
-<a href="#preview">Preview</a>
-<a href="#preview" class="cta">Get Started</a>
-</div>
+  <div class="header-inner">
+
+    <div class="logo">
+      <img src="logo.png" alt="ArkiLogix Logo">
+    </div>
+
+    <div class="nav">
+      <a href="#">Home</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#preview">Preview</a>
+      <a href="#preview" class="cta">Get Started</a>
+    </div>
+
+  </div>
 </div>
 
-<!-- HERO -->
+
+<!-- ===================== HERO ===================== -->
 <div class="hero">
-<h1 class="brand">ARKILOGIX</h1>
-<p class="tagline">Smart NFC Digital Business Cards</p>
-<p class="sub">Share your contact instantly</p>
-<a href="#preview" class="btn">Get Started</a>
+
+  <div class="hero-content">
+
+    <div class="brand">ARKILOGIX</div>
+
+    <h1 class="hero-title">
+      Digital Business Cards<br>
+      That Work Instantly
+    </h1>
+
+    <p class="hero-sub">
+      Tap. Share. Impress.
+    </p>
+
+    <a href="#preview" class="btn primary-btn">Get Started</a>
+
+  </div>
+
 </div>
 
-<div class="section-divider"></div>
 
-<!-- PRICING -->
+<!-- ===================== PRICING ===================== -->
 <div class="section" id="pricing">
-<h2>Pricing</h2>
+  <h2>Pricing</h2>
 
-<div class="pricing">
-<div class="plan">
-<h3>Basic</h3>
-<div class="plan-price">₱599</div>
-<p>Simple contact card</p>
+  <div class="pricing">
+    <div class="plan">
+      <h3>Basic</h3>
+      <div class="plan-price">₱599</div>
+    </div>
+
+    <div class="plan">
+      <h3>Pro</h3>
+      <div class="plan-price">₱1,199</div>
+    </div>
+
+    <div class="plan">
+      <h3>Elite</h3>
+      <div class="plan-price">₱1,999</div>
+      <div class="limited">LIMITED</div>
+    </div>
+  </div>
 </div>
 
-<div class="plan">
-<h3>Pro</h3>
-<div class="plan-price">₱1,199</div>
-<p>Portfolio profile</p>
-</div>
 
-<div class="plan">
-<h3>Elite</h3>
-<div class="plan-price">₱1,999</div>
-<p>Custom design</p>
-<div class="limited">LIMITED</div>
-</div>
-</div>
-
-<p style="margin-top:20px;color:#777;">
-Not sure? Try your digital card ↓
-</p>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- PREVIEW -->
+<!-- ===================== PREVIEW ===================== -->
 <div class="section" id="preview">
 <h2>Preview Your Digital Card</h2>
 
@@ -220,28 +444,12 @@ Not sure? Try your digital card ↓
 <input id="inputName" placeholder="Your Name">
 <input id="inputProfession" placeholder="Your Profession">
 <input id="inputCompany" placeholder="Company Name">
-<textarea id="inputAbout" placeholder="About (Pro only)"></textarea>
-
-<p>Card Finish</p>
-<div class="card-options">
-<button onclick="setCard(0,this)" class="active">White</button>
-<button onclick="setCard(99,this)">Black +99</button>
-<button onclick="setCard(199,this)">Wood +199</button>
-<button onclick="setCard(499,this)">Metal +499</button>
-</div>
-
-<div class="total-box">
-<p id="planLabel">Pro — ₱1,199</p>
-<p id="cardLabel">White — ₱0</p>
-<div class="total" id="totalPrice">₱1,199</div>
-</div>
-
-<button class="submit-btn" onclick="sendEmail()">Continue with this design</button>
+<textarea id="inputAbout" placeholder="About"></textarea>
 
 </div>
 
-<!-- PHONE -->
 <div class="preview-phone" id="phoneBox">
+
 <img id="phoneImage" src="phone-pro.png">
 
 <div class="overlay name" id="previewName">Juan Dela Cruz</div>
@@ -251,9 +459,9 @@ Not sure? Try your digital card ↓
 <div class="overlay about" id="previewAbout">Designing modern spaces.</div>
 
 <div class="info-box hidden" id="basicBox">
-<div class="name" id="basicName">Juan Dela Cruz</div>
-<div class="profession" id="basicProfession">Architect</div>
-<div class="company" id="basicCompany">Arki Studio</div>
+  <div class="name" id="basicName">Juan Dela Cruz</div>
+  <div class="profession" id="basicProfession">Architect</div>
+  <div class="company" id="basicCompany">Arki Studio</div>
 </div>
 
 <div class="overlay services hidden" id="previewServices">
@@ -265,25 +473,22 @@ Not sure? Try your digital card ↓
 </div>
 </div>
 
-<script>
-let basePrice=1199,cardPrice=0,currentPlan="pro";
 
-function updateTotal(){
-document.getElementById("totalPrice").innerText="₱"+(basePrice+cardPrice).toLocaleString();
-}
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+
+let currentPlan="pro";
 
 function setPlan(plan,index,el){
-currentPlan=plan;
 
-document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
+document.querySelectorAll(".selector span")
+.forEach(s=>s.classList.remove("active"));
+
 el.classList.add("active");
-
 slider.style.left=(index*50)+"%";
 
 if(plan==="basic"){
-basePrice=599;
 phoneImage.src="phone-basic.png";
-planLabel.innerText="Basic — ₱599";
 
 previewAbout.classList.add("hidden");
 previewServices.classList.remove("hidden");
@@ -296,9 +501,8 @@ previewCompany.style.display="none";
 phoneBox.className="preview-phone basic";
 
 }else{
-basePrice=1199;
+
 phoneImage.src="phone-pro.png";
-planLabel.innerText="Pro — ₱1,199";
 
 previewAbout.classList.remove("hidden");
 previewServices.classList.add("hidden");
@@ -310,16 +514,6 @@ previewCompany.style.display="block";
 
 phoneBox.className="preview-phone pro";
 }
-
-updateTotal();
-}
-
-function setCard(price,el){
-cardPrice=price;
-document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
-el.classList.add("active");
-cardLabel.innerText=el.innerText;
-updateTotal();
 }
 
 inputName.oninput=e=>{
@@ -341,20 +535,6 @@ inputAbout.oninput=e=>{
 previewAbout.innerText=e.target.value||"Designing modern spaces.";
 };
 
-function sendEmail(){
-let name=inputName.value;
-let profession=inputProfession.value;
-let company=inputCompany.value;
-let plan=currentPlan;
-let card=cardLabel.innerText;
-let total=totalPrice.innerText;
-
-let body=`Name: ${name}%0D%0AProfession: ${profession}%0D%0ACompany: ${company}%0D%0APlan: ${plan}%0D%0ACard: ${card}%0D%0ATotal: ${total}`;
-
-window.location.href=`mailto:edxermagpantay@gmail.com?subject=ArkiLogix Order&body=${body}`;
-}
-
-phoneBox.className="preview-phone pro";
 </script>
 
 </body>
