@@ -409,7 +409,31 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
 html {
   scroll-behavior: smooth;
 }
+
+ /* ===== CARD PREMIUM ANIMATION ===== */
+.card-stage img{
+  width:260px;
+  max-width:90%;
+  border-radius:14px;
+
+  /* smoother shadow */
+  box-shadow:0 15px 40px rgba(0,0,0,0.25);
+
+  /* animation base */
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease,
+    opacity .25s ease;
+  
+  transform:perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
+}
+
+/* subtle hover (optional but nice) */
+.card-stage img:hover{
+  transform:perspective(1000px) rotateX(4deg) rotateY(-4deg) scale(1.02);
+} 
 </style>
+
 </head>
 
 <body>
@@ -626,56 +650,81 @@ previewAbout.classList.add("hidden");
 }
 }
 
-function selectCard(price,el){
-cardPrice=price;
-document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
-el.classList.add("active");
-updateTotal();
-}
-
-function updateTotal(){
-let service=basePrices[selectedPlan];
-let total=service+cardPrice;
-servicePrice.innerText="₱"+service;
-cardPriceDisplay.innerText="₱"+cardPrice;
-totalPrice.innerText="₱"+total;
-}
-
-inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
-inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architect";
-inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Your Arch Studio";
-inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
-
-function toggleFAQ(el){el.classList.toggle("active");}
-
-window.onload=function(){
-setPlan('pro',1,document.querySelector('.selector span.active'));
-};
 function selectCard(price,el,type){
 
 cardPrice=price;
 
-/* REMOVE ACTIVE STATES (BUTTONS ONLY NOW) */
+/* ACTIVE BUTTON */
 document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
 el.classList.add("active");
 
-/* CHANGE CARD IMAGE */
-if(type==="white"){
-  cardDisplay.src="white-front.png";
-}else if(type==="black"){
-  cardDisplay.src="black-front.png";
-}else if(type==="wood"){
-  cardDisplay.src="wood-front.png";
-}else if(type==="metal"){
-  cardDisplay.src="metal-front.png";
+/* === ANIMATION START === */
+cardDisplay.style.transform = "perspective(1000px) rotateX(8deg) rotateY(-8deg) scale(1.05)";
+cardDisplay.style.boxShadow = "0 25px 60px rgba(0,0,0,0.35)";
+cardDisplay.style.opacity = "0.6";
+
+/* CHANGE IMAGE AFTER SMALL DELAY */
+setTimeout(()=>{
+
+  if(type==="white"){
+    cardDisplay.src="white-front.png";
+  }else if(type==="black"){
+    cardDisplay.src="black-front.png";
+  }else if(type==="wood"){
+    cardDisplay.src="wood-front.png";
+  }else if(type==="metal"){
+    cardDisplay.src="metal-front.png";
+  }
+
+  /* RETURN TO NORMAL (SMOOTH SETTLE) */
+  cardDisplay.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+  cardDisplay.style.boxShadow = "0 15px 40px rgba(0,0,0,0.25)";
+  cardDisplay.style.opacity = "1";
+
+},180);
+
+/* ===== PRICE COUNT-UP FUNCTION ===== */
+function animatePrice(element, start, end){
+
+let duration = 400;
+let startTime = null;
+
+function update(currentTime){
+  if(!startTime) startTime = currentTime;
+  let progress = currentTime - startTime;
+
+  let percent = Math.min(progress / duration, 1);
+
+  let value = Math.floor(start + (end - start) * percent);
+
+  element.innerText = "₱" + value.toLocaleString();
+
+  if(progress < duration){
+    requestAnimationFrame(update);
+  }
 }
 
-/* SUBTLE FADE EFFECT */
-cardDisplay.style.opacity="0";
-setTimeout(()=>{
-  cardDisplay.style.opacity="1";
-},150);
+requestAnimationFrame(update);
+}
 
+/* ===== UPDATE TOTAL FUNCTION ===== */
+function updateTotal(){
+
+let service = basePrices[selectedPlan];
+let total = service + cardPrice;
+
+/* UPDATE STATIC VALUES */
+servicePrice.innerText = "₱" + service.toLocaleString();
+cardPriceDisplay.innerText = "₱" + cardPrice.toLocaleString();
+
+/* GET CURRENT DISPLAYED VALUE */
+let current = parseInt(totalPrice.innerText.replace(/[^0-9]/g,'')) || 0;
+
+/* ANIMATE TOTAL */
+animatePrice(totalPrice, current, total);
+
+}
+  
 updateTotal();
 }
 </script>
