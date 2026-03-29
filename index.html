@@ -177,8 +177,8 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
 
 /* ELITE */
 .elite .name{top:22%;color:#bfa27a;font-size:13px;font-weight:600;}
-.elite .profession{top:27%;color:#bfa27a;font-size:10px;}
-.elite .company{top:25%;color:#bfa27a;font-size:9px;}
+.elite .profession{top:25%;color:#bfa27a;font-size:10px;}
+.elite .company{top:28%;color:#bfa27a;font-size:9px;}
 
 .card-options{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
 .card-options button{
@@ -409,6 +409,27 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
 html {
   scroll-behavior: smooth;
 }
+  /* ===== CARD SAFE PREMIUM ANIMATION ===== */
+.card-stage img{
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease,
+    opacity .2s ease;
+
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
+}
+  /* ===== PHONE MICRO ZOOM ===== */
+.preview-phone{
+  transition: transform .3s ease;
+}
+
+.phone-pop{
+  transform: scale(1.03);
+}
+  /* ===== BUTTON PRESS FEEL ===== */
+.card-options button:active{
+  transform:scale(0.96);
+}
 </style>
 </head>
 
@@ -600,17 +621,46 @@ No problem. You can still share your card using a direct link.
 let basePrices={basic:599,pro:1199,elite:1999};
 let selectedPlan="pro";
 let cardPrice=0;
+/* ===== PRICE COUNT-UP (SAFE) ===== */
+function animatePrice(element, start, end){
 
+let duration = 350;
+let startTime = null;
+
+function update(currentTime){
+  if(!startTime) startTime = currentTime;
+
+  let progress = currentTime - startTime;
+  let percent = Math.min(progress / duration, 1);
+
+  let value = Math.floor(start + (end - start) * percent);
+
+  element.innerText = "₱" + value.toLocaleString();
+
+  if(progress < duration){
+    requestAnimationFrame(update);
+  }
+}
+
+requestAnimationFrame(update);
+}
 function setPlan(plan,index,el){
 document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
 el.classList.add("active");
 slider.style.left=(index*33.33)+"%";
 selectedPlan=plan;
 updateTotal();
+  /* PHONE MICRO INTERACTION */
+phoneBox.classList.add("phone-pop");
+
+setTimeout(()=>{
+  phoneBox.classList.remove("phone-pop");
+},200);
 
 if(plan==="basic"){
 phoneImage.src="phone-basic.png";
-phoneBox.className="preview-phone basic";
+phoneBox.classList.remove("basic","pro","elite");
+phoneBox.classList.add(plan);
 previewServices.classList.remove("hidden");
 previewAbout.classList.add("hidden");
 }else if(plan==="pro"){
@@ -626,19 +676,13 @@ previewAbout.classList.add("hidden");
 }
 }
 
-function selectCard(price,el){
-cardPrice=price;
-document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
-el.classList.add("active");
-updateTotal();
-}
-
 function updateTotal(){
 let service=basePrices[selectedPlan];
 let total=service+cardPrice;
 servicePrice.innerText="₱"+service;
 cardPriceDisplay.innerText="₱"+cardPrice;
-totalPrice.innerText="₱"+total;
+let current = parseInt(totalPrice.innerText.replace(/[^0-9]/g,'')) || 0;
+animatePrice(totalPrice, current, total);
 }
 
 inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
@@ -652,31 +696,39 @@ window.onload=function(){
 setPlan('pro',1,document.querySelector('.selector span.active'));
 };
 function selectCard(price,el,type){
-
 cardPrice=price;
 
-/* REMOVE ACTIVE STATES (BUTTONS ONLY NOW) */
+/* ACTIVE BUTTON */
 document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
 el.classList.add("active");
 
-/* CHANGE CARD IMAGE */
-if(type==="white"){
-  cardDisplay.src="white-front.png";
-}else if(type==="black"){
-  cardDisplay.src="black-front.png";
-}else if(type==="wood"){
-  cardDisplay.src="wood-front.png";
-}else if(type==="metal"){
-  cardDisplay.src="metal-front.png";
-}
+/* === ANIMATION START (SAFE) === */
+cardDisplay.style.transform = "perspective(1000px) rotateX(5deg) rotateY(-5deg) scale(1.03)";
+cardDisplay.style.boxShadow = "0 20px 45px rgba(0,0,0,0.3)";
+cardDisplay.style.opacity = "0.7";
 
-/* SUBTLE FADE EFFECT */
-cardDisplay.style.opacity="0";
+/* CHANGE IMAGE AFTER SMALL DELAY */
 setTimeout(()=>{
-  cardDisplay.style.opacity="1";
+
+  if(type==="white"){
+    cardDisplay.src="white-front.png";
+  }else if(type==="black"){
+    cardDisplay.src="black-front.png";
+  }else if(type==="wood"){
+    cardDisplay.src="wood-front.png";
+  }else if(type==="metal"){
+    cardDisplay.src="metal-front.png";
+  }
+
+  /* RETURN TO NORMAL */
+  cardDisplay.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+  cardDisplay.style.boxShadow = "0 15px 40px rgba(0,0,0,0.25)";
+  cardDisplay.style.opacity = "1";
+
 },150);
 
 updateTotal();
+
 }
 </script>
 
