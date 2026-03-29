@@ -432,6 +432,39 @@ html {
 .card-stage img:hover{
   transform:perspective(1000px) rotateX(4deg) rotateY(-4deg) scale(1.02);
 } 
+  /* ===== PHONE PREMIUM TRANSITION ===== */
+.preview-phone{
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+}
+
+/* ACTIVE ANIMATION */
+.phone-animate{
+  transform: scale(1.04);
+}
+  /* ===== CARD MATERIAL GLOW ===== */
+.card-white{
+  box-shadow:0 15px 40px rgba(0,0,0,0.25);
+}
+
+.card-black{
+  box-shadow:0 20px 50px rgba(0,0,0,0.5);
+}
+
+.card-wood{
+  box-shadow:0 18px 45px rgba(120,70,30,0.35);
+}
+
+.card-metal{
+  box-shadow:0 20px 55px rgba(180,180,180,0.45);
+}
+  /* ===== GLOBAL SMOOTH MOTION ===== */
+*{
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    background .25s ease,
+    color .25s ease;
+}
 </style>
 
 </head>
@@ -631,7 +664,14 @@ el.classList.add("active");
 slider.style.left=(index*33.33)+"%";
 selectedPlan=plan;
 updateTotal();
+  
+/* PHONE ZOOM EFFECT */
+phoneBox.classList.add("phone-animate");
 
+setTimeout(()=>{
+  phoneBox.classList.remove("phone-animate");
+},250);
+  
 if(plan==="basic"){
 phoneImage.src="phone-basic.png";
 phoneBox.className="preview-phone basic";
@@ -652,6 +692,12 @@ previewAbout.classList.add("hidden");
 
 function selectCard(price,el,type){
 
+  /* REMOVE OLD MATERIAL CLASS */
+cardDisplay.classList.remove("card-white","card-black","card-wood","card-metal");
+
+/* APPLY NEW MATERIAL CLASS */
+cardDisplay.classList.add("card-"+type);
+  
 cardPrice=price;
 
 /* ACTIVE BUTTON */
