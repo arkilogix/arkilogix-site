@@ -238,12 +238,22 @@ input,textarea{
 }
 
 /* ===== SELECTOR FIX START ===== */
+
+.selector{
+  position:relative;
+  display:flex;
+  border:1px solid #ccc;
+  border-radius:30px;
+  overflow:hidden;
+}
+
 .selector span{
   flex:1;
-  padding:8px;
-  cursor:pointer;
   text-align:center;
-  color:#000;
+  padding:10px;
+  cursor:pointer;
+  z-index:2;
+  color:#666;
   transition:0.25s;
 }
 
@@ -252,10 +262,19 @@ input,textarea{
   font-weight:500;
 }
 
-/* make non-active slightly faded */
-.selector span:not(.active){
-  color:#666;
+/* REAL SLIDER FIX */
+.slider{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:33.33%;
+  background:#000;
+  border-radius:30px;
+  transition:0.3s;
+  z-index:1;
 }
+
 /* ===== SELECTOR FIX END ===== */
 
 /* ===== PHONE ===== */
@@ -367,8 +386,47 @@ input,textarea{
 }
 
 .hidden{display:none;}
-
   
+/* ===== PRICING DESCRIPTION ===== */
+.plan-desc{
+  font-size:12px;
+  color:#555;
+  margin-top:10px;
+  line-height:1.5;
+}
+
+  /* ===== CARD OPTIONS ===== */
+.card-options{
+  margin-top:10px;
+}
+
+.card-options button{
+  padding:8px 12px;
+  margin:5px;
+  border:1px solid #ccc;
+  border-radius:20px;
+  background:#fff;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.card-options .active{
+  background:#000;
+  color:#fff;
+}
+
+/* ===== TOTAL ===== */
+.total-box{
+  margin-top:10px;
+  border-top:1px solid #ddd;
+  padding-top:10px;
+  font-size:14px;
+}
+
+.total{
+  font-size:24px;
+  font-weight:700;
+}
   
 </style>
 <!-- ===================== CSS END ===================== -->
@@ -416,19 +474,46 @@ That Work Instantly
 
 <div class="section-divider"></div>
 
-<!-- PRICING -->
+<!-- ===================== PRICING ===================== -->
 <div class="section" id="pricing">
 <h2>Pricing</h2>
 
 <div class="pricing">
-<div class="plan"><h3>Basic</h3><div class="plan-price">₱599</div></div>
-<div class="plan"><h3>Pro</h3><div class="plan-price">₱1,199</div></div>
-<div class="plan"><h3>Elite</h3><div class="plan-price">₱1,999</div></div>
+
+<!-- BASIC -->
+<div class="plan">
+  <h3>Basic</h3>
+  <div class="plan-price">₱599</div>
+  <p class="plan-desc">
+    Includes your name, contact details, and essential links —
+    Facebook, Instagram, and your website (if available),
+    plus a clean list of services.
+  </p>
+</div>
+
+<!-- PRO -->
+<div class="plan">
+  <h3>Pro</h3>
+  <div class="plan-price">₱1,199</div>
+  <p class="plan-desc">
+    Everything in Basic, plus a dedicated portfolio button
+    and a gallery showcasing up to 4 of your best works.
+  </p>
+</div>
+
+<!-- ELITE -->
+<div class="plan">
+  <h3>Elite</h3>
+  <div class="plan-price">₱1,999</div>
+  <p class="limited">LIMITED SLOTS</p>
+  <p class="plan-desc">
+    Fully customized digital card tailored to your brand.
+    Limited slots available per month for exclusive builds.
+  </p>
 </div>
 
 </div>
-
-<div class="section-divider"></div>
+</div>
 
 <!-- PREVIEW -->
 <div class="section" id="preview">
@@ -494,6 +579,19 @@ That Work Instantly
 
 <div class="section-divider"></div>
 
+  <!-- CARD TYPE -->
+<div class="card-options">
+  <button onclick="selectCard(99,this)">White (+₱99)</button>
+  <button onclick="selectCard(199,this)">Black (+₱199)</button>
+  <button onclick="selectCard(399,this)">Wood (+₱399)</button>
+  <button onclick="selectCard(699,this)">Metal (+₱699)</button>
+</div>
+
+<!-- TOTAL -->
+<div class="total-box">
+  <div>Total:</div>
+  <div class="total" id="totalPrice">₱599</div>
+</div>
 <!-- FAQ -->
 <div class="section">
 <h2>Frequently Asked Questions</h2>
@@ -521,7 +619,63 @@ That Work Instantly
 
 <!-- JAVASCRIPT -->
 <script>
+/* ===== PRICING CALCULATOR ===== */
 
+let basePrices = {
+  basic: 599,
+  pro: 1199,
+  elite: 1999
+};
+
+let selectedPlan = "basic";
+let cardPrice = 0;
+
+function setPlan(plan,index,el){
+
+document.querySelectorAll(".selector span")
+.forEach(s=>s.classList.remove("active"));
+
+el.classList.add("active");
+slider.style.left=(index*(100/3))+"%";
+
+selectedPlan = plan;
+updateTotal();
+
+/* existing logic */
+if(plan==="basic"){
+phoneImage.src="phone-basic.png";
+phoneBox.className="preview-phone basic";
+previewServices.classList.remove("hidden");
+previewAbout.classList.add("hidden");
+
+}else if(plan==="pro"){
+phoneImage.src="phone-pro.png";
+phoneBox.className="preview-phone pro";
+previewServices.classList.add("hidden");
+previewAbout.classList.remove("hidden");
+
+}else{
+phoneImage.src="phone-elite.png";
+phoneBox.className="preview-phone elite";
+}
+}
+
+function selectCard(price,el){
+
+cardPrice = price;
+
+document.querySelectorAll(".card-options button")
+.forEach(btn=>btn.classList.remove("active"));
+
+el.classList.add("active");
+
+updateTotal();
+}
+
+function updateTotal(){
+let total = basePrices[selectedPlan] + cardPrice;
+document.getElementById("totalPrice").innerText = "₱" + total;
+}
 function setPlan(plan,index,el){
 
 document.querySelectorAll(".selector span")
