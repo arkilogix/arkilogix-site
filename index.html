@@ -132,7 +132,7 @@ body{
   justify-content:center;
   align-items:flex-start;
   gap:80px;
-  flex-wrap:wrap;
+  flex-wrap:nowrap; /* 👈 FORCE SIDE BY SIDE */
 }
 
 .preview-inputs{
@@ -161,6 +161,15 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
 
 .overlay{position:absolute;width:100%;text-align:center;}
 
+  .preview-inputs{
+  max-width:300px;
+  flex-shrink:0;
+}
+
+.preview-phone{
+  flex-shrink:0;
+}
+  
 /* PRO */
 .pro .name{top:25%;;color:#fff;font-size:13px;}
 .pro .profession{top:28%;color:#ccc;font-size:10px;}
