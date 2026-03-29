@@ -374,6 +374,7 @@ That Work Instantly
 <div class="slider" id="slider"></div>
 <span class="active" onclick="setPlan('basic',0,this)">Basic</span>
 <span onclick="setPlan('pro',1,this)">Pro</span>
+<span onclick="setPlan('elite',2,this)">Elite</span>
 </div>
 
 <input id="inputName" placeholder="Your Name">
@@ -454,18 +455,32 @@ That Work Instantly
 <script>
 
 function setPlan(plan,index,el){
-document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
+
+document.querySelectorAll(".selector span")
+.forEach(s=>s.classList.remove("active"));
+
 el.classList.add("active");
-slider.style.left=(index*50)+"%";
+slider.style.left=(index*(100/3))+"%"; // supports 3 plans
 
 if(plan==="basic"){
+phoneImage.src="phone-basic.png";
 phoneBox.className="preview-phone basic";
+
 previewServices.classList.remove("hidden");
 previewAbout.classList.add("hidden");
-}else{
+
+}else if(plan==="pro"){
+phoneImage.src="phone-pro.png";
 phoneBox.className="preview-phone pro";
+
 previewServices.classList.add("hidden");
 previewAbout.classList.remove("hidden");
+
+}else if(plan==="elite"){
+phoneImage.src="phone-elite.png";
+phoneBox.className="preview-phone elite";
+
+// future features here
 }
 }
 
