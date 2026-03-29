@@ -186,7 +186,37 @@ body{
   color:#555;
   margin-top:10px;
 }
+/* ===== PRO HIGHLIGHT ===== */
 
+.highlight{
+  transform:scale(1.05);
+  border:1px solid #000;
+  background:#000;
+  color:#fff;
+  position:relative;
+}
+
+/* TEXT COLOR FIX */
+.highlight h3,
+.highlight .plan-price,
+.highlight .plan-desc{
+  color:#fff;
+}
+
+/* BADGE */
+.badge{
+  position:absolute;
+  top:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#fff;
+  color:#000;
+  font-size:10px;
+  padding:4px 10px;
+  border-radius:20px;
+  font-weight:600;
+  letter-spacing:1px;
+}
 /* ===== PREVIEW ===== */
 .preview-wrapper{
   display:flex;
@@ -336,7 +366,13 @@ input,textarea{
   letter-spacing:1px;
   margin-top:5px;
 }
-  
+  .plan{
+  transition:0.25s ease;
+}
+
+.plan:hover{
+  transform:translateY(-5px);
+}
 </style>
 <!-- ===================== CSS END ===================== -->
 
@@ -388,8 +424,9 @@ input,textarea{
 <p class="plan-desc">Name, contact, socials, and services.</p>
 </div>
 
-<div class="plan">
-<h3>Pro</h3>
+<div class="plan highlight">
+  <div class="badge">MOST POPULAR</div>
+  <h3>Pro</h3>
 <div class="plan-price">₱1,199</div>
 <p class="plan-desc">Includes portfolio + 4 sample works.</p>
 </div>
@@ -417,7 +454,7 @@ input,textarea{
 <div class="preview-inputs">
 
 <div class="selector">
-<div class="slider" id="slider"></div>
+<div class="slider" id="slider" style="left:33.33%;"></div>
 <span onclick="setPlan('basic',0,this)">Basic</span>
 <span class="active" onclick="setPlan('pro',1,this)">Pro</span>
 <span onclick="setPlan('elite',2,this)">Elite</span>
@@ -437,11 +474,11 @@ input,textarea{
 
 <div class="total-box">
 
-<div>Service: <span id="servicePrice">₱599</span></div>
+<div>Service: <span id="servicePrice">₱1,199</span></div>
 <div>Card: <span id="cardPriceDisplay">₱0</span></div>
 
 <div style="margin-top:5px;">Total:</div>
-<div class="total" id="totalPrice">₱599</div>
+<div class="total" id="totalPrice">₱1,199</div>
 
 </div>
 
@@ -541,7 +578,7 @@ No problem. You can still share your card using a direct link.
 <script>
 
 let basePrices={basic:599,pro:1199,elite:1999};
-let selectedPlan="basic";
+let selectedPlan="pro";
 let cardPrice=0;
 
 function setPlan(plan,index,el){
