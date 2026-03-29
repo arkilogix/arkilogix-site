@@ -285,7 +285,13 @@ input,textarea{
   width:100%;
   text-align:center;
 }
-
+/* ===== FIX TEXT UNDER PHONE ===== */
+.preview-phone{
+  position:relative;
+  height:600px; /* lock height to phone image */
+  overflow:hidden; /* prevents text spilling out */
+}
+  
 /* ===== PRO ===== */
 .pro .name{top:150px;color:#fff;font-size:13px;}
 .pro .profession{top:165px;color:#ccc;font-size:10px;}
@@ -461,12 +467,7 @@ input,textarea{
 .selector{
   width:100%;
 }
-  /* ===== FIX TEXT UNDER PHONE ===== */
-.preview-phone{
-  position:relative;
-  height:600px; /* lock height to phone image */
-  overflow:hidden; /* prevents text spilling out */
-}
+
 </style>
 <!-- ===================== CSS END ===================== -->
 
