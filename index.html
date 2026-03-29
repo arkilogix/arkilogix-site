@@ -15,22 +15,11 @@
 
 <!-- ===================== CSS START ===================== -->
 <style>
-/* ===== HEADER LOGO TEXT ===== */
-.logo{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:#fff;
-  font-weight:600;
-  letter-spacing:2px;
-  font-size:12px;
-}
-  
+
 /* ===== GLOBAL ===== */
 body{
   margin:0;
   font-family:'Montserrat',sans-serif;
-  background:#fff;
 }
 
 /* ===== HEADER ===== */
@@ -49,6 +38,16 @@ body{
   justify-content:space-between;
   align-items:center;
   padding:15px 20px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#fff;
+  font-weight:600;
+  letter-spacing:2px;
+  font-size:12px;
 }
 
 .logo img{height:24px;}
@@ -104,6 +103,7 @@ body{
   max-width:700px;
   padding:20px;
 }
+
 .brand{
   display:flex;
   flex-direction:column;
@@ -115,22 +115,12 @@ body{
   font-size:12px;
 }
 
-.brand img{
-  height:40px;
-  width:auto;
-}
-.brand{
-  font-size:14px;
-  letter-spacing:6px;
-  margin-bottom:15px;
-  color:#ddd;
-}
+.brand img{height:40px;}
 
 .hero-title{
   font-size:44px;
   font-weight:700;
   margin-bottom:20px;
-  line-height:1.2;
 }
 
 .hero-sub{
@@ -139,27 +129,23 @@ body{
   margin-bottom:30px;
 }
 
-/* ===== BUTTONS ===== */
+/* ===== BUTTON ===== */
 .btn{
   padding:12px 28px;
   border-radius:30px;
   text-decoration:none;
-  transition:.25s;
 }
 
 .primary-btn{
   background:#fff;
   color:#000;
+  transition:.25s;
 }
 
 .primary-btn:hover{
   background:#000;
   color:#fff;
   transform:translateY(-2px) scale(1.03);
-}
-
-.primary-btn:active{
-  transform:scale(0.96);
 }
 
 /* ===== SECTIONS ===== */
@@ -195,6 +181,12 @@ body{
   font-weight:700;
 }
 
+.plan-desc{
+  font-size:12px;
+  color:#555;
+  margin-top:10px;
+}
+
 /* ===== PREVIEW ===== */
 .preview-wrapper{
   display:flex;
@@ -203,7 +195,11 @@ body{
   flex-wrap:wrap;
 }
 
-.preview-inputs{max-width:300px;}
+.preview-inputs{
+  max-width:300px;
+  display:flex;
+  flex-direction:column;
+}
 
 /* ===== INPUT ===== */
 input,textarea{
@@ -225,57 +221,26 @@ input,textarea{
 
 .selector span{
   flex:1;
-  padding:8px;
-  cursor:pointer;
-}
-
-.slider{
-  position:absolute;
-  width:33.33%;
-  height:100%;
-  background:#000;
-  transition:.3s;
-}
-
-/* ===== SELECTOR FIX START ===== */
-
-.selector{
-  position:relative;
-  display:flex;
-  border:1px solid #ccc;
-  border-radius:30px;
-  overflow:hidden;
-}
-
-.selector span{
-  flex:1;
   text-align:center;
   padding:10px;
   cursor:pointer;
   z-index:2;
   color:#666;
-  transition:0.25s;
 }
 
 .selector span.active{
   color:#fff;
-  font-weight:500;
 }
 
-/* REAL SLIDER FIX */
 .slider{
   position:absolute;
-  top:0;
-  left:0;
-  height:100%;
   width:33.33%;
+  height:100%;
   background:#000;
   border-radius:30px;
-  transition:0.3s;
+  transition:.3s;
   z-index:1;
 }
-
-/* ===== SELECTOR FIX END ===== */
 
 /* ===== PHONE ===== */
 .preview-phone{position:relative;}
@@ -293,121 +258,30 @@ input,textarea{
 .pro .company{top:178px;color:#aaa;font-size:9px;}
 .pro .about{top:270px;color:#bbb;font-size:11px;width:80%;left:10%;}
 
-/* ===== BASIC TEMPLATE REFINED START ===== */
-
-.basic .name{
-  top:195px; /* moved down 5px */
-  color:#22345c;
-  font-size:12px;
-  font-weight:500;
-}
-
-.basic .profession{
-  top:212px;
-  color:#22345c;
-  font-size:10px;
-}
-
-.basic .company{
-  top:225px;
-  color:#555;
-  font-size:9px;
-}
+/* ===== BASIC ===== */
+.basic .name{top:195px;color:#22345c;font-size:12px;}
+.basic .profession{top:212px;color:#22345c;font-size:10px;}
+.basic .company{top:225px;color:#555;font-size:9px;}
 
 .basic .services{
   position:absolute;
   top:350px;
   left:18%;
-  text-align:left;
   font-size:10px;
-  color:#333;
 }
 
-/* smaller icons */
-.service-item svg{
-  width:10px;
-  height:10px;
-}
-
-/* tighter spacing */
 .service-item{
+  display:flex;
   gap:5px;
-  margin-bottom:3px;
-}
-/* ===== BASIC TEMPLATE REFINED END ===== */
-
-/* ===== CONTINUE BUTTON ===== */
-.submit-btn{
-  margin-top:15px;
-  background:#000;
-  color:#fff;
-  padding:12px;
-  border-radius:30px;
-  border:none;
-  width:100%;
-  transition:.25s;
 }
 
-.submit-btn:hover{
-  transform:translateY(-2px) scale(1.02);
-}
-
-.submit-btn:active{
-  transform:scale(0.96);
-}
-
-/* ===== FAQ ===== */
-.faq{
-  max-width:700px;
-  margin:auto;
-  text-align:left;
-}
-
-.faq-item{
-  border-bottom:1px solid #ddd;
-  padding:15px 0;
-  cursor:pointer;
-}
-
-.faq-question{
-  font-weight:600;
-}
-
-.faq-answer{
-  max-height:0;
-  overflow:hidden;
-  transition:.3s;
-  color:#555;
-}
-
-.faq-item.active .faq-answer{
-  max-height:100px;
-  margin-top:10px;
-}
-
-.hidden{display:none;}
-  
-/* ===== PRICING DESCRIPTION ===== */
-.plan-desc{
-  font-size:12px;
-  color:#555;
-  margin-top:10px;
-  line-height:1.5;
-}
-
-  /* ===== CARD OPTIONS ===== */
-.card-options{
-  margin-top:10px;
-}
-
+/* ===== CARD OPTIONS ===== */
 .card-options button{
-  padding:8px 12px;
+  padding:8px;
   margin:5px;
-  border:1px solid #ccc;
   border-radius:20px;
-  background:#fff;
+  border:1px solid #ccc;
   cursor:pointer;
-  font-size:12px;
 }
 
 .card-options .active{
@@ -418,16 +292,42 @@ input,textarea{
 /* ===== TOTAL ===== */
 .total-box{
   margin-top:10px;
-  border-top:1px solid #ddd;
-  padding-top:10px;
-  font-size:14px;
 }
 
 .total{
   font-size:24px;
   font-weight:700;
 }
-  
+
+/* ===== BUTTON ===== */
+.submit-btn{
+  margin-top:10px;
+  padding:12px;
+  border:none;
+  border-radius:30px;
+  background:#000;
+  color:#fff;
+}
+
+/* ===== FAQ ===== */
+.faq-item{
+  border-bottom:1px solid #ddd;
+  padding:15px;
+  cursor:pointer;
+}
+
+.faq-answer{
+  max-height:0;
+  overflow:hidden;
+}
+
+.faq-item.active .faq-answer{
+  max-height:100px;
+}
+
+/* ===== UTIL ===== */
+.hidden{display:none;}
+
 </style>
 <!-- ===================== CSS END ===================== -->
 
@@ -439,8 +339,8 @@ input,textarea{
 <div class="header">
 <div class="header-inner">
 <div class="logo">
-  <img src="logo.png">
-  <span>ARKILOGIX</span>
+<img src="logo.png">
+<span>ARKILOGIX</span>
 </div>
 <div class="nav">
 <a href="#">Home</a>
@@ -454,66 +354,45 @@ input,textarea{
 <!-- HERO -->
 <div class="hero">
 <div class="hero-content">
-
 <div class="brand">
-  <img src="logo.png">
-  <span>ARKILOGIX</span>
+<img src="logo.png">
+<span>ARKILOGIX</span>
 </div>
-
-<div class="hero-title">
-Digital Business Cards<br>
-That Work Instantly
-</div>
-
+<div class="hero-title">Digital Business Cards<br>That Work Instantly</div>
 <div class="hero-sub">Tap. Share. Impress.</div>
-
 <a href="#preview" class="btn primary-btn">Get Started</a>
-
 </div>
 </div>
 
 <div class="section-divider"></div>
 
-<!-- ===================== PRICING ===================== -->
+<!-- PRICING -->
 <div class="section" id="pricing">
 <h2>Pricing</h2>
-
 <div class="pricing">
 
-<!-- BASIC -->
 <div class="plan">
-  <h3>Basic</h3>
-  <div class="plan-price">₱599</div>
-  <p class="plan-desc">
-    Includes your name, contact details, and essential links —
-    Facebook, Instagram, and your website (if available),
-    plus a clean list of services.
-  </p>
+<h3>Basic</h3>
+<div class="plan-price">₱599</div>
+<p class="plan-desc">Name, contact, socials, and services.</p>
 </div>
 
-<!-- PRO -->
 <div class="plan">
-  <h3>Pro</h3>
-  <div class="plan-price">₱1,199</div>
-  <p class="plan-desc">
-    Everything in Basic, plus a dedicated portfolio button
-    and a gallery showcasing up to 4 of your best works.
-  </p>
+<h3>Pro</h3>
+<div class="plan-price">₱1,199</div>
+<p class="plan-desc">Includes portfolio + 4 sample works.</p>
 </div>
 
-<!-- ELITE -->
 <div class="plan">
-  <h3>Elite</h3>
-  <div class="plan-price">₱1,999</div>
-  <p class="limited">LIMITED SLOTS</p>
-  <p class="plan-desc">
-    Fully customized digital card tailored to your brand.
-    Limited slots available per month for exclusive builds.
-  </p>
+<h3>Elite</h3>
+<div class="plan-price">₱1,999</div>
+<p class="plan-desc">Fully customizable. Limited slots.</p>
 </div>
 
 </div>
 </div>
+
+<div class="section-divider"></div>
 
 <!-- PREVIEW -->
 <div class="section" id="preview">
@@ -533,45 +412,31 @@ That Work Instantly
 <input id="inputName" placeholder="Your Name">
 <input id="inputProfession" placeholder="Your Profession">
 <input id="inputCompany" placeholder="Company Name">
-<textarea id="inputAbout" placeholder="About"></textarea>
+<textarea id="inputAbout"></textarea>
+
+<div class="card-options">
+<button onclick="selectCard(99,this)">White</button>
+<button onclick="selectCard(199,this)">Black</button>
+<button onclick="selectCard(399,this)">Wood</button>
+<button onclick="selectCard(699,this)">Metal</button>
+</div>
+
+<div class="total-box">
+<div>Total:</div>
+<div class="total" id="totalPrice">₱599</div>
+</div>
 
 <button class="submit-btn">Continue with Design</button>
 
 </div>
 
 <div class="preview-phone" id="phoneBox">
-
 <img id="phoneImage" src="phone-pro.png">
-
-<div class="overlay name" id="previewName">Juan Dela Cruz</div>
+<div class="overlay name" id="previewName">Juan</div>
 <div class="overlay profession" id="previewProfession">Architect</div>
-<div class="overlay company" id="previewCompany">Arki Studio</div>
-<div class="overlay about" id="previewAbout">Designing modern spaces.</div>
-
-<div class="overlay services hidden" id="previewServices">
-
-<div class="service-item">
-<svg fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
-<span>Design</span>
-</div>
-
-<div class="service-item">
-<svg fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
-<span>Planning</span>
-</div>
-
-<div class="service-item">
-<svg fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
-<span>Renovation</span>
-</div>
-
-<div class="service-item">
-<svg fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
-<span>Consultation</span>
-</div>
-
-</div>
-
+<div class="overlay company" id="previewCompany">Studio</div>
+<div class="overlay about" id="previewAbout">About</div>
+<div class="overlay services hidden" id="previewServices">Services</div>
 </div>
 
 </div>
@@ -579,81 +444,40 @@ That Work Instantly
 
 <div class="section-divider"></div>
 
-  <!-- CARD TYPE -->
-<div class="card-options">
-  <button onclick="selectCard(99,this)">White (+₱99)</button>
-  <button onclick="selectCard(199,this)">Black (+₱199)</button>
-  <button onclick="selectCard(399,this)">Wood (+₱399)</button>
-  <button onclick="selectCard(699,this)">Metal (+₱699)</button>
-</div>
-
-<!-- TOTAL -->
-<div class="total-box">
-  <div>Total:</div>
-  <div class="total" id="totalPrice">₱599</div>
-</div>
 <!-- FAQ -->
 <div class="section">
-<h2>Frequently Asked Questions</h2>
-
+<h2>FAQ</h2>
 <div class="faq">
-
 <div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">Do I need an app?</div>
-<div class="faq-answer">No, it works instantly via browser.</div>
+<div>Do I need an app?</div>
+<div class="faq-answer">No.</div>
+</div>
+</div>
 </div>
 
-<div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">Does it work on iPhone and Android?</div>
-<div class="faq-answer">Yes, fully compatible with both.</div>
-</div>
-
-<div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">Can I update my info?</div>
-<div class="faq-answer">Yes, anytime.</div>
-</div>
-
-</div>
-
-</div>
-
-<!-- JAVASCRIPT -->
 <script>
-/* ===== PRICING CALCULATOR ===== */
 
-let basePrices = {
-  basic: 599,
-  pro: 1199,
-  elite: 1999
-};
-
-let selectedPlan = "basic";
-let cardPrice = 0;
+let basePrices={basic:599,pro:1199,elite:1999};
+let selectedPlan="basic";
+let cardPrice=0;
 
 function setPlan(plan,index,el){
-
-document.querySelectorAll(".selector span")
-.forEach(s=>s.classList.remove("active"));
-
+document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
 el.classList.add("active");
-slider.style.left=(index*(100/3))+"%";
-
-selectedPlan = plan;
+slider.style.left=(index*33.33)+"%";
+selectedPlan=plan;
 updateTotal();
 
-/* existing logic */
 if(plan==="basic"){
 phoneImage.src="phone-basic.png";
 phoneBox.className="preview-phone basic";
 previewServices.classList.remove("hidden");
 previewAbout.classList.add("hidden");
-
 }else if(plan==="pro"){
 phoneImage.src="phone-pro.png";
 phoneBox.className="preview-phone pro";
 previewServices.classList.add("hidden");
 previewAbout.classList.remove("hidden");
-
 }else{
 phoneImage.src="phone-elite.png";
 phoneBox.className="preview-phone elite";
@@ -661,66 +485,20 @@ phoneBox.className="preview-phone elite";
 }
 
 function selectCard(price,el){
-
-cardPrice = price;
-
-document.querySelectorAll(".card-options button")
-.forEach(btn=>btn.classList.remove("active"));
-
+cardPrice=price;
+document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
 el.classList.add("active");
-
 updateTotal();
 }
 
 function updateTotal(){
-let total = basePrices[selectedPlan] + cardPrice;
-document.getElementById("totalPrice").innerText = "₱" + total;
-}
-function setPlan(plan,index,el){
-
-document.querySelectorAll(".selector span")
-.forEach(s=>s.classList.remove("active"));
-
-el.classList.add("active");
-slider.style.left=(index*(100/3))+"%"; // supports 3 plans
-
-if(plan==="basic"){
-phoneImage.src="phone-basic.png";
-phoneBox.className="preview-phone basic";
-
-previewServices.classList.remove("hidden");
-previewAbout.classList.add("hidden");
-
-}else if(plan==="pro"){
-phoneImage.src="phone-pro.png";
-phoneBox.className="preview-phone pro";
-
-previewServices.classList.add("hidden");
-previewAbout.classList.remove("hidden");
-
-}else if(plan==="elite"){
-phoneImage.src="phone-elite.png";
-phoneBox.className="preview-phone elite";
-
-// future features here
-}
+document.getElementById("totalPrice").innerText="₱"+(basePrices[selectedPlan]+cardPrice);
 }
 
-inputName.oninput=e=>{
-previewName.innerText=e.target.value||"Juan Dela Cruz";
-};
-
-inputProfession.oninput=e=>{
-previewProfession.innerText=e.target.value||"Architect";
-};
-
-inputCompany.oninput=e=>{
-previewCompany.innerText=e.target.value||"Arki Studio";
-};
-
-inputAbout.oninput=e=>{
-previewAbout.innerText=e.target.value||"Designing modern spaces.";
-};
+inputName.oninput=e=>previewName.innerText=e.target.value||"Juan";
+inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architect";
+inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Studio";
+inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
 
 function toggleFAQ(el){
 el.classList.toggle("active");
