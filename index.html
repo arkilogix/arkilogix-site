@@ -8,59 +8,176 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
+html {scroll-behavior:smooth;}
 body {margin:0;font-family:'Montserrat',sans-serif;}
-.section{padding:100px 20px;text-align:center;}
-.section-divider{width:80%;height:1px;background:#ddd;margin:80px auto 0;}
 
+/* HEADER */
+.header{
+position:fixed;width:100%;top:0;
+display:flex;justify-content:space-between;
+padding:15px 50px;
+background:rgba(0,0,0,0.6);
+color:white;z-index:1000;
+}
+
+.nav a{margin-left:25px;color:white;text-decoration:none;font-size:13px;}
+.cta{border:1px solid white;padding:5px 12px;border-radius:20px;}
+
+/* HERO */
+.hero{
+height:100vh;
+background:url('hero.jpg') center/cover no-repeat;
+display:flex;flex-direction:column;
+justify-content:center;align-items:center;
+color:white;text-align:center;
+position:relative;
+}
+.hero::before{
+content:"";position:absolute;inset:0;background:rgba(0,0,0,0.7);
+}
+.hero *{position:relative;}
+
+.btn{
+margin-top:20px;padding:10px 25px;
+border:1px solid white;border-radius:30px;
+color:white;text-decoration:none;
+}
+
+/* SECTIONS */
+.section{padding:100px 20px;text-align:center;}
+.section-divider{width:80%;height:1px;background:#ddd;margin:80px auto;}
+
+/* PRODUCTS */
+.products{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
+.product{border:1px solid #eee;padding:25px;border-radius:10px;}
+
+/* PRICING */
+.pricing{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
+.plan{border:1px solid #ddd;padding:25px;border-radius:14px;width:220px;}
+.plan-price{font-size:24px;font-weight:700;}
+.limited{color:red;font-size:12px;}
+
+/* PREVIEW */
 .preview-wrapper{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;margin-top:40px;}
 .preview-inputs{max-width:300px;text-align:left;}
 
-input,textarea,select{width:100%;padding:12px;margin-bottom:12px;border:1px solid #ccc;border-radius:8px;}
-
-.plan-switch button{
-  padding:8px 14px;margin:5px;border:1px solid #000;border-radius:20px;background:none;cursor:pointer;
+input,textarea,select{
+width:100%;padding:12px;margin-bottom:12px;
+border:1px solid #ccc;border-radius:8px;
 }
-.plan-switch .active{background:#000;color:#fff;}
 
+/* SWITCH */
+.plan-switch button,
 .card-options button{
-  padding:8px;margin:5px;border:1px solid #ccc;border-radius:20px;background:none;cursor:pointer;
+padding:8px 12px;margin:5px;
+border:1px solid #000;border-radius:20px;
+background:none;cursor:pointer;
 }
-.card-options .active{background:#000;color:#fff;}
+.active{background:#000;color:#fff;}
 
-.total-box{margin-top:20px;border-top:1px solid #ddd;padding-top:10px;}
+/* TOTAL */
+.total-box{margin-top:15px;border-top:1px solid #ddd;padding-top:10px;}
 .total{font-size:26px;font-weight:700;}
 
-.submit-btn{margin-top:15px;background:#000;color:#fff;border:none;padding:12px;border-radius:30px;width:100%;}
+.submit-btn{
+margin-top:10px;background:#000;color:#fff;
+border:none;padding:12px;border-radius:30px;width:100%;
+}
 
+/* PHONE */
 .preview-phone{position:relative;}
 .preview-phone img{width:300px;}
 
-.overlay{position:absolute;left:0;width:100%;text-align:center;}
+.overlay{position:absolute;width:100%;text-align:center;left:0;}
 
-/* PRO POSITIONS */
-.pro .name{top:150px;color:#fff;font-weight:700;}
+/* PRO */
+.pro .name{top:150px;color:white;font-weight:700;}
 .pro .profession{top:175px;color:#ccc;font-size:12px;}
 .pro .about{top:270px;color:#bbb;font-size:11px;width:80%;left:10%;}
 
-/* BASIC POSITIONS */
-.basic .name{top:160px;color:#000;font-weight:700;}
-.basic .profession{top:185px;color:#666;font-size:12px;}
-.basic .services{top:350px;color:#444;font-size:12px;text-align:left;width:70%;left:15%;}
+/* BASIC */
+.basic .name{top:160px;color:black;font-weight:700;}
+.basic .profession{top:185px;color:#555;font-size:12px;}
+.basic .services{
+top:350px;color:#333;font-size:12px;
+text-align:left;width:70%;left:15%;
+}
 
-/* HIDE */
 .hidden{display:none;}
+
+/* FOOTER */
+.footer{background:black;color:#777;text-align:center;padding:20px;}
 </style>
 </head>
 
 <body>
 
-<div class="section">
-<h2>Pricing</h2>
-<p>Choose your plan, then customize below ↓</p>
+<!-- HEADER -->
+<div class="header">
+<div>ARKILOGIX</div>
+<div class="nav">
+<a href="#products">Products</a>
+<a href="#pricing">Pricing</a>
+<a href="#preview">Preview</a>
+<a href="#contact" class="cta">Get Started</a>
+</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+<h1>Smart NFC Digital Business Cards</h1>
+<p>Share your contact, portfolio, and profile instantly</p>
+<a href="#preview" class="btn">Get Started</a>
 </div>
 
 <div class="section-divider"></div>
 
+<!-- PRODUCTS -->
+<div class="section" id="products">
+<h2>Card Finishes</h2>
+<div class="products">
+<div class="product">White (Free)</div>
+<div class="product">Black (+₱99)</div>
+<div class="product">Wood (+₱199)</div>
+<div class="product">Metal (+₱499)</div>
+</div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- PRICING -->
+<div class="section" id="pricing">
+<h2>Pricing</h2>
+
+<div class="pricing">
+<div class="plan">
+<h3>Basic</h3>
+<div class="plan-price">₱599</div>
+<p>Simple contact card with services</p>
+</div>
+
+<div class="plan">
+<h3>Pro</h3>
+<div class="plan-price">₱1,199</div>
+<p>Portfolio + professional profile</p>
+</div>
+
+<div class="plan">
+<h3>Elite</h3>
+<div class="plan-price">₱1,999</div>
+<p>Custom premium design</p>
+<div class="limited">LIMITED SLOTS</div>
+</div>
+</div>
+
+<p style="margin-top:20px;color:#777;">
+Not sure? Try your digital card below ↓
+</p>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- PREVIEW -->
 <div class="section" id="preview">
 <h2>Preview Your Digital Card</h2>
 
@@ -68,18 +185,15 @@ input,textarea,select{width:100%;padding:12px;margin-bottom:12px;border:1px soli
 
 <div class="preview-inputs">
 
-<!-- PLAN SWITCH -->
 <div class="plan-switch">
 <button onclick="setPlan('basic',this)">Basic</button>
 <button class="active" onclick="setPlan('pro',this)">Pro</button>
 </div>
 
-<input type="text" id="inputName" placeholder="Your Name">
-<input type="text" id="inputProfession" placeholder="Your Profession">
+<input id="inputName" placeholder="Your Name">
+<input id="inputProfession" placeholder="Your Profession">
 <textarea id="inputAbout" placeholder="About (Pro only)"></textarea>
 
-<!-- CARD SELECT -->
-<div>
 <p>Choose Card Finish</p>
 <div class="card-options">
 <button onclick="setCard(0,this)" class="active">White</button>
@@ -87,9 +201,7 @@ input,textarea,select{width:100%;padding:12px;margin-bottom:12px;border:1px soli
 <button onclick="setCard(199,this)">Wood +199</button>
 <button onclick="setCard(499,this)">Metal +499</button>
 </div>
-</div>
 
-<!-- TOTAL -->
 <div class="total-box">
 <p id="planLabel">Pro — ₱1,199</p>
 <p id="cardLabel">White — ₱0</p>
@@ -107,9 +219,7 @@ input,textarea,select{width:100%;padding:12px;margin-bottom:12px;border:1px soli
 <div class="overlay name" id="previewName">Juan Dela Cruz</div>
 <div class="overlay profession" id="previewProfession">Architect</div>
 
-<div class="overlay about" id="previewAbout">
-Designing modern spaces.
-</div>
+<div class="overlay about" id="previewAbout">Designing modern spaces.</div>
 
 <div class="overlay services hidden" id="previewServices">
 • Architectural Design<br>
@@ -125,6 +235,7 @@ Designing modern spaces.
 
 <div class="section-divider"></div>
 
+<!-- CONTACT -->
 <div class="section" id="contact">
 <h2>Get Started</h2>
 
@@ -134,6 +245,10 @@ Designing modern spaces.
 <option selected>Pro</option>
 </select>
 
+</div>
+
+<div class="footer">
+ARKILOGIX — DIGITAL NFC SYSTEMS
 </div>
 
 <script>
@@ -154,24 +269,24 @@ currentPlan=plan;
 
 if(plan==="basic"){
 basePrice=599;
-document.getElementById("phoneImage").src="phone-basic.png";
-document.getElementById("planLabel").innerText="Basic — ₱599";
+phoneImage.src="phone-basic.png";
+planLabel.innerText="Basic — ₱599";
 
-document.getElementById("previewAbout").classList.add("hidden");
-document.getElementById("previewServices").classList.remove("hidden");
+previewAbout.classList.add("hidden");
+previewServices.classList.remove("hidden");
 
-document.getElementById("phoneBox").classList.add("basic");
-document.getElementById("phoneBox").classList.remove("pro");
+phoneBox.classList.add("basic");
+phoneBox.classList.remove("pro");
 }else{
 basePrice=1199;
-document.getElementById("phoneImage").src="phone-pro.png";
-document.getElementById("planLabel").innerText="Pro — ₱1,199";
+phoneImage.src="phone-pro.png";
+planLabel.innerText="Pro — ₱1,199";
 
-document.getElementById("previewAbout").classList.remove("hidden");
-document.getElementById("previewServices").classList.add("hidden");
+previewAbout.classList.remove("hidden");
+previewServices.classList.add("hidden");
 
-document.getElementById("phoneBox").classList.add("pro");
-document.getElementById("phoneBox").classList.remove("basic");
+phoneBox.classList.add("pro");
+phoneBox.classList.remove("basic");
 }
 
 updateTotal();
@@ -183,32 +298,22 @@ cardPrice=price;
 document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
 el.classList.add("active");
 
-let label=el.innerText;
-document.getElementById("cardLabel").innerText=label;
+cardLabel.innerText=el.innerText;
 
 updateTotal();
 }
 
-document.getElementById("inputName").oninput=e=>{
-document.getElementById("previewName").innerText=e.target.value||"Juan Dela Cruz";
-};
-
-document.getElementById("inputProfession").oninput=e=>{
-document.getElementById("previewProfession").innerText=e.target.value||"Architect";
-};
-
-document.getElementById("inputAbout").oninput=e=>{
-document.getElementById("previewAbout").innerText=e.target.value||"Designing modern spaces.";
-};
+inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
+inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architect";
+inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"Designing modern spaces.";
 
 function continueOrder(){
-document.getElementById("formName").value=document.getElementById("inputName").value;
-document.getElementById("formPlan").value=currentPlan.charAt(0).toUpperCase()+currentPlan.slice(1);
+formName.value=inputName.value;
+formPlan.value=currentPlan.charAt(0).toUpperCase()+currentPlan.slice(1);
 document.getElementById("contact").scrollIntoView({behavior:"smooth"});
 }
 
-// INIT
-document.getElementById("phoneBox").classList.add("pro");
+phoneBox.classList.add("pro");
 </script>
 
 </body>
