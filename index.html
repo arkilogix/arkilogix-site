@@ -210,7 +210,29 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
 .submit-btn:hover{transform:translateY(-2px);opacity:.9;}
 
 .faq-item{border-bottom:1px solid #ddd;padding:15px;cursor:pointer;}
-.faq-answer{max-height:0;overflow:hidden;}
+/* ===== FAQ ANSWER STYLE ===== */
+.faq-answer{
+  max-height:0;
+  overflow:hidden;
+
+  margin-top:8px;
+  padding-left:18px;
+
+  font-size:13px;
+  color:#555;
+  line-height:1.5;
+
+  position:relative;
+}
+
+/* BULLET */
+.faq-answer::before{
+  content:"•";
+  position:absolute;
+  left:0;
+  top:0;
+  color:#000;
+}
 .faq-item.active .faq-answer{max-height:100px;}
 
 .hidden{display:none;}
@@ -325,6 +347,12 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
   padding:12px;
 }
 
+}
+
+  /* ===== FAQ TEXT REFINEMENT ===== */
+.faq-item b{
+  font-weight:600;
+  font-size:14px;
 }
   
 </style>
@@ -451,14 +479,60 @@ input:focus,textarea:focus{outline:none;border-color:#000;}
 <div class="section-divider"></div>
 
 <!-- FAQ -->
-<div class="faq" id="faq">
+<div class="section" id="faq">
+<h2>Frequently Asked Questions</h2>
+
+<div class="faq">
+
 <div class="faq-item" onclick="toggleFAQ(this)">
 <div><b>Do I need an app to use this?</b></div>
-<div class="faq-answer">No. Your digital card works instantly through a browser.</div>
+<div class="faq-answer">
+No. Your digital card works instantly through a browser — no app required.
 </div>
+</div>
+
 <div class="faq-item" onclick="toggleFAQ(this)">
 <div><b>Does this work on iPhone and Android?</b></div>
-<div class="faq-answer">Yes. Works on both.</div>
+<div class="faq-answer">
+Yes. It works on both iOS and Android devices using NFC or link sharing.
+</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<div><b>Can I update my information later?</b></div>
+<div class="faq-answer">
+Yes. You can update your details anytime without changing your card.
+</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<div><b>Is this a one-time payment?</b></div>
+<div class="faq-answer">
+Yes. All plans are one-time payments — no monthly fees.
+</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<div><b>How long does it take to receive my card?</b></div>
+<div class="faq-answer">
+Typically 3–7 days depending on your selected card type and customization.
+</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<div><b>What makes Pro and Elite different?</b></div>
+<div class="faq-answer">
+Pro includes portfolio features and sample works. Elite is fully customized and limited per month.
+</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<div><b>What happens if someone doesn’t have NFC?</b></div>
+<div class="faq-answer">
+No problem. You can still share your card using a direct link.
+</div>
+</div>
+
 </div>
 </div>
 
