@@ -355,6 +355,14 @@ input,textarea{
   width:12px;
   height:12px;
 }
+  /* ===== ELITE NOTE ===== */
+.elite-note{
+  top:180px;
+  font-size:10px;
+  color:#bfa27a;
+  width:80%;
+  left:10%;
+}
 /* ===== CARD SELECT PREMIUM ===== */
 
 .card-title{
@@ -588,6 +596,9 @@ input,textarea{
 <div class="overlay name" id="previewName">Juan Dela Cruz</div>
 <div class="overlay profession" id="previewProfession">Architect</div>
 <div class="overlay company" id="previewCompany">Your Arch Studio</div>
+  <div class="overlay elite-note hidden" id="eliteNote">
+  Fully customizable to match your brand
+</div>
 <div class="overlay about" id="previewAbout">About</div>
 <div class="overlay services hidden" id="previewServices">
 
@@ -696,18 +707,21 @@ if(plan==="basic"){
   phoneBox.className="preview-phone basic";
   previewServices.classList.remove("hidden");
   previewAbout.classList.add("hidden");
-
+eliteNote.classList.add("hidden");
+  
 }else if(plan==="pro"){
   phoneImage.src="phone-pro.png";
   phoneBox.className="preview-phone pro";
   previewServices.classList.add("hidden");
   previewAbout.classList.remove("hidden");
-
+eliteNote.classList.add("hidden");
+  
 }else if(plan==="elite"){
   phoneImage.src="phone-elite.png";
   phoneBox.className="preview-phone elite";
   previewServices.classList.add("hidden");
   previewAbout.classList.add("hidden");
+  eliteNote.classList.remove("hidden");
 }
 
 }
