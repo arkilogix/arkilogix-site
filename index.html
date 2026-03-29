@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
-html{scroll-behavior:smooth;}
 body{margin:0;font-family:'Montserrat',sans-serif;}
 
 /* HERO */
@@ -51,7 +50,7 @@ width:100%;padding:12px;margin-bottom:12px;
 border:1px solid #ccc;border-radius:8px;
 }
 
-/* SLIDING SELECTOR */
+/* SLIDER */
 .selector{
 position:relative;
 display:flex;
@@ -60,34 +59,19 @@ border-radius:30px;
 overflow:hidden;
 margin-bottom:10px;
 }
-
 .selector span{
-flex:1;
-text-align:center;
-padding:8px;
-cursor:pointer;
-z-index:1;
+flex:1;text-align:center;padding:8px;cursor:pointer;z-index:1;
 }
-
 .slider{
-position:absolute;
-top:0;
-left:0;
-height:100%;
-width:50%;
-background:#000;
-border-radius:30px;
-transition:0.3s;
-z-index:0;
+position:absolute;top:0;left:0;height:100%;width:50%;
+background:#000;border-radius:30px;transition:0.3s;
 }
-
 .selector span.active{color:#fff;}
 
-/* CARD SELECT */
+/* CARD */
 .card-options button{
 padding:8px 12px;margin:5px;
-border:1px solid #ccc;border-radius:20px;
-background:#fff;cursor:pointer;
+border:1px solid #ccc;border-radius:20px;background:#fff;cursor:pointer;
 }
 .card-options .active{background:#000;color:#fff;}
 
@@ -103,30 +87,37 @@ border:none;padding:12px;border-radius:30px;width:100%;
 /* PHONE */
 .preview-phone{position:relative;}
 .preview-phone img{width:300px;}
-
 .overlay{position:absolute;width:100%;text-align:center;left:0;}
 
 /* PRO */
-.pro .name{top:150px;color:#fff;font-weight:700;}
-.pro .profession{top:175px;color:#ccc;font-size:12px;}
+.pro .name{top:150px;color:#fff;font-weight:600;font-size:14px;}
+.pro .profession{top:170px;color:#ccc;font-size:11px;}
+.pro .company{top:188px;color:#999;font-size:10px;}
 .pro .about{top:270px;color:#bbb;font-size:11px;width:80%;left:10%;}
 
-/* BASIC (UPDATED 🔥) */
+/* BASIC (UPDATED AGAIN 🔥) */
 .basic .name{
-top:220px; /* LOWER */
+top:205px; /* moved UP 15px */
 color:#2563EB;
-font-weight:700;
+font-weight:600;
+font-size:14px;
 }
 
 .basic .profession{
-top:245px; /* LOWER */
+top:225px; /* moved UP 15px */
 color:#3B82F6;
-font-size:12px;
+font-size:11px;
+}
+
+.basic .company{
+top:243px; /* moved UP 15px */
+color:#6B7280;
+font-size:10px;
 }
 
 .basic .services{
-top:362px; /* LOWER */
-font-size:10px; /* SMALLER */
+top:357px; /* moved UP 5px */
+font-size:10px;
 color:#555;
 text-align:left;
 width:70%;
@@ -139,7 +130,6 @@ left:15%;
 
 <body>
 
-<!-- HERO -->
 <div class="hero">
 <h1 class="brand">ARKILOGIX</h1>
 <p class="tagline">Smart NFC Digital Business Cards</p>
@@ -149,7 +139,6 @@ left:15%;
 
 <div class="section-divider"></div>
 
-<!-- PRICING -->
 <div class="section">
 <h2>Pricing</h2>
 
@@ -181,7 +170,6 @@ Not sure? Try your digital card ↓
 
 <div class="section-divider"></div>
 
-<!-- PREVIEW -->
 <div class="section" id="preview">
 <h2>Preview Your Digital Card</h2>
 
@@ -189,8 +177,7 @@ Not sure? Try your digital card ↓
 
 <div class="preview-inputs">
 
-<!-- SLIDING SELECTOR -->
-<div class="selector" id="planSelector">
+<div class="selector">
 <div class="slider" id="slider"></div>
 <span class="active" onclick="setPlan('basic',0,this)">Basic</span>
 <span onclick="setPlan('pro',1,this)">Pro</span>
@@ -198,6 +185,7 @@ Not sure? Try your digital card ↓
 
 <input id="inputName" placeholder="Your Name">
 <input id="inputProfession" placeholder="Your Profession">
+<input id="inputCompany" placeholder="Company Name">
 <textarea id="inputAbout" placeholder="About (Pro only)"></textarea>
 
 <p>Card Finish</p>
@@ -218,12 +206,12 @@ Not sure? Try your digital card ↓
 
 </div>
 
-<!-- PHONE -->
 <div class="preview-phone" id="phoneBox">
 <img id="phoneImage" src="phone-pro.png">
 
 <div class="overlay name" id="previewName">Juan Dela Cruz</div>
 <div class="overlay profession" id="previewProfession">Architect</div>
+<div class="overlay company" id="previewCompany">Arki Studio</div>
 
 <div class="overlay about" id="previewAbout">Designing modern spaces.</div>
 
@@ -246,7 +234,6 @@ document.getElementById("totalPrice").innerText="₱"+(basePrice+cardPrice).toLo
 function setPlan(plan,index,el){
 document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
 el.classList.add("active");
-
 slider.style.left=(index*50)+"%";
 
 if(plan==="basic"){
@@ -268,6 +255,7 @@ previewServices.classList.add("hidden");
 
 phoneBox.className="preview-phone pro";
 }
+
 updateTotal();
 }
 
@@ -281,6 +269,7 @@ updateTotal();
 
 inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
 inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architect";
+inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Arki Studio";
 inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"Designing modern spaces.";
 
 phoneBox.className="preview-phone pro";
