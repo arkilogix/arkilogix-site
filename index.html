@@ -7,13 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ArkiLogix</title>
 
-<!-- FAVICON -->
 <link rel="icon" type="image/png" href="logo.png">
 
-<!-- ===================== FONTS ===================== -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 
-<!-- ===================== CSS START ===================== -->
 <style>
 
 /* ===== GLOBAL ===== */
@@ -52,17 +49,8 @@ body{
 
 .logo img{height:24px;}
 
-.nav{
-  display:flex;
-  gap:20px;
-}
-
-.nav a{
-  color:#ccc;
-  text-decoration:none;
-  font-size:13px;
-}
-
+.nav{display:flex;gap:20px;}
+.nav a{color:#ccc;text-decoration:none;font-size:13px;}
 .nav a:hover{color:#fff;}
 
 .cta{
@@ -72,12 +60,7 @@ body{
   color:#fff;
   transition:.25s;
 }
-
-.cta:hover{
-  background:#fff;
-  color:#000;
-  transform:translateY(-2px);
-}
+.cta:hover{background:#fff;color:#000;transform:translateY(-2px);}
 
 /* ===== HERO ===== */
 .hero{
@@ -90,103 +73,34 @@ body{
   color:#fff;
   background:url('hero.jpg') center/cover no-repeat;
 }
-
 .hero::before{
   content:"";
   position:absolute;
   inset:0;
   background:rgba(0,0,0,0.75);
 }
+.hero-content{position:relative;max-width:700px;padding:20px;}
 
-.hero-content{
-  position:relative;
-  max-width:700px;
-  padding:20px;
-}
-
-.brand{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
-  margin-bottom:20px;
-  color:#ddd;
-  letter-spacing:4px;
-  font-size:12px;
-}
-
+.brand{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:20px;color:#ddd;letter-spacing:4px;font-size:12px;}
 .brand img{height:40px;}
 
-.hero-title{
-  font-size:44px;
-  font-weight:700;
-  margin-bottom:20px;
-}
+.hero-title{font-size:44px;font-weight:700;margin-bottom:20px;}
+.hero-sub{font-size:16px;color:#ccc;margin-bottom:30px;}
 
-.hero-sub{
-  font-size:16px;
-  color:#ccc;
-  margin-bottom:30px;
-}
-
-/* ===== BUTTON ===== */
-.btn{
-  padding:12px 28px;
-  border-radius:30px;
-  text-decoration:none;
-}
-
-.primary-btn{
-  background:#fff;
-  color:#000;
-  transition:.25s;
-}
-
-.primary-btn:hover{
-  background:#000;
-  color:#fff;
-  transform:translateY(-2px) scale(1.03);
-}
+.btn{padding:12px 28px;border-radius:30px;text-decoration:none;}
+.primary-btn{background:#fff;color:#000;transition:.25s;}
+.primary-btn:hover{background:#000;color:#fff;transform:translateY(-2px) scale(1.03);}
 
 /* ===== SECTIONS ===== */
-.section{
-  padding:100px 20px;
-  text-align:center;
-}
-
-.section-divider{
-  width:80%;
-  height:1px;
-  background:#ddd;
-  margin:80px auto;
-}
+.section{padding:80px 20px;text-align:center;}
+.section-divider{width:60%;height:1px;background:#e5e5e5;margin:60px auto;}
 
 /* ===== PRICING ===== */
-.pricing{
-  display:flex;
-  gap:20px;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-
-.plan{
-  border:1px solid #ddd;
-  padding:25px;
-  border-radius:14px;
-  width:220px;
-}
-
-.plan-price{
-  font-size:24px;
-  font-weight:700;
-}
-
-.plan-desc{
-  font-size:12px;
-  color:#555;
-  margin-top:10px;
-}
-/* ===== PRO HIGHLIGHT ===== */
+.pricing{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+.plan{border:1px solid #e5e5e5;padding:28px;border-radius:16px;width:220px;transition:.25s;}
+.plan:hover{transform:translateY(-5px);}
+.plan-price{font-size:24px;font-weight:700;}
+.plan-desc{font-size:12px;color:#555;margin-top:10px;}
 
 .highlight{
   transform:scale(1.05);
@@ -195,15 +109,8 @@ body{
   color:#fff;
   position:relative;
 }
+.highlight h3,.highlight .plan-price,.highlight .plan-desc{color:#fff;}
 
-/* TEXT COLOR FIX */
-.highlight h3,
-.highlight .plan-price,
-.highlight .plan-desc{
-  color:#fff;
-}
-
-/* BADGE */
 .badge{
   position:absolute;
   top:-10px;
@@ -215,13 +122,16 @@ body{
   padding:4px 10px;
   border-radius:20px;
   font-weight:600;
-  letter-spacing:1px;
 }
+
+.limited{color:#dc2626;font-size:11px;font-weight:600;margin-top:5px;}
+
 /* ===== PREVIEW ===== */
 .preview-wrapper{
   display:flex;
   justify-content:center;
-  gap:60px;
+  align-items:flex-start;
+  gap:80px;
   flex-wrap:wrap;
 }
 
@@ -231,182 +141,46 @@ body{
   flex-direction:column;
 }
 
-/* ===== INPUT ===== */
 input,textarea{
   width:100%;
-  padding:12px;
+  padding:12px 14px;
   margin-bottom:12px;
-  border:1px solid #ccc;
-  border-radius:8px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  font-size:13px;
 }
+input:focus,textarea:focus{outline:none;border-color:#000;}
 
-/* ===== SELECTOR ===== */
-/* ===== SELECTOR POSITION TWEAK ===== */
-.selector{
-  position:relative;
-  display:flex;
-  border:1px solid #ccc;
-  border-radius:30px;
-  overflow:hidden;
-}
+.selector{position:relative;display:flex;border:1px solid #ddd;border-radius:30px;overflow:hidden;width:100%;}
+.selector span{flex:1;text-align:center;padding:10px;cursor:pointer;z-index:2;color:#666;font-size:13px;}
+.selector span.active{color:#fff;}
+.slider{position:absolute;width:33.33%;height:100%;background:#000;border-radius:30px;transition:.3s;z-index:1;}
 
-.selector span{
-  flex:1;
-  text-align:center;
-  padding:10px;
-  cursor:pointer;
-  z-index:2;
-  color:#666;
-}
-
-.selector span.active{
-  color:#fff;
-}
-
-  .selector-wrapper{
-  margin-top:5px;
-}
-.slider{
-  position:absolute;
-  width:33.33%;
-  height:100%;
-  background:#000;
-  border-radius:30px;
-  transition:.3s;
-  z-index:1;
-}
-
-/* ===== PHONE ===== */
-.preview-phone{position:relative;}
+.preview-phone{position:relative;height:600px;width:300px;overflow:hidden;}
 .preview-phone img{width:300px;}
 
-.overlay{
-  position:absolute;
-  width:100%;
-  text-align:center;
-}
-/* ===== FIX TEXT UNDER PHONE ===== */
-.preview-phone{
-  position:relative;
-  height:600px; /* lock height to phone image */
-  overflow:hidden; /* prevents text spilling out */
-}
-  
-/* ===== PRO ===== */
+.overlay{position:absolute;width:100%;text-align:center;}
+
+/* PRO */
 .pro .name{top:150px;color:#fff;font-size:13px;}
 .pro .profession{top:165px;color:#ccc;font-size:10px;}
 .pro .company{top:178px;color:#aaa;font-size:9px;}
 .pro .about{top:270px;color:#bbb;font-size:11px;width:80%;left:10%;}
 
-/* ===== BASIC ===== */
+/* BASIC */
 .basic .name{top:195px;color:#22345c;font-size:12px;}
 .basic .profession{top:212px;color:#22345c;font-size:10px;}
 .basic .company{top:225px;color:#555;font-size:9px;}
 
-.basic .services{
-  position:absolute;
-  top:350px;
-  left:18%;
-  font-size:10px;
-}
+.basic .services{position:absolute;top:350px;left:18%;font-size:10px;}
+.service-item{display:flex;gap:5px;}
 
-.service-item{
-  display:flex;
-  gap:5px;
-}
-/* ===== ELITE TEMPLATE ===== */
+/* ELITE */
+.elite .name{top:125px;color:#bfa27a;font-size:13px;font-weight:600;}
+.elite .profession{top:143px;color:#bfa27a;font-size:10px;}
+.elite .company{top:158px;color:#bfa27a;font-size:9px;}
 
-.elite .name{
-  top:125px; 
-  color:#bfa27a;
-  font-size:13px;
-  font-weight:600;
-}
-
-.elite .profession{
-  top:143px;
-  color:#bfa27a;
-  font-size:10px;
-}
-
-.elite .company{
-  top:158px;
-  color:#bfa27a;
-  font-size:9px;
-}
-  .elite .services{
-  position:absolute;
-  top:560px; /* adjust depending on your image */
-  left:22%;  /* aligns with box padding */
-  width:60%;
-
-  text-align:left;
-  color:#bfa27a;
-  font-size:10px;
-}
-  .elite .service-item{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin-bottom:8px;
-}
-  .elite .service-item svg{
-  stroke:#bfa27a;
-  width:12px;
-  height:12px;
-}
-
-/* ===== ELITE PREMIUM NOTE ===== */
-.elite-note-outside{
-  margin-top:16px;
-  text-align:center;
-
-  font-size:12px;
-  color:#bfa27a; /* same elite tone */
-
-  letter-spacing:0.5px;
-
-  opacity:0.9;
-
-  position:relative;
-}
-
-/* subtle divider lines */
-.elite-note-outside::before,
-.elite-note-outside::after{
-  content:"";
-  display:inline-block;
-  width:40px;
-  height:1px;
-  background:#bfa27a;
-  margin:0 10px;
-  vertical-align:middle;
-  opacity:0.5;
-}
-  .elite-note-outside{
-  animation:fadeIn 0.6s ease;
-}
-
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(5px);}
-  to{opacity:0.9; transform:translateY(0);}
-}
-/* ===== CARD SELECT PREMIUM ===== */
-
-.card-title{
-  margin-top:15px;
-  margin-bottom:8px;
-  font-size:13px;
-  color:#333;
-  font-weight:600;
-}
-
-.card-options{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-}
-
+.card-options{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
 .card-options button{
   flex:1;
   padding:10px;
@@ -415,98 +189,145 @@ input,textarea{
   background:#fff;
   cursor:pointer;
   font-size:12px;
-  transition:all 0.2s ease;
+  transition:.2s;
 }
+.card-options button:hover{border-color:#000;transform:translateY(-2px);}
+.card-options .active{background:#000;color:#fff;}
 
-/* HOVER */
-.card-options button:hover{
-  border-color:#000;
-  transform:translateY(-2px);
-}
+.total-box{margin-top:14px;padding-top:10px;border-top:1px solid #eee;font-size:13px;}
+.total{font-size:24px;font-weight:700;}
 
-/* ACTIVE */
-.card-options .active{
-  background:#000;
-  color:#fff;
-  border-color:#000;
-  transform:scale(1.03);
-}
-
-.card-options .active{
-  background:#000;
-  color:#fff;
-}
-.card-options button{
-  box-shadow:0 1px 3px rgba(0,0,0,0.05);
-}
-/* ===== TOTAL ===== */
-.total-box{
-  margin-top:10px;
-}
-
-.total{
-  font-size:24px;
-  font-weight:700;
-}
-
-/* ===== BUTTON ===== */
 .submit-btn{
-  margin-top:10px;
-  padding:12px;
+  margin-top:14px;
+  padding:13px;
   border:none;
   border-radius:30px;
   background:#000;
   color:#fff;
+  font-size:13px;
+  transition:.25s;
+}
+.submit-btn:hover{transform:translateY(-2px);opacity:.9;}
+
+.faq-item{border-bottom:1px solid #ddd;padding:15px;cursor:pointer;}
+.faq-answer{max-height:0;overflow:hidden;}
+.faq-item.active .faq-answer{max-height:100px;}
+
+.hidden{display:none;}
+/* ===================== MOBILE OPTIMIZATION ===================== */
+@media(max-width:768px){
+
+/* ===== HEADER ===== */
+.header-inner{
+  padding:12px 15px;
+}
+
+.nav{
+  gap:12px;
+}
+
+.nav a{
+  font-size:12px;
+}
+
+/* ===== HERO ===== */
+.hero{
+  height:auto;
+  padding:120px 20px 80px;
+}
+
+.hero-title{
+  font-size:28px;
+  line-height:1.3;
+}
+
+.hero-sub{
+  font-size:14px;
+}
+
+/* ===== SECTIONS ===== */
+.section{
+  padding:60px 15px;
+}
+
+.section-divider{
+  width:80%;
+  margin:40px auto;
+}
+
+/* ===== PRICING ===== */
+.pricing{
+  flex-direction:column;
+  align-items:center;
+}
+
+.plan{
+  width:90%;
+  max-width:320px;
+}
+
+/* ===== PREVIEW ===== */
+.preview-wrapper{
+  flex-direction:column;
+  align-items:center;
+  gap:40px;
+}
+
+.preview-inputs{
+  width:100%;
+  max-width:320px;
+}
+
+/* ===== SELECTOR ===== */
+.selector span{
+  font-size:12px;
+  padding:8px;
+}
+
+/* ===== PHONE ===== */
+.preview-phone{
+  width:260px;
+  height:520px;
+}
+
+.preview-phone img{
+  width:260px;
+}
+
+/* ===== TEXT OVERLAY SCALE ===== */
+.overlay{
+  font-size:90%;
+}
+
+/* ===== BUTTONS ===== */
+.submit-btn{
+  font-size:12px;
+  padding:12px;
+}
+
+/* ===== CARD OPTIONS ===== */
+.card-options{
+  gap:8px;
+}
+
+.card-options button{
+  font-size:11px;
+  padding:8px;
+}
+
+/* ===== TOTAL ===== */
+.total{
+  font-size:20px;
 }
 
 /* ===== FAQ ===== */
 .faq-item{
-  border-bottom:1px solid #ddd;
-  padding:15px;
-  cursor:pointer;
+  padding:12px;
 }
 
-.faq-answer{
-  max-height:0;
-  overflow:hidden;
 }
-
-.faq-item.active .faq-answer{
-  max-height:100px;
-}
-
-/* ===== UTIL ===== */
-.hidden{display:none;}
-
-  /* ===== LIMITED TAG ===== */
-.limited{
-  color:#dc2626; /* premium red (not too harsh) */
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:1px;
-  margin-top:5px;
-}
-  .plan{
-  transition:0.25s ease;
-}
-
-.plan:hover{
-  transform:translateY(-5px);
-}
-  /* ===== SELECTOR WRAPPER ===== */
-.selector-wrapper{
-  width:100%;
-  margin-bottom:15px;
-}
-
-/* MATCH INPUT WIDTH */
-.selector{
-  width:100%;
-}
-
+  
 </style>
-<!-- ===================== CSS END ===================== -->
-
 </head>
 
 <body>
@@ -520,7 +341,6 @@ input,textarea{
 </div>
 <div class="nav">
 <a href="#">Home</a>
-<a href="#pricing">Pricing</a>
 <a href="#pricing">Pricing</a>
 <a href="#preview">Preview</a>
 <a href="#faq">FAQ</a>
@@ -556,19 +376,17 @@ input,textarea{
 </div>
 
 <div class="plan highlight">
-  <div class="badge">MOST POPULAR</div>
-  <h3>Pro</h3>
+<div class="badge">MOST POPULAR</div>
+<h3>Pro</h3>
 <div class="plan-price">₱1,199</div>
 <p class="plan-desc">Includes portfolio + 4 sample works.</p>
 </div>
 
 <div class="plan">
-  <h3>Elite</h3>
-  <div class="plan-price">₱1,999</div>
-  <div class="limited">LIMITED SLOTS ONLY</div>
-  <p class="plan-desc">
-    Fully customizable digital card tailored to your brand.
-  </p>
+<h3>Elite</h3>
+<div class="plan-price">₱1,999</div>
+<div class="limited">LIMITED SLOTS ONLY</div>
+<p class="plan-desc">Fully customizable digital card tailored to your brand.</p>
 </div>
 
 </div>
@@ -584,13 +402,11 @@ input,textarea{
 
 <div class="preview-inputs">
 
-<div class="selector-wrapper">
-  <div class="selector">
-    <div class="slider" id="slider" style="left:33.33%;"></div>
-    <span onclick="setPlan('basic',0,this)">Basic</span>
-    <span class="active" onclick="setPlan('pro',1,this)">Pro</span>
-    <span onclick="setPlan('elite',2,this)">Elite</span>
-  </div>
+<div class="selector">
+<div class="slider" id="slider" style="left:33.33%;"></div>
+<span onclick="setPlan('basic',0,this)">Basic</span>
+<span class="active" onclick="setPlan('pro',1,this)">Pro</span>
+<span onclick="setPlan('elite',2,this)">Elite</span>
 </div>
 
 <input id="inputName" placeholder="Your Name">
@@ -606,13 +422,10 @@ input,textarea{
 </div>
 
 <div class="total-box">
-
 <div>Service: <span id="servicePrice">₱1,199</span></div>
 <div>Card: <span id="cardPriceDisplay">₱0</span></div>
-
 <div style="margin-top:5px;">Total:</div>
 <div class="total" id="totalPrice">₱1,199</div>
-
 </div>
 
 <button class="submit-btn">Continue with Design</button>
@@ -624,27 +437,11 @@ input,textarea{
 <div class="overlay name" id="previewName">Juan Dela Cruz</div>
 <div class="overlay profession" id="previewProfession">Architect</div>
 <div class="overlay company" id="previewCompany">Your Arch Studio</div>
-<div class="elite-note hidden" id="eliteNote">
-  Fully customizable • Designed for your brand
-</div>
-  <div class="elite-note-outside hidden" id="eliteNote">
-  Fully customizable to match your brand
-</div>
 <div class="overlay about" id="previewAbout">About</div>
 <div class="overlay services hidden" id="previewServices">
-
-<div class="service-item">
-✔ Architectural Design
-</div>
-
-<div class="service-item">
-✔ Space Planning
-</div>
-
-<div class="service-item">
-✔ Renovation
-</div>
-
+<div class="service-item">✔ Architectural Design</div>
+<div class="service-item">✔ Space Planning</div>
+<div class="service-item">✔ Renovation</div>
 </div>
 </div>
 
@@ -654,64 +451,15 @@ input,textarea{
 <div class="section-divider"></div>
 
 <!-- FAQ -->
-<div class="faq">
-
-<!-- 1 -->
+<div class="faq" id="faq">
 <div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">Do I need an app to use this?</div>
-<div class="faq-answer">
-No. Your digital card works instantly through a browser — no app required.
+<div><b>Do I need an app to use this?</b></div>
+<div class="faq-answer">No. Your digital card works instantly through a browser.</div>
 </div>
-</div>
-
-<!-- 2 -->
 <div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">Does this work on iPhone and Android?</div>
-<div class="faq-answer">
-Yes. It works on both iOS and Android devices using NFC or link sharing.
+<div><b>Does this work on iPhone and Android?</b></div>
+<div class="faq-answer">Yes. Works on both.</div>
 </div>
-</div>
-
-<!-- 3 -->
-<div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">Can I update my information later?</div>
-<div class="faq-answer">
-Yes. You can update your details anytime without changing your card.
-</div>
-</div>
-
-<!-- 4 -->
-<div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">Is this a one-time payment?</div>
-<div class="faq-answer">
-Yes. All plans are one-time payments — no monthly fees.
-</div>
-</div>
-
-<!-- 5 -->
-<div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">How long does it take to receive my card?</div>
-<div class="faq-answer">
-Typically 3–7 days depending on your selected card type and customization.
-</div>
-</div>
-
-<!-- 6 -->
-<div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">What makes Pro and Elite different?</div>
-<div class="faq-answer">
-Pro includes portfolio features and sample works. Elite is fully customized and limited per month.
-</div>
-</div>
-
-<!-- 7 -->
-<div class="faq-item" onclick="toggleFAQ(this)">
-<div class="faq-question">What happens if someone doesn’t have NFC?</div>
-<div class="faq-answer">
-No problem. You can still share your card using a direct link.
-</div>
-</div>
-
 </div>
 
 <script>
@@ -720,41 +468,29 @@ let basePrices={basic:599,pro:1199,elite:1999};
 let selectedPlan="pro";
 let cardPrice=0;
 
-previewAbout.classList.add("hidden");
-previewServices.classList.add("hidden");
-
-  function setPlan(plan,index,el){
-
+function setPlan(plan,index,el){
 document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
 el.classList.add("active");
-
 slider.style.left=(index*33.33)+"%";
-
 selectedPlan=plan;
 updateTotal();
 
 if(plan==="basic"){
-  phoneImage.src="phone-basic.png";
-  phoneBox.className="preview-phone basic";
-  previewServices.classList.remove("hidden");
-  previewAbout.classList.add("hidden");
-eliteNote.classList.add("hidden");
-  
+phoneImage.src="phone-basic.png";
+phoneBox.className="preview-phone basic";
+previewServices.classList.remove("hidden");
+previewAbout.classList.add("hidden");
 }else if(plan==="pro"){
-  phoneImage.src="phone-pro.png";
-  phoneBox.className="preview-phone pro";
-  previewServices.classList.add("hidden");
-  previewAbout.classList.remove("hidden");
-eliteNote.classList.add("hidden");
-  
+phoneImage.src="phone-pro.png";
+phoneBox.className="preview-phone pro";
+previewServices.classList.add("hidden");
+previewAbout.classList.remove("hidden");
 }else if(plan==="elite"){
-  phoneImage.src="phone-elite.png";
-  phoneBox.className="preview-phone elite";
-  previewServices.classList.add("hidden");
-  previewAbout.classList.add("hidden");
-  eliteNote.classList.remove("hidden");
+phoneImage.src="phone-elite.png";
+phoneBox.className="preview-phone elite";
+previewServices.classList.add("hidden");
+previewAbout.classList.add("hidden");
 }
-
 }
 
 function selectCard(price,el){
@@ -765,14 +501,11 @@ updateTotal();
 }
 
 function updateTotal(){
-
-let service = basePrices[selectedPlan];
-let total = service + cardPrice;
-
-document.getElementById("servicePrice").innerText = "₱" + service;
-document.getElementById("cardPriceDisplay").innerText = "₱" + cardPrice;
-document.getElementById("totalPrice").innerText = "₱" + total;
-
+let service=basePrices[selectedPlan];
+let total=service+cardPrice;
+servicePrice.innerText="₱"+service;
+cardPriceDisplay.innerText="₱"+cardPrice;
+totalPrice.innerText="₱"+total;
 }
 
 inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
@@ -780,16 +513,12 @@ inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architec
 inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Your Arch Studio";
 inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
 
-function toggleFAQ(el){
-el.classList.toggle("active");
-}
-  
-// ===== FIX INITIAL PREVIEW STATE =====
-window.onload = function(){
-  const defaultPlan = document.querySelector('.selector span.active');
-  setPlan('pro', 1, defaultPlan);
+function toggleFAQ(el){el.classList.toggle("active");}
+
+window.onload=function(){
+setPlan('pro',1,document.querySelector('.selector span.active'));
 };
-  
+
 </script>
 
 </body>
