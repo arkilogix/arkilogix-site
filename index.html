@@ -645,35 +645,40 @@ function update(currentTime){
 requestAnimationFrame(update);
 }
 function setPlan(plan,index,el){
+
 document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
 el.classList.add("active");
 slider.style.left=(index*33.33)+"%";
+
 selectedPlan=plan;
 updateTotal();
-  /* PHONE MICRO INTERACTION */
+
+/* UPDATE PHONE CONTENT */
+if(plan==="basic"){
+  phoneImage.src="phone-basic.png";
+  previewServices.classList.remove("hidden");
+  previewAbout.classList.add("hidden");
+}else if(plan==="pro"){
+  phoneImage.src="phone-pro.png";
+  previewServices.classList.add("hidden");
+  previewAbout.classList.remove("hidden");
+}else if(plan==="elite"){
+  phoneImage.src="phone-elite.png";
+  previewServices.classList.add("hidden");
+  previewAbout.classList.add("hidden");
+}
+
+/* APPLY PLAN CLASS */
+phoneBox.classList.remove("basic","pro","elite");
+phoneBox.classList.add(plan);
+
+/* 🔥 ANIMATION (AFTER EVERYTHING) */
 phoneBox.classList.add("phone-pop");
 
 setTimeout(()=>{
   phoneBox.classList.remove("phone-pop");
 },200);
 
-if(plan==="basic"){
-phoneImage.src="phone-basic.png";
-phoneBox.classList.remove("basic","pro","elite");
-phoneBox.classList.add(plan);
-previewServices.classList.remove("hidden");
-previewAbout.classList.add("hidden");
-}else if(plan==="pro"){
-phoneImage.src="phone-pro.png";
-phoneBox.className="preview-phone pro";
-previewServices.classList.add("hidden");
-previewAbout.classList.remove("hidden");
-}else if(plan==="elite"){
-phoneImage.src="phone-elite.png";
-phoneBox.className="preview-phone elite";
-previewServices.classList.add("hidden");
-previewAbout.classList.add("hidden");
-}
 }
 
 function updateTotal(){
