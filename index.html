@@ -738,7 +738,13 @@ inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
 function toggleFAQ(el){
 el.classList.toggle("active");
 }
-
+  
+// ===== FIX INITIAL PREVIEW STATE =====
+window.onload = function(){
+  const defaultPlan = document.querySelector('.selector span.active');
+  setPlan('pro', 1, defaultPlan);
+};
+  
 </script>
 
 </body>
