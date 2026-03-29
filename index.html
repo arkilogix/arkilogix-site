@@ -896,13 +896,31 @@ function closeOrderModal() {
       price: basePrices[selectedPlan] + cardPrice
     };
 
-    emailjs.send("service_gxckvp8", "template_dbofkzz", params)
-      .then(function() {
+   emailjs.send("service_gxckvp8", "template_dbofkzz", params)
+  .then(function() {
 
-        emailjs.send("service_gxckvp8", "template_07td6mf", params);
+    emailjs.send("service_gxckvp8", "template_07td6mf", params);
 
-        alert("Order sent successfully!");
-        closeOrderModal();
+    // 🔥 GOOGLE SHEETS CRM
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLScfoYPea0wAeb6ltL9eQtGgm1LhQHIWG4TFBSIXB37tLj1DBQ/formResponse", {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        "entry.2005620554": params.name,
+        "entry.1045781291": params.email,
+        "entry.1166974658": params.phone,
+        "entry.839337160": params.plan,
+        "entry.1237473814": params.card,
+        "entry.2030698708": params.price,
+        "entry.1770822543": params.notes
+      })
+    });
+
+    alert("Order sent successfully!");
+    closeOrderModal();
 
       }, function(error) {
         alert("Failed to send order.");
