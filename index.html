@@ -8,395 +8,207 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
-html { scroll-behavior: smooth; }
+body {margin:0;font-family:'Montserrat',sans-serif;}
+.section{padding:100px 20px;text-align:center;}
+.section-divider{width:80%;height:1px;background:#ddd;margin:80px auto 0;}
 
-body {
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
+.preview-wrapper{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;margin-top:40px;}
+.preview-inputs{max-width:300px;text-align:left;}
+
+input,textarea,select{width:100%;padding:12px;margin-bottom:12px;border:1px solid #ccc;border-radius:8px;}
+
+.plan-switch button{
+  padding:8px 14px;margin:5px;border:1px solid #000;border-radius:20px;background:none;cursor:pointer;
 }
+.plan-switch .active{background:#000;color:#fff;}
 
-/* HEADER */
-.header {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 18px 60px;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(10px);
-  color: white;
-  z-index: 1000;
+.card-options button{
+  padding:8px;margin:5px;border:1px solid #ccc;border-radius:20px;background:none;cursor:pointer;
 }
+.card-options .active{background:#000;color:#fff;}
 
-.header.scrolled {
-  background: rgba(0,0,0,0.9);
-}
+.total-box{margin-top:20px;border-top:1px solid #ddd;padding-top:10px;}
+.total{font-size:26px;font-weight:700;}
 
-.logo-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.submit-btn{margin-top:15px;background:#000;color:#fff;border:none;padding:12px;border-radius:30px;width:100%;}
 
-.logo-wrap img {
-  height: 32px;
-}
+.preview-phone{position:relative;}
+.preview-phone img{width:300px;}
 
-.logo-wrap span {
-  letter-spacing: 3px;
-  font-size: 13px;
-}
+.overlay{position:absolute;left:0;width:100%;text-align:center;}
 
-.nav a {
-  margin-left: 30px;
-  color: white;
-  text-decoration: none;
-  font-size: 13px;
-}
+/* PRO POSITIONS */
+.pro .name{top:150px;color:#fff;font-weight:700;}
+.pro .profession{top:175px;color:#ccc;font-size:12px;}
+.pro .about{top:270px;color:#bbb;font-size:11px;width:80%;left:10%;}
 
-.cta {
-  border:1px solid white;
-  padding:6px 14px;
-  border-radius:20px;
-}
+/* BASIC POSITIONS */
+.basic .name{top:160px;color:#000;font-weight:700;}
+.basic .profession{top:185px;color:#666;font-size:12px;}
+.basic .services{top:350px;color:#444;font-size:12px;text-align:left;width:70%;left:15%;}
 
-/* HERO */
-.hero {
-  height:100vh;
-  background:url('hero.jpg') center/cover no-repeat;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  color:white;
-  position:relative;
-}
-
-.hero::before {
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.75);
-}
-
-.hero * { position:relative; }
-
-/* SECTION */
-.section {
-  padding:100px 20px;
-  text-align:center;
-}
-
-/* DIVIDER */
-.section-divider {
-  width:80%;
-  height:1px;
-  background:#ddd;
-  margin:80px auto 0;
-}
-
-/* PRODUCTS */
-.products {
-  display:flex;
-  justify-content:center;
-  gap:30px;
-}
-
-.product {
-  border:1px solid #eee;
-  padding:30px;
-  border-radius:10px;
-}
-
-/* PRICING */
-.pricing {
-  display:flex;
-  justify-content:center;
-  gap:30px;
-  flex-wrap:wrap;
-}
-
-.plan {
-  border:1px solid #ddd;
-  border-radius:16px;
-  padding:30px;
-  width:240px;
-}
-
-.plan h3 {
-  margin-bottom:5px;
-}
-
-.plan-price {
-  font-size:26px;
-  font-weight:700;
-  margin-bottom:10px;
-}
-
-.plan p {
-  font-size:13px;
-  color:#666;
-}
-
-/* PREVIEW */
-.preview-wrapper {
-  display:flex;
-  justify-content:center;
-  gap:60px;
-  margin-top:40px;
-  flex-wrap:wrap;
-}
-
-.preview-inputs {
-  max-width:300px;
-  width:100%;
-  text-align:left;
-}
-
-/* PRICING INFO INSIDE PREVIEW */
-.preview-plan {
-  margin-top:20px;
-  border-top:1px solid #ddd;
-  padding-top:15px;
-}
-
-.preview-plan h4 {
-  margin:0;
-}
-
-.preview-plan p {
-  font-size:13px;
-  color:#666;
-}
-
-.preview-phone {
-  position:relative;
-}
-
-.preview-phone img {
-  width:300px;
-}
-
-/* OVERLAY TEXT */
-.overlay {
-  position:absolute;
-  left:0;
-  width:100%;
-  text-align:center;
-  color:white;
-}
-
-/* ADJUSTED POSITIONS */
-.overlay.name {
-  top: 150px;
-  font-weight:700;
-}
-
-.overlay.profession {
-  top: 175px;
-  font-size:12px;
-  color:#ccc;
-}
-
-.overlay.about {
-  top: 270px; /* 🔥 moved UP */
-  font-size:11px; /* 🔥 smaller */
-  width:80%;
-  left:10%;
-  color:#bbb;
-  line-height:1.4;
-}
-
-/* FORM */
-form {
-  max-width:400px;
-  margin:auto;
-}
-
-input, textarea, select {
-  width:100%;
-  padding:12px;
-  margin-bottom:15px;
-  border:1px solid #ccc;
-  border-radius:8px;
-}
-
-.submit-btn {
-  background:black;
-  color:white;
-  border:none;
-  padding:14px;
-  width:100%;
-  border-radius:30px;
-}
-
-/* FOOTER */
-.footer {
-  background:black;
-  color:#777;
-  text-align:center;
-  padding:20px;
-}
+/* HIDE */
+.hidden{display:none;}
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header" id="header">
-  <div class="logo-wrap">
-    <img src="logo.png">
-    <span>ARKILOGIX</span>
-  </div>
-  <div class="nav">
-    <a href="#products">Products</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#preview">Preview</a>
-    <a href="#contact" class="cta">Get Started</a>
-  </div>
-</div>
-
-<!-- HERO -->
-<div class="hero">
-  <h1>ARKILOGIX</h1>
-  <p>SMART DIGITAL NFC CARDS</p>
+<div class="section">
+<h2>Pricing</h2>
+<p>Choose your plan, then customize below ↓</p>
 </div>
 
 <div class="section-divider"></div>
 
-<!-- PRODUCTS -->
-<div class="section" id="products">
-  <h2>Products</h2>
-  <div class="products">
-    <div class="product">Black Card</div>
-    <div class="product">White Card</div>
-    <div class="product">Wood Card</div>
-  </div>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- PRICING -->
-<div class="section" id="pricing">
-  <h2>Pricing</h2>
-
-  <div class="pricing">
-    <div class="plan">
-      <h3>Basic</h3>
-      <div class="plan-price">₱600</div>
-      <p>Simple digital contact sharing.</p>
-    </div>
-
-    <div class="plan">
-      <h3>Pro</h3>
-      <div class="plan-price">₱1,200</div>
-      <p>Portfolio + professional profile.</p>
-    </div>
-
-    <div class="plan">
-      <h3>Elite</h3>
-      <div class="plan-price">₱2,000</div>
-      <p>Premium branding experience.</p>
-    </div>
-  </div>
-
-  <p style="margin-top:30px;color:#777;">
-    Not sure? Try your digital card below ↓
-  </p>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- 🔥 PREVIEW -->
 <div class="section" id="preview">
-  <h2>Preview Your Digital Card</h2>
+<h2>Preview Your Digital Card</h2>
 
-  <div class="preview-wrapper">
+<div class="preview-wrapper">
 
-    <!-- INPUT -->
-    <div class="preview-inputs">
-      <input type="text" id="inputName" placeholder="Your Name">
-      <input type="text" id="inputProfession" placeholder="Your Profession">
-      <textarea id="inputAbout" placeholder="About you"></textarea>
+<div class="preview-inputs">
 
-      <!-- 🔥 PLAN INFO -->
-      <div class="preview-plan">
-        <h4>Pro — ₱1,200</h4>
-        <p>Portfolio + professional profile.</p>
-      </div>
+<!-- PLAN SWITCH -->
+<div class="plan-switch">
+<button onclick="setPlan('basic',this)">Basic</button>
+<button class="active" onclick="setPlan('pro',this)">Pro</button>
+</div>
 
-      <button class="submit-btn" onclick="continueOrder()">Continue with this design</button>
-    </div>
+<input type="text" id="inputName" placeholder="Your Name">
+<input type="text" id="inputProfession" placeholder="Your Profession">
+<textarea id="inputAbout" placeholder="About (Pro only)"></textarea>
 
-    <!-- PHONE -->
-    <div class="preview-phone">
-      <img src="phone-pro.png">
+<!-- CARD SELECT -->
+<div>
+<p>Choose Card Finish</p>
+<div class="card-options">
+<button onclick="setCard(0,this)" class="active">White</button>
+<button onclick="setCard(99,this)">Black +99</button>
+<button onclick="setCard(199,this)">Wood +199</button>
+<button onclick="setCard(499,this)">Metal +499</button>
+</div>
+</div>
 
-      <div class="overlay name" id="previewName">Juan Dela Cruz</div>
-      <div class="overlay profession" id="previewProfession">Architect</div>
-      <div class="overlay about" id="previewAbout">
-        Designing modern and functional spaces.
-      </div>
-    </div>
+<!-- TOTAL -->
+<div class="total-box">
+<p id="planLabel">Pro — ₱1,199</p>
+<p id="cardLabel">White — ₱0</p>
+<div class="total" id="totalPrice">₱1,199</div>
+</div>
 
-  </div>
+<button class="submit-btn" onclick="continueOrder()">Continue with this design</button>
+
+</div>
+
+<!-- PHONE -->
+<div class="preview-phone" id="phoneBox">
+<img id="phoneImage" src="phone-pro.png">
+
+<div class="overlay name" id="previewName">Juan Dela Cruz</div>
+<div class="overlay profession" id="previewProfession">Architect</div>
+
+<div class="overlay about" id="previewAbout">
+Designing modern spaces.
+</div>
+
+<div class="overlay services hidden" id="previewServices">
+• Architectural Design<br>
+• Planning<br>
+• Renovation<br>
+• Consultation
+</div>
+
+</div>
+
+</div>
 </div>
 
 <div class="section-divider"></div>
 
-<!-- CONTACT -->
 <div class="section" id="contact">
-  <h2>Get Started</h2>
+<h2>Get Started</h2>
 
-  <form>
-    <input type="text" id="formName" placeholder="Your Name">
-    <input type="email" placeholder="Your Email">
+<input id="formName" placeholder="Your Name">
+<select id="formPlan">
+<option>Basic</option>
+<option selected>Pro</option>
+</select>
 
-    <select id="formPlan">
-      <option>Basic</option>
-      <option selected>Pro</option>
-      <option>Elite</option>
-    </select>
-
-    <button class="submit-btn">Submit Order</button>
-  </form>
-</div>
-
-<div class="footer">
-ARKILOGIX — DIGITAL NFC SYSTEMS
 </div>
 
 <script>
-// HEADER SCROLL
-window.addEventListener("scroll",()=>{
-  document.getElementById("header")
-  .classList.toggle("scrolled", window.scrollY>50);
-});
+let basePrice=1199;
+let cardPrice=0;
+let currentPlan="pro";
 
-// LIVE PREVIEW
-document.getElementById("inputName").oninput = e=>{
-  document.getElementById("previewName").innerText = e.target.value || "Juan Dela Cruz";
-};
-
-document.getElementById("inputProfession").oninput = e=>{
-  document.getElementById("previewProfession").innerText = e.target.value || "Architect";
-};
-
-document.getElementById("inputAbout").oninput = e=>{
-  document.getElementById("previewAbout").innerText =
-    e.target.value || "Designing modern and functional spaces.";
-};
-
-// CONTINUE
-function continueOrder(){
-  document.getElementById("formName").value =
-    document.getElementById("inputName").value;
-
-  document.getElementById("formPlan").value = "Pro";
-
-  document.getElementById("contact").scrollIntoView({behavior:"smooth"});
+function updateTotal(){
+let total=basePrice+cardPrice;
+document.getElementById("totalPrice").innerText="₱"+total.toLocaleString();
 }
+
+function setPlan(plan,el){
+document.querySelectorAll(".plan-switch button").forEach(b=>b.classList.remove("active"));
+el.classList.add("active");
+
+currentPlan=plan;
+
+if(plan==="basic"){
+basePrice=599;
+document.getElementById("phoneImage").src="phone-basic.png";
+document.getElementById("planLabel").innerText="Basic — ₱599";
+
+document.getElementById("previewAbout").classList.add("hidden");
+document.getElementById("previewServices").classList.remove("hidden");
+
+document.getElementById("phoneBox").classList.add("basic");
+document.getElementById("phoneBox").classList.remove("pro");
+}else{
+basePrice=1199;
+document.getElementById("phoneImage").src="phone-pro.png";
+document.getElementById("planLabel").innerText="Pro — ₱1,199";
+
+document.getElementById("previewAbout").classList.remove("hidden");
+document.getElementById("previewServices").classList.add("hidden");
+
+document.getElementById("phoneBox").classList.add("pro");
+document.getElementById("phoneBox").classList.remove("basic");
+}
+
+updateTotal();
+}
+
+function setCard(price,el){
+cardPrice=price;
+
+document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
+el.classList.add("active");
+
+let label=el.innerText;
+document.getElementById("cardLabel").innerText=label;
+
+updateTotal();
+}
+
+document.getElementById("inputName").oninput=e=>{
+document.getElementById("previewName").innerText=e.target.value||"Juan Dela Cruz";
+};
+
+document.getElementById("inputProfession").oninput=e=>{
+document.getElementById("previewProfession").innerText=e.target.value||"Architect";
+};
+
+document.getElementById("inputAbout").oninput=e=>{
+document.getElementById("previewAbout").innerText=e.target.value||"Designing modern spaces.";
+};
+
+function continueOrder(){
+document.getElementById("formName").value=document.getElementById("inputName").value;
+document.getElementById("formPlan").value=currentPlan.charAt(0).toUpperCase()+currentPlan.slice(1);
+document.getElementById("contact").scrollIntoView({behavior:"smooth"});
+}
+
+// INIT
+document.getElementById("phoneBox").classList.add("pro");
 </script>
 
 </body>
