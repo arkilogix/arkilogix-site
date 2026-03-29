@@ -355,13 +355,20 @@ input,textarea{
   width:12px;
   height:12px;
 }
-  /* ===== ELITE NOTE ===== */
+
+  /* ===== ELITE NOTE (PROPER UI STYLE) ===== */
 .elite-note{
-  top:180px;
+  position:absolute;
+
+  top:175px;      /* adjust based on your mockup */
+  left:20%;       /* aligns with content column */
+  width:60%;
+
   font-size:10px;
   color:#bfa27a;
-  width:80%;
-  left:10%;
+
+  text-align:left;
+  line-height:1.4;
 }
 /* ===== CARD SELECT PREMIUM ===== */
 
@@ -596,7 +603,7 @@ input,textarea{
 <div class="overlay name" id="previewName">Juan Dela Cruz</div>
 <div class="overlay profession" id="previewProfession">Architect</div>
 <div class="overlay company" id="previewCompany">Your Arch Studio</div>
-  <div class="overlay elite-note hidden" id="eliteNote">
+<div class="elite-note hidden" id="eliteNote">
   Fully customizable to match your brand
 </div>
 <div class="overlay about" id="previewAbout">About</div>
