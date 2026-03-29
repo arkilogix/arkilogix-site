@@ -345,7 +345,10 @@ input,textarea{
 <div class="nav">
 <a href="#">Home</a>
 <a href="#pricing">Pricing</a>
+<a href="#pricing">Pricing</a>
 <a href="#preview">Preview</a>
+<a href="#faq">FAQ</a>
+<a href="#preview" class="cta">Get Started</a>
 <a href="#preview" class="cta">Get Started</a>
 </div>
 </div>
@@ -415,15 +418,20 @@ input,textarea{
 <textarea id="inputAbout"></textarea>
 
 <div class="card-options">
-<button onclick="selectCard(99,this)">White</button>
-<button onclick="selectCard(199,this)">Black</button>
-<button onclick="selectCard(399,this)">Wood</button>
-<button onclick="selectCard(699,this)">Metal</button>
+<button onclick="selectCard(0,this)">White (+₱0)</button>
+<button onclick="selectCard(99,this)">Black (+₱99)</button>
+<button onclick="selectCard(299,this)">Wood (+₱299)</button>
+<button onclick="selectCard(599,this)">Metal (+₱599)</button>
 </div>
 
 <div class="total-box">
-<div>Total:</div>
+
+<div>Service: <span id="servicePrice">₱599</span></div>
+<div>Card: <span id="cardPriceDisplay">₱0</span></div>
+
+<div style="margin-top:5px;">Total:</div>
 <div class="total" id="totalPrice">₱599</div>
+
 </div>
 
 <button class="submit-btn">Continue with Design</button>
@@ -432,11 +440,25 @@ input,textarea{
 
 <div class="preview-phone" id="phoneBox">
 <img id="phoneImage" src="phone-pro.png">
-<div class="overlay name" id="previewName">Juan</div>
+<div class="overlay name" id="previewName">Juan Dela Cruz</div>
 <div class="overlay profession" id="previewProfession">Architect</div>
-<div class="overlay company" id="previewCompany">Studio</div>
+<div class="overlay company" id="previewCompany">Your Arch Studio</div>
 <div class="overlay about" id="previewAbout">About</div>
-<div class="overlay services hidden" id="previewServices">Services</div>
+<div class="overlay services hidden" id="previewServices">
+
+<div class="service-item">
+✔ Architectural Design
+</div>
+
+<div class="service-item">
+✔ Space Planning
+</div>
+
+<div class="service-item">
+✔ Renovation
+</div>
+
+</div>
 </div>
 
 </div>
@@ -445,7 +467,7 @@ input,textarea{
 <div class="section-divider"></div>
 
 <!-- FAQ -->
-<div class="section">
+<div class="section" id="faq">
 <h2>FAQ</h2>
 <div class="faq">
 <div class="faq-item" onclick="toggleFAQ(this)">
@@ -492,12 +514,19 @@ updateTotal();
 }
 
 function updateTotal(){
-document.getElementById("totalPrice").innerText="₱"+(basePrices[selectedPlan]+cardPrice);
+
+let service = basePrices[selectedPlan];
+let total = service + cardPrice;
+
+document.getElementById("servicePrice").innerText = "₱" + service;
+document.getElementById("cardPriceDisplay").innerText = "₱" + cardPrice;
+document.getElementById("totalPrice").innerText = "₱" + total;
+
 }
 
-inputName.oninput=e=>previewName.innerText=e.target.value||"Juan";
+inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
 inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architect";
-inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Studio";
+inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Your Arch Studio";
 inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
 
 function toggleFAQ(el){
