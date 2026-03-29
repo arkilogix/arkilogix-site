@@ -682,33 +682,34 @@ previewAbout.classList.add("hidden");
 previewServices.classList.add("hidden");
 
   function setPlan(plan,index,el){
+
 document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
 el.classList.add("active");
+
 slider.style.left=(index*33.33)+"%";
+
 selectedPlan=plan;
 updateTotal();
 
 if(plan==="basic"){
-phoneImage.src="phone-basic.png";
-phoneBox.className="preview-phone basic";
-previewServices.classList.remove("hidden");
-previewAbout.classList.add("hidden");
+  phoneImage.src="phone-basic.png";
+  phoneBox.className="preview-phone basic";
+  previewServices.classList.remove("hidden");
+  previewAbout.classList.add("hidden");
+
 }else if(plan==="pro"){
-phoneImage.src="phone-pro.png";
-phoneBox.className="preview-phone pro";
-previewServices.classList.add("hidden");
-previewAbout.classList.remove("hidden");
-}else{
-phoneImage.src="/phone-elite.png";
-phoneBox.className="preview-phone elite";
-}
+  phoneImage.src="phone-pro.png";
+  phoneBox.className="preview-phone pro";
+  previewServices.classList.add("hidden");
+  previewAbout.classList.remove("hidden");
+
 }else if(plan==="elite"){
   phoneImage.src="phone-elite.png";
   phoneBox.className="preview-phone elite";
-
   previewServices.classList.add("hidden");
-  previewAbout.classList.add("hidden"); // 👈 hide about
+  previewAbout.classList.add("hidden");
 }
+
 }
 
 function selectCard(price,el){
