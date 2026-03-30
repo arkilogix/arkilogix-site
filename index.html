@@ -987,16 +987,16 @@ function sendEmailNow(params){
     "entry.1237473814": params.card,
     "entry.2030698708": params.price,
     "entry.1770822543": params.notes
-  })
-});
-    .catch(function(error){
+        })
+      });
+
+    })
+  .catch(function(error){
       alert("Failed to send order.");
       console.log(error);
-
       document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
       document.querySelector(".modal-btn").disabled = false;
     });
-
 }
       
   window.addEventListener("DOMContentLoaded", function(){
