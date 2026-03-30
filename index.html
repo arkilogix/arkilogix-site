@@ -935,7 +935,7 @@ function updateServicesPreview(){
   const s3 = document.getElementById("service3");
   const s4 = document.getElementById("service4");
 
-  if(!s1 || !s2 || !s3 || !s4) return; // 🔥 PREVENT CRASH
+  if(!s1 || !s2 || !s3 || !s4) return;
 
   const services = [
     s1.value,
@@ -957,18 +957,6 @@ function updateServicesPreview(){
   });
 
 }
-  });
-
-}
-const s1 = document.getElementById("service1");
-const s2 = document.getElementById("service2");
-const s3 = document.getElementById("service3");
-const s4 = document.getElementById("service4");
-
-if(s1) s1.oninput = updateServicesPreview;
-if(s2) s2.oninput = updateServicesPreview;
-if(s3) s3.oninput = updateServicesPreview;
-if(s4) s4.oninput = updateServicesPreview;
 function toggleFAQ(el){el.classList.toggle("active");}
 
 window.onload=function(){
