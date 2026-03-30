@@ -928,21 +928,6 @@ inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
 inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architect";
 inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Your Arch Studio";
 inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
-function updateServicesPreview(){
-
-  const s1 = document.getElementById("service1");
-  const s2 = document.getElementById("service2");
-  const s3 = document.getElementById("service3");
-  const s4 = document.getElementById("service4");
-
-  if(!s1 || !s2 || !s3 || !s4) return;
-
-  const services = [
-    s1.value,
-    s2.value,
-    s3.value,
-    s4.value
-  ];
 
   const container = document.getElementById("previewServices");
 
