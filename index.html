@@ -725,10 +725,10 @@ form#orderForm::-webkit-scrollbar-thumb{
 <textarea id="inputAbout"></textarea>
 
 <div class="card-options">
-<button onclick="selectCard(0,this,'white')">White</button>
-<button onclick="selectCard(99,this,'black')">Black</button>
-<button onclick="selectCard(299,this,'wood')">Wood</button>
-<button onclick="selectCard(599,this,'metal')">Metal</button>
+<button class="active" onclick="selectCard(0,this,'white')">White</button>
+<button class="active" onclick="selectCard(99,this,'black')">Black</button>
+<button class="active" onclick="selectCard(299,this,'wood')">Wood</button>
+<button class="active" onclick="selectCard(599,this,'metal')">Metal</button>
 </div>
 
 <div class="total-box">
@@ -1018,11 +1018,12 @@ const highlight = document.getElementById("highlightPhoto").files[0];
 
         params.profile = await uploadToCloudinary(profile);
 
-if((selectedPlan==="pro"||selectedPlan==="elite") && !highlight){
-  throw "Please upload a highlighted project";
+if(selectedPlan==="pro" || selectedPlan==="elite"){
+  if(!highlight){
+    throw "Please upload a highlighted project";
+  }
+  params.highlight = await uploadToCloudinary(highlight);
 }
-          params.highlight = await uploadToCloudinary(highlight);
-        }
 
         if(selectedPlan==="pro"||selectedPlan==="elite"){
 const files = document.getElementById("portfolioPhotos").files;
@@ -1052,7 +1053,7 @@ else if(selectedPlan === "elite"){
 }
 
 // 🔥 GENERATE LINK
-const clientLink = "/view/" + page + "?id=" + clientId;
+const clientLink = window.location.origin + "/view/" + page + "?id=" + clientId;
 
 // 🔥 SHOW + OPEN
 alert("✅ Order Confirmed!\n\nClient Link:\n" + clientLink);
