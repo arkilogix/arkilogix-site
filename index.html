@@ -930,14 +930,23 @@ inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Your Arch Stud
 inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
 function updateServicesPreview(){
 
+  const s1 = document.getElementById("service1");
+  const s2 = document.getElementById("service2");
+  const s3 = document.getElementById("service3");
+  const s4 = document.getElementById("service4");
+
+  if(!s1 || !s2 || !s3 || !s4) return; // 🔥 PREVENT CRASH
+
   const services = [
-    document.getElementById("service1").value,
-    document.getElementById("service2").value,
-    document.getElementById("service3").value,
-    document.getElementById("service4").value
+    s1.value,
+    s2.value,
+    s3.value,
+    s4.value
   ];
 
   const container = document.getElementById("previewServices");
+
+  if(!container) return;
 
   container.innerHTML = "";
 
@@ -945,6 +954,9 @@ function updateServicesPreview(){
     if(s.trim() !== ""){
       container.innerHTML += `<div class="service-item">✔ ${s}</div>`;
     }
+  });
+
+}
   });
 
 }
