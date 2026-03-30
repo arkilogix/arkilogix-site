@@ -823,7 +823,71 @@ No problem. You can still share your card using a direct link.
 </div>
 
 <script>
-document.getElementById("orderForm").addEventListener("submit", async function(e) {
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("orderForm");
+
+  if(!form){
+    console.error("orderForm not found");
+    return;
+  }
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const btn = document.querySelector(".modal-btn");
+    btn.innerText = "Processing...";
+    btn.disabled = true;
+
+    try{
+      const params = {
+        name: name.value,
+        email: email.value,
+        phone: phone.value,
+        notes: notes.value,
+        services: [service1.value,service2.value,service3.value,service4.value],
+        plan: selectedPlan,
+        card: selectedCard,
+        price: basePrices[selectedPlan] + cardPrice
+      };
+
+      const profile = profilePhoto.files[0];
+      const highlight = highlightPhoto.files[0];
+
+      if(!profile) throw "Please upload a profile photo";
+
+      params.profile = await uploadToCloudinary(profile);
+
+      if((selectedPlan==="pro"||selectedPlan==="elite") && highlight){
+        params.highlight = await uploadToCloudinary(highlight);
+      }
+
+      if(selectedPlan==="pro"||selectedPlan==="elite"){
+        const files = portfolioPhotos.files;
+
+        if(files.length < 3){
+          throw "Please upload at least 3 portfolio images";
+        }
+
+        const urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
+
+        params.portfolio1 = urls[0];
+        params.portfolio2 = urls[1];
+        params.portfolio3 = urls[2];
+      }
+
+      sendEmailNow(params);
+      alert("✅ Order Confirmed!");
+      closeOrderModal();
+
+    }catch(err){
+      alert(err || "Something went wrong.");
+    }
+
+    btn.innerText = "Secure My NFC Card";
+    btn.disabled = false;
+  });
+
+});
   e.preventDefault();
 
   const btn = document.querySelector(".modal-btn");
