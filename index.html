@@ -1020,7 +1020,7 @@ function toggleFAQ(el){
 }
 
 /* ================= MODAL ================= */
-function openOrderModal(){
+window.openOrderModal = function(){
   document.getElementById("orderModal").classList.add("show");
   document.body.style.overflow = "hidden";
 
@@ -1035,7 +1035,7 @@ function openOrderModal(){
   document.getElementById("aboutSection").style.display = isPro ? "block" : "none";
 }
 
-function closeOrderModal(){
+window.closeOrderModal = function(){
   document.getElementById("orderModal").classList.remove("show");
   document.body.style.overflow = "auto";
 }
