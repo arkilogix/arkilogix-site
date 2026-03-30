@@ -873,7 +873,19 @@ No problem. You can still share your card using a direct link.
 </div>
 </div>
 
-<script>
+<script type="module">
+// 🔥 FIREBASE IMPORTS
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  
+// 🔥 YOUR FIREBASE CONFIG (PASTE YOURS HERE)
+const firebaseConfig = {
+  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
+  authDomain: "arkilogix-clients.firebaseapp.com",
+  projectId: "arkilogix-clients",
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 /* ================= INIT ================= */
 (function(){
   emailjs.init("Wp1sOcLJH-dg_dkLs");
@@ -887,6 +899,11 @@ let selectedCard = "white";
 let cardPrice = 0;
 
 /* ================= HELPERS ================= */
+  // 🔥 SAVE CLIENT TO FIREBASE
+async function saveClient(data){
+  const docRef = await addDoc(collection(db, "clients"), data);
+  return docRef.id;
+}
 const formatPeso = val => "₱" + val.toLocaleString();
 
 async function uploadToCloudinary(file){
@@ -1078,9 +1095,11 @@ const params = {
   card: selectedCard,
   price: basePrices[selectedPlan] + cardPrice
 };
-        const clientId = (params.name || "client")
-      .toLowerCase()
-      .replace(/\s+/g, '-') + "-" + Date.now();
+
+      updateProgress("Saving data...", 95);
+
+// 🔥 SAVE TO FIREBASE
+const clientId = await saveClient(params);
         
 const profile = document.getElementById("profilePhoto").files[0];
 const highlight = document.getElementById("highlightPhoto").files[0];
@@ -1126,7 +1145,7 @@ else if(selectedPlan === "elite"){
 }
 
 // 🔥 GENERATE LINK
-const clientLink = window.location.origin + "/view/" + page + "?id=" + clientId;
+const clientLink = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
         document.getElementById("formContent").classList.add("hidden");
 document.getElementById("successContent").classList.remove("hidden");
 
