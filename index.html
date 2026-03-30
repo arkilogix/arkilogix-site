@@ -726,10 +726,7 @@ form#orderForm{
 <div class="overlay profession" id="previewProfession">Architect</div>
 <div class="overlay company" id="previewCompany">Your Arch Studio</div>
 <div class="overlay about" id="previewAbout">About</div>
-<div class="overlay services hidden" id="previewServices">
-<div class="service-item">✔ Architectural Design</div>
-<div class="service-item">✔ Space Planning</div>
-<div class="service-item">✔ Renovation</div>
+<div class="overlay services hidden" id="previewServices"></div>
 </div>
 </div>
 
@@ -906,7 +903,30 @@ inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
 inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architect";
 inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Your Arch Studio";
 inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
+function updateServicesPreview(){
 
+  const services = [
+    document.getElementById("service1").value,
+    document.getElementById("service2").value,
+    document.getElementById("service3").value,
+    document.getElementById("service4").value
+  ];
+
+  const container = document.getElementById("previewServices");
+
+  container.innerHTML = "";
+
+  services.forEach(s => {
+    if(s.trim() !== ""){
+      container.innerHTML += `<div class="service-item">✔ ${s}</div>`;
+    }
+  });
+
+}
+document.getElementById("service1").oninput = updateServicesPreview;
+document.getElementById("service2").oninput = updateServicesPreview;
+document.getElementById("service3").oninput = updateServicesPreview;
+document.getElementById("service4").oninput = updateServicesPreview;
 function toggleFAQ(el){el.classList.toggle("active");}
 
 window.onload=function(){
@@ -966,13 +986,16 @@ function openOrderModal() {
   document.getElementById("summaryPrice").innerText =
     "₱" + total.toLocaleString();
  if(selectedPlan === "pro" || selectedPlan === "elite"){
+
   document.getElementById("highlightUpload").style.display = "block";
   document.getElementById("portfolioUpload").style.display = "block";
-}
- else{
+  document.getElementById("aboutSection").style.display = "block";
+
+}else{
 
   document.getElementById("highlightUpload").style.display = "none";
   document.getElementById("portfolioUpload").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none";
 
 }
 }
@@ -1006,7 +1029,7 @@ body: new URLSearchParams({
   "entry.839337160": params.plan,
   "entry.1237473814": params.card,
   "entry.2030698708": params.price,
-  "entry.1770822543": params.notes,
+  "entry.1770822543": params.services.join(", "),
 
   "entry.842811588": params.profile,
   "entry.437981218": params.highlight,
@@ -1035,6 +1058,13 @@ body: new URLSearchParams({
   email: document.getElementById("email").value,
   phone: document.getElementById("phone").value,
   notes: document.getElementById("notes").value,
+
+services: [
+  document.getElementById("service1").value,
+  document.getElementById("service2").value,
+  document.getElementById("service3").value,
+  document.getElementById("service4").value
+]
   plan: selectedPlan,
   card: selectedCard,
   price: basePrices[selectedPlan] + cardPrice
@@ -1177,7 +1207,20 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="email" id="email" placeholder="Email Address" required>
       <input type="text" id="phone" placeholder="Phone Number" required>
-      <textarea id="notes" placeholder="About You (optional)"></textarea>
+      <div id="aboutSection" style="display:none;">
+  <textarea id="notes" placeholder="About You (optional)"></textarea>
+</div>
+
+<div id="servicesSection">
+
+  <label class="upload-label">Services (up to 4)</label>
+
+  <input type="text" id="service1" placeholder="Service 1">
+  <input type="text" id="service2" placeholder="Service 2">
+  <input type="text" id="service3" placeholder="Service 3">
+  <input type="text" id="service4" placeholder="Service 4">
+
+</div>
 <div class="upload-box">
 
 <label class="upload-label">Profile Photo</label>
