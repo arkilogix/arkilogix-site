@@ -964,7 +964,7 @@ function closeOrderModal() {
   const msg = document.getElementById("successMsg");
   if(msg) msg.remove();
 }
-  function sendEmailNow(params){
+function sendEmailNow(params){
 
   emailjs.send("service_gxckvp8", "template_dbofkzz", params)
     .then(function(){
@@ -999,15 +999,7 @@ function closeOrderModal() {
       document.querySelector(".modal-btn").disabled = false;
     });
 
-};
-
-    .catch(function(error){
-      alert("Failed to send order.");
-      console.log(error);
-
-      document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
-      document.querySelector(".modal-btn").disabled = false;
-    });
+}
 
 }
       
