@@ -992,33 +992,40 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.disabled = true;
 
       try{
-        const params = {
-          name: document.getElementById("name").value,
-          email: email.value,
-          phone: phone.value,
-          notes: notes.value,
-          services: [service1.value,service2.value,service3.value,service4.value],
-          plan: selectedPlan,
-          card: selectedCard,
-          price: basePrices[selectedPlan] + cardPrice
-        };
+const params = {
+  name: document.getElementById("name").value,
+  email: document.getElementById("email").value,
+  phone: document.getElementById("phone").value,
+  notes: document.getElementById("notes").value,
+  services: [
+    document.getElementById("service1").value,
+    document.getElementById("service2").value,
+    document.getElementById("service3").value,
+    document.getElementById("service4").value
+  ],
+  plan: selectedPlan,
+  card: selectedCard,
+  price: basePrices[selectedPlan] + cardPrice
+};
         const clientId = (params.name || "client")
       .toLowerCase()
       .replace(/\s+/g, '-') + "-" + Date.now();
         
-        const profile = profilePhoto.files[0];
-        const highlight = highlightPhoto.files[0];
+const profile = document.getElementById("profilePhoto").files[0];
+const highlight = document.getElementById("highlightPhoto").files[0];
 
         if(!profile) throw "Please upload a profile photo";
 
         params.profile = await uploadToCloudinary(profile);
 
-        if((selectedPlan==="pro"||selectedPlan==="elite") && highlight){
+if((selectedPlan==="pro"||selectedPlan==="elite") && !highlight){
+  throw "Please upload a highlighted project";
+}
           params.highlight = await uploadToCloudinary(highlight);
         }
 
         if(selectedPlan==="pro"||selectedPlan==="elite"){
-          const files = portfolioPhotos.files;
+const files = document.getElementById("portfolioPhotos").files;
 
           if(files.length < 3){
             throw "Please upload at least 3 portfolio images";
@@ -1033,8 +1040,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 sendEmailNow(params);
 
-// 🔥 CREATE UNIQUE ID
-const clientId = params.name.toLowerCase().replace(/\s+/g, '-') + "-" + Date.now();
 
 // 🔥 SELECT TEMPLATE
 let page = "basic.html";
