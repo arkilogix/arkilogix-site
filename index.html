@@ -801,6 +801,21 @@ No problem. You can still share your card using a direct link.
 </div>
 
 <script>
+  async function uploadToCloudinary(file){
+  const url = "https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload";
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "nfc_upload");
+
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await response.json();
+  return data.secure_url;
+}
 function toBase64(file){
   return new Promise((resolve,reject)=>{
     const reader = new FileReader();
@@ -979,15 +994,17 @@ function sendEmailNow(params){
   headers: {
     "Content-Type": "application/x-www-form-urlencoded"
   },
-  body: new URLSearchParams({
-    "entry.2005620554": params.name,
-    "entry.1045781291": params.email,
-    "entry.1166974658": params.phone,
-    "entry.839337160": params.plan,
-    "entry.1237473814": params.card,
-    "entry.2030698708": params.price,
-    "entry.1770822543": params.notes
-        })
+body: new URLSearchParams({
+  "entry.2005620554": params.name,
+  "entry.1045781291": params.email,
+  "entry.1166974658": params.phone,
+  "entry.839337160": params.plan,
+  "entry.1237473814": params.card,
+  "entry.2030698708": params.price,
+  "entry.1770822543": params.notes,
+  "entry.1490689129": params.profile,
+  "entry.1551542251": params.portfolio1 || ""
+})
       });
 
     })
@@ -1035,23 +1052,25 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
     };
 
   const profileFile = document.getElementById("profilePhoto").files[0];
+const profileFile = document.getElementById("profilePhoto").files[0];
 
-toBase64(profileFile).then(function(profileBase64){
+uploadToCloudinary(profileFile).then(function(profileURL){
 
-  params.profile = profileBase64;
+  params.profile = profileURL;
 
-  // OPTIONAL: only send 1 portfolio image to avoid overload
   if(selectedPlan === "pro" || selectedPlan === "elite"){
     const files = document.getElementById("portfolioPhotos").files;
 
     if(files.length > 0){
-      toBase64(files[0]).then(function(p1){
-        params.portfolio1 = p1;
+      uploadToCloudinary(files[0]).then(function(p1URL){
+
+        params.portfolio1 = p1URL;
 
         sendEmailNow(params);
+
       });
     } else {
-     sendEmailNow(params);
+      sendEmailNow(params);
     }
 
   } else {
