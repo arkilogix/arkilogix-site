@@ -927,7 +927,7 @@ animatePrice(totalPrice, current, total);
 inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
 inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architect";
 inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Your Arch Studio";
-
+inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
 function toggleFAQ(el){el.classList.toggle("active");}
 
 window.onload=function(){
@@ -1186,8 +1186,7 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
   setTimeout(() => {
     closeOrderModal();
   }, 2000);
-      });
-
+      }
     });
 
   });
