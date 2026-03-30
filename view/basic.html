@@ -42,30 +42,27 @@
 </div>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+function loadClient(){
 
-  if (!id) {
-    document.getElementById("name").textContent = "No ID provided";
-  } else {
-    fetch(`../clients/${id}.json`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error("File not found");
-        }
-        return res.json();
-      })
-      .then(data => {
-        document.getElementById("name").textContent = data.name;
-        document.getElementById("profession").textContent = data.profession;
-        document.getElementById("company").textContent = data.company;
-        document.getElementById("about").textContent = data.about;
-      })
-      .catch(err => {
-        document.getElementById("name").textContent = "Error loading data";
-        console.error(err);
-      });
+  const params = new URLSearchParams(window.location.search);
+
+  const name = params.get("name");
+  const profession = params.get("profession");
+  const company = params.get("company");
+  const about = params.get("about");
+  const profile = params.get("profile");
+
+  document.getElementById("previewName").innerText = name || "No Name";
+  document.getElementById("previewProfession").innerText = profession || "";
+  document.getElementById("previewCompany").innerText = company || "";
+  document.getElementById("previewAbout").innerText = about || "";
+
+  if(profile){
+    document.getElementById("profile").src = profile;
   }
+}
+
+loadClient();
 </script>
 
 </body>
