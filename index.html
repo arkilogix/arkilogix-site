@@ -1077,16 +1077,9 @@ toBase64(profileFile).then(function(profileBase64){
       `);
 document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
 document.querySelector(".modal-btn").disabled = false;
-      setTimeout(() => {
-        closeOrderModal();
-      }, 2000);
-
-    }, function(error){
-      alert("Failed to send order.");
-      console.log(error);
-document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
-document.querySelector(".modal-btn").disabled = false;
-    });
+  setTimeout(() => {
+  closeOrderModal();
+}, 2000);
 
   });
 
