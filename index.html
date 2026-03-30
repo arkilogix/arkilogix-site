@@ -969,8 +969,10 @@ function closeOrderModal() {
   emailjs.send("service_gxckvp8", "template_dbofkzz", params)
     .then(function(){
 
+      // Send to customer
       emailjs.send("service_gxckvp8", "template_07td6mf", params);
 
+      // Send to Google Sheets
       fetch("https://docs.google.com/forms/d/e/1FAIpQLScfoYPea0wAeb6ltL9eQtGgm1LhQHIWG4TFBSIXB37tLj1DBQ/formResponse", {
         method: "POST",
         mode: "no-cors",
@@ -987,6 +989,17 @@ function closeOrderModal() {
           "entry.1770822543": params.notes
         })
       });
+
+    })
+    .catch(function(error){
+      alert("Failed to send order.");
+      console.log(error);
+
+      document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
+      document.querySelector(".modal-btn").disabled = false;
+    });
+
+};
 
     .catch(function(error){
       alert("Failed to send order.");
@@ -1086,12 +1099,6 @@ document.querySelector(".modal-btn").disabled = false;
 document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
 document.querySelector(".modal-btn").disabled = false;
     });
-
-}
-
-
-
-  });
 
 });
 </script>
