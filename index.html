@@ -1104,14 +1104,11 @@ else if(selectedPlan === "elite"){
 
 // 🔥 GENERATE LINK
 const clientLink = window.location.origin + "/view/" + page + "?id=" + clientId;
+        document.getElementById("formContent").classList.add("hidden");
+document.getElementById("successContent").classList.remove("hidden");
 
-// 🔥 SHOW + OPEN
-      updateProgress("Order complete!", 100);
-alert("✅ Order Confirmed!\n\nClient Link:\n" + clientLink);
+document.getElementById("clientLinkBox").value = clientLink;
 
-window.open(clientLink, "_blank");
-
-closeOrderModal();
 
       }catch(err){
         alert(err || "Something went wrong.");
@@ -1127,7 +1124,7 @@ closeOrderModal();
 </script>
   
 <!-- ===== ORDER MODAL START ===== -->
-<div id="orderModal" class="modal">
+<div class="modal-content" id="formContent">
 
   <div class="modal-content">
 
