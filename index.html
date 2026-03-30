@@ -467,7 +467,12 @@ html {
   inset:0;
   background:rgba(0,0,0,0.75);
   backdrop-filter:blur(8px);
-  z-index:2000; /* 🔥 higher than header */
+  z-index:2000;
+
+  /* ✅ CENTER FIX */
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 .modal-content{
