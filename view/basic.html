@@ -45,7 +45,7 @@
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
-  fetch(`../clients/${id}.json`)
+  fetch(`/arkilogix-site/clients/${id}.json`)
     .then(res => res.json())
     .then(data => {
       document.getElementById("name").textContent = data.name;
