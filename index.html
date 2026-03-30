@@ -995,7 +995,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try{
         const params = {
-          name: name.value,
+          name: document.getElementById("name").value,
           email: email.value,
           phone: phone.value,
           notes: notes.value,
@@ -1004,7 +1004,10 @@ document.addEventListener("DOMContentLoaded", () => {
           card: selectedCard,
           price: basePrices[selectedPlan] + cardPrice
         };
-
+        const clientId = (params.name || "client")
+      .toLowerCase()
+      .replace(/\s+/g, '-') + "-" + Date.now();
+        
         const profile = profilePhoto.files[0];
         const highlight = highlightPhoto.files[0];
 
