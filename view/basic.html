@@ -42,21 +42,37 @@
 </div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
 
-fetch(`/arkilogix-site/clients/${id}.json`
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("name").textContent = data.name;
-      document.getElementById("profession").textContent = data.profession;
-      document.getElementById("company").textContent = data.company;
-      document.getElementById("about").textContent = data.about;
-    })
-    .catch(err => {
-      document.getElementById("name").textContent = "Error loading data";
-      console.error(err);
-    });
+  console.log("ID:", id);
+
+  if (!id) {
+    document.getElementById("name").textContent = "No ID provided";
+  } else {
+    const url = `/arkilogix-site/clients/${id}.json`;
+    console.log("Fetching:", url);
+
+    fetch(url)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("File not found");
+        }
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById("name").textContent = data.name;
+        document.getElementById("profession").textContent = data.profession;
+        document.getElementById("company").textContent = data.company;
+        document.getElementById("about").textContent = data.about;
+      })
+      .catch(err => {
+        document.getElementById("name").textContent = "Error loading data";
+        console.error(err);
+      });
+  }
+</script>
 </script>
 
 </body>
