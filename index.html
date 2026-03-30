@@ -826,10 +826,9 @@ No problem. You can still share your card using a direct link.
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("orderForm");
 
-  if(!form){
-    console.error("orderForm not found");
-    return;
-  }
+if(!form){
+  console.error("orderForm not found");
+} else {
 
   form.addEventListener("submit", async function(e) {
     e.preventDefault();
@@ -949,6 +948,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   btn.innerText = "Secure My NFC Card";
   btn.disabled = false;
+  }
 });
 </script>
   
