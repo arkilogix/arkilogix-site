@@ -475,10 +475,18 @@ html {
   background:#fff;
   width:90%;
   max-width:420px;
+  max-height:85vh; /* 🔥 LIMIT HEIGHT */
   padding:28px;
   border-radius:18px;
   position:relative;
   animation:fadeUp .35s ease;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+
+  overflow:hidden; /* prevent overflow outside */
 }
 
 .modal-content h2{
@@ -543,8 +551,12 @@ html {
 
 form#orderForm{
   width:100%;
-  max-width:320px; /* 👈 THIS CENTERS FORM */
+  max-width:320px;
   margin:0 auto;
+
+  overflow-y:auto;   /* 🔥 SCROLL */
+  max-height:55vh;   /* 🔥 LIMIT FORM HEIGHT */
+  padding-right:6px; /* avoids scrollbar overlap */
 }
 
 .modal-content input,
@@ -613,6 +625,13 @@ form#orderForm{
 }
   .preview-wrapper{
   align-items:center; /* instead of flex-start */
+}
+  form#orderForm::-webkit-scrollbar{
+  width:4px;
+}
+form#orderForm::-webkit-scrollbar-thumb{
+  background:#ccc;
+  border-radius:10px;
 }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
