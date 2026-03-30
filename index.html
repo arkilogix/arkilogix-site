@@ -966,7 +966,7 @@ function openOrderModal() {
   document.getElementById("summaryPrice").innerText =
     "₱" + total.toLocaleString();
   if(selectedPlan === "pro" || selectedPlan === "elite"){
-  document.getElementById("portfolioUpload").style.display = "block";
+    document.getElementById("portfolioUpload").style.display = "block";
 }else{
   document.getElementById("portfolioUpload").style.display = "none";
 }
@@ -1025,7 +1025,15 @@ body: new URLSearchParams({
   document.getElementById("orderForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    
+  const params = {
+  name: document.getElementById("name").value,
+  email: document.getElementById("email").value,
+  phone: document.getElementById("phone").value,
+  notes: document.getElementById("notes").value,
+  plan: selectedPlan,
+  card: selectedCard,
+  price: basePrices[selectedPlan] + cardPrice
+};
 const profile = document.getElementById("profilePhoto").files[0];
 const highlight = document.getElementById("highlightPhoto").files[0];
 
@@ -1038,96 +1046,88 @@ if(!profile){
   return;
 }
 
-if(selectedPlan === "pro" || selectedPlan === "elite"){
-  const portfolio = document.getElementById("portfolioPhotos").files;
+    uploadToCloudinary(profile).then(function(profileURL){
 
-  if(portfolio.length < 3){
-    alert("Please upload at least 3 portfolio images");
-    return;
-  }
-}
-        const btn = document.querySelector(".modal-btn");
-btn.innerText = "Processing...";
-btn.disabled = true;
-    const params = {
-      name: document.getElementById("name").value,
-      email: document.getElementById("email").value,
-      phone: document.getElementById("phone").value,
-      notes: document.getElementById("notes").value,
-
-      plan: selectedPlan,
-      card: selectedCard,
-      price: basePrices[selectedPlan] + cardPrice
-    };
-
-const profileFile = document.getElementById("profilePhoto").files[0];
-const highlightFile = document.getElementById("highlightPhoto").files[0];
-
-uploadToCloudinary(profileFile).then(function(profileURL){
   params.profile = profileURL;
-  uploadToCloudinary(highlightFile).then(function(highlightURL){
+
+  uploadToCloudinary(highlight).then(function(highlightURL){
+
     params.highlight = highlightURL;
-  params.profile = profileURL;
-
-  if(selectedPlan === "pro" || selectedPlan === "elite"){
-    const files = document.getElementById("portfolioPhotos").files;
-
-    let uploadPromises = [];
-
-    for(let i = 0; i < files.length; i++){
-      uploadPromises.push(uploadToCloudinary(files[i]));
-}
-
-Promise.all(uploadPromises).then(function(urls){
-
-  params.portfolio1 = urls[0] || "";
-  params.portfolio2 = urls[1] || "";
-  params.portfolio3 = urls[2] || "";
-
-  sendEmailNow(params);
-
-});
     
-    if(files.length > 0){
-      uploadToCloudinary(files[0]).then(function(p1URL){
+if(selectedPlan === "pro" || selectedPlan === "elite"){
+  if(files.length < 3){
+  alert("Please upload at least 3 portfolio images");
+  return;
+}
+  const files = document.getElementById("portfolioPhotos").files;
 
-        params.portfolio1 = p1URL;
+  let uploadPromises = [];
 
-        sendEmailNow(params);
-
-      });
-    } else {
-      sendEmailNow(params);
-    }
-
-  } else {
-    sendEmailNow(params);
+  for(let i = 0; i < files.length; i++){
+    uploadPromises.push(uploadToCloudinary(files[i]));
   }
 
-});
+  Promise.all(uploadPromises).then(function(urls){
 
+    params.portfolio1 = urls[0] || "";
+    params.portfolio2 = urls[1] || "";
+    params.portfolio3 = urls[2] || "";
 
+    sendEmailNow(params);
 
-      // ✅ SUCCESS UI
-      const form = document.getElementById("orderForm");
+    // ✅ SUCCESS UI
+    const form = document.getElementById("orderForm");
 
-      form.reset();
+    form.reset();
 
-      form.insertAdjacentHTML("beforebegin", `
-        <div id="successMsg" style="text-align:center; padding:10px;">
-          <h3 style="margin-bottom:5px;">✅ Order Confirmed</h3>
-          <p style="font-size:13px; color:#666;">
-            We’ll contact you within 24 hours.
-          </p>
-        </div>
-      `);
-document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
-document.querySelector(".modal-btn").disabled = false;
-  setTimeout(() => {
-  closeOrderModal();
-}, 2000);
+    form.insertAdjacentHTML("beforebegin", `
+      <div id="successMsg" style="text-align:center; padding:10px;">
+        <h3 style="margin-bottom:5px;">✅ Order Confirmed</h3>
+        <p style="font-size:13px; color:#666;">
+          We’ll contact you within 24 hours.
+        </p>
+      </div>
+    `);
+
+    document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
+    document.querySelector(".modal-btn").disabled = false;
+
+    setTimeout(() => {
+      closeOrderModal();
+    }, 2000);
 
   });
+
+} else {
+
+  // ✅ BASIC PLAN (NO PORTFOLIO)
+  sendEmailNow(params);
+
+  const form = document.getElementById("orderForm");
+
+  form.reset();
+
+  form.insertAdjacentHTML("beforebegin", `
+    <div id="successMsg" style="text-align:center; padding:10px;">
+      <h3 style="margin-bottom:5px;">✅ Order Confirmed</h3>
+      <p style="font-size:13px; color:#666;">
+        We’ll contact you within 24 hours.
+      </p>
+    </div>
+  `);
+
+  document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
+  document.querySelector(".modal-btn").disabled = false;
+
+  setTimeout(() => {
+    closeOrderModal();
+  }, 2000);
+
+}
+  });
+
+});
+      });
 
 });
 </script>
@@ -1181,7 +1181,7 @@ document.querySelector(".modal-btn").disabled = false;
   <input type="file" id="highlightPhoto" accept="image/*" required>
 
   <div id="portfolioUpload" style="display:none;">
-    <label class="upload-label">Portfolio Images (min 4)</label>
+    <label class="upload-label">Portfolio Images (Upload 3 images)</label>
     <input type="file" id="portfolioPhotos" accept="image/*" multiple>
   </div>
 
