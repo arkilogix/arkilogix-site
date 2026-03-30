@@ -1030,9 +1030,30 @@ document.addEventListener("DOMContentLoaded", () => {
           params.portfolio3 = urls[2];
         }
 
-        sendEmailNow(params);
-        alert("✅ Order Confirmed!");
-        closeOrderModal();
+sendEmailNow(params);
+
+// 🔥 CREATE UNIQUE ID
+const clientId = params.name.toLowerCase().replace(/\s+/g, '-') + "-" + Date.now();
+
+// 🔥 SELECT TEMPLATE
+let page = "basic.html";
+
+if(selectedPlan === "pro"){
+  page = "pro.html";
+}
+else if(selectedPlan === "elite"){
+  page = "elite.html";
+}
+
+// 🔥 GENERATE LINK
+const clientLink = "/view/" + page + "?id=" + clientId;
+
+// 🔥 SHOW + OPEN
+alert("✅ Order Confirmed!\n\nClient Link:\n" + clientLink);
+
+window.open(clientLink, "_blank");
+
+closeOrderModal();
 
       }catch(err){
         alert(err || "Something went wrong.");
