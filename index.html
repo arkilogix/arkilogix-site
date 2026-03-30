@@ -801,7 +801,15 @@ No problem. You can still share your card using a direct link.
 </div>
 
 <script>
-(function(){
+function toBase64(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = ()=>resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+  (function(){
   emailjs.init("Wp1sOcLJH-dg_dkLs");
 })();
   
@@ -942,6 +950,11 @@ function openOrderModal() {
 
   document.getElementById("summaryPrice").innerText =
     "₱" + total.toLocaleString();
+  if(selectedPlan === "pro" || selectedPlan === "elite"){
+  document.getElementById("portfolioUpload").style.display = "block";
+}else{
+  document.getElementById("portfolioUpload").style.display = "none";
+}
 }
 
 function closeOrderModal() {
@@ -956,7 +969,22 @@ function closeOrderModal() {
 
   document.getElementById("orderForm").addEventListener("submit", function(e) {
     e.preventDefault();
+const profile = document.getElementById("profilePhoto").files[0];
 
+if(!profile){
+  alert("Please upload a profile photo");
+  return;
+}
+
+if(selectedPlan === "pro" || selectedPlan === "elite"){
+  const portfolio = document.getElementById("portfolioPhotos").files;
+
+  if(portfolio.length < 4){
+    alert("Please upload at least 4 portfolio images");
+    return;
+  }
+}
+    
     const params = {
       name: document.getElementById("name").value,
       email: document.getElementById("email").value,
@@ -968,8 +996,40 @@ function closeOrderModal() {
       price: basePrices[selectedPlan] + cardPrice
     };
 
-   emailjs.send("service_gxckvp8", "template_dbofkzz", params)
-  .then(function() {
+  const profileFile = document.getElementById("profilePhoto").files[0];
+
+toBase64(profileFile).then(function(profileBase64){
+
+  params.profile = profileBase64;
+
+  // OPTIONAL: only send 1 portfolio image to avoid overload
+  if(selectedPlan === "pro" || selectedPlan === "elite"){
+    const files = document.getElementById("portfolioPhotos").files;
+
+    if(files.length > 0){
+      toBase64(files[0]).then(function(p1){
+        params.portfolio1 = p1;
+
+        sendEmailNow();
+      });
+    } else {
+      sendEmailNow();
+    }
+
+  } else {
+    sendEmailNow();
+  }
+
+});
+
+function sendEmailNow(){
+
+  emailjs.send("service_gxckvp8", "template_dbofkzz", params)
+    .then(function(){
+
+      emailjs.send("service_gxckvp8", "template_07td6mf", params);
+
+      // KEEP YOUR GOOGLE SHEETS CODE HERE
 
     emailjs.send("service_gxckvp8", "template_07td6mf", params);
 
@@ -1058,7 +1118,17 @@ form.insertAdjacentHTML("beforebegin", `
       <input type="email" id="email" placeholder="Email Address" required>
       <input type="text" id="phone" placeholder="Phone Number" required>
       <textarea id="notes" placeholder="Notes (optional)"></textarea>
+<div class="upload-box">
 
+  <label class="upload-label">Profile Photo</label>
+  <input type="file" id="profilePhoto" accept="image/*" required>
+
+  <div id="portfolioUpload" style="display:none;">
+    <label class="upload-label">Portfolio Images (min 4)</label>
+    <input type="file" id="portfolioPhotos" accept="image/*" multiple>
+  </div>
+
+</div>
       <button type="submit" class="modal-btn">
         Secure My NFC Card
       </button>
