@@ -149,6 +149,7 @@ input,textarea{
   border:1px solid #ddd;
   border-radius:10px;
   font-size:13px;
+  box-sizing:border-box; /* 🔥 CRITICAL FIX */
 }
 input:focus,textarea:focus{outline:none;border-color:#000;}
 
@@ -473,8 +474,8 @@ html {
 
 .modal-content{
   background:#fff;
-  width:90%;
-  max-width:420px;
+  width:92%;
+  max-width:480px;
   max-height:85vh; /* 🔥 LIMIT HEIGHT */
   padding:28px;
   border-radius:18px;
@@ -551,12 +552,14 @@ html {
 
 form#orderForm{
   width:100%;
-  max-width:320px;
+  max-width:100%;     /* 🔥 FULL WIDTH now */
   margin:0 auto;
 
-  overflow-y:auto;   /* 🔥 SCROLL */
-  max-height:55vh;   /* 🔥 LIMIT FORM HEIGHT */
-  padding-right:6px; /* avoids scrollbar overlap */
+  overflow-y:auto;
+  max-height:55vh;
+
+  padding-right:4px;
+  box-sizing:border-box; /* 🔥 prevents overflow */
 }
 
 .modal-content input,
@@ -632,6 +635,9 @@ form#orderForm{
 form#orderForm::-webkit-scrollbar-thumb{
   background:#ccc;
   border-radius:10px;
+}
+  .modal-content{
+  overflow-x:hidden;
 }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
