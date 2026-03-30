@@ -964,11 +964,48 @@ function closeOrderModal() {
   const msg = document.getElementById("successMsg");
   if(msg) msg.remove();
 }
-  
+  function sendEmailNow(params){
+
+  emailjs.send("service_gxckvp8", "template_dbofkzz", params)
+    .then(function(){
+
+      emailjs.send("service_gxckvp8", "template_07td6mf", params);
+
+      fetch("https://docs.google.com/forms/d/e/1FAIpQLScfoYPea0wAeb6ltL9eQtGgm1LhQHIWG4TFBSIXB37tLj1DBQ/formResponse", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          "entry.2005620554": params.name,
+          "entry.1045781291": params.email,
+          "entry.1166974658": params.phone,
+          "entry.839337160": params.plan,
+          "entry.1237473814": params.card,
+          "entry.2030698708": params.price,
+          "entry.1770822543": params.notes
+        })
+      });
+
+    .catch(function(error){
+      alert("Failed to send order.");
+      console.log(error);
+
+      document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
+      document.querySelector(".modal-btn").disabled = false;
+    });
+
+}
+      
   window.addEventListener("DOMContentLoaded", function(){
 
   document.getElementById("orderForm").addEventListener("submit", function(e) {
     e.preventDefault();
+    const btn = document.querySelector(".modal-btn");
+btn.innerText = "Processing...";
+btn.disabled = true;
+    
 const profile = document.getElementById("profilePhoto").files[0];
 
 if(!profile){
@@ -1010,43 +1047,19 @@ toBase64(profileFile).then(function(profileBase64){
       toBase64(files[0]).then(function(p1){
         params.portfolio1 = p1;
 
-        sendEmailNow();
+        sendEmailNow(params);
       });
     } else {
-      sendEmailNow();
+     sendEmailNow(params);
     }
 
   } else {
-    sendEmailNow();
+    sendEmailNow(params);
   }
 
 });
 
-function sendEmailNow(){
 
-  emailjs.send("service_gxckvp8", "template_dbofkzz", params)
-    .then(function(){
-
-      // ✅ SEND CUSTOMER EMAIL ONCE
-      emailjs.send("service_gxckvp8", "template_07td6mf", params);
-
-      // ✅ GOOGLE SHEETS
-      fetch("https://docs.google.com/forms/d/e/1FAIpQLScfoYPea0wAeb6ltL9eQtGgm1LhQHIWG4TFBSIXB37tLj1DBQ/formResponse", {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: new URLSearchParams({
-          "entry.2005620554": params.name,
-          "entry.1045781291": params.email,
-          "entry.1166974658": params.phone,
-          "entry.839337160": params.plan,
-          "entry.1237473814": params.card,
-          "entry.2030698708": params.price,
-          "entry.1770822543": params.notes
-        })
-      });
 
       // ✅ SUCCESS UI
       const form = document.getElementById("orderForm");
@@ -1061,7 +1074,8 @@ function sendEmailNow(){
           </p>
         </div>
       `);
-
+document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
+document.querySelector(".modal-btn").disabled = false;
       setTimeout(() => {
         closeOrderModal();
       }, 2000);
@@ -1069,30 +1083,13 @@ function sendEmailNow(){
     }, function(error){
       alert("Failed to send order.");
       console.log(error);
+document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
+document.querySelector(".modal-btn").disabled = false;
     });
 
 }
 
-const form = document.getElementById("orderForm");
 
-form.reset();
-
-form.insertAdjacentHTML("beforebegin", `
-  <div id="successMsg" style="text-align:center; padding:10px;">
-    <h3 style="margin-bottom:5px;">✅ Order Confirmed</h3>
-    <p style="font-size:13px; color:#666;">
-      We’ll contact you within 24 hours.
-    </p>
-  </div>
-`);
-    setTimeout(() => {
-  closeOrderModal();
-}, 2000);
-
-      }, function(error) {
-        alert("Failed to send order.");
-        console.log(error);
-      });
 
   });
 
