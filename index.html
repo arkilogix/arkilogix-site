@@ -642,6 +642,37 @@ form#orderForm::-webkit-scrollbar-thumb{
   .modal-content{
   overflow-x:hidden;
 }
+  .modal-btn.loading{
+  opacity:0.7;
+  pointer-events:none;
+}
+  /* ===== PROGRESS UI ===== */
+.progress-box{
+  width:100%;
+  margin-bottom:15px;
+  text-align:left;
+}
+
+.progress-text{
+  font-size:12px;
+  color:#555;
+  margin-bottom:6px;
+}
+
+.progress-bar{
+  width:100%;
+  height:6px;
+  background:#eee;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.progress-fill{
+  width:0%;
+  height:100%;
+  background:#000;
+  transition:width .4s ease;
+}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
@@ -981,6 +1012,15 @@ function sendEmailNow(params){
 }
 
 /* ================= INIT AFTER LOAD ================= */
+  function updateProgress(text, percent){
+  const box = document.getElementById("progressBox");
+  const fill = document.getElementById("progressFill");
+  const txt = document.getElementById("progressText");
+
+  box.style.display = "block";
+  txt.innerText = text;
+  fill.style.width = percent + "%";
+}
 document.addEventListener("DOMContentLoaded", () => {
 
   setPlan("pro",1,document.querySelector(".selector span.active"));
@@ -989,14 +1029,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("orderForm");
 
   if(form){
+    
     form.addEventListener("submit", async function(e){
       e.preventDefault();
 
       const btn = document.querySelector(".modal-btn");
-      btn.innerText = "Processing...";
+      btn.innerText = "Uploading images...";
       btn.disabled = true;
 
       try{
+        updateProgress("Preparing order...", 10);
+btn.classList.add("loading");
 const params = {
   name: document.getElementById("name").value,
   email: document.getElementById("email").value,
@@ -1021,12 +1064,14 @@ const highlight = document.getElementById("highlightPhoto").files[0];
 
         if(!profile) throw "Please upload a profile photo";
 
+        updateProgress("Uploading profile...", 25);
         params.profile = await uploadToCloudinary(profile);
 
 if(selectedPlan === "pro" || selectedPlan === "elite"){
   if(!highlight){
     throw "Please upload a highlighted project";
   }
+  pdateProgress("Uploading highlight...", 45);
   params.highlight = await uploadToCloudinary(highlight);
 }
 
@@ -1036,14 +1081,14 @@ const files = document.getElementById("portfolioPhotos").files;
           if(files.length < 3){
             throw "Please upload at least 3 portfolio images";
           }
-
+          updateProgress("Uploading portfolio...", 70);
           const urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
 
           params.portfolio1 = urls[0];
           params.portfolio2 = urls[1];
           params.portfolio3 = urls[2];
         }
-
+updateProgress("Finalizing order...", 90);
 sendEmailNow(params);
 
 
@@ -1061,6 +1106,7 @@ else if(selectedPlan === "elite"){
 const clientLink = window.location.origin + "/view/" + page + "?id=" + clientId;
 
 // 🔥 SHOW + OPEN
+      updateProgress("Order complete!", 100);
 alert("✅ Order Confirmed!\n\nClient Link:\n" + clientLink);
 
 window.open(clientLink, "_blank");
@@ -1071,8 +1117,9 @@ closeOrderModal();
         alert(err || "Something went wrong.");
       }
 
-      btn.innerText = "Secure My NFC Card";
-      btn.disabled = false;
+    btn.innerText = "Secure My NFC Card";
+    btn.disabled = false;
+    btn.classList.remove("loading");
     });
   }
 
@@ -1115,7 +1162,13 @@ closeOrderModal();
 
     <!-- FORM -->
     <form id="orderForm">
-
+<!-- 🔥 PROGRESS UI -->
+<div class="progress-box" id="progressBox" style="display:none;">
+  <div class="progress-text" id="progressText">Preparing order...</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="email" id="email" placeholder="Email Address" required>
       <input type="text" id="phone" placeholder="Phone Number" required>
