@@ -965,10 +965,15 @@ function openOrderModal() {
 
   document.getElementById("summaryPrice").innerText =
     "₱" + total.toLocaleString();
-  if(selectedPlan === "pro" || selectedPlan === "elite"){
-    document.getElementById("portfolioUpload").style.display = "block";
-}else{
+ if(selectedPlan === "pro" || selectedPlan === "elite"){
+  document.getElementById("highlightUpload").style.display = "block";
+  document.getElementById("portfolioUpload").style.display = "block";
+}
+ else{
+
+  document.getElementById("highlightUpload").style.display = "none";
   document.getElementById("portfolioUpload").style.display = "none";
+
 }
 }
 
@@ -1175,15 +1180,18 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
       <textarea id="notes" placeholder="About You (optional)"></textarea>
 <div class="upload-box">
 
-  <label class="upload-label">Profile Photo</label>
-  <input type="file" id="profilePhoto" accept="image/*" required>
-  <label class="upload-label">Highlighted Project (Required)</label>
-  <input type="file" id="highlightPhoto" accept="image/*" required>
+<label class="upload-label">Profile Photo</label>
+<input type="file" id="profilePhoto" accept="image/*" required>
 
-  <div id="portfolioUpload" style="display:none;">
-    <label class="upload-label">Portfolio Images (Upload 3 images)</label>
-    <input type="file" id="portfolioPhotos" accept="image/*" multiple>
-  </div>
+<div id="highlightUpload" style="display:none;">
+  <label class="upload-label">Highlighted Project (Required)</label>
+  <input type="file" id="highlightPhoto" accept="image/*">
+</div>
+
+<div id="portfolioUpload" style="display:none;">
+  <label class="upload-label">Portfolio Images (Upload 3 images)</label>
+  <input type="file" id="portfolioPhotos" accept="image/*" multiple>
+</div>
 
 </div>
       <button type="submit" class="modal-btn">
