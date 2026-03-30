@@ -1002,8 +1002,12 @@ body: new URLSearchParams({
   "entry.1237473814": params.card,
   "entry.2030698708": params.price,
   "entry.1770822543": params.notes,
-  "entry.1490689129": params.profile,
-  "entry.1551542251": params.portfolio1 || ""
+
+  "entry.842811588": params.profile,
+  "entry.437981218": params.highlight,
+  "entry.2057816930": params.portfolio1 || "",
+  "entry.572745028": params.portfolio2 || "",
+  "entry.965006650": params.portfolio3 || ""
 })
       });
 
@@ -1020,12 +1024,15 @@ body: new URLSearchParams({
 
   document.getElementById("orderForm").addEventListener("submit", function(e) {
     e.preventDefault();
-    const btn = document.querySelector(".modal-btn");
-btn.innerText = "Processing...";
-btn.disabled = true;
+
     
 const profile = document.getElementById("profilePhoto").files[0];
+const highlight = document.getElementById("highlightPhoto").files[0];
 
+if(!highlight){
+  alert("Please upload a highlighted project image");
+  return;
+}
 if(!profile){
   alert("Please upload a profile photo");
   return;
@@ -1034,12 +1041,14 @@ if(!profile){
 if(selectedPlan === "pro" || selectedPlan === "elite"){
   const portfolio = document.getElementById("portfolioPhotos").files;
 
-  if(portfolio.length < 4){
-    alert("Please upload at least 4 portfolio images");
+  if(portfolio.length < 3){
+    alert("Please upload at least 3 portfolio images");
     return;
   }
 }
-    
+        const btn = document.querySelector(".modal-btn");
+btn.innerText = "Processing...";
+btn.disabled = true;
     const params = {
       name: document.getElementById("name").value,
       email: document.getElementById("email").value,
@@ -1052,14 +1061,33 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
     };
 
 const profileFile = document.getElementById("profilePhoto").files[0];
+const highlightFile = document.getElementById("highlightPhoto").files[0];
 
 uploadToCloudinary(profileFile).then(function(profileURL){
-
+  params.profile = profileURL;
+  uploadToCloudinary(highlightFile).then(function(highlightURL){
+    params.highlight = highlightURL;
   params.profile = profileURL;
 
   if(selectedPlan === "pro" || selectedPlan === "elite"){
     const files = document.getElementById("portfolioPhotos").files;
 
+    let uploadPromises = [];
+
+    for(let i = 0; i < files.length; i++){
+      uploadPromises.push(uploadToCloudinary(files[i]));
+}
+
+Promise.all(uploadPromises).then(function(urls){
+
+  params.portfolio1 = urls[0] || "";
+  params.portfolio2 = urls[1] || "";
+  params.portfolio3 = urls[2] || "";
+
+  sendEmailNow(params);
+
+});
+    
     if(files.length > 0){
       uploadToCloudinary(files[0]).then(function(p1URL){
 
@@ -1144,11 +1172,13 @@ document.querySelector(".modal-btn").disabled = false;
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="email" id="email" placeholder="Email Address" required>
       <input type="text" id="phone" placeholder="Phone Number" required>
-      <textarea id="notes" placeholder="Notes (optional)"></textarea>
+      <textarea id="notes" placeholder="About You (optional)"></textarea>
 <div class="upload-box">
 
   <label class="upload-label">Profile Photo</label>
   <input type="file" id="profilePhoto" accept="image/*" required>
+  <label class="upload-label">Highlighted Project (Required)</label>
+  <input type="file" id="highlightPhoto" accept="image/*" required>
 
   <div id="portfolioUpload" style="display:none;">
     <label class="upload-label">Portfolio Images (min 4)</label>
