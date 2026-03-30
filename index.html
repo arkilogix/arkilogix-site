@@ -823,133 +823,229 @@ No problem. You can still share your card using a direct link.
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("orderForm");
+<script>
+/* ================= INIT ================= */
+(function(){
+  emailjs.init("Wp1sOcLJH-dg_dkLs");
+})();
 
-if(!form){
-  console.error("orderForm not found");
-} else {
+/* ================= STATE ================= */
+const basePrices = { basic:599, pro:1199, elite:1999 };
 
-  form.addEventListener("submit", async function(e) {
-    e.preventDefault();
+let selectedPlan = "pro";
+let selectedCard = "white";
+let cardPrice = 0;
 
-    const btn = document.querySelector(".modal-btn");
-    btn.innerText = "Processing...";
-    btn.disabled = true;
+/* ================= HELPERS ================= */
+const formatPeso = val => "₱" + val.toLocaleString();
 
-    try{
-      const params = {
-        name: name.value,
-        email: email.value,
-        phone: phone.value,
-        notes: notes.value,
-        services: [service1.value,service2.value,service3.value,service4.value],
-        plan: selectedPlan,
-        card: selectedCard,
-        price: basePrices[selectedPlan] + cardPrice
-      };
+async function uploadToCloudinary(file){
+  if(!file) return "";
 
-      const profile = profilePhoto.files[0];
-      const highlight = highlightPhoto.files[0];
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "nfc_upload");
 
-      if(!profile) throw "Please upload a profile photo";
-
-      params.profile = await uploadToCloudinary(profile);
-
-      if((selectedPlan==="pro"||selectedPlan==="elite") && highlight){
-        params.highlight = await uploadToCloudinary(highlight);
-      }
-
-      if(selectedPlan==="pro"||selectedPlan==="elite"){
-        const files = portfolioPhotos.files;
-
-        if(files.length < 3){
-          throw "Please upload at least 3 portfolio images";
-        }
-
-        const urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
-
-        params.portfolio1 = urls[0];
-        params.portfolio2 = urls[1];
-        params.portfolio3 = urls[2];
-      }
-
-      sendEmailNow(params);
-      alert("✅ Order Confirmed!");
-      closeOrderModal();
-
-    }catch(err){
-      alert(err || "Something went wrong.");
-    }
-
-    btn.innerText = "Secure My NFC Card";
-    btn.disabled = false;
+  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
+    method: "POST",
+    body: formData
   });
 
-});
-  e.preventDefault();
+  const data = await res.json();
+  return data.secure_url;
+}
 
-  const btn = document.querySelector(".modal-btn");
-  btn.innerText = "Processing...";
-  btn.disabled = true;
+/* ================= PRICE ================= */
+function animatePrice(el, start, end){
+  const duration = 300;
+  let startTime = null;
 
-  const params = {
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
-    notes: document.getElementById("notes").value,
-    services: [
-      document.getElementById("service1").value,
-      document.getElementById("service2").value,
-      document.getElementById("service3").value,
-      document.getElementById("service4").value
-    ],
-    plan: selectedPlan,
-    card: selectedCard,
-    price: basePrices[selectedPlan] + cardPrice
-  };
+  function update(t){
+    if(!startTime) startTime = t;
+    const progress = Math.min((t - startTime) / duration, 1);
+    const value = Math.floor(start + (end - start) * progress);
 
-  try {
-    const profile = document.getElementById("profilePhoto").files[0];
-    const highlight = document.getElementById("highlightPhoto").files[0];
+    el.innerText = formatPeso(value);
 
-    if(!profile){
-      alert("Please upload a profile photo");
-      return;
-    }
+    if(progress < 1) requestAnimationFrame(update);
+  }
 
-    params.profile = await uploadToCloudinary(profile);
+  requestAnimationFrame(update);
+}
 
-    if((selectedPlan === "pro" || selectedPlan === "elite") && highlight){
-      params.highlight = await uploadToCloudinary(highlight);
-    }
+function updateTotal(){
+  const service = basePrices[selectedPlan];
+  const total = service + cardPrice;
 
-    if(selectedPlan === "pro" || selectedPlan === "elite"){
-      const files = document.getElementById("portfolioPhotos").files;
+  document.getElementById("servicePrice").innerText = formatPeso(service);
+  document.getElementById("cardPriceDisplay").innerText = formatPeso(cardPrice);
 
-      if(files.length < 3){
-        alert("Please upload at least 3 portfolio images");
-        return;
+  const totalEl = document.getElementById("totalPrice");
+  const current = parseInt(totalEl.innerText.replace(/[^\d]/g,'')) || 0;
+
+  animatePrice(totalEl, current, total);
+}
+
+/* ================= PLAN ================= */
+function setPlan(plan,index,el){
+  document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
+  el.classList.add("active");
+
+  document.getElementById("slider").style.left=(index*33.33)+"%";
+
+  selectedPlan = plan;
+  updateTotal();
+
+  const phoneImage = document.getElementById("phoneImage");
+  const phoneBox = document.getElementById("phoneBox");
+  const previewServices = document.getElementById("previewServices");
+  const previewAbout = document.getElementById("previewAbout");
+
+  phoneBox.classList.remove("basic","pro","elite");
+  phoneBox.classList.add(plan);
+
+  if(plan==="basic"){
+    phoneImage.src="phone-basic.png";
+    previewServices.classList.remove("hidden");
+    previewAbout.classList.add("hidden");
+  } else if(plan==="pro"){
+    phoneImage.src="phone-pro.png";
+    previewServices.classList.add("hidden");
+    previewAbout.classList.remove("hidden");
+  } else {
+    phoneImage.src="phone-elite.png";
+    previewServices.classList.add("hidden");
+    previewAbout.classList.add("hidden");
+  }
+}
+
+/* ================= CARD ================= */
+function selectCard(price,el,type){
+  cardPrice = price;
+  selectedCard = type;
+
+  document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
+
+  const cardDisplay = document.getElementById("cardDisplay");
+
+  cardDisplay.style.opacity = "0.7";
+
+  setTimeout(()=>{
+    cardDisplay.src = type + "-front.png";
+    cardDisplay.style.opacity = "1";
+  },150);
+
+  updateTotal();
+}
+
+/* ================= PREVIEW ================= */
+document.getElementById("inputName").oninput = e => document.getElementById("previewName").innerText = e.target.value || "Juan Dela Cruz";
+document.getElementById("inputProfession").oninput = e => document.getElementById("previewProfession").innerText = e.target.value || "Architect";
+document.getElementById("inputCompany").oninput = e => document.getElementById("previewCompany").innerText = e.target.value || "Your Arch Studio";
+document.getElementById("inputAbout").oninput = e => document.getElementById("previewAbout").innerText = e.target.value || "About";
+
+/* ================= FAQ ================= */
+function toggleFAQ(el){
+  el.classList.toggle("active");
+}
+
+/* ================= MODAL ================= */
+function openOrderModal(){
+  document.getElementById("orderModal").style.display = "flex";
+  document.body.style.overflow = "hidden";
+
+  document.getElementById("summaryPlan").innerText = selectedPlan;
+  document.getElementById("summaryCard").innerText = selectedCard;
+  document.getElementById("summaryPrice").innerText = formatPeso(basePrices[selectedPlan] + cardPrice);
+
+  const isPro = selectedPlan==="pro" || selectedPlan==="elite";
+
+  document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
+  document.getElementById("portfolioUpload").style.display = isPro ? "block" : "none";
+  document.getElementById("aboutSection").style.display = isPro ? "block" : "none";
+}
+
+function closeOrderModal(){
+  document.getElementById("orderModal").style.display = "none";
+  document.body.style.overflow = "auto";
+}
+
+/* ================= EMAIL ================= */
+function sendEmailNow(params){
+  emailjs.send("service_gxckvp8","template_dbofkzz",params)
+    .then(()=>emailjs.send("service_gxckvp8","template_07td6mf",params))
+    .catch(()=>alert("Failed to send order."));
+}
+
+/* ================= INIT AFTER LOAD ================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+  setPlan("pro",1,document.querySelector(".selector span.active"));
+  selectCard(0, document.querySelector(".card-options button"), "white");
+
+  const form = document.getElementById("orderForm");
+
+  if(form){
+    form.addEventListener("submit", async function(e){
+      e.preventDefault();
+
+      const btn = document.querySelector(".modal-btn");
+      btn.innerText = "Processing...";
+      btn.disabled = true;
+
+      try{
+        const params = {
+          name: name.value,
+          email: email.value,
+          phone: phone.value,
+          notes: notes.value,
+          services: [service1.value,service2.value,service3.value,service4.value],
+          plan: selectedPlan,
+          card: selectedCard,
+          price: basePrices[selectedPlan] + cardPrice
+        };
+
+        const profile = profilePhoto.files[0];
+        const highlight = highlightPhoto.files[0];
+
+        if(!profile) throw "Please upload a profile photo";
+
+        params.profile = await uploadToCloudinary(profile);
+
+        if((selectedPlan==="pro"||selectedPlan==="elite") && highlight){
+          params.highlight = await uploadToCloudinary(highlight);
+        }
+
+        if(selectedPlan==="pro"||selectedPlan==="elite"){
+          const files = portfolioPhotos.files;
+
+          if(files.length < 3){
+            throw "Please upload at least 3 portfolio images";
+          }
+
+          const urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
+
+          params.portfolio1 = urls[0];
+          params.portfolio2 = urls[1];
+          params.portfolio3 = urls[2];
+        }
+
+        sendEmailNow(params);
+        alert("✅ Order Confirmed!");
+        closeOrderModal();
+
+      }catch(err){
+        alert(err || "Something went wrong.");
       }
 
-      const urls = await Promise.all([...files].map(f => uploadToCloudinary(f)));
-
-      params.portfolio1 = urls[0] || "";
-      params.portfolio2 = urls[1] || "";
-      params.portfolio3 = urls[2] || "";
-    }
-
-    sendEmailNow(params);
-
-  } catch(err){
-    console.error(err);
-    alert("Something went wrong. Try again.");
+      btn.innerText = "Secure My NFC Card";
+      btn.disabled = false;
+    });
   }
 
-  btn.innerText = "Secure My NFC Card";
-  btn.disabled = false;
-  }
 });
+</script>
 </script>
   
 <!-- ===== ORDER MODAL START ===== -->
