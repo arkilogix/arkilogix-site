@@ -468,13 +468,12 @@ html {
   background:rgba(0,0,0,0.75);
   backdrop-filter:blur(8px);
   z-index:2000;
-
-  /* ✅ CENTER FIX */
+}
+.modal.show{
   display:flex;
   justify-content:center;
   align-items:center;
 }
-
 .modal-content{
   background:#fff;
   width:92%;
@@ -985,7 +984,7 @@ function toggleFAQ(el){
 
 /* ================= MODAL ================= */
 function openOrderModal(){
-  document.getElementById("orderModal").style.display = "flex";
+  document.getElementById("orderModal").classList.add("show");
   document.body.style.overflow = "hidden";
 
   document.getElementById("summaryPlan").innerText = selectedPlan;
@@ -1000,7 +999,7 @@ function openOrderModal(){
 }
 
 function closeOrderModal(){
-  document.getElementById("orderModal").style.display = "none";
+  document.getElementById("orderModal").classList.remove("show");
   document.body.style.overflow = "auto";
 }
 
@@ -1071,7 +1070,7 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
   if(!highlight){
     throw "Please upload a highlighted project";
   }
-  pdateProgress("Uploading highlight...", 45);
+  UpdateProgress("Uploading highlight...", 45);
   params.highlight = await uploadToCloudinary(highlight);
 }
 
