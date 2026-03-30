@@ -672,6 +672,17 @@ form#orderForm::-webkit-scrollbar-thumb{
   background:#000;
   transition:width .4s ease;
 }
+  #orderModal{
+  position:relative;
+}
+
+#orderModal .modal-content{
+  position:absolute;
+}
+.modal-content{
+  transition:opacity .3s ease;
+}
+  
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
@@ -1218,7 +1229,7 @@ document.getElementById("clientLinkBox").value = clientLink;
 
   </div>
 <!-- SUCCESS SCREEN -->
-  <div class="modal-content hidden" id="successContent">
+<div class="modal-content hidden" id="successContent">
 
     <h2>✅ Order Confirmed</h2>
     <p style="font-size:13px;color:#666;margin-bottom:15px;">
