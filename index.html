@@ -956,7 +956,7 @@ function updateTotal(){
 }
 
 /* ================= PLAN ================= */
-function setPlan(plan,index,el){
+window.setPlan = function(plan,index,el){
   document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
   el.classList.add("active");
 
@@ -989,7 +989,7 @@ function setPlan(plan,index,el){
 }
 
 /* ================= CARD ================= */
-function selectCard(price,el,type){
+window.selectCard = function(price,el,type){
   cardPrice = price;
   selectedCard = type;
 
@@ -1015,7 +1015,7 @@ document.getElementById("inputCompany").oninput = e => document.getElementById("
 document.getElementById("inputAbout").oninput = e => document.getElementById("previewAbout").innerText = e.target.value || "About";
 
 /* ================= FAQ ================= */
-function toggleFAQ(el){
+window.toggleFAQ = function(el){
   el.classList.toggle("active");
 }
 
@@ -1057,7 +1057,7 @@ function sendEmailNow(params){
   txt.innerText = text;
   fill.style.width = percent + "%";
 }
-  function copyLink(){
+  window.copyLink = function(){
   const input = document.getElementById("clientLinkBox");
   input.select();
   document.execCommand("copy");
