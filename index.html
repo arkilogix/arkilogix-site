@@ -879,11 +879,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
   
 // 🔥 YOUR FIREBASE CONFIG (PASTE YOURS HERE)
+// 🔥 YOUR FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
-  projectId: "arkilogix-clients",
-
+  projectId: "arkilogix-clients"
+};
+// 🔥 INITIALIZE
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 /* ================= INIT ================= */
