@@ -1033,9 +1033,10 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
 
       const btn = document.querySelector(".modal-btn");
-      btn.innerText = "Uploading images...";
       btn.disabled = true;
-
+      btn.classList.add("loading");
+      
+      updateProgress("Preparing order...", 10);
       try{
         updateProgress("Preparing order...", 10);
 btn.classList.add("loading");
