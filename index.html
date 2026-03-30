@@ -1071,7 +1071,7 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
   if(!highlight){
     throw "Please upload a highlighted project";
   }
-  UpdateProgress("Uploading highlight...", 45);
+  updateProgress("Uploading highlight...", 45);
   params.highlight = await uploadToCloudinary(highlight);
 }
 
@@ -1125,8 +1125,6 @@ document.getElementById("clientLinkBox").value = clientLink;
   
 <!-- ===== ORDER MODAL START ===== -->
 <div class="modal-content" id="formContent">
-
-  <div class="modal-content">
 
     <span class="close-btn" onclick="closeOrderModal()">&times;</span>
 
