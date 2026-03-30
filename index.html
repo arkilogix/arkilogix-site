@@ -1027,29 +1027,51 @@ function sendEmailNow(){
   emailjs.send("service_gxckvp8", "template_dbofkzz", params)
     .then(function(){
 
+      // ✅ SEND CUSTOMER EMAIL ONCE
       emailjs.send("service_gxckvp8", "template_07td6mf", params);
 
-      // KEEP YOUR GOOGLE SHEETS CODE HERE
+      // ✅ GOOGLE SHEETS
+      fetch("https://docs.google.com/forms/d/e/1FAIpQLScfoYPea0wAeb6ltL9eQtGgm1LhQHIWG4TFBSIXB37tLj1DBQ/formResponse", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          "entry.2005620554": params.name,
+          "entry.1045781291": params.email,
+          "entry.1166974658": params.phone,
+          "entry.839337160": params.plan,
+          "entry.1237473814": params.card,
+          "entry.2030698708": params.price,
+          "entry.1770822543": params.notes
+        })
+      });
 
-    emailjs.send("service_gxckvp8", "template_07td6mf", params);
+      // ✅ SUCCESS UI
+      const form = document.getElementById("orderForm");
 
-    // 🔥 GOOGLE SHEETS CRM
-    fetch("https://docs.google.com/forms/d/e/1FAIpQLScfoYPea0wAeb6ltL9eQtGgm1LhQHIWG4TFBSIXB37tLj1DBQ/formResponse", {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: new URLSearchParams({
-        "entry.2005620554": params.name,
-        "entry.1045781291": params.email,
-        "entry.1166974658": params.phone,
-        "entry.839337160": params.plan,
-        "entry.1237473814": params.card,
-        "entry.2030698708": params.price,
-        "entry.1770822543": params.notes
-      })
+      form.reset();
+
+      form.insertAdjacentHTML("beforebegin", `
+        <div id="successMsg" style="text-align:center; padding:10px;">
+          <h3 style="margin-bottom:5px;">✅ Order Confirmed</h3>
+          <p style="font-size:13px; color:#666;">
+            We’ll contact you within 24 hours.
+          </p>
+        </div>
+      `);
+
+      setTimeout(() => {
+        closeOrderModal();
+      }, 2000);
+
+    }, function(error){
+      alert("Failed to send order.");
+      console.log(error);
     });
+
+}
 
 const form = document.getElementById("orderForm");
 
