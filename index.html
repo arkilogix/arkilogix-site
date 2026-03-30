@@ -682,7 +682,9 @@ form#orderForm::-webkit-scrollbar-thumb{
 .modal-content{
   transition:opacity .3s ease;
 }
-  
+  .modal-content.hidden{
+  display:none;
+}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
@@ -1049,7 +1051,7 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async function(e){
       e.preventDefault();
 
-      const btn = document.querySelector(".modal-btn");
+      const btn = document.getElementById("submitBtn");
       btn.disabled = true;
       btn.classList.add("loading");
       
@@ -1215,9 +1217,9 @@ document.getElementById("clientLinkBox").value = clientLink;
 </div>
 
 </div>
-      <button type="submit" class="modal-btn">
-        Secure My NFC Card
-      </button>
+<button type="submit" class="modal-btn" id="submitBtn">
+  Secure My NFC Card
+</button>
 
     </form>
 
