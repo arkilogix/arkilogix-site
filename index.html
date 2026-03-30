@@ -823,374 +823,68 @@ No problem. You can still share your card using a direct link.
 </div>
 
 <script>
-  async function uploadToCloudinary(file){
-  const url = "https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload";
+document.getElementById("orderForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "nfc_upload");
+  const btn = document.querySelector(".modal-btn");
+  btn.innerText = "Processing...";
+  btn.disabled = true;
 
-  const response = await fetch(url, {
-    method: "POST",
-    body: formData
-  });
+  const params = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    notes: document.getElementById("notes").value,
+    services: [
+      document.getElementById("service1").value,
+      document.getElementById("service2").value,
+      document.getElementById("service3").value,
+      document.getElementById("service4").value
+    ],
+    plan: selectedPlan,
+    card: selectedCard,
+    price: basePrices[selectedPlan] + cardPrice
+  };
 
-  const data = await response.json();
-  return data.secure_url;
-}
-function toBase64(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = ()=>resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-}
-  (function(){
-  emailjs.init("Wp1sOcLJH-dg_dkLs");
-})();
-  
-let basePrices={basic:599,pro:1199,elite:1999};
-let selectedPlan="pro";
-let cardPrice=0;
-let selectedCard = "white";
-  
-/* ===== PRICE COUNT-UP (SAFE) ===== */
-function animatePrice(element, start, end){
+  try {
+    const profile = document.getElementById("profilePhoto").files[0];
+    const highlight = document.getElementById("highlightPhoto").files[0];
 
-let duration = 350;
-let startTime = null;
-
-function update(currentTime){
-  if(!startTime) startTime = currentTime;
-
-  let progress = currentTime - startTime;
-  let percent = Math.min(progress / duration, 1);
-
-  let value = Math.floor(start + (end - start) * percent);
-
-  element.innerText = "₱" + value.toLocaleString();
-
-  if(progress < duration){
-    requestAnimationFrame(update);
-  }
-}
-
-requestAnimationFrame(update);
-}
-function setPlan(plan,index,el){
-
-document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
-el.classList.add("active");
-slider.style.left=(index*33.33)+"%";
-
-selectedPlan=plan;
-updateTotal();
-
-/* UPDATE PHONE CONTENT */
-if(plan==="basic"){
-  phoneImage.src="phone-basic.png";
-  previewServices.classList.remove("hidden");
-  previewAbout.classList.add("hidden");
-}else if(plan==="pro"){
-  phoneImage.src="phone-pro.png";
-  previewServices.classList.add("hidden");
-  previewAbout.classList.remove("hidden");
-}else if(plan==="elite"){
-  phoneImage.src="phone-elite.png";
-  previewServices.classList.add("hidden");
-  previewAbout.classList.add("hidden");
-}
-
-/* APPLY PLAN CLASS */
-phoneBox.classList.remove("basic","pro","elite");
-phoneBox.classList.add(plan);
-
-/* 🔥 ANIMATION (AFTER EVERYTHING) */
-phoneBox.classList.add("phone-pop");
-
-setTimeout(()=>{
-  phoneBox.classList.remove("phone-pop");
-},200);
-
-}
-
-function updateTotal(){
-let service=basePrices[selectedPlan];
-let total=service+cardPrice;
-servicePrice.innerText="₱"+service;
-cardPriceDisplay.innerText="₱"+cardPrice;
-let current = parseInt(totalPrice.innerText.replace(/[^0-9]/g,'')) || 0;
-animatePrice(totalPrice, current, total);
-}
-
-inputName.oninput=e=>previewName.innerText=e.target.value||"Juan Dela Cruz";
-inputProfession.oninput=e=>previewProfession.innerText=e.target.value||"Architect";
-inputCompany.oninput=e=>previewCompany.innerText=e.target.value||"Your Arch Studio";
-inputAbout.oninput=e=>previewAbout.innerText=e.target.value||"About";
-function toggleFAQ(el){el.classList.toggle("active");}
-
-window.onload=function(){
-setPlan('pro',1,document.querySelector('.selector span.active'));
-};
-function selectCard(price,el,type){
-  cardPrice = price;
-  selectedCard = type;
-
-/* ACTIVE BUTTON */
-document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
-el.classList.add("active");
-
-/* === ANIMATION START (SAFE) === */
-cardDisplay.style.transform = "perspective(1000px) rotateX(5deg) rotateY(-5deg) scale(1.03)";
-cardDisplay.style.boxShadow = "0 20px 45px rgba(0,0,0,0.3)";
-cardDisplay.style.opacity = "0.7";
-
-/* CHANGE IMAGE AFTER SMALL DELAY */
-setTimeout(()=>{
-
-  if(type==="white"){
-    cardDisplay.src="white-front.png";
-  }else if(type==="black"){
-    cardDisplay.src="black-front.png";
-  }else if(type==="wood"){
-    cardDisplay.src="wood-front.png";
-  }else if(type==="metal"){
-    cardDisplay.src="metal-front.png";
-  }
-
-  /* RETURN TO NORMAL */
-  cardDisplay.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
-  cardDisplay.style.boxShadow = "0 15px 40px rgba(0,0,0,0.25)";
-  cardDisplay.style.opacity = "1";
-
-},150);
-
-updateTotal();
-
-}
-
-  ;
-  
-function openOrderModal() {
-  document.getElementById("orderModal").style.display = "flex";
-  document.body.style.overflow = "hidden";
-
-  document.getElementById("summaryPlan").innerText =
-    selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1);
-
-  document.getElementById("summaryCard").innerText =
-    selectedCard.charAt(0).toUpperCase() + selectedCard.slice(1);
-
-  let total = basePrices[selectedPlan] + cardPrice;
-
-  document.getElementById("summaryPrice").innerText =
-    "₱" + total.toLocaleString();
- if(selectedPlan === "pro" || selectedPlan === "elite"){
-
-  document.getElementById("highlightUpload").style.display = "block";
-  document.getElementById("portfolioUpload").style.display = "block";
-  document.getElementById("aboutSection").style.display = "block";
-
-}else{
-
-  document.getElementById("highlightUpload").style.display = "none";
-  document.getElementById("portfolioUpload").style.display = "none";
-  document.getElementById("aboutSection").style.display = "none";
-
-}
-}
-
-function closeOrderModal() {
-  document.getElementById("orderModal").style.display = "none";
-  document.body.style.overflow = "auto";
-
-  const msg = document.getElementById("successMsg");
-  if(msg) msg.remove();
-}
-function sendEmailNow(params){
-
-  emailjs.send("service_gxckvp8", "template_dbofkzz", params)
-    .then(function(){
-
-      // Send to customer
-      emailjs.send("service_gxckvp8", "template_07td6mf", params);
-
-      // Send to Google Sheets
-      fetch("https://docs.google.com/forms/d/e/1FAIpQLScfoYPea0wAeb6ltL9eQtGgm1LhQHIWG4TFBSIXB37tLj1DBQ/formResponse", {
-  method: "POST",
-  mode: "no-cors",
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded"
-  },
-body: new URLSearchParams({
-  "entry.2005620554": params.name,
-  "entry.1045781291": params.email,
-  "entry.1166974658": params.phone,
-  "entry.839337160": params.plan,
-  "entry.1237473814": params.card,
-  "entry.2030698708": params.price,
-  "entry.1770822543": params.services.join(", "),
-
-  "entry.842811588": params.profile,
-  "entry.437981218": params.highlight,
-  "entry.2057816930": params.portfolio1 || "",
-  "entry.572745028": params.portfolio2 || "",
-  "entry.965006650": params.portfolio3 || ""
-})
-      });
-
-    })
-  .catch(function(error){
-      alert("Failed to send order.");
-      console.log(error);
-      document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
-      document.querySelector(".modal-btn").disabled = false;
-    });
-}
-      
-  window.addEventListener("DOMContentLoaded", function(){
-// ===== SERVICES PREVIEW =====
-function updateServicesPreview(){
-  const services = [
-    document.getElementById("service1").value,
-    document.getElementById("service2").value,
-    document.getElementById("service3").value,
-    document.getElementById("service4").value
-  ];
-  const container = document.getElementById("previewServices");
-  container.innerHTML = "";
-  services.forEach(s => {
-    if(s.trim() !== ""){
-      container.innerHTML += `<div class="service-item">✔ ${s}</div>`;
+    if(!profile){
+      alert("Please upload a profile photo");
+      return;
     }
-  });
 
-}
+    params.profile = await uploadToCloudinary(profile);
 
-// ===== BIND INPUTS SAFELY =====
-["service1","service2","service3","service4"].forEach(id => {
-  const el = document.getElementById(id);
-  if(el) el.oninput = updateServicesPreview;
-});
-  document.getElementById("orderForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+    if((selectedPlan === "pro" || selectedPlan === "elite") && highlight){
+      params.highlight = await uploadToCloudinary(highlight);
+    }
 
-const params = {
-  name: document.getElementById("name").value,
-  email: document.getElementById("email").value,
-  phone: document.getElementById("phone").value,
+    if(selectedPlan === "pro" || selectedPlan === "elite"){
+      const files = document.getElementById("portfolioPhotos").files;
 
-  notes: document.getElementById("notes").value, // ✅ comma here
+      if(files.length < 3){
+        alert("Please upload at least 3 portfolio images");
+        return;
+      }
 
-  services: [
-    document.getElementById("service1").value,
-    document.getElementById("service2").value,
-    document.getElementById("service3").value,
-    document.getElementById("service4").value
-  ], // ✅ comma here (optional but safe)
+      const urls = await Promise.all([...files].map(f => uploadToCloudinary(f)));
 
-  plan: selectedPlan,
-  card: selectedCard,
-  price: basePrices[selectedPlan] + cardPrice
-};
-const profile = document.getElementById("profilePhoto").files[0];
-const highlight = document.getElementById("highlightPhoto").files[0];
-
-if(selectedPlan === "pro" || selectedPlan === "elite"){
-  if(!highlight){
-    alert("Please upload a highlighted project image");
-    return;
-  }
-}
-    
-if(!profile){
-  alert("Please upload a profile photo");
-  return;
-}
-
-    uploadToCloudinary(profile).then(function(profileURL){
-
-  params.profile = profileURL;
-
-  uploadToCloudinary(highlight).then(function(highlightURL){
-
-    params.highlight = highlightURL;
-    
-if(selectedPlan === "pro" || selectedPlan === "elite"){
-  const files = document.getElementById("portfolioPhotos").files;  
-  if(files.length < 3){
-  alert("Please upload at least 3 portfolio images");
-  return;
-}
-
-
-  let uploadPromises = [];
-
-  for(let i = 0; i < files.length; i++){
-    uploadPromises.push(uploadToCloudinary(files[i]));
-  }
-
-  Promise.all(uploadPromises).then(function(urls){
-
-    params.portfolio1 = urls[0] || "";
-    params.portfolio2 = urls[1] || "";
-    params.portfolio3 = urls[2] || "";
+      params.portfolio1 = urls[0] || "";
+      params.portfolio2 = urls[1] || "";
+      params.portfolio3 = urls[2] || "";
+    }
 
     sendEmailNow(params);
 
-    // ✅ SUCCESS UI
-    const form = document.getElementById("orderForm");
+  } catch(err){
+    console.error(err);
+    alert("Something went wrong. Try again.");
+  }
 
-    form.reset();
-
-    form.insertAdjacentHTML("beforebegin", `
-      <div id="successMsg" style="text-align:center; padding:10px;">
-        <h3 style="margin-bottom:5px;">✅ Order Confirmed</h3>
-        <p style="font-size:13px; color:#666;">
-          We’ll contact you within 24 hours.
-        </p>
-      </div>
-    `);
-
-    document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
-    document.querySelector(".modal-btn").disabled = false;
-
-    setTimeout(() => {
-      closeOrderModal();
-    }, 2000);
-
-  });
-
-} else {
-
-  // ✅ BASIC PLAN (NO PORTFOLIO)
-  sendEmailNow(params);
-
-  const form = document.getElementById("orderForm");
-
-  form.reset();
-
-  form.insertAdjacentHTML("beforebegin", `
-    <div id="successMsg" style="text-align:center; padding:10px;">
-      <h3 style="margin-bottom:5px;">✅ Order Confirmed</h3>
-      <p style="font-size:13px; color:#666;">
-        We’ll contact you within 24 hours.
-      </p>
-    </div>
-  `);
-
-  document.querySelector(".modal-btn").innerText = "Secure My NFC Card";
-  document.querySelector(".modal-btn").disabled = false;
-
-  setTimeout(() => {
-    closeOrderModal();
-  }, 2000);
-      }
-    });
-
-  });
-
+  btn.innerText = "Secure My NFC Card";
+  btn.disabled = false;
 });
 </script>
   
