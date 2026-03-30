@@ -923,10 +923,15 @@ function updateServicesPreview(){
   });
 
 }
-document.getElementById("service1").oninput = updateServicesPreview;
-document.getElementById("service2").oninput = updateServicesPreview;
-document.getElementById("service3").oninput = updateServicesPreview;
-document.getElementById("service4").oninput = updateServicesPreview;
+const s1 = document.getElementById("service1");
+const s2 = document.getElementById("service2");
+const s3 = document.getElementById("service3");
+const s4 = document.getElementById("service4");
+
+if(s1) s1.oninput = updateServicesPreview;
+if(s2) s2.oninput = updateServicesPreview;
+if(s3) s3.oninput = updateServicesPreview;
+if(s4) s4.oninput = updateServicesPreview;
 function toggleFAQ(el){el.classList.toggle("active");}
 
 window.onload=function(){
@@ -1049,7 +1054,29 @@ body: new URLSearchParams({
 }
       
   window.addEventListener("DOMContentLoaded", function(){
+// ===== SERVICES PREVIEW =====
+function updateServicesPreview(){
+  const services = [
+    document.getElementById("service1").value,
+    document.getElementById("service2").value,
+    document.getElementById("service3").value,
+    document.getElementById("service4").value
+  ];
+  const container = document.getElementById("previewServices");
+  container.innerHTML = "";
+  services.forEach(s => {
+    if(s.trim() !== ""){
+      container.innerHTML += `<div class="service-item">✔ ${s}</div>`;
+    }
+  });
 
+}
+
+// ===== BIND INPUTS SAFELY =====
+["service1","service2","service3","service4"].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.oninput = updateServicesPreview;
+});
   document.getElementById("orderForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
@@ -1074,10 +1101,13 @@ const params = {
 const profile = document.getElementById("profilePhoto").files[0];
 const highlight = document.getElementById("highlightPhoto").files[0];
 
-if(!highlight){
-  alert("Please upload a highlighted project image");
-  return;
+if(selectedPlan === "pro" || selectedPlan === "elite"){
+  if(!highlight){
+    alert("Please upload a highlighted project image");
+    return;
+  }
 }
+    
 if(!profile){
   alert("Please upload a profile photo");
   return;
@@ -1092,11 +1122,12 @@ if(!profile){
     params.highlight = highlightURL;
     
 if(selectedPlan === "pro" || selectedPlan === "elite"){
+  const files = document.getElementById("portfolioPhotos").files;  
   if(files.length < 3){
   alert("Please upload at least 3 portfolio images");
   return;
 }
-  const files = document.getElementById("portfolioPhotos").files;
+
 
   let uploadPromises = [];
 
@@ -1167,6 +1198,7 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
       });
 
 });
+ function updateServicesPreview();
 </script>
   
 <!-- ===== ORDER MODAL START ===== -->
