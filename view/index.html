@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Loading...</title>
+</head>
+<body>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+if(!id){
+  document.body.innerText = "No client ID";
+}
+
+fetch("/arkilogix-site/clients/" + id + ".json")
+.then(res => res.json())
+.then(data => {
+
+  const template = data.template || "basic";
+
+  if(template === "pro"){
+    window.location.href = "/arkilogix-site/view/pro.html?id=" + id;
+  }
+  else if(template === "elite"){
+    window.location.href = "/arkilogix-site/view/elite.html?id=" + id;
+  }
+  else{
+    window.location.href = "/arkilogix-site/view/basic.html?id=" + id;
+  }
+
+})
+.catch(() => {
+  document.body.innerText = "Client not found";
+});
+
+</script>
+
+</body>
+</html>
