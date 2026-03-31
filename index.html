@@ -1101,29 +1101,106 @@ document.addEventListener("DOMContentLoaded", () => {
   if(form){
     
     form.addEventListener("submit", async function(e){
-      e.preventDefault();
+      form.addEventListener("submit", async function(e){
+  e.preventDefault();
 
-      const btn = document.getElementById("submitBtn");
-      btn.disabled = true;
-      btn.classList.add("loading");
-      
-      updateProgress("Preparing order...", 10);
-      try{
-btn.classList.add("loading");
-const params = {
-  name: document.getElementById("name").value,
-  email: document.getElementById("email").value,
-  phone: document.getElementById("phone").value,
-  notes: document.getElementById("notes").value,
-  services: [
-    document.getElementById("service1").value,
-    document.getElementById("service2").value,
-    document.getElementById("service3").value,
-    document.getElementById("service4").value
-  ],
-  plan: selectedPlan,
-  card: selectedCard,
-  price: basePrices[selectedPlan] + cardPrice
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.classList.add("loading");
+
+  updateProgress("Preparing order...", 10);
+
+  try{
+
+    const params = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      notes: document.getElementById("notes").value,
+      services: [
+        document.getElementById("service1").value,
+        document.getElementById("service2").value,
+        document.getElementById("service3").value,
+        document.getElementById("service4").value
+      ],
+      plan: selectedPlan,
+      card: selectedCard,
+      price: basePrices[selectedPlan] + cardPrice
+    };
+
+    const profile = document.getElementById("profilePhoto").files[0];
+    const highlight = document.getElementById("highlightPhoto").files[0];
+
+    if(!profile) throw "Please upload a profile photo";
+
+    updateProgress("Uploading profile...", 25);
+    params.profile = await uploadToCloudinary(profile) || "";
+
+    // ✅ SAFE highlight
+    if(selectedPlan === "pro" || selectedPlan === "elite"){
+      if(highlight){
+        updateProgress("Uploading highlight...", 45);
+        try{
+          params.highlight = await uploadToCloudinary(highlight) || "";
+        }catch(e){
+          console.log("Highlight failed:", e);
+        }
+      }
+    }
+
+    // ✅ SAFE portfolio
+    if(selectedPlan==="pro"||selectedPlan==="elite"){
+      const files = document.getElementById("portfolioPhotos").files;
+      let urls = [];
+
+      if(files.length >= 3){
+        updateProgress("Uploading portfolio...", 70);
+        try{
+          urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
+        }catch(e){
+          console.log("Portfolio failed:", e);
+        }
+      }
+
+      params.portfolio1 = urls[0] || "";
+      params.portfolio2 = urls[1] || "";
+      params.portfolio3 = urls[2] || "";
+    }
+
+    updateProgress("Finalizing order...", 90);
+    sendEmailNow(params);
+
+    updateProgress("Saving data...", 95);
+
+    let clientId = "temp-" + Date.now();
+    try{
+      clientId = await saveClient(params);
+    }catch(e){
+      console.log("Firebase failed:", e);
+    }
+
+    updateProgress("Completed!", 100);
+
+    let page = "basic.html";
+    if(selectedPlan === "pro") page = "pro.html";
+    if(selectedPlan === "elite") page = "elite.html";
+
+    const clientLink = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
+
+    document.getElementById("clientLinkBox").value = clientLink;
+
+    document.getElementById("formContent").classList.add("hidden");
+    document.getElementById("successContent").classList.remove("hidden");
+
+  }catch(err){
+    console.log("ERROR:", err);
+    alert(err || "Something went wrong.");
+  }
+
+  btn.innerText = "Secure My NFC Card";
+  btn.disabled = false;
+  btn.classList.remove("loading");
+});
 };
 
 
@@ -1148,7 +1225,6 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
       console.log("Highlight upload failed:", e);
     }
   }
-}
 }
   updateProgress("Uploading highlight...", 45);
   params.highlight = await uploadToCloudinary(highlight) || "";
