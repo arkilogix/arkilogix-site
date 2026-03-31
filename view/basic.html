@@ -59,6 +59,11 @@ async function loadClient(){
       throw new Error("Client not found");
     }
 
+    fetch(`clients/${clientId}.json`)
+  .then(res => res.json())
+  .then(data => {
+    console.log("Loaded data:", data);
+  });
     const data = await res.json();
 
     document.getElementById("previewName").innerText = data.name || "";
