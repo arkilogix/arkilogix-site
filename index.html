@@ -1111,15 +1111,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try{
       const params = {
-        name: name.value,
-        email: email.value,
-        phone: phone.value,
-        notes: notes.value,
-        services: [service1.value, service2.value, service3.value, service4.value],
-        plan: selectedPlan,
-        card: selectedCard,
-        price: basePrices[selectedPlan] + cardPrice
-      };
+  name: name?.value || "",
+  email: email?.value || "",
+  phone: phone?.value || "",
+  notes: notes?.value || "",
+
+  services: [
+    service1?.value || "",
+    service2?.value || "",
+    service3?.value || "",
+    service4?.value || ""
+  ],
+
+  plan: selectedPlan || "",
+  card: selectedCard || "",
+  price: (basePrices[selectedPlan] + cardPrice) || 0
+};
 
       const profile = profilePhoto.files[0];
       const highlight = highlightPhoto.files[0];
@@ -1153,6 +1160,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateProgress("Saving data...", 95);
 
+      Object.keys(params).forEach(key => {
+  if (params[key] === undefined) {
+    params[key] = "";
+  }
+});
       let clientId = await saveClient(params);
 
       updateProgress("Completed!", 100);
