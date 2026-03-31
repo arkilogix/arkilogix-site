@@ -1106,14 +1106,14 @@ const highlight = document.getElementById("highlightPhoto").files[0];
         if(!profile) throw "Please upload a profile photo";
 
         updateProgress("Uploading profile...", 25);
-        params.profile = await uploadToCloudinary(profile);
+        params.profile = await uploadToCloudinary(profile) || "";
 
 if(selectedPlan === "pro" || selectedPlan === "elite"){
   if(!highlight){
     throw "Please upload a highlighted project";
   }
   updateProgress("Uploading highlight...", 45);
-  params.highlight = await uploadToCloudinary(highlight);
+  params.highlight = await uploadToCloudinary(highlight) || "";
 }
 
         if(selectedPlan==="pro"||selectedPlan==="elite"){
@@ -1125,9 +1125,9 @@ const files = document.getElementById("portfolioPhotos").files;
           updateProgress("Uploading portfolio...", 70);
           const urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
 
-          params.portfolio1 = urls[0];
-          params.portfolio2 = urls[1];
-          params.portfolio3 = urls[2];
+          params.portfolio1 = urls[0] || "";
+          params.portfolio2 = urls[1] || "";
+          params.portfolio3 = urls[2] || "";
         }
 updateProgress("Finalizing order...", 90);
 sendEmailNow(params);
