@@ -1132,8 +1132,14 @@ const files = document.getElementById("portfolioPhotos").files;
 updateProgress("Finalizing order...", 90);
 sendEmailNow(params);
 updateProgress("Saving data...", 95);
+updateProgress("Completed!", 100);
+let clientId = "temp-" + Date.now();
 
-const clientId = await saveClient(params);
+try{
+  clientId = await saveClient(params);
+}catch(e){
+  console.log("Firebase save failed:", e);
+}
 
 // 🔥 SELECT TEMPLATE
 let page = "basic.html";
