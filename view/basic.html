@@ -53,30 +53,31 @@ async function loadClient(){
   }
 
   try{
-    const res = await fetch("../clients/" + id + ".json");
+    // ✅ Fetch from your clients folder
+    const res = await fetch("clients/" + id + ".json");
 
     if(!res.ok){
       throw new Error("Client not found");
     }
 
-    fetch(`clients/${clientId}.json`)
-  .then(res => res.json())
-  .then(data => {
-    console.log("Loaded data:", data);
-  });
     const data = await res.json();
 
-    document.getElementById("previewName").innerText = data.name || "";
-    document.getElementById("previewProfession").innerText = data.profession || "";
-    document.getElementById("previewCompany").innerText = data.company || "";
-    document.getElementById("previewAbout").innerText = data.about || "";
+    // ✅ Display data
+    document.getElementById("name").innerText = data.name || "";
+    document.getElementById("profession").innerText = data.profession || "";
+    document.getElementById("company").innerText = data.company || "";
+    document.getElementById("about").innerText = data.about || "";
+
+    console.log("Loaded client:", data);
 
   }catch(err){
     document.body.innerHTML = "❌ Client not found";
+    console.error(err);
   }
 }
 
 loadClient();
 </script>
+
 </body>
 </html>
