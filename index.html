@@ -1173,7 +1173,7 @@ params.portfolio2 = urls[1] || "";
 params.portfolio3 = urls[2] || "";
         }
 updateProgress("Finalizing order...", 90);
-await sendEmailNow(params);
+sendEmailNow(params);
 updateProgress("Saving data...", 95);
 updateProgress("Completed!", 100);
 let clientId = "temp-" + Date.now();
