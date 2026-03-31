@@ -1139,14 +1139,16 @@ const highlight = document.getElementById("highlightPhoto").files[0];
        
 if(selectedPlan === "pro" || selectedPlan === "elite"){
   if(!highlight){
-  console.log("No highlight uploaded");
-}else{
-  updateProgress("Uploading highlight...", 45);
-  try{
-    params.highlight = await uploadToCloudinary(highlight) || "";
-  }catch(e){
-    console.log("Highlight upload failed:", e);
+    console.log("No highlight uploaded");
+  }else{
+    updateProgress("Uploading highlight...", 45);
+    try{
+      params.highlight = await uploadToCloudinary(highlight) || "";
+    }catch(e){
+      console.log("Highlight upload failed:", e);
+    }
   }
+}
 }
   updateProgress("Uploading highlight...", 45);
   params.highlight = await uploadToCloudinary(highlight) || "";
