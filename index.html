@@ -700,6 +700,9 @@ form#orderForm::-webkit-scrollbar-thumb{
   align-items: center;
   justify-content: center;
 }
+  .hidden {
+  display: none !important;
+}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
@@ -1160,31 +1163,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateProgress("Saving data...", 95);
 
-      Object.keys(params).forEach(key => {
+// 🔥 CLEAN UNDEFINED VALUES
+Object.keys(params).forEach(key => {
   if (params[key] === undefined) {
     params[key] = "";
   }
 });
-      let clientId = "temp-" + Date.now();
+
+console.log("STEP 1: before firebase");
+
+let clientId = "temp-" + Date.now();
 
 try {
-  clientId = await saveClient(params);
-  console.log("Firebase SUCCESS:", clientId);
-} catch(e) {
-  console.error("Firebase ERROR:", e);
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject("Firebase timeout"), 5000)
+  );
+
+  clientId = await Promise.race([
+    saveClient(params),
+    timeout
+  ]);
+
+  console.log("STEP 2: firebase done", clientId);
+
+} catch (e) {
+  console.warn("STEP 2 ERROR:", e);
 }
 
-      updateProgress("Completed!", 100);
+console.log("STEP 3: after firebase");
 
-      let page = selectedPlan === "elite" ? "elite.html" :
-                 selectedPlan === "pro" ? "pro.html" : "basic.html";
+updateProgress("Completed!", 100);
 
-      const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
+// 🔥 GENERATE LINK
+let page = selectedPlan === "elite" ? "elite.html" :
+           selectedPlan === "pro" ? "pro.html" : "basic.html";
 
-      clientLinkBox.value = link;
+const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
 
-      formContent.classList.add("hidden");
-      successContent.classList.remove("hidden");
+// ❗ FIX: DO NOT use raw variable
+document.getElementById("clientLinkBox").value = link;
+
+console.log("STEP 4: updating UI");
+
+// ❗ FIX: DO NOT use raw variables
+document.getElementById("formContent").classList.add("hidden");
+document.getElementById("successContent").classList.remove("hidden");
+
+console.log("STEP 5: success shown");
 
     }catch(err){
       console.log(err);
