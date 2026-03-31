@@ -1098,10 +1098,7 @@ const params = {
   price: basePrices[selectedPlan] + cardPrice
 };
 
-      updateProgress("Saving data...", 95);
 
-// 🔥 SAVE TO FIREBASE
-const clientId = await saveClient(params);
         
 const profile = document.getElementById("profilePhoto").files[0];
 const highlight = document.getElementById("highlightPhoto").files[0];
@@ -1134,7 +1131,9 @@ const files = document.getElementById("portfolioPhotos").files;
         }
 updateProgress("Finalizing order...", 90);
 sendEmailNow(params);
+updateProgress("Saving data...", 95);
 
+const clientId = await saveClient(params);
 
 // 🔥 SELECT TEMPLATE
 let page = "basic.html";
