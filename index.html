@@ -1104,7 +1104,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if(!form) return;
 
   form.addEventListener("submit", async function(e){
-    e.preventDefault();
+e.preventDefault();
+
+// 🔥 TEST: force success modal after 3 seconds
+setTimeout(() => {
+  console.log("FORCE TEST TRIGGERED");
+  document.getElementById("formContent").classList.add("hidden");
+  document.getElementById("successContent").classList.remove("hidden");
+}, 3000);
+    
 
     const btn = document.getElementById("submitBtn");
     btn.disabled = true;
