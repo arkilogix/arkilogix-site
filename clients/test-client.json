@@ -1,6 +1,6 @@
 {
   "name": "Test User",
-  "profession": "Architect",
+  "position": "Architect",
   "company": "Test Studio",
   "about": "This is a test digital business card.",
   "template": "basic"
