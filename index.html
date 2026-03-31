@@ -1165,7 +1165,14 @@ document.addEventListener("DOMContentLoaded", () => {
     params[key] = "";
   }
 });
-      let clientId = await saveClient(params);
+      let clientId = "temp-" + Date.now();
+
+try {
+  clientId = await saveClient(params);
+  console.log("Firebase SUCCESS:", clientId);
+} catch(e) {
+  console.error("Firebase ERROR:", e);
+}
 
       updateProgress("Completed!", 100);
 
