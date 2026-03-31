@@ -1135,6 +1135,9 @@ inputs.forEach(el => {
   email: email?.value || "",
   phone: phone?.value || "",
   notes: notes?.value || "",
+  facebook: facebook?.value || "",
+  instagram: instagram?.value || "",
+  website: website?.value || "",
 
   services: [
     service1?.value || "",
@@ -1312,6 +1315,9 @@ document.addEventListener("keydown", function(e){
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="email" id="email" placeholder="Email Address" required>
       <input type="text" id="phone" placeholder="Phone Number" required>
+      <input type="text" id="facebook" placeholder="Facebook URL">
+      <input type="text" id="instagram" placeholder="Instagram URL">
+      <input type="text" id="website" placeholder="Website / Portfolio URL">
       <div id="aboutSection" style="display:none;">
   <textarea id="notes" placeholder="About You (optional)"></textarea>
 </div>
