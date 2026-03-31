@@ -690,6 +690,16 @@ form#orderForm::-webkit-scrollbar-thumb{
 .modal.show{
   pointer-events:auto;
 }
+  #formContent.hidden,
+#successContent.hidden{
+  display: none !important;
+}
+  #successContent{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
@@ -1033,6 +1043,9 @@ window.openOrderModal = function(){
   document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
   document.getElementById("portfolioUpload").style.display = isPro ? "block" : "none";
   document.getElementById("aboutSection").style.display = isPro ? "block" : "none";
+// 🔥 RESET MODAL STATE
+document.getElementById("formContent").classList.remove("hidden");
+document.getElementById("successContent").classList.add("hidden");
 }
 
 window.closeOrderModal = function(){
