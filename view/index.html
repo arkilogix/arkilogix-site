@@ -15,24 +15,28 @@ if(!id){
   document.body.innerText = "No client ID";
 }
 
-fetch("/arkilogix-site/clients/" + id + ".json")
-.then(res => res.json())
+fetch("../clients/" + id + ".json")
+.then(res => {
+  if(!res.ok) throw new Error("HTTP " + res.status);
+  return res.json();
+})
 .then(data => {
 
   const template = data.template || "basic";
 
   if(template === "pro"){
-    window.location.href = "/arkilogix-site/view/pro.html?id=" + id;
+    window.location.href = "../view/pro.html?id=" + id;
   }
   else if(template === "elite"){
-    window.location.href = "/arkilogix-site/view/elite.html?id=" + id;
+    window.location.href = "../view/elite.html?id=" + id;
   }
   else{
-    window.location.href = "/arkilogix-site/view/basic.html?id=" + id;
+    window.location.href = "../view/basic.html?id=" + id;
   }
 
 })
-.catch(() => {
+.catch(err => {
+  console.error(err);
   document.body.innerText = "Client not found";
 });
 
