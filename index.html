@@ -1036,10 +1036,22 @@ window.openOrderModal = function(){
 }
 
 window.closeOrderModal = function(){
+
+  const btn = document.getElementById("submitBtn");
+  // ❌ prevent closing while submitting
+  if(btn && btn.classList.contains("loading")){
+    return;
+  }
   document.getElementById("orderModal").classList.remove("show");
   document.body.style.overflow = "auto";
 }
-
+window.handleOutsideClick = function(e){
+  const modalContent = document.querySelector("#orderModal .modal-content");
+  
+  if(!modalContent.contains(e.target)){
+    closeOrderModal();
+  }
+}
 /* ================= EMAIL ================= */
 async function sendEmailNow(params){
   try{
@@ -1143,7 +1155,11 @@ try{
 }catch(e){
   console.log("Firebase save failed:", e);
 }
+console.log("REACHED SUCCESS PART");
 
+// 🔥 FORCE SHOW SUCCESS
+document.getElementById("formContent").classList.add("hidden");
+document.getElementById("successContent").classList.remove("hidden");
 // 🔥 SELECT TEMPLATE
 let page = "basic.html";
 
@@ -1175,10 +1191,18 @@ document.getElementById("clientLinkBox").value = clientLink;
   }
 
 });
+  document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    const modal = document.getElementById("orderModal");
+    if(modal.classList.contains("show")){
+      closeOrderModal();
+    }
+  }
+});
 </script>
   
 <!-- ===== ORDER MODAL START ===== -->
-<div id="orderModal" class="modal">
+<div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
 
   <div class="modal-content" id="formContent">
     
@@ -1267,7 +1291,7 @@ document.getElementById("clientLinkBox").value = clientLink;
 
   </div>
 <!-- SUCCESS SCREEN -->
-<div class="modal-content hidden" id="successContent">
+<div class="modal-content" id="successContent">
 
     <h2>✅ Order Confirmed</h2>
     <p style="font-size:13px;color:#666;margin-bottom:15px;">
