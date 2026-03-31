@@ -675,7 +675,7 @@ form#orderForm::-webkit-scrollbar-thumb{
 
 
 #orderModal .modal-content{
-  position:absolute;
+  position:relative;
 }
 .modal-content{
   transition:opacity .3s ease;
@@ -1185,9 +1185,6 @@ try{
 }
 console.log("REACHED SUCCESS PART");
 
-// 🔥 FORCE SHOW SUCCESS
-document.getElementById("formContent").classList.add("hidden");
-document.getElementById("successContent").classList.remove("hidden");
 // 🔥 SELECT TEMPLATE
 let page = "basic.html";
 
@@ -1200,11 +1197,13 @@ else if(selectedPlan === "elite"){
 
 // 🔥 GENERATE LINK
 const clientLink = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
-        console.log("SHOWING SUCCESS SCREEN");
-        document.getElementById("formContent").classList.add("hidden");
-document.getElementById("successContent").classList.remove("hidden");
 
+// 🔥 SET LINK
 document.getElementById("clientLinkBox").value = clientLink;
+
+// 🔥 SHOW SUCCESS (ONLY HERE)
+document.getElementById("formContent").classList.add("hidden");
+document.getElementById("successContent").classList.remove("hidden");
 
 
 }catch(err){
