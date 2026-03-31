@@ -887,17 +887,17 @@ No problem. You can still share your card using a direct link.
 // 🔥 FIREBASE IMPORTS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-  
-// 🔥 YOUR FIREBASE CONFIG (PASTE YOURS HERE)
-// 🔥 YOUR FIREBASE CONFIG
+
+// 🔥 FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
   projectId: "arkilogix-clients"
 };
-// 🔥 INITIALIZE
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 /* ================= INIT ================= */
 (function(){
   emailjs.init("Wp1sOcLJH-dg_dkLs");
@@ -911,11 +911,11 @@ let selectedCard = "white";
 let cardPrice = 0;
 
 /* ================= HELPERS ================= */
-  // 🔥 SAVE CLIENT TO FIREBASE
 async function saveClient(data){
   const docRef = await addDoc(collection(db, "clients"), data);
   return docRef.id;
 }
+
 const formatPeso = val => "₱" + val.toLocaleString();
 
 async function uploadToCloudinary(file){
@@ -1043,28 +1043,24 @@ window.openOrderModal = function(){
   document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
   document.getElementById("portfolioUpload").style.display = isPro ? "block" : "none";
   document.getElementById("aboutSection").style.display = isPro ? "block" : "none";
-// 🔥 RESET MODAL STATE
-document.getElementById("formContent").classList.remove("hidden");
-document.getElementById("successContent").classList.add("hidden");
+
+  document.getElementById("formContent").classList.remove("hidden");
+  document.getElementById("successContent").classList.add("hidden");
 }
 
 window.closeOrderModal = function(){
-
   const btn = document.getElementById("submitBtn");
-  // ❌ prevent closing while submitting
-  if(btn && btn.classList.contains("loading")){
-    return;
-  }
+  if(btn && btn.classList.contains("loading")) return;
+
   document.getElementById("orderModal").classList.remove("show");
   document.body.style.overflow = "auto";
 }
+
 window.handleOutsideClick = function(e){
   const modalContent = document.querySelector("#orderModal .modal-content");
-  
-  if(!modalContent.contains(e.target)){
-    closeOrderModal();
-  }
+  if(!modalContent.contains(e.target)) closeOrderModal();
 }
+
 /* ================= EMAIL ================= */
 async function sendEmailNow(params){
   try{
@@ -1075,8 +1071,8 @@ async function sendEmailNow(params){
   }
 }
 
-/* ================= INIT AFTER LOAD ================= */
-  function updateProgress(text, percent){
+/* ================= PROGRESS ================= */
+function updateProgress(text, percent){
   const box = document.getElementById("progressBox");
   const fill = document.getElementById("progressFill");
   const txt = document.getElementById("progressText");
@@ -1085,12 +1081,16 @@ async function sendEmailNow(params){
   txt.innerText = text;
   fill.style.width = percent + "%";
 }
-  window.copyLink = function(){
+
+/* ================= COPY ================= */
+window.copyLink = function(){
   const input = document.getElementById("clientLinkBox");
   input.select();
   document.execCommand("copy");
   alert("Link copied!");
 }
+
+/* ================= MAIN ================= */
 document.addEventListener("DOMContentLoaded", () => {
 
   setPlan("pro",1,document.querySelector(".selector span.active"));
@@ -1098,205 +1098,88 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const form = document.getElementById("orderForm");
 
-  if(form){
-    
-    form.addEventListener("submit", async function(e){
-      form.addEventListener("submit", async function(e){
-  e.preventDefault();
+  if(!form) return;
 
-  const btn = document.getElementById("submitBtn");
-  btn.disabled = true;
-  btn.classList.add("loading");
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
 
-  updateProgress("Preparing order...", 10);
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.classList.add("loading");
 
-  try{
+    updateProgress("Preparing order...", 10);
 
-    const params = {
-      name: document.getElementById("name").value,
-      email: document.getElementById("email").value,
-      phone: document.getElementById("phone").value,
-      notes: document.getElementById("notes").value,
-      services: [
-        document.getElementById("service1").value,
-        document.getElementById("service2").value,
-        document.getElementById("service3").value,
-        document.getElementById("service4").value
-      ],
-      plan: selectedPlan,
-      card: selectedCard,
-      price: basePrices[selectedPlan] + cardPrice
-    };
+    try{
+      const params = {
+        name: name.value,
+        email: email.value,
+        phone: phone.value,
+        notes: notes.value,
+        services: [service1.value, service2.value, service3.value, service4.value],
+        plan: selectedPlan,
+        card: selectedCard,
+        price: basePrices[selectedPlan] + cardPrice
+      };
 
-    const profile = document.getElementById("profilePhoto").files[0];
-    const highlight = document.getElementById("highlightPhoto").files[0];
+      const profile = profilePhoto.files[0];
+      const highlight = highlightPhoto.files[0];
 
-    if(!profile) throw "Please upload a profile photo";
+      if(!profile) throw "Please upload a profile photo";
 
-    updateProgress("Uploading profile...", 25);
-    params.profile = await uploadToCloudinary(profile) || "";
+      updateProgress("Uploading profile...", 25);
+      params.profile = await uploadToCloudinary(profile);
 
-    // ✅ SAFE highlight
-    if(selectedPlan === "pro" || selectedPlan === "elite"){
-      if(highlight){
-        updateProgress("Uploading highlight...", 45);
-        try{
-          params.highlight = await uploadToCloudinary(highlight) || "";
-        }catch(e){
-          console.log("Highlight failed:", e);
+      if(selectedPlan==="pro" || selectedPlan==="elite"){
+        if(highlight){
+          updateProgress("Uploading highlight...", 45);
+          params.highlight = await uploadToCloudinary(highlight);
         }
-      }
-    
 
-    // ✅ SAFE portfolio
-    if(selectedPlan==="pro"||selectedPlan==="elite"){
-      const files = document.getElementById("portfolioPhotos").files;
-      let urls = [];
+        const files = portfolioPhotos.files;
+        let urls = [];
 
-      if(files.length >= 3){
-        updateProgress("Uploading portfolio...", 70);
-        try{
+        if(files.length >= 3){
+          updateProgress("Uploading portfolio...", 70);
           urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
-        }catch(e){
-          console.log("Portfolio failed:", e);
         }
+
+        params.portfolio1 = urls[0] || "";
+        params.portfolio2 = urls[1] || "";
+        params.portfolio3 = urls[2] || "";
       }
 
-      params.portfolio1 = urls[0] || "";
-      params.portfolio2 = urls[1] || "";
-      params.portfolio3 = urls[2] || "";
+      updateProgress("Finalizing order...", 90);
+      await sendEmailNow(params);
+
+      updateProgress("Saving data...", 95);
+
+      let clientId = await saveClient(params);
+
+      updateProgress("Completed!", 100);
+
+      let page = selectedPlan === "elite" ? "elite.html" :
+                 selectedPlan === "pro" ? "pro.html" : "basic.html";
+
+      const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
+
+      clientLinkBox.value = link;
+
+      formContent.classList.add("hidden");
+      successContent.classList.remove("hidden");
+
+    }catch(err){
+      console.log(err);
+      alert(err || "Something went wrong.");
     }
-
-    updateProgress("Finalizing order...", 90);
-    sendEmailNow(params);
-
-    updateProgress("Saving data...", 95);
-
-    let clientId = "temp-" + Date.now();
-    try{
-      clientId = await saveClient(params);
-    }catch(e){
-      console.log("Firebase failed:", e);
-    }
-
-    updateProgress("Completed!", 100);
-
-    let page = "basic.html";
-    if(selectedPlan === "pro") page = "pro.html";
-    if(selectedPlan === "elite") page = "elite.html";
-
-    const clientLink = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
-
-    document.getElementById("clientLinkBox").value = clientLink;
-
-    document.getElementById("formContent").classList.add("hidden");
-    document.getElementById("successContent").classList.remove("hidden");
-
-  }catch(err){
-    console.log("ERROR:", err);
-    alert(err || "Something went wrong.");
-  }
-
-  btn.innerText = "Secure My NFC Card";
-  btn.disabled = false;
-  btn.classList.remove("loading");
-});
-};
-
-
-        
-const profile = document.getElementById("profilePhoto").files[0];
-const highlight = document.getElementById("highlightPhoto").files[0];
-
-        if(!profile) throw "Please upload a profile photo";
-
-        updateProgress("Uploading profile...", 25);
-        params.profile = await uploadToCloudinary(profile) || "";
-
-       
-if(selectedPlan === "pro" || selectedPlan === "elite"){
-  if(!highlight){
-    console.log("No highlight uploaded");
-  }else{
-    updateProgress("Uploading highlight...", 45);
-    try{
-      params.highlight = await uploadToCloudinary(highlight) || "";
-    }catch(e){
-      console.log("Highlight upload failed:", e);
-    }
-  }
-}
-  updateProgress("Uploading highlight...", 45);
-  params.highlight = await uploadToCloudinary(highlight) || "";
-}
-
-        if(selectedPlan==="pro"||selectedPlan==="elite"){
-const files = document.getElementById("portfolioPhotos").files;
-
-let urls = [];
-
-if(files.length < 3){
-  console.log("Not enough portfolio images");
-}else{
-  updateProgress("Uploading portfolio...", 70);
-  try{
-    urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
-  }catch(e){
-    console.log("Portfolio upload failed:", e);
-  }
-}
-
-params.portfolio1 = urls[0] || "";
-params.portfolio2 = urls[1] || "";
-params.portfolio3 = urls[2] || "";
-        }
-updateProgress("Finalizing order...", 90);
-sendEmailNow(params);
-updateProgress("Saving data...", 95);
-updateProgress("Completed!", 100);
-let clientId = "temp-" + Date.now();
-
-try{
-  clientId = await saveClient(params);
-}catch(e){
-  console.log("Firebase save failed:", e);
-}
-console.log("REACHED SUCCESS PART");
-
-// 🔥 SELECT TEMPLATE
-let page = "basic.html";
-
-if(selectedPlan === "pro"){
-  page = "pro.html";
-}
-else if(selectedPlan === "elite"){
-  page = "elite.html";
-}
-
-// 🔥 GENERATE LINK
-const clientLink = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
-
-// 🔥 SET LINK
-document.getElementById("clientLinkBox").value = clientLink;
-
-// 🔥 SHOW SUCCESS (ONLY HERE)
-document.getElementById("formContent").classList.add("hidden");
-document.getElementById("successContent").classList.remove("hidden");
-
-
-}catch(err){
-  console.log("ERROR:", err);
-  alert(err || "Something went wrong.");
-}
 
     btn.innerText = "Secure My NFC Card";
     btn.disabled = false;
     btn.classList.remove("loading");
-    });
-  }
-
+  });
 });
-  document.addEventListener("keydown", function(e){
+
+/* ================= ESC CLOSE ================= */
+document.addEventListener("keydown", function(e){
   if(e.key === "Escape"){
     const modal = document.getElementById("orderModal");
     if(modal.classList.contains("show")){
