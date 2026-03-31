@@ -53,8 +53,8 @@ async function loadClient(){
   }
 
   try{
-    // ✅ Fetch from your clients folder
-    const res = await fetch("clients/" + id + ".json");
+    // ✅ IMPORTANT: go up one level because this file is inside /view/
+    const res = await fetch("../clients/" + id + ".json");
 
     if(!res.ok){
       throw new Error("Client not found");
