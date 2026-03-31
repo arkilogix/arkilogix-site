@@ -1041,10 +1041,13 @@ window.closeOrderModal = function(){
 }
 
 /* ================= EMAIL ================= */
-function sendEmailNow(params){
-  emailjs.send("service_gxckvp8","template_dbofkzz",params)
-    .then(()=>emailjs.send("service_gxckvp8","template_07td6mf",params))
-    .catch(()=>alert("Failed to send order."));
+async function sendEmailNow(params){
+  try{
+    await emailjs.send("service_gxckvp8","template_dbofkzz",params);
+    await emailjs.send("service_gxckvp8","template_07td6mf",params);
+  }catch(e){
+    console.log("Email failed:", e);
+  }
 }
 
 /* ================= INIT AFTER LOAD ================= */
@@ -1130,7 +1133,7 @@ const files = document.getElementById("portfolioPhotos").files;
           params.portfolio3 = urls[2] || "";
         }
 updateProgress("Finalizing order...", 90);
-sendEmailNow(params);
+await sendEmailNow(params);
 updateProgress("Saving data...", 95);
 updateProgress("Completed!", 100);
 let clientId = "temp-" + Date.now();
@@ -1159,9 +1162,10 @@ document.getElementById("successContent").classList.remove("hidden");
 document.getElementById("clientLinkBox").value = clientLink;
 
 
-      }catch(err){
-        alert(err || "Something went wrong.");
-      }
+}catch(err){
+  console.log("ERROR:", err);
+  alert(err || "Something went wrong.");
+}
 
     btn.innerText = "Secure My NFC Card";
     btn.disabled = false;
