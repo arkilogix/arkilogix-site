@@ -1,46 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Digital Card</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .card {
-      background: #1e293b;
-      padding: 30px;
-      border-radius: 16px;
-      width: 320px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    h1 { margin: 10px 0; }
-    h2 { margin: 5px 0; color: #94a3b8; }
-    p { margin-top: 15px; font-size: 14px; }
-  </style>
-</head>
-
-<body>
-
-<div class="card">
-  <h1 id="name">Loading...</h1>
-  <h2 id="profession"></h2>
-  <h2 id="company"></h2>
-  <p id="about"></p>
-</div>
-
 <script>
 async function loadClient(){
 
@@ -53,8 +10,7 @@ async function loadClient(){
   }
 
   try{
-    // ✅ IMPORTANT: go up one level because this file is inside /view/
-    const res = await fetch("../clients/" + id + ".json");
+    const res = await fetch("/arkilogix-site/clients/" + id + ".json");
 
     if(!res.ok){
       throw new Error("Client not found");
@@ -62,7 +18,6 @@ async function loadClient(){
 
     const data = await res.json();
 
-    // ✅ Display data
     document.getElementById("name").innerText = data.name || "";
     document.getElementById("profession").innerText = data.profession || "";
     document.getElementById("company").innerText = data.company || "";
@@ -78,6 +33,3 @@ async function loadClient(){
 
 loadClient();
 </script>
-
-</body>
-</html>
