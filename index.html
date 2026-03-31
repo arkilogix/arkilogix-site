@@ -1060,8 +1060,18 @@ window.closeOrderModal = function(){
 }
 
 window.handleOutsideClick = function(e){
+  const btn = document.getElementById("submitBtn");
+
+  // 🔥 Prevent closing while submitting
+  if(btn && btn.classList.contains("loading")){
+    return;
+  }
+
   const modalContent = document.querySelector("#orderModal .modal-content");
-  if(!modalContent.contains(e.target)) closeOrderModal();
+  
+  if(!modalContent.contains(e.target)){
+    closeOrderModal();
+  }
 }
 
 /* ================= EMAIL ================= */
@@ -1109,7 +1119,14 @@ e.preventDefault();
     const btn = document.getElementById("submitBtn");
     btn.disabled = true;
     btn.classList.add("loading");
+    btn.innerText = "Processing...";
+// 🔥 LOCK ALL INPUTS
+const inputs = document.querySelectorAll("#orderForm input, #orderForm textarea, #orderForm button");
 
+inputs.forEach(el => {
+  el.disabled = true;
+});
+    
     updateProgress("Preparing order...", 10);
 
     try{
@@ -1208,7 +1225,7 @@ console.log("STEP 4: updating UI");
 // ❗ FIX: DO NOT use raw variables
 document.getElementById("formContent").classList.add("hidden");
 document.getElementById("successContent").classList.remove("hidden");
-
+document.getElementById("orderForm").reset();
 console.log("STEP 5: success shown");
 
     }catch(err){
