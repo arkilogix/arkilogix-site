@@ -1136,18 +1136,18 @@ const highlight = document.getElementById("highlightPhoto").files[0];
         updateProgress("Uploading profile...", 25);
         params.profile = await uploadToCloudinary(profile) || "";
 
-        console.log("FORCE SUCCESS TEST");
-
-// 🔥 FORCE SUCCESS UI
-document.getElementById("formContent").classList.add("hidden");
-document.getElementById("successContent").classList.remove("hidden");
-
-return; // 🔥 STOP EXECUTION HERE
-        
+       
 if(selectedPlan === "pro" || selectedPlan === "elite"){
   if(!highlight){
-    throw "Please upload a highlighted project";
+  console.log("No highlight uploaded");
+}else{
+  updateProgress("Uploading highlight...", 45);
+  try{
+    params.highlight = await uploadToCloudinary(highlight) || "";
+  }catch(e){
+    console.log("Highlight upload failed:", e);
   }
+}
   updateProgress("Uploading highlight...", 45);
   params.highlight = await uploadToCloudinary(highlight) || "";
 }
@@ -1155,18 +1155,27 @@ if(selectedPlan === "pro" || selectedPlan === "elite"){
         if(selectedPlan==="pro"||selectedPlan==="elite"){
 const files = document.getElementById("portfolioPhotos").files;
 
-          if(files.length < 3){
-            throw "Please upload at least 3 portfolio images";
-          }
-          updateProgress("Uploading portfolio...", 70);
-          const urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
+const files = document.getElementById("portfolioPhotos").files;
 
-          params.portfolio1 = urls[0] || "";
-          params.portfolio2 = urls[1] || "";
-          params.portfolio3 = urls[2] || "";
+let urls = [];
+
+if(files.length < 3){
+  console.log("Not enough portfolio images");
+}else{
+  updateProgress("Uploading portfolio...", 70);
+  try{
+    urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
+  }catch(e){
+    console.log("Portfolio upload failed:", e);
+  }
+}
+
+params.portfolio1 = urls[0] || "";
+params.portfolio2 = urls[1] || "";
+params.portfolio3 = urls[2] || "";
         }
 updateProgress("Finalizing order...", 90);
-sendEmailNow(params);
+await sendEmailNow(params);
 updateProgress("Saving data...", 95);
 updateProgress("Completed!", 100);
 let clientId = "temp-" + Date.now();
