@@ -98,9 +98,9 @@ if (saveBtn) {
     setImage("highlightImage", data.highlightImage);
     setText("highlightTitle", data.highlightTitle);
     
-    setImage("project1", data.project1);
-    setImage("project2", data.project2);
-    setImage("project3", data.project3);
+    setImage("project1", data.portfolio1);
+    setImage("project2", data.portfolio2);
+    setImage("project3", data.portfolio3);
 
     // CONTACT
     setLink("phoneLink", data.phone, "tel:");
