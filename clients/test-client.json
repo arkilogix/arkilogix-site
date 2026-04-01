@@ -2,6 +2,15 @@
   "name": "Test User",
   "position": "Architect",
   "company": "Test Studio",
-  "about": "This is a test digital business card.",
-  "template": "basic"
+  "profile": "https://via.placeholder.com/150",
+
+  "phone": "09171234567",
+  "email": "test@email.com",
+
+  "facebook": "https://facebook.com",
+  "instagram": "https://instagram.com",
+  "portfolio": "https://example.com",
+  "companyProfile": "https://example.com",
+
+  "services": ["Design", "3D Rendering"]
 }
