@@ -5,7 +5,7 @@ function getClientId() {
 
 async function fetchClientData(id) {
   try {
-    const response = await fetch(`/arkilogix-site/clients/${id}.json`);
+    const response = await fetch(`../clients/${id}.json`);
 
     if (!response.ok) {
       throw new Error("File not found");
