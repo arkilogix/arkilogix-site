@@ -1105,7 +1105,7 @@ window.copyLink = function(){
 
   async function sendToGoogleSheets(data){
   try{
-    await fetch("https://script.google.com/macros/s/AKfycbwSUcFSsvYxPqU6WYkXtKXh86RQsqrzpwrt-vqmwQgJRwb1vIDlfmsepXKEa_scRApE/exec", {
+    await fetch("https://script.google.com/macros/s/AKfycbxf0obv-2zjz3QhTPViKkPPuPesOnu1TQaen4VEJ7q1ZqQv2uA8wHjbnlp5l24XCLryuA/exec", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -1154,10 +1154,10 @@ inputs.forEach(el => {
   website: website?.value || "",
 
   services: [
-    service1?.value || "",
-    service2?.value || "",
-    service3?.value || "",
-    service4?.value || ""
+    service1: service1?.value || "",
+    service2: service2?.value || "",
+    service3: service3?.value || "",
+    service4: service4?.value || "",
   ],
 
   plan: selectedPlan || "",
