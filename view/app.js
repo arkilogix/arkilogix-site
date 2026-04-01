@@ -55,7 +55,15 @@ async function loadClient() {
     console.error("No ID found in URL");
   
     const loader = document.getElementById("loader");
-    if (loader) loader.style.display = "none";
+  if (loader) loader.style.display = "none";
+  
+  // 🔥 SHOW CARD ANIMATION
+  const card = document.querySelector(".card");
+  if (card) {
+    setTimeout(() => {
+      card.classList.add("show");
+    }, 100);
+  }
   
     return;
   }
