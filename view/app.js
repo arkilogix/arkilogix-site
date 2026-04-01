@@ -57,8 +57,7 @@ async function loadClient() {
     if (!res.ok) throw new Error("Not found");
 
     const data = await res.json();
-    document.getElementById("loader").style.display = "none";
-    
+
     // TEXT
     setText("name", data.name);
     setText("position", data.position || data.profession);
@@ -84,6 +83,10 @@ async function loadClient() {
   } catch (err) {
     console.error("ERROR:", err);
   }
+
+  // 🔥 ALWAYS HIDE LOADER (IMPORTANT)
+  const loader = document.getElementById("loader");
+  if (loader) loader.style.display = "none";
 }
 
 loadClient();
