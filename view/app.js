@@ -31,6 +31,12 @@ function setImage(id, value) {
 
   if (value) {
     el.src = value;
+
+    // safe fallback if image fails
+    el.onerror = () => {
+      el.style.display = "none";
+    };
+
   } else {
     el.style.display = "none";
   }
@@ -50,24 +56,13 @@ function renderServices(list) {
 
 async function loadClient() {
   const id = getClientId();
-  
+
+  // ❌ no id → stop loader
   if (!id) {
     console.error("No ID found in URL");
-  
+
     const loader = document.getElementById("loader");
-  if (loader) loader.style.display = "none";
-  
-  // 🔥 SHOW CARD ANIMATION
-  const card = document.querySelector(".card");
-  
-  if (card) {
-    console.log("Card found, showing...");
-    
-    setTimeout(() => {
-      card.classList.add("show");
-    }, 200);
-  }
-  
+    if (loader) loader.style.display = "none";
     return;
   }
 
@@ -103,11 +98,19 @@ async function loadClient() {
     console.error("ERROR:", err);
   }
 
-  // 🔥 ALWAYS HIDE LOADER (IMPORTANT)
+  // ✅ ALWAYS HIDE LOADER
   const loader = document.getElementById("loader");
   if (loader) loader.style.display = "none";
+
+  // ✅ FORCE SHOW CARD (no animation bug)
+  const card = document.querySelector(".card");
+  if (card) {
+    card.style.opacity = "1";
+    card.style.transform = "translateY(0)";
+  }
 }
 
+// ✅ RUN AFTER PAGE LOAD (IMPORTANT)
 window.addEventListener("DOMContentLoaded", () => {
   loadClient();
 });
