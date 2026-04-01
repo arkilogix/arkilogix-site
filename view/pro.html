@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Digital Card</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --gold: #C9A96E;
+  --black: #0b0b0b;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--black);
+  color: #fff;
+}
+
+/* 🔥 HERO */
+.hero {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+}
+
+.hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.75);
+  transition: transform 6s ease;
+}
+
+.hero:hover img {
+  transform: scale(1.05);
+}
+
+/* GLASS OVERLAY */
+.hero-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  border-top: 1px solid rgba(201,169,110,0.3);
+}
+
+.highlight-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.company {
+  font-size: 12px;
+  color: #ccc;
+}
+
+/* PROFILE */
+.profile {
+  text-align: center;
+  margin-top: -55px;
+}
+
+.profile img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid var(--black);
+  object-fit: cover;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.position {
+  font-size: 13px;
+  color: #aaa;
+}
+
+/* ACTION BUTTONS */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px;
+}
+
+.actions a {
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #141414;
+  color: #fff;
+  font-size: 13px;
+  border: 1px solid rgba(201,169,110,0.3);
+  transition: all 0.3s ease;
+}
+
+.actions a:hover {
+  background: var(--gold);
+  color: #000;
+}
+
+/* GALLERY */
+.gallery {
+  padding: 20px;
+}
+
+.gallery-title {
+  font-size: 13px;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.grid img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 6px;
+  transition: transform 0.3s ease;
+}
+
+.grid img:hover {
+  transform: scale(1.05);
+}
+
+/* SERVICES */
+.services {
+  padding: 20px;
+}
+
+.services h3 {
+  font-size: 13px;
+  color: var(--gold);
+}
+
+.services li {
+  font-size: 13px;
+  margin: 6px 0;
+  color: #ddd;
+}
+
+/* SAVE CONTACT */
+.save-btn {
+  margin: 25px;
+  text-align: center;
+}
+
+.save-btn button {
+  padding: 12px 20px;
+  border: none;
+  background: var(--gold);
+  color: #000;
+  border-radius: 10px;
+  font-weight: 600;
+  width: 90%;
+}
+
+/* ✨ FADE ANIMATION */
+.fade {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- 🔥 HERO -->
+<div class="hero">
+  <img id="highlightImage">
+  <div class="hero-overlay">
+    <div id="highlightTitle" class="highlight-title"></div>
+    <div id="company" class="company"></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="profile fade">
+  <img id="profileImage">
+  <div id="name" class="name"></div>
+  <div id="position" class="position"></div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions fade">
+  <a id="phoneBtn">Call</a>
+  <a id="smsBtn">SMS</a>
+  <a id="emailBtn">Email</a>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery fade">
+  <div class="gallery-title">Selected Works</div>
+  <div class="grid">
+    <img id="project1">
+    <img id="project2">
+    <img id="project3">
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="services fade">
+  <h3>Services</h3>
+  <ul id="services"></ul>
+</div>
+
+<!-- SAVE CONTACT -->
+<div class="save-btn fade">
+  <button id="saveContact">Save Contact</button>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
