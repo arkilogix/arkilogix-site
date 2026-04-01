@@ -95,6 +95,12 @@ if (saveBtn) {
 
     // IMAGE
     setImage("profile", data.profile);
+    setImage("highlightImage", data.highlightImage);
+    setText("highlightTitle", data.highlightTitle);
+    
+    setImage("project1", data.project1);
+    setImage("project2", data.project2);
+    setImage("project3", data.project3);
 
     // CONTACT
     setLink("phoneLink", data.phone, "tel:");
