@@ -241,7 +241,15 @@ ARKILOGIX
 </div>
 
 <script>
+function setLink(id, value, prefix = "") {
+  const el = document.getElementById(id);
 
+  if (value) {
+    el.href = prefix + value;
+  } else {
+    el.style.display = "none";
+  }
+}
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
@@ -257,14 +265,14 @@ fetch("/clients/" + id + ".json")
   document.getElementById("company").innerText = data.company || "";
   document.getElementById("profile").src = data.profile || "";
 
-  document.getElementById("phoneLink").href = data.phone ? "tel:" + data.phone : "#";
-  document.getElementById("smsLink").href = data.phone ? "sms:" + data.phone : "#";
-  document.getElementById("emailLink").href = data.email ? "mailto:" + data.email : "#";
-
-  document.getElementById("facebook").href = data.facebook || "#";
-  document.getElementById("instagram").href = data.instagram || "#";
-  document.getElementById("portfolio").href = data.portfolio || "#";
-  document.getElementById("companyProfile").href = data.companyProfile || "#";
+  setLink("phoneLink", data.phone, "tel:");
+  setLink("smsLink", data.phone, "sms:");
+  setLink("emailLink", data.email, "mailto:");
+  
+  setLink("facebook", data.facebook);
+  setLink("instagram", data.instagram);
+  setLink("portfolio", data.portfolio);
+  setLink("companyProfile", data.companyProfile);
 
   const servicesContainer = document.getElementById("services");
 
