@@ -50,7 +50,15 @@ function renderServices(list) {
 
 async function loadClient() {
   const id = getClientId();
-  if (!id) return;
+  
+  if (!id) {
+    console.error("No ID found in URL");
+  
+    const loader = document.getElementById("loader");
+    if (loader) loader.style.display = "none";
+  
+    return;
+  }
 
   try {
     const res = await fetch(`/clients/${id}.json`);
