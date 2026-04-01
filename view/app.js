@@ -59,10 +59,13 @@ async function loadClient() {
   
   // 🔥 SHOW CARD ANIMATION
   const card = document.querySelector(".card");
+  
   if (card) {
+    console.log("Card found, showing...");
+    
     setTimeout(() => {
       card.classList.add("show");
-    }, 100);
+    }, 200);
   }
   
     return;
