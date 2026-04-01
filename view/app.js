@@ -97,4 +97,6 @@ async function loadClient() {
   if (loader) loader.style.display = "none";
 }
 
-loadClient();
+window.addEventListener("DOMContentLoaded", () => {
+  loadClient();
+});
