@@ -109,6 +109,16 @@ async function loadClient() {
     card.style.transform = "translateY(0)";
   }
 }
+function generateVCard(data) {
+  return `BEGIN:VCARD
+VERSION:3.0
+FN:${data.name || ""}
+ORG:${data.company || ""}
+TITLE:${data.position || data.profession || ""}
+TEL:${data.phone || ""}
+EMAIL:${data.email || ""}
+END:VCARD`;
+}
 
 // ✅ RUN AFTER PAGE LOAD (IMPORTANT)
 window.addEventListener("DOMContentLoaded", () => {
