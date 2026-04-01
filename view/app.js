@@ -71,7 +71,23 @@ async function loadClient() {
     if (!res.ok) throw new Error("Not found");
 
     const data = await res.json();
+const saveBtn = document.getElementById("saveContact");
 
+if (saveBtn) {
+  saveBtn.onclick = function () {
+    const vcard = generateVCard(data);
+
+    const blob = new Blob([vcard], { type: "text/vcard" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = (data.name || "contact") + ".vcf";
+    a.click();
+
+    URL.revokeObjectURL(url);
+  };
+}
     // TEXT
     setText("name", data.name);
     setText("position", data.position || data.profession);
