@@ -245,7 +245,7 @@ ARKILOGIX
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-fetch("/arkilogix-site/clients/" + id + ".json")
+fetch("/clients/" + id + ".json")
 .then(res => {
   if(!res.ok) throw new Error("HTTP " + res.status);
   return res.json();
