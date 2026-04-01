@@ -6,6 +6,7 @@ function getClientId() {
 async function fetchClientData(id) {
   try {
     const response = await fetch(`/clients/${id}.json`);
+
     if (!response.ok) {
       throw new Error("File not found");
     }
