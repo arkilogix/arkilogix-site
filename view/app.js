@@ -57,28 +57,47 @@ async function loadClient() {
   const id = getClientId();
 
   if (!id) {
-    console.error("No ID found in URL");
+    console.error("No ID");
     return;
   }
 
-  let data = null;
+  let data;
 
   try {
-    const res = await fetch(
-      "https://raw.githubusercontent.com/arkilogix/arkilogix-site/main/clients/" + id + ".txt"
-    );
+    const url = "https://raw.githubusercontent.com/arkilogix/arkilogix-site/main/clients/" + id + ".txt";
 
-    data = await res.json();
+    console.log("Fetching:", url);
+
+    const res = await fetch(url);
+
+    const text = await res.text();
+    data = JSON.parse(text);
+
+    console.log("DATA LOADED:", data);
 
   } catch (err) {
-    console.error("LOAD ERROR:", err);
+    console.error("LOAD FAILED:", err);
     return;
   }
 
-  if (!data) {
-    console.error("No data found");
-    return;
-  }
+  // ===== RENDER =====
+  setText("name", data.name);
+  setText("position", data.position || data.profession);
+  setText("company", data.company);
+
+  setImage("profileImage", data.profile);
+  setImage("highlightImage", data.highlight);
+  setText("highlightTitle", data.highlightTitle);
+
+  setImage("project1", data.portfolio1);
+  setImage("project2", data.portfolio2);
+  setImage("project3", data.portfolio3);
+
+  setLink("phoneBtn", data.phone, "tel:");
+  setLink("smsBtn", data.phone, "sms:");
+  setLink("emailBtn", data.email, "mailto:");
+
+  renderServices(data.services);
 
   const saveBtn = document.getElementById("saveContact");
 
@@ -97,45 +116,6 @@ async function loadClient() {
       URL.revokeObjectURL(url);
     };
   }
-
-  // TEXT
-  setText("name", data.name);
-  setText("position", data.position || data.profession);
-  setText("company", data.company);
-
-  // IMAGES
-  setImage("profileImage", data.profile);
-  setImage("highlightImage", data.highlight);
-  setText("highlightTitle", data.highlightTitle);
-
-  setImage("project1", data.portfolio1);
-  setImage("project2", data.portfolio2);
-  setImage("project3", data.portfolio3);
-
-  // CONTACT
-  setLink("phoneBtn", data.phone, "tel:");
-  setLink("smsBtn", data.phone, "sms:");
-  setLink("emailBtn", data.email, "mailto:");
-
-  // SOCIALS
-  setLink("facebook", data.facebook);
-  setLink("instagram", data.instagram);
-  setLink("portfolio", data.portfolio);
-  setLink("companyProfile", data.companyProfile);
-
-  // SERVICES
-  renderServices(data.services);
-}
-
-function generateVCard(data) {
-  return `BEGIN:VCARD
-VERSION:3.0
-FN:${data.name || ""}
-ORG:${data.company || ""}
-TITLE:${data.position || data.profession || ""}
-TEL:${data.phone || ""}
-EMAIL:${data.email || ""}
-END:VCARD`;
 }
 
 window.addEventListener("DOMContentLoaded", () => {
