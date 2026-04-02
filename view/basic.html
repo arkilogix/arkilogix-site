@@ -270,8 +270,80 @@ A2 2 0 0 1 22 16.92z"/>
 </div>
 
 </div>
+<script type="module">
 
-<script src="app.js"></script>
+// 🔥 IMPORT FIREBASE
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// 🔥 YOUR FIREBASE CONFIG (same as index)
+const firebaseConfig = {
+  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
+  authDomain: "arkilogix-clients.firebaseapp.com",
+  projectId: "arkilogix-clients"
+};
+
+// 🔥 INIT
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔥 GET ID FROM URL
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+// ❌ NO ID
+if (!id) {
+  document.body.innerHTML = "Missing ID";
+  throw new Error("No ID");
+}
+
+// 🔥 GET DATA FROM FIREBASE
+const docRef = doc(db, "clients", id);
+
+getDoc(docRef).then((docSnap) => {
+
+  if (!docSnap.exists()) {
+    document.body.innerHTML = "Client not found";
+    return;
+  }
+
+  const data = docSnap.data();
+  console.log("DATA:", data);
+
+  // 🔥 HIDE LOADER
+  document.getElementById("loader").style.display = "none";
+
+  // 🔥 PROFILE
+  document.getElementById("profile").src = data.profile || "";
+  document.getElementById("name").textContent = data.name || "";
+  document.getElementById("position").textContent = data.position || "";
+  document.getElementById("company").textContent = data.company || "";
+
+  // 🔥 ACTIONS
+  document.getElementById("phoneLink").href = "tel:" + (data.phone || "");
+  document.getElementById("smsLink").href = "sms:" + (data.phone || "");
+  document.getElementById("emailLink").href = "mailto:" + (data.email || "");
+
+  // 🔥 SOCIALS
+  if (data.facebook) document.getElementById("facebook").href = data.facebook;
+  if (data.instagram) document.getElementById("instagram").href = data.instagram;
+  if (data.website) document.getElementById("portfolio").href = data.website;
+
+  // 🔥 SERVICES
+  const servicesDiv = document.getElementById("services");
+
+  if (data.service1) servicesDiv.innerHTML += `<div class="service">${data.service1}</div>`;
+  if (data.service2) servicesDiv.innerHTML += `<div class="service">${data.service2}</div>`;
+  if (data.service3) servicesDiv.innerHTML += `<div class="service">${data.service3}</div>`;
+  if (data.service4) servicesDiv.innerHTML += `<div class="service">${data.service4}</div>`;
+
+}).catch(err => {
+  console.error(err);
+  document.body.innerHTML = "Error loading data";
+});
+
+</script>
+
+  
 </body>
 </html>
