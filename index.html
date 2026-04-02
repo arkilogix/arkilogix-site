@@ -1133,7 +1133,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", async function(e){
 e.preventDefault();
-    const name = document.getElementById("name");
+const name = document.getElementById("name");
+const position = document.getElementById("position");
 const email = document.getElementById("email");
 const phone = document.getElementById("phone");
 const notes = document.getElementById("notes");
@@ -1163,6 +1164,7 @@ inputs.forEach(el => {
     try{
       const params = {
   name: name?.value || "",
+  position: position?.value || "",
   email: email?.value || "",
   phone: phone?.value || "",
   notes: notes?.value || "",
@@ -1209,6 +1211,7 @@ inputs.forEach(el => {
 
       updateProgress("Finalizing order...", 90);
       await sendEmailNow(params);
+       params.link = link;
       await sendToGoogleSheets(params);;
 
       updateProgress("Saving data...", 95);
@@ -1251,13 +1254,13 @@ let page = selectedPlan === "elite" ? "elite.html" :
 const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
 
 // ❗ FIX: DO NOT use raw variable
-document.getElementById("clientLinkBox").value = link;
+console.log("CLIENT LINK:", link);
 
 console.log("STEP 4: updating UI");
 
 // ❗ FIX: DO NOT use raw variables
 document.getElementById("formContent").classList.add("hidden");
-document.getElementById("successContent").classList.remove("hidden");
+console.log("CLIENT LINK:", link);
 document.getElementById("orderForm").reset();
 console.log("STEP 5: success shown");
 
@@ -1343,6 +1346,7 @@ document.addEventListener("keydown", function(e){
   </div>
 </div>
       <input type="text" id="name" placeholder="Full Name" required>
+      <input type="text" id="position" placeholder="Profession / Position" required>
       <input type="email" id="email" placeholder="Email Address" required>
       <input type="text" id="phone" placeholder="Phone Number" required>
       <input type="text" id="facebook" placeholder="Facebook URL">
@@ -1394,10 +1398,11 @@ document.addEventListener("keydown", function(e){
 <!-- SUCCESS SCREEN -->
 <div class="modal-content" id="successContent">
 
-    <h2>✅ Order Confirmed</h2>
-    <p style="font-size:13px;color:#666;margin-bottom:15px;">
-      Your NFC card is now being prepared.
-    </p>
+<h2>✅ Order Received</h2>
+<p>
+Thank you! Please proceed with payment.  
+Your digital card will be activated after confirmation.
+</p>
 
     <input id="clientLinkBox" readonly
       style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;">
