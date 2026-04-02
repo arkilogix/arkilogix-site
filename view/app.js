@@ -95,7 +95,7 @@ if (saveBtn) {
 
     // IMAGE
     setImage("profile", data.profile);
-    setImage("highlightImage", data.highlightImage);
+    setImage("highlightImage", data.highlight);
     setText("highlightTitle", data.highlightTitle);
     
     setImage("project1", data.portfolio1);
