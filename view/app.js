@@ -67,7 +67,7 @@ async function loadClient() {
   }
 
   try {
-    const res = await fetch(`/arkilogix-site/clients/${id}.json`);
+    const res = await fetch(`/arkilogix-site/clients/${id}.txt`);
     if (!res.ok) throw new Error("Not found");
 
     const data = await res.json();
