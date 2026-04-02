@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- PREMIUM FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<title>Gio Carlo Aleta</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter', -apple-system, sans-serif;
+}
+
+body{
+  background:#fff;
+  color:#111;
+}
+
+/* ===== BANNER ===== */
+.banner{
+  width:100%;
+  height:260px;
+  background:url("https://res.cloudinary.com/dnlzwtkhs/image/upload/q_auto/f_auto/v1775110755/Profile_Banner_fsmns0.png") center/cover no-repeat;
+  position:relative;
+}
+
+.banner::after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:120px;
+  background:linear-gradient(to bottom, transparent, #fff);
+}
+
+/* ===== PROFILE ===== */
+.profile{
+  text-align:center;
+  margin-top:-120px;
+  padding:0 20px;
+  position:relative;
+  z-index:2;
+}
+
+.profile img{
+  width:145px;
+  height:145px;
+  border-radius:50%;
+  border:6px solid #fff;
+  object-fit:cover;
+  box-shadow:0 15px 40px rgba(0,0,0,0.12);
+}
+
+.name{
+  margin-top:16px;
+  font-size:26px;
+  font-weight:600;
+  letter-spacing:-0.3px;
+}
+
+.role{
+  font-size:14px;
+  color:#6b7280;
+  font-weight:500;
+  margin-top:6px;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.actions{
+  margin-top:22px;
+  display:flex;
+  justify-content:center;
+  gap:16px;
+}
+
+.icon-btn{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:linear-gradient(145deg,#ffffff,#e9edf3);
+  border:1px solid rgba(0,0,0,0.06);
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.9),
+    inset 0 -3px 6px rgba(0,0,0,0.08),
+    0 8px 20px rgba(0,0,0,0.08);
+
+  transition:.25s;
+}
+
+.icon-btn:hover{
+  transform:translateY(-2px) scale(1.05);
+}
+
+.icon-btn:active{
+  transform:scale(0.95);
+}
+
+.icon-btn svg{
+  width:22px;
+  height:22px;
+  stroke:#5b6f8f;
+}
+
+/* ===== BUTTON SYSTEM ===== */
+.btn{
+  display:inline-block;
+  padding:12px 26px;
+  border-radius:30px;
+
+  background:linear-gradient(145deg,#ffffff,#e9edf3);
+  border:1px solid rgba(0,0,0,0.06);
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.9),
+    inset 0 -3px 6px rgba(0,0,0,0.08),
+    0 8px 20px rgba(0,0,0,0.08);
+
+  text-decoration:none;
+  color:#111;
+  font-size:14px;
+  font-weight:500;
+
+  transition:.25s;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+}
+
+/* ===== CENTERED BUTTON GROUP ===== */
+.center{
+  display:flex;
+  justify-content:center;
+  margin-top:20px;
+}
+
+/* ===== PROJECTS ===== */
+.projects{
+  margin-top:30px;
+  display:flex;
+  gap:18px;
+  overflow-x:auto;
+  padding:0 20px 30px;
+}
+
+.projects img{
+  height:210px;
+  border-radius:20px;
+  object-fit:cover;
+  box-shadow:0 12px 35px rgba(0,0,0,0.12);
+}
+
+/* ===== CTA ===== */
+.cta{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  right:20px;
+}
+
+.cta a{
+  display:block;
+  text-align:center;
+  padding:18px;
+  border-radius:50px;
+  background:#111;
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+  letter-spacing:-0.2px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.25);
+  transition:.25s;
+}
+
+.cta a:hover{
+  transform:translateY(-2px);
+}
+
+/* ===== FOOTER ===== */
+.footer{
+  text-align:center;
+  padding:50px 20px 120px;
+  color:#888;
+  font-size:12px;
+}
+
+.footer img{
+  width:120px;
+  margin-bottom:10px;
+  opacity:0.85;
+}
+</style>
+</head>
+
+<body>
+
+<div class="banner"></div>
+
+<div class="profile">
+  <img src="https://res.cloudinary.com/dnlzwtkhs/image/upload/q_auto/f_auto/v1775110728/Profile_Photo_fpe8us.jpg">
+
+  <div class="name">Gio Carlo Aleta</div>
+  <div class="role">Photographer</div>
+
+  <div class="actions">
+
+    <!-- CALL -->
+    <a class="icon-btn" href="tel:09761186247">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2
+19.86 19.86 0 0 1-8.63-3.07
+19.5 19.5 0 0 1-6-6
+19.86 19.86 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3
+a2 2 0 0 1 2 1.72
+c.12.9.37 1.78.72 2.62
+a2 2 0 0 1-.45 2.11L8.09 9.91
+a16 16 0 0 0 6 6l1.46-1.29
+a2 2 0 0 1 2.11-.45
+c.84.35 1.72.6 2.62.72
+a2 2 0 0 1 1.72 2z"/>
+      </svg>
+    </a>
+
+    <!-- SMS -->
+    <a class="icon-btn" href="sms:09761186247">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+        <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V5
+a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
+      </svg>
+    </a>
+
+    <!-- EMAIL -->
+    <a class="icon-btn" href="mailto:aletagiocarlo@gmail.com">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+        <rect x="3" y="5" width="18" height="14" rx="2"/>
+        <path d="M3 7l9 6 9-6"/>
+      </svg>
+    </a>
+
+    <!-- FB -->
+    <a class="icon-btn" href="https://www.facebook.com/profile.php?id=61586732104322">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7
+a1 1 0 0 1 1-1h3z"/>
+      </svg>
+    </a>
+
+    <!-- IG -->
+    <a class="icon-btn" href="https://www.instagram.com/snapgphotography/">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+        <rect x="2" y="2" width="20" height="20" rx="5"/>
+<circle cx="12" cy="12" r="4"/>
+<circle cx="18" cy="6" r="1"/>
+      </svg>
+    </a>
+
+  </div>
+
+  <div class="center">
+    <a class="btn" href="data:text/vcard;charset=utf-8,
+BEGIN:VCARD
+VERSION:3.0
+FN:Gio Carlo Aleta
+TEL:09761186247
+EMAIL:aletagiocarlo@gmail.com
+END:VCARD">
+      Save to Contacts
+    </a>
+  </div>
+
+  <div class="center">
+    <a class="btn" href="https://snapgphotography.my.canva.site/" target="_blank">
+      View Full Portfolio
+    </a>
+  </div>
+
+</div>
+
+<div class="projects">
+  <img src="https://res.cloudinary.com/dnlzwtkhs/image/upload/q_auto/f_auto/v1775110757/Menu_Shots_ebxvwu.jpg">
+  <img src="https://res.cloudinary.com/dnlzwtkhs/image/upload/q_auto/f_auto/v1775110761/Creatives_nmjuro.jpg">
+  <img src="https://res.cloudinary.com/dnlzwtkhs/image/upload/q_auto/f_auto/v1775111248/Hero_Shots_myrz1t.png">
+</div>
+
+<div class="cta">
+  <a href="mailto:aletagiocarlo@gmail.com">Book a Shoot</a>
+</div>
+
+<div class="footer">
+  <img src="https://via.placeholder.com/200x60?text=ARKILOGIX">
+  <div>POWERED BY ARKILOGIX</div>
+</div>
+
+</body>
+</html>
