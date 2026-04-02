@@ -9,70 +9,36 @@ document.addEventListener("DOMContentLoaded", loadClient);
 // ==============================
 async function loadClient() {
   const id = getClientId();
+  if (!id) return showError("Missing ID");
 
-  console.log("[INIT] Client ID:", id);
-
-  if (!id) {
-    showError("Missing client ID");
-    return;
-  }
-
-  const urls = [
-    `https://cdn.jsdelivr.net/gh/arkilogix/arkilogix-site@main/clients/${id}.txt`,
-    `https://raw.githubusercontent.com/arkilogix/arkilogix-site/main/clients/${id}.txt`
-  ];
-
-  let data = null;
+  const url = `https://cdn.jsdelivr.net/gh/arkilogix/arkilogix-site@main/clients/${id}.txt`;
 
   showLoading(true);
 
-  for (let i = 0; i < urls.length; i++) {
-    const url = urls[i];
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
 
-    try {
-      console.log("[FETCH] Trying:", url);
+    const res = await fetch(url, {
+      cache: "no-store",
+      signal: controller.signal
+    });
 
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
+    clearTimeout(timeout);
 
-      const res = await fetch(url, {
-        cache: "no-store",
-        signal: controller.signal
-      });
+    if (!res.ok) throw new Error("Fetch failed");
 
-      clearTimeout(timeout);
+    const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
+    renderClient(data);
 
-      const text = await res.text();
-
-      if (!text || text.trim() === "") {
-        throw new Error("Empty response");
-      }
-
-      try {
-        data = JSON.parse(text);
-      } catch (parseErr) {
-        console.error("[PARSE ERROR]", parseErr);
-        throw new Error("Invalid JSON format");
-      }
-
-      console.log("[SUCCESS] Data loaded:", data);
-
-      break;
-
-    } catch (err) {
-      console.warn(`[FETCH FAILED ${i + 1}]`, err);
-
-      if (i === urls.length - 1) {
-        showError("Unable to load profile");
-        showLoading(false);
-        return;
-      }
-    }
+  } catch (e) {
+    console.error(e);
+    showError("Failed to load");
   }
+
+  showLoading(false);
+}
 
   // ==============================
   // RENDER
