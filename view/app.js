@@ -33,50 +33,43 @@ async function loadClient() {
     renderClient(data);
 
   } catch (e) {
-    console.error(e);
-    showError("Failed to load");
+    console.error("[LOAD ERROR]", e);
+    showError("Failed to load profile");
   }
 
   showLoading(false);
 }
 
-  // ==============================
-  // RENDER
-  // ==============================
-  try {
-    setText("name", data.name);
-    setText("position", data.position || data.profession);
-    setText("company", data.company);
 
-    setImage("profileImage", data.profile);
-    setImage("highlightImage", data.highlight);
-    setText("highlightTitle", data.highlightTitle);
+// ==============================
+// RENDER
+// ==============================
+function renderClient(data) {
+  setText("name", data.name);
+  setText("position", data.position || data.profession);
+  setText("company", data.company);
 
-    setImage("project1", data.portfolio1);
-    setImage("project2", data.portfolio2);
-    setImage("project3", data.portfolio3);
+  setImage("profileImage", data.profile);
+  setImage("highlightImage", data.highlight);
+  setText("highlightTitle", data.highlightTitle);
 
-    setLink("phoneBtn", data.phone, "tel:");
-    setLink("smsBtn", data.phone, "sms:");
-    setLink("emailBtn", data.email, "mailto:");
+  setImage("project1", data.portfolio1);
+  setImage("project2", data.portfolio2);
+  setImage("project3", data.portfolio3);
 
-    renderServices(Array.isArray(data.services) ? data.services : []);
+  setLink("phoneBtn", data.phone, "tel:");
+  setLink("smsBtn", data.phone, "sms:");
+  setLink("emailBtn", data.email, "mailto:");
 
-    setupVCard(data);
+  renderServices(Array.isArray(data.services) ? data.services : []);
 
-  } catch (renderErr) {
-    console.error("[RENDER ERROR]", renderErr);
-    showError("Error displaying profile");
-  }
-
-  showLoading(false);
+  setupVCard(data);
 }
 
 
 // ==============================
 // HELPERS
 // ==============================
-
 function getClientId() {
   const params = new URLSearchParams(window.location.search);
   return params.get("id");
@@ -85,7 +78,6 @@ function getClientId() {
 function setText(id, value) {
   const el = document.getElementById(id);
   if (!el) return;
-
   el.innerText = value || "";
 }
 
@@ -115,11 +107,10 @@ function setLink(id, value, prefix = "") {
 
 
 // ==============================
-// SERVICES RENDER
+// SERVICES
 // ==============================
 function renderServices(services) {
   const container = document.getElementById("services");
-
   if (!container) return;
 
   container.innerHTML = "";
@@ -148,18 +139,10 @@ function showLoading(state) {
   if (el) el.style.display = state ? "block" : "none";
 }
 
-function showError(message) {
-  console.error("[UI ERROR]", message);
-
+function showError(msg) {
   const app = document.getElementById("app");
-
   if (app) {
-    app.innerHTML = `
-      <div style="padding:20px;text-align:center;">
-        <h2>⚠️ Error</h2>
-        <p>${message}</p>
-      </div>
-    `;
+    app.innerHTML = `<div style="padding:20px;text-align:center;">${msg}</div>`;
   }
 }
 
@@ -169,7 +152,6 @@ function showError(message) {
 // ==============================
 function setupVCard(data) {
   const saveBtn = document.getElementById("saveContact");
-
   if (!saveBtn) return;
 
   saveBtn.onclick = function () {
