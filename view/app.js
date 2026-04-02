@@ -1,58 +1,3 @@
-function getClientId() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("id");
-}
-
-function setLink(id, value, prefix = "") {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  if (value) {
-    el.href = prefix + value;
-  } else {
-    el.style.display = "none";
-  }
-}
-
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  if (value) {
-    el.innerText = value;
-  } else {
-    el.style.display = "none";
-  }
-}
-
-function setImage(id, value) {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  if (value) {
-    el.src = value;
-
-    el.onerror = () => {
-      el.style.display = "none";
-    };
-  } else {
-    el.style.display = "none";
-  }
-}
-
-function renderServices(list) {
-  const container = document.getElementById("services");
-  if (!container || !list) return;
-
-  container.innerHTML = "";
-
-  list.forEach(service => {
-    const li = document.createElement("li");
-    li.innerText = service;
-    container.appendChild(li);
-  });
-}
-
 async function loadClient() {
   const id = getClientId();
 
@@ -68,9 +13,18 @@ async function loadClient() {
 
     console.log("Fetching:", url);
 
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: "no-store" });
+
+    if (!res.ok) {
+      throw new Error("File not found: " + url);
+    }
 
     const text = await res.text();
+
+    if (!text) {
+      throw new Error("Empty response");
+    }
+
     data = JSON.parse(text);
 
     console.log("DATA LOADED:", data);
@@ -117,7 +71,3 @@ async function loadClient() {
     };
   }
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-  loadClient();
-});
