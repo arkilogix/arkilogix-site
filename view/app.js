@@ -32,11 +32,9 @@ function setImage(id, value) {
   if (value) {
     el.src = value;
 
-    // safe fallback if image fails
     el.onerror = () => {
       el.style.display = "none";
     };
-
   } else {
     el.style.display = "none";
   }
@@ -46,95 +44,89 @@ function renderServices(list) {
   const container = document.getElementById("services");
   if (!container || !list) return;
 
+  container.innerHTML = "";
+
   list.forEach(service => {
-    const div = document.createElement("div");
-    div.className = "service";
-    div.innerText = service;
-    container.appendChild(div);
+    const li = document.createElement("li");
+    li.innerText = service;
+    container.appendChild(li);
   });
 }
 
 async function loadClient() {
   const id = getClientId();
 
-  // ❌ no id → stop loader
   if (!id) {
     console.error("No ID found in URL");
-
-    const loader = document.getElementById("loader");
-    if (loader) loader.style.display = "none";
     return;
   }
 
+  let data = null;
+
   try {
-   const res = await fetch(
-  "https://raw.githubusercontent.com/arkilogix/arkilogix-site/main/clients/" + id + ".txt"
-);
+    const res = await fetch(
+      "https://raw.githubusercontent.com/arkilogix/arkilogix-site/main/clients/" + id + ".txt"
+    );
 
-const data = await res.json();
-    if (!res.ok) throw new Error("Not found");
-
-    const data = await res.json();
-const saveBtn = document.getElementById("saveContact");
-
-if (saveBtn) {
-  saveBtn.onclick = function () {
-    const vcard = generateVCard(data);
-
-    const blob = new Blob([vcard], { type: "text/vcard" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = (data.name || "contact") + ".vcf";
-    a.click();
-
-    URL.revokeObjectURL(url);
-  };
-}
-    // TEXT
-    setText("name", data.name);
-    setText("position", data.position || data.profession);
-    setText("company", data.company);
-
-    // IMAGE
-    setImage("profileImage", data.profile);
-    setImage("highlightImage", data.highlight);
-    setText("highlightTitle", data.highlightTitle);
-    
-    setImage("project1", data.portfolio1);
-    setImage("project2", data.portfolio2);
-    setImage("project3", data.portfolio3);
-
-    // CONTACT
-    setLink("phoneLink", data.phone, "tel:");
-    setLink("smsLink", data.phone, "sms:");
-    setLink("emailLink", data.email, "mailto:");
-
-    // SOCIALS
-    setLink("facebook", data.facebook);
-    setLink("instagram", data.instagram);
-    setLink("portfolio", data.portfolio);
-    setLink("companyProfile", data.companyProfile);
-
-    // SERVICES
-    renderServices(data.services);
+    data = await res.json();
 
   } catch (err) {
-    console.error("ERROR:", err);
+    console.error("LOAD ERROR:", err);
+    return;
   }
 
-  // ✅ ALWAYS HIDE LOADER
-  const loader = document.getElementById("loader");
-  if (loader) loader.style.display = "none";
-
-  // ✅ FORCE SHOW CARD (no animation bug)
-  const card = document.querySelector(".card");
-  if (card) {
-    card.style.opacity = "1";
-    card.style.transform = "translateY(0)";
+  if (!data) {
+    console.error("No data found");
+    return;
   }
+
+  const saveBtn = document.getElementById("saveContact");
+
+  if (saveBtn) {
+    saveBtn.onclick = function () {
+      const vcard = generateVCard(data);
+
+      const blob = new Blob([vcard], { type: "text/vcard" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = (data.name || "contact") + ".vcf";
+      a.click();
+
+      URL.revokeObjectURL(url);
+    };
+  }
+
+  // TEXT
+  setText("name", data.name);
+  setText("position", data.position || data.profession);
+  setText("company", data.company);
+
+  // IMAGES
+  setImage("profileImage", data.profile);
+  setImage("highlightImage", data.highlight);
+  setText("highlightTitle", data.highlightTitle);
+
+  setImage("project1", data.portfolio1);
+  setImage("project2", data.portfolio2);
+  setImage("project3", data.portfolio3);
+
+  // CONTACT
+  setLink("phoneBtn", data.phone, "tel:");
+  setLink("smsBtn", data.phone, "sms:");
+  setLink("emailBtn", data.email, "mailto:");
+
+  // SOCIALS
+  setLink("facebook", data.facebook);
+  setLink("instagram", data.instagram);
+  setLink("portfolio", data.portfolio);
+  setLink("companyProfile", data.companyProfile);
+
+  // SERVICES
+  renderServices(data.services);
 }
+
 function generateVCard(data) {
   return `BEGIN:VCARD
 VERSION:3.0
@@ -146,7 +138,6 @@ EMAIL:${data.email || ""}
 END:VCARD`;
 }
 
-// ✅ RUN AFTER PAGE LOAD (IMPORTANT)
 window.addEventListener("DOMContentLoaded", () => {
   loadClient();
 });
