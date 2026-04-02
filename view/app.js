@@ -67,7 +67,11 @@ async function loadClient() {
   }
 
   try {
-    const res = await fetch("https://raw.githubusercontent.com/arkilogix/arkilogix-site/main/arkilogix-site/clients/" + id + ".json"");
+   const res = await fetch(
+  "https://raw.githubusercontent.com/arkilogix/arkilogix-site/main/clients/" + id + ".txt"
+);
+
+const data = await res.json();
     if (!res.ok) throw new Error("Not found");
 
     const data = await res.json();
