@@ -94,7 +94,7 @@ if (saveBtn) {
     setText("company", data.company);
 
     // IMAGE
-    setImage("profile", data.profile);
+    setImage("profileImage", data.profile);
     setImage("highlightImage", data.highlight);
     setText("highlightTitle", data.highlightTitle);
     
