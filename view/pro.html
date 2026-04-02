@@ -1,202 +1,238 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pro Digital Card</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  --gold: #C9A96E;
-  --black: #0b0b0b;
+
+/* ===== COLOR SYSTEM ===== */
+:root{
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --text: #111;
+  --subtext: #6b7280;
+  --border: #e5e7eb;
+  --black: #111;
 }
 
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: var(--black);
-  color: #fff;
+/* ===== BASE ===== */
+body{
+  margin:0;
+  font-family:'Inter', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:120px;
 }
 
-/* 🔥 HERO */
-.hero {
-  position: relative;
-  height: 320px;
-  overflow: hidden;
+/* ===== CONTAINER ===== */
+.wrapper{
+  max-width:430px;
+  margin:0 auto;
+  background:var(--card);
+  min-height:100vh;
 }
 
-.hero img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.75);
-  transition: transform 6s ease;
+/* ===== HERO ===== */
+.hero{
+  position:relative;
+  height:260px;
+  overflow:hidden;
 }
 
-.hero:hover img {
-  transform: scale(1.05);
+.hero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
-/* GLASS OVERLAY */
-.hero-overlay {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 20px;
-  backdrop-filter: blur(8px);
-  background: linear-gradient(transparent, rgba(0,0,0,0.85));
-  border-top: 1px solid rgba(201,169,110,0.3);
+.hero-overlay{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  padding:16px;
+  background:linear-gradient(transparent, rgba(0,0,0,0.6));
 }
 
-.highlight-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--gold);
+.highlight-title{
+  font-size:15px;
+  font-weight:600;
+  color:#fff;
 }
 
-.company {
-  font-size: 12px;
-  color: #ccc;
+.company{
+  font-size:12px;
+  color:#ddd;
 }
 
-/* PROFILE */
-.profile {
-  text-align: center;
-  margin-top: -55px;
+/* ===== PROFILE ===== */
+.profile{
+  text-align:center;
+  margin-top:-60px;
+  padding:0 20px;
 }
 
-.profile img {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  border: 3px solid var(--black);
-  object-fit: cover;
+.profile img{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  border:5px solid #fff;
+  object-fit:cover;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
-.name {
-  font-size: 20px;
-  font-weight: 600;
-  margin-top: 10px;
+.name{
+  font-size:20px;
+  font-weight:600;
+  margin-top:10px;
 }
 
-.position {
-  font-size: 13px;
-  color: #aaa;
+.position{
+  font-size:13px;
+  color:var(--subtext);
 }
 
-/* ACTION BUTTONS */
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px;
+/* ===== ACTION ICONS ===== */
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin:20px;
 }
 
-.actions a {
-  text-decoration: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  background: #141414;
-  color: #fff;
-  font-size: 13px;
-  border: 1px solid rgba(201,169,110,0.3);
-  transition: all 0.3s ease;
+.icon-btn{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:linear-gradient(145deg,#ffffff,#e9edf3);
+  border:1px solid var(--border);
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.9),
+    inset 0 -3px 6px rgba(0,0,0,0.08),
+    0 6px 15px rgba(0,0,0,0.08);
+
+  transition:.25s;
 }
 
-.actions a:hover {
-  background: var(--gold);
-  color: #000;
+.icon-btn svg{
+  width:20px;
+  height:20px;
+  stroke:#5b6f8f;
 }
 
-/* GALLERY */
-.gallery {
-  padding: 20px;
+/* ===== BUTTON SYSTEM ===== */
+.center{
+  display:flex;
+  justify-content:center;
+  margin-top:15px;
 }
 
-.gallery-title {
-  font-size: 13px;
-  color: var(--gold);
-  margin-bottom: 10px;
+.btn{
+  padding:12px 24px;
+  border-radius:30px;
+
+  background:linear-gradient(145deg,#ffffff,#e9edf3);
+  border:1px solid var(--border);
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.9),
+    inset 0 -3px 6px rgba(0,0,0,0.08),
+    0 6px 15px rgba(0,0,0,0.08);
+
+  text-decoration:none;
+  color:var(--text);
+  font-size:14px;
+  font-weight:500;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+/* ===== SECTION TITLE ===== */
+.section-title{
+  margin:30px 20px 10px;
+  font-size:14px;
+  color:var(--subtext);
 }
 
-.grid img {
-  width: 100%;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 6px;
-  transition: transform 0.3s ease;
+/* ===== GALLERY (SCROLL) ===== */
+.projects{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding:0 20px 25px;
 }
 
-.grid img:hover {
-  transform: scale(1.05);
+.projects img{
+  height:200px;
+  border-radius:16px;
+  object-fit:cover;
 }
 
-/* SERVICES */
-.services {
-  padding: 20px;
+/* ===== CTA GLASS ===== */
+.cta-wrap{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:430px;
+
+  padding:12px 16px 20px;
+
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
 }
 
-.services h3 {
-  font-size: 13px;
-  color: var(--gold);
+.cta{
+  display:flex;
+  justify-content:center;
 }
 
-.services li {
-  font-size: 13px;
-  margin: 6px 0;
-  color: #ddd;
+.cta a{
+  width:100%;
+  max-width:360px;
+  text-align:center;
+  padding:16px;
+  border-radius:50px;
+
+  background:var(--black);
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
 }
 
-/* SAVE CONTACT */
-.save-btn {
-  margin: 25px;
-  text-align: center;
+/* ===== FOOTER ===== */
+.footer{
+  text-align:center;
+  padding:40px 20px 120px;
 }
 
-.save-btn button {
-  padding: 12px 20px;
-  border: none;
-  background: var(--gold);
-  color: #000;
-  border-radius: 10px;
-  font-weight: 600;
-  width: 90%;
+.footer img{
+  width:60px;
+  opacity:0.7;
 }
 
-/* ✨ FADE ANIMATION */
-.fade {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.8s ease forwards;
+.footer-text{
+  font-size:11px;
+  letter-spacing:1.5px;
+  color:#9ca3af;
 }
 
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 </style>
-
 </head>
 
 <body>
 
-<div id="app">
+<div class="wrapper">
 
-<div id="loading" style="text-align:center;padding:20px;">Loading...</div>
-
-<!-- 🔥 HERO -->
-
+<!-- HERO -->
 <div class="hero">
   <img id="highlightImage">
   <div class="hero-overlay">
@@ -206,48 +242,48 @@ body {
 </div>
 
 <!-- PROFILE -->
-
-<div class="profile fade">
+<div class="profile">
   <img id="profileImage">
   <div id="name" class="name"></div>
   <div id="position" class="position"></div>
 </div>
 
 <!-- ACTIONS -->
-
-<div class="actions fade">
-  <a id="phoneBtn">Call</a>
-  <a id="smsBtn">SMS</a>
-  <a id="emailBtn">Email</a>
+<div class="actions">
+  <a id="phoneBtn" class="icon-btn"></a>
+  <a id="smsBtn" class="icon-btn"></a>
+  <a id="emailBtn" class="icon-btn"></a>
 </div>
 
-<!-- GALLERY -->
+<!-- SAVE -->
+<div class="center">
+  <a id="saveContact" class="btn">Save Contact</a>
+</div>
 
-<div class="gallery fade">
-  <div class="gallery-title">Selected Works</div>
-  <div class="grid">
-    <img id="project1">
-    <img id="project2">
-    <img id="project3">
+<!-- TITLE -->
+<div class="section-title">Project Highlights</div>
+
+<!-- GALLERY -->
+<div class="projects">
+  <img id="project1">
+  <img id="project2">
+  <img id="project3">
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <div class="cta">
+    <a id="ctaBtn">Book a Shoot</a>
   </div>
 </div>
 
-<!-- SERVICES -->
-
-<div class="services fade">
-  <h3>Services</h3>
-  <ul id="services"></ul>
-</div>
-
-<!-- SAVE CONTACT -->
-
-<div class="save-btn fade">
-  <button id="saveContact">Save Contact</button>
+<!-- FOOTER -->
+<div class="footer">
+  <img src="../logo.png">
+  <div class="footer-text">POWERED BY ARKILOGIX</div>
 </div>
 
 </div>
-
-<!-- ✅ ONLY ONE SCRIPT + DEFER -->
 
 <script src="/view/app.js"></script>
 
