@@ -1,189 +1,35 @@
-// ==============================
-// INIT
-// ==============================
-document.addEventListener("DOMContentLoaded", loadClient);
+console.log("APP.JS LOADED");
 
-
-// ==============================
-// MAIN LOADER
-// ==============================
 async function loadClient() {
-  const id = getClientId();
-  if (!id) return showError("Missing ID");
+  alert("loadClient running");
 
-  const url = `https://cdn.jsdelivr.net/gh/arkilogix/arkilogix-site@main/clients/${id}.txt`;
-
-  showLoading(true);
-
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-
-    const res = await fetch(url, {
-      cache: "no-store",
-      signal: controller.signal
-    });
-
-    clearTimeout(timeout);
-
-    if (!res.ok) throw new Error("Fetch failed");
-
-    const data = await res.json();
-
-    renderClient(data);
-
-  } catch (e) {
-    console.error("[LOAD ERROR]", e);
-    showError("Failed to load profile");
-  }
-
-  showLoading(false);
-}
-
-
-// ==============================
-// RENDER
-// ==============================
-function renderClient(data) {
-  setText("name", data.name);
-  setText("position", data.position || data.profession);
-  setText("company", data.company);
-
-  setImage("profileImage", data.profile);
-  setImage("highlightImage", data.highlight);
-  setText("highlightTitle", data.highlightTitle);
-
-  setImage("project1", data.portfolio1);
-  setImage("project2", data.portfolio2);
-  setImage("project3", data.portfolio3);
-
-  setLink("phoneBtn", data.phone, "tel:");
-  setLink("smsBtn", data.phone, "sms:");
-  setLink("emailBtn", data.email, "mailto:");
-
-  renderServices(Array.isArray(data.services) ? data.services : []);
-
-  setupVCard(data);
-}
-
-
-// ==============================
-// HELPERS
-// ==============================
-function getClientId() {
   const params = new URLSearchParams(window.location.search);
-  return params.get("id");
-}
+  const id = params.get("id");
 
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.innerText = value || "";
-}
-
-function setImage(id, src) {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  if (src) {
-    el.src = src;
-    el.style.display = "block";
-  } else {
-    el.style.display = "none";
-  }
-}
-
-function setLink(id, value, prefix = "") {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  if (value) {
-    el.href = prefix + value;
-    el.style.display = "inline-block";
-  } else {
-    el.style.display = "none";
-  }
-}
-
-
-// ==============================
-// SERVICES
-// ==============================
-function renderServices(services) {
-  const container = document.getElementById("services");
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  if (!services.length) {
-    container.style.display = "none";
+  if (!id) {
+    document.body.innerHTML = "Missing ID";
     return;
   }
 
-  container.style.display = "block";
+  const url = `https://cdn.jsdelivr.net/gh/arkilogix/arkilogix-site@main/clients/${id}.txt?v=${Date.now()}`;
 
-  services.forEach(service => {
-    const div = document.createElement("div");
-    div.className = "service-item";
-    div.innerText = service;
-    container.appendChild(div);
-  });
-}
+  try {
+    const res = await fetch(url);
 
+    if (!res.ok) {
+      throw new Error("Fetch failed");
+    }
 
-// ==============================
-// LOADING + ERROR UI
-// ==============================
-function showLoading(state) {
-  const el = document.getElementById("loading");
-  if (el) el.style.display = state ? "block" : "none";
-}
+    const data = await res.json();
 
-function showError(msg) {
-  const app = document.getElementById("app");
-  if (app) {
-    app.innerHTML = `<div style="padding:20px;text-align:center;">${msg}</div>`;
+    console.log("DATA:", data);
+
+    document.getElementById("name").innerText = data.name || "NO NAME";
+
+  } catch (e) {
+    console.error(e);
+    document.body.innerHTML = "FAILED TO LOAD";
   }
 }
 
-
-// ==============================
-// VCARD
-// ==============================
-function setupVCard(data) {
-  const saveBtn = document.getElementById("saveContact");
-  if (!saveBtn) return;
-
-  saveBtn.onclick = function () {
-    try {
-      const vcard = generateVCard(data);
-
-      const blob = new Blob([vcard], { type: "text/vcard" });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = (data.name || "contact") + ".vcf";
-      a.click();
-
-      URL.revokeObjectURL(url);
-
-    } catch (err) {
-      console.error("[VCARD ERROR]", err);
-      alert("Failed to generate contact");
-    }
-  };
-}
-
-function generateVCard(data) {
-  return `
-BEGIN:VCARD
-VERSION:3.0
-FN:${data.name || ""}
-ORG:${data.company || ""}
-TITLE:${data.position || data.profession || ""}
-TEL:${data.phone || ""}
-EMAIL:${data.email || ""}
-END:VCARD
-`.trim();
-}
+loadClient();
