@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script>
-    const path = window.location.pathname.replace("/", "");
-    if (path) {
-      window.location.href = "/?client=" + path;
-    }
-  </script>
+<meta charset="UTF-8">
+<script>
+  // redirect to correct path instead of homepage
+  const path = window.location.pathname;
+  const query = window.location.search;
+  window.location.replace(path + query);
+</script>
 </head>
 <body></body>
 </html>
