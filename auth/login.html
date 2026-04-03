@@ -14,10 +14,7 @@
   --muted: #9ca3af;
 }
 
-/* RESET */
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -26,12 +23,12 @@ body {
   display: flex;
 }
 
-/* HERO SIDE */
+/* HERO */
 .hero {
   flex: 1;
   background: 
     linear-gradient(rgba(15,17,21,0.65), rgba(15,17,21,0.85)),
-    url("hero.jpg");
+    url("../main/hero.jpg");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -40,22 +37,7 @@ body {
   color: white;
 }
 
-.hero-text {
-  max-width: 420px;
-}
-
-.hero h1 {
-  font-size: 32px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.hero p {
-  font-size: 14px;
-  color: #d1d5db;
-}
-
-/* LOGIN SIDE */
+/* LOGIN */
 .login-side {
   width: 420px;
   background: #0f1115;
@@ -64,7 +46,6 @@ body {
   justify-content: center;
 }
 
-/* CARD */
 .container {
   width: 100%;
   max-width: 340px;
@@ -75,36 +56,16 @@ body {
   text-align: center;
   margin-bottom: 28px;
 }
-
 .logo img {
   width: 42px;
   margin-bottom: 10px;
 }
 
-.logo-text {
-  font-weight: 600;
-  font-size: 16px;
-  letter-spacing: 0.5px;
-}
-
-/* HEADER */
-.title {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.subtitle {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 24px;
-}
+/* TEXT */
+.title { font-size: 22px; font-weight: 600; }
+.subtitle { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
 
 /* INPUT */
-.input-group {
-  margin-bottom: 14px;
-}
-
 input {
   width: 100%;
   padding: 14px;
@@ -112,18 +73,7 @@ input {
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(255,255,255,0.03);
   color: white;
-  font-size: 14px;
-  outline: none;
-  transition: 0.2s;
-}
-
-input::placeholder {
-  color: #6b7280;
-}
-
-input:focus {
-  border-color: var(--accent);
-  background: rgba(255,255,255,0.05);
+  margin-bottom: 14px;
 }
 
 /* BUTTON */
@@ -135,107 +85,58 @@ button {
   background: linear-gradient(135deg, #C9A96E, #e6c78f);
   color: #111;
   font-weight: 600;
-  font-size: 14px;
   cursor: pointer;
-  transition: 0.25s;
-  margin-top: 6px;
-}
-
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(201,169,110,0.25);
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-/* FOOTER */
-.footer {
-  margin-top: 18px;
-  font-size: 12px;
-  text-align: center;
-  color: var(--muted);
-}
-
-/* RESPONSIVE */
-@media(max-width: 900px) {
-  .hero {
-    display: none;
-  }
-
-  .login-side {
-    width: 100%;
-  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-text">
-    <h1>Premium Digital Identity</h1>
-    <p>Seamlessly connect, present, and convert with ArkiLogix NFC solutions.</p>
-  </div>
-</div>
+<div class="hero"></div>
 
-<!-- LOGIN -->
 <div class="login-side">
   <div class="container">
 
     <div class="logo">
-      <img src="logo.png" alt="ArkiLogix Logo">
-      <div class="logo-text">ArkiLogix</div>
+      <img src="../main/logo.png">
+      <div style="color:white;">ArkiLogix</div>
     </div>
 
     <div class="title">Welcome back</div>
     <div class="subtitle">Access your dashboard</div>
 
-    <div class="input-group">
-      <input type="email" id="email" placeholder="Email">
-    </div>
-
-    <div class="input-group">
-      <input type="password" id="password" placeholder="Password">
-    </div>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
 
     <button onclick="login()">Sign In</button>
-
-    <div class="footer">
-      Secure login • ArkiLogix
-    </div>
 
   </div>
 </div>
 
-<!-- 🔥 YOUR ORIGINAL SCRIPT (UNCHANGED) -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getAuth, 
-  signInWithEmailAndPassword,
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import { 
-  getFirestore, 
-  doc, 
-  getDoc 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+// ✅ FULL CONFIG (IMPORTANT)
 const firebaseConfig = {
-  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2zBE6PK4",
+  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
-  projectId: "arkilogix-clients"
+  projectId: "arkilogix-clients",
+  storageBucket: "arkilogix-clients.firebasestorage.app",
+  messagingSenderId: "1074947351840",
+  appId: "1:1074947351840:web:b077eb79963fff59316345",
+  measurementId: "G-HFPXDVR2BZ"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// AUTO LOGIN
 onAuthStateChanged(auth, async (user) => {
   if (!user) return;
 
@@ -253,14 +154,15 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   const data = clientDoc.data();
-
   const plan = data.plan || "basic";
+
   window.location.href = `/view/${plan}.html?id=${user.uid}`;
 });
 
+// LOGIN
 async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = email.value;
+  const password = password.value;
 
   try {
     const userCred = await signInWithEmailAndPassword(auth, email, password);
