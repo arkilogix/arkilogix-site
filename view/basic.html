@@ -339,6 +339,10 @@ END:VCARD`;
 
   URL.revokeObjectURL(url);
 }
+  if (data.status === "disabled") {
+  document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>Account Disabled</h2>";
+  return;
+}
 /* INIT */
 loadUser();
 
