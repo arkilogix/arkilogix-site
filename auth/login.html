@@ -96,29 +96,33 @@ async function login() {
     const userCred = await signInWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
 
-    // ✅ 1. CHECK ADMIN FIRST
+    // ✅ ADMIN CHECK
     const adminDoc = await getDoc(doc(db, "admins", user.uid));
 
     if (adminDoc.exists()) {
-      window.location.href = "../admin/index.html";
+      window.location.href = "/admin/index.html";
       return;
     }
 
-    // ✅ 2. NORMAL USER FLOW
-    const userDoc = await getDoc(doc(db, "users", user.uid));
+    // ✅ CLIENT CHECK
+    const clientDoc = await getDoc(doc(db, "clients", user.uid));
 
-    if (!userDoc.exists()) {
-      alert("User data missing");
+    if (!clientDoc.exists()) {
+      window.location.href = "/onboarding/index.html";
       return;
     }
 
-    const data = userDoc.data();
+    const data = clientDoc.data();
 
-    if (!data.clientId) {
-      window.location.href = "../onboarding/index.html";
-    } else {
-      window.location.href = "../app/index.html";
+    // 🚫 BLOCK DISABLED
+    if (data.status === "disabled") {
+      alert("Your account is disabled");
+      return;
     }
+
+    // ✅ REDIRECT TO CARD
+    const plan = data.plan || "basic";
+    window.location.href = `/view/${plan}.html?id=${user.uid}`;
 
   } catch (err) {
     alert(err.message);
