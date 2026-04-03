@@ -85,7 +85,17 @@ button {
     <input id="phone" placeholder="Phone">
     <input id="email" placeholder="Email">
   </div>
+  
+  <!-- STEP 3 -->
+  <div id="step3" style="display:none;">
+    <p>Add your services</p>
+  
+    <div id="servicesContainer"></div>
 
+  <button type="button" onclick="addService()">+ Add Service</button>
+</div>
+
+  
   <button onclick="nextStep()">Continue</button>
 
 </div>
@@ -159,7 +169,21 @@ async function nextStep() {
 }
 
 window.nextStep = nextStep;
+  
+// ADD SERVICE INPUT
+function addService(value = "") {
+  const div = document.createElement("div");
+  div.style.display = "flex";
+  div.style.gap = "5px";
+  div.style.marginBottom = "5px";
 
+  div.innerHTML = `
+    <input class="serviceInput" placeholder="Service" value="${value}">
+    <button type="button" onclick="this.parentElement.remove()">X</button>
+  `;
+
+  document.getElementById("servicesContainer").appendChild(div);
+}
 </script>
 
 </body>
