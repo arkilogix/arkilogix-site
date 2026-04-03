@@ -5,6 +5,14 @@ let USERS = [];
 let selectedUser = null;
 
 // =========================
+// 💰 PRICING CONFIG
+// =========================
+const PRICING = {
+  pro: 299,
+  elite: 599
+};
+
+// =========================
 // 🔐 ADMIN CHECK
 // =========================
 async function isAdmin(uid) {
@@ -16,10 +24,7 @@ async function isAdmin(uid) {
     return false;
   }
 }
-const PRICING = {
-  pro: 299,
-  elite: 599
-};
+
 // =========================
 // 🔑 AUTH STATE
 // =========================
@@ -88,7 +93,7 @@ function render(data) {
 }
 
 // =========================
-// 📊 STATS
+// 📊 ANALYTICS (FIXED)
 // =========================
 function updateStats() {
   let total = USERS.length;
@@ -96,24 +101,33 @@ function updateStats() {
   let revenue = 0;
 
   USERS.forEach(u => {
-    if (u.paymentStatus === "paid") {
+
+    // ✅ handle old users + manual upgrades
+    const isPaid =
+      u.paymentStatus === "paid" ||
+      u.plan === "pro" ||
+      u.plan === "elite";
+
+    if (isPaid) {
       paid++;
 
       if (u.plan === "pro") revenue += PRICING.pro;
       if (u.plan === "elite") revenue += PRICING.elite;
     }
+
   });
 
   const conversion = total > 0
     ? ((paid / total) * 100).toFixed(1)
-    : 0;
+    : "0.0";
 
   setText("total", total);
   setText("paid", paid);
   setText("conversion", conversion + "%");
-  setText("revenue", "₱" + revenue.toLocaleString());
+  setText("revenue", "₱" + (revenue || 0).toLocaleString());
 }
 
+// helper
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.innerText = value;
@@ -174,13 +188,11 @@ function getCardLink(user) {
   return `${base}/view/${plan}.html?id=${user.id}`;
 }
 
-// VIEW CARD
 function viewCard() {
   if (!selectedUser) return;
   window.open(getCardLink(selectedUser), "_blank");
 }
 
-// COPY LINK
 function copyLink() {
   if (!selectedUser) return;
 
@@ -219,7 +231,9 @@ function updateStatusButton() {
   if (!btn || !selectedUser) return;
 
   const status = selectedUser.status || "active";
-  btn.innerText = status === "active" ? "Disable User" : "Enable User";
+  btn.innerText = status === "active"
+    ? "Disable User"
+    : "Enable User";
 }
 
 // =========================
