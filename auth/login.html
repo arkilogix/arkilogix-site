@@ -75,7 +75,29 @@ button {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+
+  const adminDoc = await getDoc(doc(db, "admins", user.uid));
+  if (adminDoc.exists()) {
+    window.location.href = "/admin/index.html";
+    return;
+  }
+
+  const clientDoc = await getDoc(doc(db, "clients", user.uid));
+
+  if (!clientDoc.exists()) {
+    window.location.href = "/onboarding/index.html";
+    return;
+  }
+
+  const data = clientDoc.data();
+  const plan = data.plan || "basic";
+
+  window.location.href = `/view/${plan}.html?id=${user.uid}`;
+});
 // 🔥 SAME CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
