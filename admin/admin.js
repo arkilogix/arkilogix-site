@@ -1,15 +1,22 @@
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-const ADMIN_EMAIL = "info@arkilogix.com";
-
 let USERS = [];
 let selectedUser = null;
 
+// ✅ ADMIN CHECK
+async function isAdmin(uid) {
+  const doc = await db.collection("admins").doc(uid).get();
+  return doc.exists;
+}
+
+// ✅ AUTH
 auth.onAuthStateChanged(async (user) => {
   if (!user) return location.href = "/";
 
-  if (user.email !== ADMIN_EMAIL) {
+  const admin = await isAdmin(user.uid);
+
+  if (!admin) {
     alert("Not authorized");
     return location.href = "/";
   }
@@ -17,7 +24,7 @@ auth.onAuthStateChanged(async (user) => {
   loadUsers();
 });
 
-// LOAD USERS
+// ✅ LOAD USERS
 async function loadUsers() {
   const snap = await db.collection("clients").get();
 
@@ -30,7 +37,7 @@ async function loadUsers() {
   updateStats();
 }
 
-// RENDER
+// ✅ RENDER TABLE
 function render(data) {
   const table = document.getElementById("table");
   table.innerHTML = "";
@@ -47,9 +54,9 @@ function render(data) {
   });
 }
 
-// STATS
+// ✅ STATS
 function updateStats() {
-  let basic=0, pro=0, elite=0;
+  let basic = 0, pro = 0, elite = 0;
 
   USERS.forEach(u => {
     if (u.plan === "pro") pro++;
@@ -63,19 +70,25 @@ function updateStats() {
   document.getElementById("elite").innerText = elite;
 }
 
-// SEARCH
-document.getElementById("search").addEventListener("input", e => {
-  const val = e.target.value.toLowerCase();
+// ✅ SEARCH (safe load)
+window.addEventListener("DOMContentLoaded", () => {
+  const search = document.getElementById("search");
 
-  const filtered = USERS.filter(u =>
-    (u.name || "").toLowerCase().includes(val) ||
-    (u.email || "").toLowerCase().includes(val)
-  );
+  if (!search) return;
 
-  render(filtered);
+  search.addEventListener("input", (e) => {
+    const val = e.target.value.toLowerCase();
+
+    const filtered = USERS.filter(u =>
+      (u.name || "").toLowerCase().includes(val) ||
+      (u.email || "").toLowerCase().includes(val)
+    );
+
+    render(filtered);
+  });
 });
 
-// PANEL
+// ✅ PANEL
 function openPanel(id) {
   selectedUser = USERS.find(u => u.id === id);
 
@@ -84,14 +97,15 @@ function openPanel(id) {
   document.getElementById("pName").innerText = selectedUser.name || "-";
   document.getElementById("pEmail").innerText = selectedUser.email || "-";
   document.getElementById("pPhone").innerText = selectedUser.phone || "-";
-  document.getElementById("pPlan").innerText = "Plan: " + (selectedUser.plan || "basic");
+  document.getElementById("pPlan").innerText =
+    "Plan: " + (selectedUser.plan || "basic");
 }
 
 function closePanel() {
   document.getElementById("panel").classList.remove("open");
 }
 
-// UPDATE PLAN
+// ✅ UPDATE PLAN
 async function updatePlan(plan) {
   if (!selectedUser) return;
 
