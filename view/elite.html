@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elite Digital Card</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* ===== COLOR SYSTEM ===== */
+:root{
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --text: #111;
+  --subtext: #6b7280;
+  --border: #e5e7eb;
+  --black: #111;
+}
+
+/* ===== BASE ===== */
+body{
+  margin:0;
+  font-family:'Inter', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:120px;
+}
+
+/* ===== CONTAINER ===== */
+.wrapper{
+  max-width:430px;
+  margin:0 auto;
+  background:var(--card);
+  min-height:100vh;
+}
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;
+  height:260px;
+  overflow:hidden;
+}
+
+.hero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.hero-overlay{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  padding:16px;
+  background:linear-gradient(transparent, rgba(0,0,0,0.6));
+}
+
+.highlight-title{
+  font-size:15px;
+  font-weight:600;
+  color:#fff;
+}
+
+.company{
+  font-size:12px;
+  color:#ddd;
+}
+
+/* ===== PROFILE ===== */
+.profile{
+  text-align:center;
+  margin-top:-60px;
+  padding:0 20px;
+}
+
+.profile img{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  border:5px solid #fff;
+  object-fit:cover;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.name{
+  font-size:20px;
+  font-weight:600;
+  margin-top:10px;
+}
+
+.position{
+  font-size:13px;
+  color:var(--subtext);
+}
+
+/* ===== ACTIONS ===== */
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin:20px;
+}
+
+.icon-btn{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:linear-gradient(145deg,#ffffff,#e9edf3);
+  border:1px solid var(--border);
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.9),
+    inset 0 -3px 6px rgba(0,0,0,0.08),
+    0 6px 15px rgba(0,0,0,0.08);
+
+  text-decoration:none;
+  color:var(--text);
+}
+
+/* ===== BUTTON ===== */
+.center{
+  display:flex;
+  justify-content:center;
+  margin-top:15px;
+}
+
+.btn{
+  padding:12px 24px;
+  border-radius:30px;
+
+  background:linear-gradient(145deg,#ffffff,#e9edf3);
+  border:1px solid var(--border);
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.9),
+    inset 0 -3px 6px rgba(0,0,0,0.08),
+    0 6px 15px rgba(0,0,0,0.08);
+
+  text-decoration:none;
+  color:var(--text);
+  font-size:14px;
+}
+
+/* ===== SECTION ===== */
+.section{
+  margin:30px 20px;
+}
+
+.hidden{
+  display:none;
+}
+
+.section-title{
+  font-size:14px;
+  color:var(--subtext);
+  margin-bottom:10px;
+}
+
+/* ===== ABOUT ===== */
+.about-text{
+  font-size:14px;
+  line-height:1.6;
+  color:var(--subtext);
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(10px);
+  padding:16px;
+  border-radius:14px;
+  border:1px solid var(--border);
+}
+
+/* ===== PROJECTS ===== */
+.projects{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+}
+
+.projects img{
+  height:200px;
+  border-radius:16px;
+  object-fit:cover;
+}
+
+/* ===== TESTIMONIALS ===== */
+.testimonials{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+}
+
+.testimonial-card{
+  min-width:240px;
+  padding:14px;
+  border-radius:16px;
+  background:#fff;
+  border:1px solid var(--border);
+}
+
+.testimonial-text{
+  font-size:13px;
+}
+
+.testimonial-name{
+  font-size:11px;
+  color:var(--subtext);
+  margin-top:8px;
+}
+
+/* ===== LINKS ===== */
+.links{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.link-btn{
+  padding:14px;
+  border-radius:14px;
+  text-align:center;
+  text-decoration:none;
+
+  background:linear-gradient(145deg,#ffffff,#e9edf3);
+  border:1px solid var(--border);
+
+  color:var(--text);
+}
+
+/* ===== CTA ===== */
+.cta-wrap{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:430px;
+  padding:12px 16px 20px;
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
+}
+
+.cta a{
+  display:block;
+  text-align:center;
+  padding:16px;
+  border-radius:50px;
+  background:var(--black);
+  color:#fff;
+  text-decoration:none;
+}
+
+/* ===== FOOTER ===== */
+.footer{
+  text-align:center;
+  padding:40px 20px 120px;
+}
+
+.footer img{
+  width:60px;
+  opacity:0.7;
+}
+
+.footer-text{
+  font-size:11px;
+  color:#9ca3af;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<!-- HERO -->
+<div class="hero">
+  <img id="highlightImage">
+  <div class="hero-overlay">
+    <div id="highlightTitle" class="highlight-title"></div>
+    <div id="company" class="company"></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="profile">
+  <img id="profileImage">
+  <div id="name" class="name"></div>
+  <div id="position" class="position"></div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+  <a id="phoneBtn" class="icon-btn">📞</a>
+  <a id="smsBtn" class="icon-btn">💬</a>
+  <a id="emailBtn" class="icon-btn">✉️</a>
+  <a id="whatsappBtn" class="icon-btn">🟢</a>
+</div>
+
+<!-- SAVE -->
+<div class="center">
+  <a id="saveContact" class="btn">Save Contact</a>
+</div>
+
+<!-- ABOUT -->
+<div id="aboutSection" class="section hidden">
+  <div class="section-title">About</div>
+  <div id="aboutText" class="about-text"></div>
+</div>
+
+<!-- PROJECTS -->
+<div class="section">
+  <div class="section-title">Projects</div>
+  <div class="projects">
+    <img id="project1">
+    <img id="project2">
+    <img id="project3">
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div id="testimonialSection" class="section hidden">
+  <div class="section-title">Testimonials</div>
+  <div id="testimonialsContainer" class="testimonials"></div>
+</div>
+
+<!-- LINKS -->
+<div id="linksSection" class="section hidden">
+  <div class="section-title">Links</div>
+  <div id="linksContainer" class="links"></div>
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <a id="ctaBtn">Book Now</a>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <img src="../logo.png">
+  <div class="footer-text">POWERED BY ARKILOGIX</div>
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "arkilogix-clients.firebaseapp.com",
+  projectId: "arkilogix-clients"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const id = new URLSearchParams(window.location.search).get("id");
+
+getDoc(doc(db, "clients", id)).then((snap) => {
+
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  // BASIC
+  name.textContent = data.name || "";
+  position.textContent = data.position || "";
+  highlightTitle.textContent = data.highlightTitle || "";
+  company.textContent = data.company || "";
+
+  if (data.profileImage) profileImage.src = data.profileImage;
+  if (data.bannerImage) highlightImage.src = data.bannerImage;
+
+  // PROJECTS
+  if (data.projectImages?.length) {
+    if (data.projectImages[0]) project1.src = data.projectImages[0];
+    if (data.projectImages[1]) project2.src = data.projectImages[1];
+    if (data.projectImages[2]) project3.src = data.projectImages[2];
+  }
+
+  // ACTIONS
+  if (data.phone) {
+    phoneBtn.href = "tel:" + data.phone;
+    smsBtn.href = "sms:" + data.phone;
+  }
+
+  if (data.email) {
+    emailBtn.href = "mailto:" + data.email;
+  }
+
+  if (data.whatsapp) {
+    whatsappBtn.href = "https://wa.me/" + data.whatsapp.replace("+","");
+  } else {
+    whatsappBtn.style.display = "none";
+  }
+
+  // ABOUT
+  if (data.about) {
+    aboutSection.classList.remove("hidden");
+    aboutText.textContent = data.about;
+  }
+
+  // TESTIMONIALS
+  if (data.testimonials?.length) {
+    testimonialSection.classList.remove("hidden");
+
+    data.testimonials.forEach(t => {
+      const div = document.createElement("div");
+      div.className = "testimonial-card";
+      div.innerHTML = `
+        <div class="testimonial-text">${t.text}</div>
+        <div class="testimonial-name">- ${t.name}</div>
+      `;
+      testimonialsContainer.appendChild(div);
+    });
+  }
+
+  // LINKS
+  if (data.links?.length) {
+    linksSection.classList.remove("hidden");
+
+    data.links.forEach(link => {
+      const a = document.createElement("a");
+      a.href = link.url;
+      a.textContent = link.label;
+      a.className = "link-btn";
+      a.target = "_blank";
+      linksContainer.appendChild(a);
+    });
+  }
+
+  // CTA
+  if (data.bookingLink) {
+    ctaBtn.href = data.bookingLink;
+  } else {
+    ctaBtn.style.display = "none";
+  }
+
+});
+
+</script>
+
+</body>
+</html>
