@@ -96,7 +96,15 @@ async function login() {
     const userCred = await signInWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
 
-    // 🔥 CHECK IF USER HAS CLIENT PROFILE
+    // ✅ 1. CHECK ADMIN FIRST
+    const adminDoc = await getDoc(doc(db, "admins", user.uid));
+
+    if (adminDoc.exists()) {
+      window.location.href = "../admin/index.html";
+      return;
+    }
+
+    // ✅ 2. NORMAL USER FLOW
     const userDoc = await getDoc(doc(db, "users", user.uid));
 
     if (!userDoc.exists()) {
@@ -106,11 +114,9 @@ async function login() {
 
     const data = userDoc.data();
 
-    // 👉 IF NO CLIENT YET → GO TO ONBOARDING
     if (!data.clientId) {
       window.location.href = "../onboarding/index.html";
     } else {
-      // 👉 IF HAS CLIENT → GO TO APP
       window.location.href = "../app/index.html";
     }
 
@@ -118,7 +124,6 @@ async function login() {
     alert(err.message);
   }
 }
-
 // GLOBAL
 window.login = login;
 
