@@ -306,14 +306,18 @@ if (!id) {
 // 🔥 GET DATA FROM FIREBASE
 const docRef = doc(db, "clients", id);
 // =========================
-// TRACK VIEW
+// TRACK VIEW FUNCTION
 // =========================
-async function trackView() {
+async function trackView(docRef) {
   try {
+    const source = new URLSearchParams(window.location.search).get("source");
+
     await updateDoc(docRef, {
       views: increment(1),
-      lastViewed: new Date()
+      lastViewed: new Date(),
+      taps: source === "nfc" ? increment(1) : increment(0)
     });
+
   } catch (err) {
     console.log("Tracking error:", err);
   }
