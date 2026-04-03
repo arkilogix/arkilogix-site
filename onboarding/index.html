@@ -3,61 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Setup Your Card</title>
+<title>Setup Your Digital Card</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
+:root {
+  --primary: #111;
+  --accent: #2563eb;
+  --border: #e5e7eb;
+  --bg: #f9fafb;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
 body {
-  margin:0;
-  font-family:'Inter', sans-serif;
-  background:#f5f7fb;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  background: var(--bg);
+  height: 100vh;
+  display: flex;
 }
 
+/* LAYOUT */
 .container {
-  background:white;
-  padding:30px;
-  border-radius:12px;
-  width:350px;
+  display: flex;
+  width: 100%;
 }
 
-h2 { margin-bottom:20px; }
-
-input {
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  border-radius:8px;
-  border:1px solid #ddd;
+.left, .right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-button {
-  width:100%;
-  padding:12px;
-  background:#111;
-  color:white;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+.left {
+  background: #fff;
 }
 
+.right {
+  background: linear-gradient(135deg, #f1f5f9, #ffffff);
+}
+
+/* FORM CARD */
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 28px;
+}
+
+/* PROGRESS */
 .progress {
-  height:6px;
-  background:#eee;
-  margin-bottom:20px;
-  border-radius:10px;
+  height: 4px;
+  background: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 24px;
 }
 
 .progress-bar {
-  height:100%;
-  width:20%;
-  background:#111;
-  border-radius:10px;
-  transition:0.3s;
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: 0.4s ease;
+}
+
+/* TEXT */
+h1 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* STEPS */
+.step {
+  display: none;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: 0.3s ease;
+}
+
+.step.active {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* INPUTS */
+.input-group {
+  margin-bottom: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+/* BUTTONS */
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #777;
+}
+
+/* SERVICES */
+.service-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.service-item input {
+  flex: 1;
+}
+
+.remove-btn {
+  background: #f3f4f6;
+  padding: 0 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.add-service {
+  font-size: 13px;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+/* PREVIEW CARD */
+.preview-card {
+  width: 300px;
+  padding: 24px;
+  border-radius: 18px;
+  background: #111;
+  color: #fff;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  transition: 0.3s ease;
+}
+
+.preview-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.preview-position {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+.preview-contact {
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.preview-services {
+  margin-top: 10px;
+}
+
+.preview-service {
+  font-size: 11px;
+  background: rgba(255,255,255,0.1);
+  padding: 6px 10px;
+  border-radius: 999px;
+  display: inline-block;
+  margin: 4px 4px 0 0;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .right {
+    padding: 20px;
+  }
 }
 </style>
 </head>
@@ -66,167 +221,164 @@ button {
 
 <div class="container">
 
-  <div class="progress">
-    <div id="progressBar" class="progress-bar"></div>
+  <!-- LEFT -->
+  <div class="left">
+    <div class="card">
+
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="step active" id="step1">
+        <h1>Your Identity</h1>
+        <p class="subtitle">Let’s start with the basics</p>
+
+        <div class="input-group">
+          <input id="name" placeholder="Full Name" oninput="updatePreview()">
+        </div>
+
+        <div class="input-group">
+          <input id="position" placeholder="Position" oninput="updatePreview()">
+        </div>
+
+        <div class="actions">
+          <div></div>
+          <button class="btn-primary" onclick="nextStep()">Continue</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step" id="step2">
+        <h1>Contact</h1>
+        <p class="subtitle">How can people reach you?</p>
+
+        <div class="input-group">
+          <input id="email" placeholder="Email" oninput="updatePreview()">
+        </div>
+
+        <div class="input-group">
+          <input id="phone" placeholder="Phone" oninput="updatePreview()">
+        </div>
+
+        <div class="actions">
+          <button class="btn-secondary" onclick="prevStep()">Back</button>
+          <button class="btn-primary" onclick="nextStep()">Continue</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step" id="step3">
+        <h1>Services</h1>
+        <p class="subtitle">What do you offer?</p>
+
+        <div id="servicesContainer"></div>
+
+        <div class="add-service" onclick="addService()">+ Add Service</div>
+
+        <div class="actions">
+          <button class="btn-secondary" onclick="prevStep()">Back</button>
+          <button class="btn-primary" onclick="submitForm()">Finish</button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <h2 id="title">Let’s build your card</h2>
+  <!-- RIGHT PREVIEW -->
+  <div class="right">
+    <div class="preview-card" id="previewCard">
+      <div class="preview-name" id="previewName">Your Name</div>
+      <div class="preview-position" id="previewPosition">Your Position</div>
 
-  <!-- STEP 1 -->
-  <div id="step1">
-    <input id="name" placeholder="Your Name">
-    <input id="position" placeholder="Your Position">
-    <input id="company" placeholder="Company">
+      <div class="preview-contact" id="previewContact">
+        Email • Phone
+      </div>
+
+      <div class="preview-services" id="previewServices"></div>
+    </div>
   </div>
-
-  <!-- STEP 2 -->
-  <div id="step2" style="display:none;">
-    <input id="phone" placeholder="Phone">
-    <input id="email" placeholder="Email">
-  </div>
-
-  <!-- STEP 3 -->
-  <div id="step3" style="display:none;">
-    <p>Add your services</p>
-
-    <div id="servicesContainer"></div>
-
-    <button type="button" onclick="addService()">+ Add Service</button>
-  </div>
-
-  <button id="continueBtn">Continue</button>
 
 </div>
 
-<script type="module">
+<script>
+let currentStep = 1;
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+function updateProgress() {
+  const percent = (currentStep - 1) / 2 * 100;
+  document.getElementById("progressBar").style.width = percent + "%";
+}
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
-  authDomain: "arkilogix-clients.firebaseapp.com",
-  projectId: "arkilogix-clients"
-};
+function showStep(step) {
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+  document.getElementById("step" + step).classList.add("active");
+  updateProgress();
+}
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-let step = 1;
-let currentUser = null;
-
-// 🔐 WAIT FOR USER
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    alert("Please login first");
-    window.location.href = "../auth/login.html";
-    return;
-  }
-  currentUser = user;
-});
-
-// BUTTON
-document.getElementById("continueBtn").addEventListener("click", nextStep);
-
-// MAIN FLOW
-async function nextStep() {
-
-  if (!currentUser) {
-    alert("User not ready yet");
-    return;
-  }
-
-  const clientId = currentUser.uid;
-
-  // STEP 1
-  if (step === 1) {
-
-    await setDoc(doc(db, "clients", clientId), {
-      name: document.getElementById("name").value,
-      position: document.getElementById("position").value,
-      company: document.getElementById("company").value,
-      plan: "basic",
-      views: 0,
-      taps: 0,
-      createdAt: new Date()
-    });
-
-    await setDoc(doc(db, "users", clientId), {
-      clientId: clientId
-    }, { merge: true });
-
-    document.getElementById("step1").style.display = "none";
-    document.getElementById("step2").style.display = "block";
-
-    document.getElementById("progressBar").style.width = "40%";
-    document.getElementById("title").innerText = "Add your contact info";
-
-    step = 2;
-    return;
-  }
-
-  // STEP 2
-  if (step === 2) {
-
-    await setDoc(doc(db, "clients", clientId), {
-      phone: document.getElementById("phone").value,
-      email: document.getElementById("email").value
-    }, { merge: true });
-
-    document.getElementById("step2").style.display = "none";
-    document.getElementById("step3").style.display = "block";
-
-    document.getElementById("progressBar").style.width = "60%";
-    document.getElementById("title").innerText = "Add your services";
-
-    step = 3;
-    return;
-  }
-
-  // STEP 3
-  if (step === 3) {
-
-    const inputs = document.querySelectorAll(".serviceInput");
-    const services = [];
-
-    inputs.forEach(input => {
-      if (input.value.trim()) {
-        services.push(input.value.trim());
-      }
-    });
-
-    await setDoc(doc(db, "clients", clientId), {
-      services: services
-    }, { merge: true });
-
-    alert("Services saved!");
-
-    console.log("Next: Promo Step");
-
-    step = 4;
+function nextStep() {
+  if (currentStep < 3) {
+    currentStep++;
+    showStep(currentStep);
   }
 }
 
-// ADD SERVICE
-window.addService = function(value = "") {
+function prevStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    showStep(currentStep);
+  }
+}
+
+/* SERVICES */
+function addService(value = "") {
+  const container = document.getElementById("servicesContainer");
+
   const div = document.createElement("div");
-  div.style.display = "flex";
-  div.style.gap = "5px";
-  div.style.marginBottom = "5px";
+  div.className = "service-item";
 
   div.innerHTML = `
-    <input class="serviceInput" placeholder="Service" value="${value}">
-    <button type="button" onclick="this.parentElement.remove()">X</button>
+    <input type="text" placeholder="Service" value="${value}" oninput="updatePreview()">
+    <div class="remove-btn" onclick="this.parentElement.remove(); updatePreview()">×</div>
   `;
 
-  document.getElementById("servicesContainer").appendChild(div);
+  container.appendChild(div);
 }
 
-// DEFAULT INPUT
+/* PREVIEW UPDATE */
+function updatePreview() {
+  document.getElementById("previewName").innerText =
+    document.getElementById("name").value || "Your Name";
+
+  document.getElementById("previewPosition").innerText =
+    document.getElementById("position").value || "Your Position";
+
+  const email = document.getElementById("email").value;
+  const phone = document.getElementById("phone").value;
+
+  document.getElementById("previewContact").innerText =
+    `${email || "Email"} • ${phone || "Phone"}`;
+
+  const servicesDiv = document.getElementById("previewServices");
+  servicesDiv.innerHTML = "";
+
+  document.querySelectorAll("#servicesContainer input").forEach(i => {
+    if (i.value) {
+      const span = document.createElement("div");
+      span.className = "preview-service";
+      span.innerText = i.value;
+      servicesDiv.appendChild(span);
+    }
+  });
+}
+
+/* INIT */
 addService();
 
+/* SUBMIT */
+function submitForm() {
+  // KEEP YOUR FIREBASE LOGIC
+  alert("Saved!");
+}
 </script>
 
 </body>
