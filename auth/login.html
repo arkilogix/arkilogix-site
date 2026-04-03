@@ -28,13 +28,9 @@ body {
   flex: 1;
   background: 
     linear-gradient(rgba(15,17,21,0.65), rgba(15,17,21,0.85)),
-    url("../main/hero.jpg");
+    url("/main/hero.jpg");
   background-size: cover;
   background-position: center;
-  display: flex;
-  align-items: flex-end;
-  padding: 60px;
-  color: white;
 }
 
 /* LOGIN */
@@ -62,11 +58,12 @@ body {
 }
 
 /* TEXT */
-.title { font-size: 22px; font-weight: 600; }
+.title { font-size: 22px; font-weight: 600; color:white; }
 .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
 
 /* INPUT */
-input {
+input[type="email"],
+input[type="password"]{
   width: 100%;
   padding: 14px;
   border-radius: 10px;
@@ -74,6 +71,21 @@ input {
   background: rgba(255,255,255,0.03);
   color: white;
   margin-bottom: 14px;
+}
+
+/* REMEMBER */
+.remember-wrap{
+  display:flex;
+  justify-content:center;
+  margin-bottom:16px;
+}
+
+.remember{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  color:#9ca3af;
 }
 
 /* BUTTON */
@@ -86,16 +98,16 @@ button {
   color: #111;
   font-weight: 600;
   cursor: pointer;
+  transition:.2s;
 }
 
-/* REMEMBER */
-.remember {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:12px;
-  color:#9ca3af;
-  margin-bottom:14px;
+button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(201,169,110,0.25);
+}
+
+button:active{
+  transform:scale(0.98);
 }
 </style>
 </head>
@@ -108,7 +120,7 @@ button {
   <div class="container">
 
     <div class="logo">
-      <img src="../main/logo.png">
+      <img src="/main/logo.png">
       <div style="color:white;">ArkiLogix</div>
     </div>
 
@@ -118,11 +130,12 @@ button {
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
 
-    <!-- ✅ REMEMBER ME -->
-    <label class="remember">
-      <input type="checkbox" id="remember">
-      Remember me
-    </label>
+    <div class="remember-wrap">
+      <label class="remember">
+        <input type="checkbox" id="remember">
+        Remember me
+      </label>
+    </div>
 
     <button onclick="login()">Sign In</button>
 
@@ -160,7 +173,6 @@ async function login() {
 
   try {
 
-    /* 🔥 SET PERSISTENCE */
     await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
 
     const userCred = await signInWithEmailAndPassword(auth, emailVal, passwordVal);
