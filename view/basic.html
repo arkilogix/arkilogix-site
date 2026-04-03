@@ -274,7 +274,13 @@ A2 2 0 0 1 22 16.92z"/>
 
 // 🔥 IMPORT FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc,
+  updateDoc,
+  increment
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 🔥 YOUR FIREBASE CONFIG (same as index)
 const firebaseConfig = {
@@ -299,7 +305,19 @@ if (!id) {
 
 // 🔥 GET DATA FROM FIREBASE
 const docRef = doc(db, "clients", id);
-
+// =========================
+// TRACK VIEW
+// =========================
+async function trackView() {
+  try {
+    await updateDoc(docRef, {
+      views: increment(1),
+      lastViewed: new Date()
+    });
+  } catch (err) {
+    console.log("Tracking error:", err);
+  }
+}
 getDoc(docRef).then((docSnap) => {
 
   if (!docSnap.exists()) {
@@ -309,7 +327,8 @@ getDoc(docRef).then((docSnap) => {
 
   const data = docSnap.data();
   console.log("DATA:", data);
-
+  trackView();
+  
   // 🔥 HIDE LOADER
   document.getElementById("loader").style.display = "none";
 
