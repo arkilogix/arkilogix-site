@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ArkiLogix Login</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -19,6 +19,8 @@
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   height: 100vh;
   display: flex;
 }
@@ -26,11 +28,34 @@ body {
 /* HERO */
 .hero {
   flex: 1;
-background: 
-linear-gradient(rgba(15,17,21,0.65), rgba(15,17,21,0.85)),
-url("../hero.jpg");
+  display: flex;
+  align-items: flex-end;
+  padding: 60px;
+  background: 
+    linear-gradient(rgba(15,17,21,0.65), rgba(15,17,21,0.85)),
+    url("../hero.jpg");
   background-size: cover;
   background-position: center;
+}
+
+.hero-text {
+  max-width: 420px;
+}
+
+.hero-text h1 {
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  color: white;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.hero-text p {
+  font-size: 15px;
+  color: #d1d5db;
+  margin-top: 12px;
+  line-height: 1.6;
 }
 
 /* LOGIN */
@@ -50,34 +75,65 @@ url("../hero.jpg");
 /* LOGO */
 .logo {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 .logo img {
-  width: 42px;
+  width: 44px;
   margin-bottom: 10px;
+}
+.logo div {
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
 }
 
 /* TEXT */
-.title { font-size: 22px; font-weight: 600; color:white; }
-.subtitle { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
 
 /* INPUT */
 input[type="email"],
 input[type="password"]{
   width: 100%;
   padding: 14px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(255,255,255,0.03);
   color: white;
   margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: .2s;
+}
+
+input::placeholder {
+  color: #6b7280;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.06);
+  transform: scale(1.02);
 }
 
 /* REMEMBER */
 .remember-wrap{
   display:flex;
   justify-content:center;
-  margin-bottom:16px;
+  margin-bottom:18px;
 }
 
 .remember{
@@ -92,13 +148,14 @@ input[type="password"]{
 button {
   width: 100%;
   padding: 14px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
   background: linear-gradient(135deg, #C9A96E, #e6c78f);
   color: #111;
   font-weight: 600;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  transition:.2s;
+  transition:.25s;
 }
 
 button:hover{
@@ -107,21 +164,38 @@ button:hover{
 }
 
 button:active{
-  transform:scale(0.98);
+  transform:scale(0.97);
+}
+
+/* RESPONSIVE */
+@media(max-width: 900px) {
+  .hero {
+    display: none;
+  }
+  .login-side {
+    width: 100%;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="hero"></div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <h1>Turn Every Interaction Into Opportunity.</h1>
+    <p>Seamlessly connect, present, and convert with ArkiLogix NFC.</p>
+  </div>
+</div>
 
+<!-- LOGIN -->
 <div class="login-side">
   <div class="container">
 
     <div class="logo">
       <img src="../logo.png">
-      <div style="color:white;">ArkiLogix</div>
+      <div>ArkiLogix</div>
     </div>
 
     <div class="title">Welcome back</div>
@@ -150,7 +224,6 @@ from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -164,7 +237,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* LOGIN */
 async function login() {
 
   const emailVal = document.getElementById("email").value;
