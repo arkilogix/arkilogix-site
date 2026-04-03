@@ -157,17 +157,44 @@ async function nextStep() {
   }
 
   // STEP 2
-  if (step === 2) {
-
+    if (step === 2) {
+    
+      await setDoc(doc(db, "clients", clientId), {
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value
+      }, { merge: true });
+    
+      // 👉 MOVE TO STEP 3
+      document.getElementById("step2").style.display = "none";
+      document.getElementById("step3").style.display = "block";
+    
+      document.getElementById("progressBar").style.width = "60%";
+      document.getElementById("title").innerText = "Add your services";
+    
+      step = 3;
+      return;
+    }
+    
+    if (step === 3) {
+  
+    const inputs = document.querySelectorAll(".serviceInput");
+    const services = [];
+  
+    inputs.forEach(input => {
+      if (input.value.trim()) {
+        services.push(input.value.trim());
+      }
+    });
+  
     await setDoc(doc(db, "clients", clientId), {
-      phone: document.getElementById("phone").value,
-      email: document.getElementById("email").value
+      services: services
     }, { merge: true });
 
-    alert("Step 2 complete!");
-  }
-}
+    alert("Services saved!");
 
+  // 👉 NEXT: PROMO SYSTEM 🔥
+}
+  
 window.nextStep = nextStep;
   
 // ADD SERVICE INPUT
