@@ -889,7 +889,7 @@ No problem. You can still share your card using a direct link.
 <script type="module">
 // 🔥 FIREBASE IMPORTS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 🔥 FIREBASE CONFIG
 const firebaseConfig = {
@@ -914,19 +914,18 @@ let selectedCard = "white";
 let cardPrice = 0;
 
 /* ================= HELPERS ================= */
-async function saveClient(data){
-  const docRef = await addDoc(collection(db, "clients"), data);
-  return docRef.id;
-}
 
 const formatPeso = val => "₱" + val.toLocaleString();
 
-async function uploadToCloudinary(file){
+async function uploadToCloudinary(file, clientId, type){
+
   if(!file) return "";
 
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", "nfc_upload");
+
+  formData.append("public_id", `nfc-clients/${clientId}/${type}`);
 
   const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
     method: "POST",
@@ -1044,7 +1043,6 @@ window.openOrderModal = function(){
   const isPro = selectedPlan==="pro" || selectedPlan==="elite";
 
   document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
-  document.getElementById("portfolioUpload").style.display = isPro ? "block" : "none";
   document.getElementById("aboutSection").style.display = isPro ? "block" : "none";
 
   document.getElementById("formContent").classList.remove("hidden");
@@ -1132,8 +1130,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if(!form) return;
 
   form.addEventListener("submit", async function(e){
-    let clientId = "temp-" + Date.now();
 e.preventDefault();
+    let clientId = "client-" + Date.now();
 const name = document.getElementById("name");
 const position = document.getElementById("position");
 const email = document.getElementById("email");
@@ -1173,17 +1171,24 @@ inputs.forEach(el => {
   instagram: instagram?.value || "",
   website: website?.value || "",
 
-    service1: service1?.value || "",
-    service2: service2?.value || "",
-    service3: service3?.value || "",
-    service4: service4?.value || "",
+  service1: service1?.value || "",
+  service2: service2?.value || "",
+  service3: service3?.value || "",
+  service4: service4?.value || "",
 
   plan: selectedPlan || "",
   card: selectedCard || "",
   price: (basePrices[selectedPlan] + cardPrice) || 0
 };
 
-      const profile = profilePhoto.files[0];
+params.services = [
+  params.service1,
+  params.service2,
+  params.service3,
+  params.service4
+].filter(s => s);
+
+    const profile = document.getElementById("profilePhoto").files[0];
     const highlight1 = document.getElementById("highlightPhoto1").files[0];
     const highlight2 = document.getElementById("highlightPhoto2").files[0];
     const highlight3 = document.getElementById("highlightPhoto3").files[0];
@@ -1191,34 +1196,22 @@ inputs.forEach(el => {
       if(!profile) throw "Please upload a profile photo";
 
       updateProgress("Uploading profile...", 25);
-      params.profile = await uploadToCloudinary(profile);
+      params.profile = await uploadToCloudinary(profile, clientId, "profile");
 
-      if(selectedPlan==="pro" || selectedPlan==="elite"){
-      
-        updateProgress("Uploading projects...", 50);
-      
-        let projectImages = [];
-      
-        if(highlight1) projectImages.push(await uploadToCloudinary(highlight1));
-        if(highlight2) projectImages.push(await uploadToCloudinary(highlight2));
-        if(highlight3) projectImages.push(await uploadToCloudinary(highlight3));
-      
-        params.projectImages = projectImages;
-      
-      }
+    if(selectedPlan==="pro" || selectedPlan==="elite"){
+    
+      updateProgress("Uploading projects...", 50);
+    
+      let projectImages = [];
+    
+      if(highlight1) projectImages.push(await uploadToCloudinary(highlight1, clientId, "project1"));
+      if(highlight2) projectImages.push(await uploadToCloudinary(highlight2, clientId, "project2"));
+      if(highlight3) projectImages.push(await uploadToCloudinary(highlight3, clientId, "project3"));
+    
+      params.projectImages = projectImages;
+    
+    }
 
-        const files = portfolioPhotos.files;
-        let urls = [];
-
-        if(files.length >= 3){
-          updateProgress("Uploading portfolio...", 70);
-          urls = await Promise.all([...files].map(f=>uploadToCloudinary(f)));
-        }
-
-        params.portfolio1 = urls[0] || "";
-        params.portfolio2 = urls[1] || "";
-        params.portfolio3 = urls[2] || "";
-      }
 
       updateProgress("Finalizing order...", 90);
       await sendEmailNow(params);
@@ -1240,8 +1233,8 @@ try {
     setTimeout(() => reject("Firebase timeout"), 5000)
   );
 
-  clientId = await Promise.race([
-    saveClient(params),
+  await Promise.race([
+    setDoc(doc(db, "clients", clientId), params),
     timeout
   ]);
 
@@ -1259,13 +1252,10 @@ updateProgress("Completed!", 100);
 let page = selectedPlan === "elite" ? "elite.html" :
            selectedPlan === "pro" ? "pro.html" : "basic.html";
 
-const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
-
 console.log("STEP 4: updating UI");
 
 // ❗ FIX: DO NOT use raw variables
 document.getElementById("formContent").classList.add("hidden");
-console.log("CLIENT LINK:", link);
 document.getElementById("orderForm").reset();
 console.log("STEP 5: success shown");
 
@@ -1387,11 +1377,6 @@ document.addEventListener("keydown", function(e){
   <label class="upload-label">Project Highlight 3</label>
   <input type="file" id="highlightPhoto3" accept="image/*">
 
-</div>
-
-<div id="portfolioUpload" style="display:none;">
-  <label class="upload-label">Portfolio Images (Upload 3 images)</label>
-  <input type="file" id="portfolioPhotos" accept="image/*" multiple>
 </div>
 
 </div>
