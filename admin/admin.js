@@ -16,7 +16,10 @@ async function isAdmin(uid) {
     return false;
   }
 }
-
+const PRICING = {
+  pro: 299,
+  elite: 599
+};
 // =========================
 // 🔑 AUTH STATE
 // =========================
@@ -88,18 +91,27 @@ function render(data) {
 // 📊 STATS
 // =========================
 function updateStats() {
-  let basic = 0, pro = 0, elite = 0;
+  let total = USERS.length;
+  let paid = 0;
+  let revenue = 0;
 
   USERS.forEach(u => {
-    if (u.plan === "pro") pro++;
-    else if (u.plan === "elite") elite++;
-    else basic++;
+    if (u.paymentStatus === "paid") {
+      paid++;
+
+      if (u.plan === "pro") revenue += PRICING.pro;
+      if (u.plan === "elite") revenue += PRICING.elite;
+    }
   });
 
-  setText("total", USERS.length);
-  setText("basic", basic);
-  setText("pro", pro);
-  setText("elite", elite);
+  const conversion = total > 0
+    ? ((paid / total) * 100).toFixed(1)
+    : 0;
+
+  setText("total", total);
+  setText("paid", paid);
+  setText("conversion", conversion + "%");
+  setText("revenue", "₱" + revenue.toLocaleString());
 }
 
 function setText(id, value) {
