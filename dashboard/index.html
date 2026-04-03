@@ -88,7 +88,30 @@
   <h1>NFC Dashboard</h1>
   <button onclick="openCreateModal()">+ New Client</button>
 </header>
+<!-- ANALYTICS -->
+<section id="analytics" style="padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px;">
 
+  <div class="card">
+    <h3>Total Clients</h3>
+    <p id="totalClients">0</p>
+  </div>
+
+  <div class="card">
+    <h3>Total Views</h3>
+    <p id="totalViews">0</p>
+  </div>
+
+  <div class="card">
+    <h3>Total Taps</h3>
+    <p id="totalTaps">0</p>
+  </div>
+
+  <div class="card">
+    <h3>Top Client</h3>
+    <p id="topClient">-</p>
+  </div>
+
+</section>
 <section id="clientsContainer"></section>
 
 <!-- MODAL -->
