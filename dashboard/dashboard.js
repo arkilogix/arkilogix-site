@@ -15,6 +15,13 @@ async function loadClients() {
 
   container.innerHTML = "";
 
+  let totalClients = 0;
+  let totalViews = 0;
+  let totalTaps = 0;
+
+  let topClientName = "-";
+  let topViews = 0;
+
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const id = docSnap.id;
@@ -22,14 +29,25 @@ async function loadClients() {
     const plan = data.plan || "basic";
     const link = `/view/${plan}.html?id=${id}`;
 
+    // 📊 ANALYTICS
+    totalClients++;
+    totalViews += data.views || 0;
+    totalTaps += data.taps || 0;
+
+    if ((data.views || 0) > topViews) {
+      topViews = data.views || 0;
+      topClientName = data.name || "No Name";
+    }
+
+    // 🧱 UI CARD
     container.innerHTML += `
       <div class="card">
-        <h3>${data.name}</h3>
+        <h3>${data.name || "No Name"}</h3>
         <p>${data.position || ""}</p>
-        <p><b>${(data.plan || "basic").toUpperCase()}</b></p>
+        <p><b>${plan.toUpperCase()}</b></p>
 
         <p>Views: ${data.views || 0}</p>
-        <p>Last: ${data.lastViewed || "-"}</p>
+        <p>Taps: ${data.taps || 0}</p>
 
         <a href="${link}" target="_blank">Open</a>
 
@@ -38,6 +56,12 @@ async function loadClients() {
       </div>
     `;
   });
+
+  // 📊 UPDATE DASHBOARD UI
+  document.getElementById("totalClients").textContent = totalClients;
+  document.getElementById("totalViews").textContent = totalViews;
+  document.getElementById("totalTaps").textContent = totalTaps;
+  document.getElementById("topClient").textContent = topClientName;
 }
 
 loadClients();
@@ -71,8 +95,17 @@ async function saveClient() {
 // DELETE CLIENT (STEP 7)
 // =========================
 async function deleteClient(id) {
-  await deleteDoc(doc(db, "clients", id));
-  loadClients();
+  const confirmDelete = confirm("Are you sure you want to delete this client?");
+
+  if (!confirmDelete) return;
+
+  try {
+    await deleteDoc(doc(db, "clients", id));
+    loadClients();
+  } catch (err) {
+    alert("Error deleting client");
+    console.error(err);
+  }
 }
 
 
