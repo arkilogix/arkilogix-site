@@ -5,11 +5,24 @@ import {
   addDoc,
   deleteDoc,
   doc,
-  updateDoc
+  updateDoc,
+  getDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const container = document.getElementById("clientsContainer");
 
+let editingId = null;
+
+// DELETE SYSTEM
+let deleteId = null;
+let deletedData = null;
+let deleteTimer = null;
+
+
+// =========================
+// LOAD CLIENTS + ANALYTICS
+// =========================
 async function loadClients() {
   const snapshot = await getDocs(collection(db, "clients"));
 
@@ -39,7 +52,7 @@ async function loadClients() {
       topClientName = data.name || "No Name";
     }
 
-    // 🧱 UI CARD
+    // 🧱 UI
     container.innerHTML += `
       <div class="card">
         <h3>${data.name || "No Name"}</h3>
@@ -57,7 +70,7 @@ async function loadClients() {
     `;
   });
 
-  // 📊 UPDATE DASHBOARD UI
+  // 📊 UPDATE UI
   document.getElementById("totalClients").textContent = totalClients;
   document.getElementById("totalViews").textContent = totalViews;
   document.getElementById("totalTaps").textContent = totalTaps;
@@ -66,8 +79,9 @@ async function loadClients() {
 
 loadClients();
 
+
 // =========================
-// CREATE CLIENT (STEP 6)
+// CREATE / UPDATE CLIENT
 // =========================
 async function saveClient() {
   const name = document.getElementById("name").value;
@@ -76,54 +90,151 @@ async function saveClient() {
   const phone = document.getElementById("phone").value;
   const plan = document.getElementById("plan").value;
 
-  await addDoc(collection(db, "clients"), {
-    name,
-    position,
-    email,
-    phone,
-    plan,
-    createdAt: new Date(),
-    views: 0,
-    lastViewed: null
-  });
-
-  loadClients();
-}
-
-
-// =========================
-// DELETE CLIENT (STEP 7)
-// =========================
-async function deleteClient(id) {
-  const confirmDelete = confirm("Are you sure you want to delete this client?");
-
-  if (!confirmDelete) return;
-
-  try {
-    await deleteDoc(doc(db, "clients", id));
-    loadClients();
-  } catch (err) {
-    alert("Error deleting client");
-    console.error(err);
+  if (!name) {
+    alert("Name is required");
+    return;
   }
+
+  if (editingId) {
+    await updateDoc(doc(db, "clients", editingId), {
+      name,
+      position,
+      email,
+      phone,
+      plan
+    });
+
+    editingId = null;
+  } else {
+    await addDoc(collection(db, "clients"), {
+      name,
+      position,
+      email,
+      phone,
+      plan,
+      createdAt: new Date(),
+      views: 0,
+      taps: 0,
+      lastViewed: null
+    });
+  }
+
+  closeModal();
+  clearForm();
+  loadClients();
 }
 
 
 // =========================
-// UPDATE PLAN (STEP 8)
+// EDIT CLIENT
 // =========================
-async function upgradePlan(id, newPlan) {
-  await updateDoc(doc(db, "clients", id), {
-    plan: newPlan
-  });
+async function editClient(id) {
+  const snap = await getDoc(doc(db, "clients", id));
+
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  document.getElementById("name").value = data.name || "";
+  document.getElementById("position").value = data.position || "";
+  document.getElementById("email").value = data.email || "";
+  document.getElementById("phone").value = data.phone || "";
+  document.getElementById("plan").value = data.plan || "basic";
+
+  editingId = id;
+  openCreateModal();
+}
+
+
+// =========================
+// DELETE (OPEN MODAL)
+// =========================
+function deleteClient(id) {
+  deleteId = id;
+  document.getElementById("deleteModal").style.display = "flex";
+}
+
+
+// =========================
+// CONFIRM DELETE (UNDO SYSTEM)
+// =========================
+async function confirmDelete() {
+  if (!deleteId) return;
+
+  const ref = doc(db, "clients", deleteId);
+
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    deletedData = snap.data();
+  }
+
+  closeDeleteModal();
+  loadClients();
+
+  const toast = document.getElementById("undoToast");
+  toast.style.display = "flex";
+
+  deleteTimer = setTimeout(async () => {
+    await deleteDoc(ref);
+    toast.style.display = "none";
+    deleteId = null;
+    deletedData = null;
+  }, 5000);
+}
+
+
+// =========================
+// UNDO DELETE
+// =========================
+async function undoDelete() {
+  if (!deletedData || !deleteId) return;
+
+  clearTimeout(deleteTimer);
+
+  await setDoc(doc(db, "clients", deleteId), deletedData);
+
+  document.getElementById("undoToast").style.display = "none";
+
+  deleteId = null;
+  deletedData = null;
 
   loadClients();
 }
 
 
 // =========================
-// MAKE FUNCTIONS GLOBAL
+// MODAL HELPERS
+// =========================
+function openCreateModal() {
+  document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+  editingId = null;
+}
+
+function closeDeleteModal() {
+  document.getElementById("deleteModal").style.display = "none";
+}
+
+function clearForm() {
+  document.getElementById("name").value = "";
+  document.getElementById("position").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("plan").value = "basic";
+}
+
+
+// =========================
+// GLOBAL FUNCTIONS
 // =========================
 window.saveClient = saveClient;
+window.editClient = editClient;
 window.deleteClient = deleteClient;
-window.upgradePlan = upgradePlan;
+window.confirmDelete = confirmDelete;
+window.undoDelete = undoDelete;
+window.openCreateModal = openCreateModal;
+window.closeModal = closeModal;
+window.closeDeleteModal = closeDeleteModal;
