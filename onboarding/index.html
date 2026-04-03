@@ -21,17 +21,33 @@ body{display:flex;height:100vh;background:#f9fafb;}
 .step{display:none;}
 .step.active{display:block;}
 
-h1{font-size:20px;margin-bottom:10px;}
+h1{font-size:20px;margin-bottom:6px;}
+.sub{font-size:12px;color:#6b7280;margin-bottom:14px;}
+
 input{
 width:100%;padding:12px;margin-bottom:12px;
 border-radius:10px;border:1px solid #ddd;
+transition:.2s;
 }
 
-.actions{display:flex;justify-content:space-between;}
+input:focus{
+outline:none;
+border-color:#2563eb;
+}
+
+/* BUTTONS */
+.actions{display:flex;justify-content:space-between;align-items:center;}
 button{padding:12px 18px;border-radius:10px;border:none;cursor:pointer;}
 .btn-primary{background:#111;color:#fff;}
 .btn-secondary{background:none;color:#777;}
 
+.skip{
+font-size:12px;
+color:#9ca3af;
+cursor:pointer;
+}
+
+/* SERVICES INPUT */
 .service-item{display:flex;gap:8px;margin-bottom:10px;}
 .service-item input{flex:1;}
 .remove-btn{background:#eee;padding:0 10px;border-radius:8px;cursor:pointer;}
@@ -50,6 +66,7 @@ backdrop-filter:blur(14px);
 border:1px solid rgba(0,0,0,0.08);
 box-shadow:0 10px 30px rgba(0,0,0,0.08),
 inset 0 1px 0 rgba(255,255,255,0.6);
+transition:.2s;
 }
 
 /* PROFILE */
@@ -58,19 +75,25 @@ width:110px;height:110px;margin:auto;border-radius:50%;
 overflow:hidden;border:2px solid #d1d5db;margin-bottom:18px;cursor:pointer;
 }
 .profile-wrap img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  padding:12px;
-  background:#fff;
+width:100%;
+height:100%;
+object-fit:contain;
+padding:12px;
+background:#fff;
 }
-  
-.preview-name{font-size:22px;font-weight:700;}
-.preview-position{font-size:14px;color:#555;}
+
+/* TEXT */
+.preview-name{font-size:22px;font-weight:700;transition:.2s;}
+.preview-position{font-size:14px;color:#555;transition:.2s;}
+
+.preview-label{
+font-size:11px;
+color:#6b7280;
+margin-bottom:10px;
+}
 
 /* ICONS */
 .icon{width:18px;height:18px;stroke:#374151;fill:none;stroke-width:2;}
-
 .actions-preview{display:flex;justify-content:center;gap:16px;margin:18px 0;}
 
 .icon-btn{
@@ -110,6 +133,30 @@ border-radius:999px;
 font-size:11px;
 background:rgba(0,0,0,0.05);
 margin:4px;
+animation:pop .2s ease;
+}
+
+@keyframes pop{
+from{transform:scale(.8);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+
+/* LOADING */
+.loading{
+position:fixed;
+inset:0;
+background:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:14px;
+opacity:0;
+pointer-events:none;
+transition:.3s;
+}
+.loading.active{
+opacity:1;
+pointer-events:auto;
 }
 
 /* MODAL */
@@ -124,7 +171,6 @@ opacity:0;pointer-events:none;transition:.3s;
 background:#fff;padding:20px;border-radius:16px;width:300px;text-align:center;
 }
 .modal-actions{margin-top:14px;display:flex;justify-content:space-between;}
-
 </style>
 </head>
 
@@ -140,13 +186,14 @@ background:#fff;padding:20px;border-radius:16px;width:300px;text-align:center;
 
 <div class="step active" id="step1">
 <h1>Identity</h1>
+<div class="sub">Tell people who you are</div>
 <input id="name" placeholder="Full Name" oninput="updatePreview()">
 <input id="position" placeholder="Position" oninput="updatePreview()">
 <button class="btn-primary" onclick="nextStep()">Next</button>
 </div>
 
 <div class="step" id="step2">
-<h1>Contact</h1>
+<h1>How can people reach you?</h1>
 <input id="email" placeholder="Email">
 <input id="phone" placeholder="Phone">
 <div class="actions">
@@ -156,12 +203,15 @@ background:#fff;padding:20px;border-radius:16px;width:300px;text-align:center;
 </div>
 
 <div class="step" id="step3">
-<h1>Services</h1>
+<h1>What do you offer?</h1>
+<div class="sub">You're almost done ✨</div>
+
 <div id="servicesContainer"></div>
 <button class="add-service-btn" onclick="addService()">+ Add Service</button>
+
 <div class="actions">
-<button class="btn-secondary" onclick="prevStep()">Back</button>
-<button class="btn-primary" onclick="submitForm()">Finish</button>
+<div class="skip" onclick="submitForm()">Skip for now</div>
+<button class="btn-primary" onclick="submitForm()">Create My Card</button>
 </div>
 </div>
 
@@ -173,70 +223,14 @@ background:#fff;padding:20px;border-radius:16px;width:300px;text-align:center;
 
 <div class="preview-card">
 
+<div class="preview-label">Live preview of your digital card</div>
+
 <div class="profile-wrap" onclick="openModal()">
 <img id="previewImage" src="/logo.png">
 </div>
-<div style="font-size:11px;color:#6b7280;margin-top:-10px;margin-bottom:10px;">
-  Tap to upload your photo
-</div>
+
 <div class="preview-name" id="previewName">Your Name</div>
 <div class="preview-position" id="previewPosition">Your Position</div>
-
-<div class="actions-preview">
-
-<a class="icon-btn" onclick="fakeAction()">
-<svg class="icon" viewBox="0 0 24 24">
-<path d="M22 16.92V21a2 2 0 0 1-2.18 2
-19.79 19.79 0 0 1-8.63-3.07
-19.5 19.5 0 0 1-6-6
-19.79 19.79 0 0 1-3.07-8.67
-A2 2 0 0 1 3 2h4.09
-a2 2 0 0 1 2 1.72
-c.12.9.37 1.78.73 2.6
-a2 2 0 0 1-.45 2.11L8.09 9.91
-a16 16 0 0 0 6 6l1.48-1.28
-a2 2 0 0 1 2.11-.45
-c.82.36 1.7.61 2.6.73
-A2 2 0 0 1 22 16.92z"/>
-</svg>
-</a>
-
-<a class="icon-btn" onclick="fakeAction()">
-<svg class="icon" viewBox="0 0 24 24">
-<path d="M21 15a4 4 0 0 1-4 4H7l-4 4V5
-a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
-</svg>
-</a>
-
-<a class="icon-btn" onclick="fakeAction()">
-<svg class="icon" viewBox="0 0 24 24">
-<rect x="4" y="4" width="16" height="16"/>
-<path d="M22 6l-10 7L2 6"/>
-</svg>
-</a>
-
-</div>
-
-<div class="socials">
-
-<a class="social-icon" onclick="fakeAction()">
-<svg class="icon" viewBox="0 0 24 24">
-<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7
-a1 1 0 0 1 1-1h3z"/>
-</svg>
-</a>
-
-<a class="social-icon" onclick="fakeAction()">
-<svg class="icon" viewBox="0 0 24 24">
-<rect x="2" y="2" width="20" height="20" rx="5"/>
-<circle cx="12" cy="12" r="4"/>
-<circle cx="17.5" cy="6.5" r="1"/>
-</svg>
-</a>
-
-</div>
-
-<div class="btn-preview primary" onclick="fakeAction()">Save Contact</div>
 
 <div class="preview-services">
 <div class="services-title">SERVICES</div>
@@ -249,16 +243,9 @@ a1 1 0 0 1 1-1h3z"/>
 
 </div>
 
-<!-- MODAL -->
-<div id="imageModal" class="modal">
-<div class="modal-content">
-<h3>Upload Photo</h3>
-<input type="file" id="modalImageInput">
-<div class="modal-actions">
-<button onclick="closeModal()">Cancel</button>
-<button class="btn-primary" onclick="applyImage()">Apply</button>
-</div>
-</div>
+<!-- LOADING -->
+<div id="loading" class="loading">
+Creating your card...
 </div>
 
 <script>
@@ -273,7 +260,6 @@ document.getElementById("step"+currentStep).classList.add("active");
 document.getElementById("progressBar").style.width=((currentStep-1)/2)*100+"%";
 }
 
-/* SERVICES */
 function addService(){
 const div=document.createElement("div");
 div.className="service-item";
@@ -281,16 +267,9 @@ div.innerHTML=`<input oninput="updatePreview()"><div class="remove-btn" onclick=
 document.getElementById("servicesContainer").appendChild(div);
 }
 
-/* PREVIEW */
 function updatePreview(){
-const nameInput=document.getElementById("name");
-const positionInput=document.getElementById("position");
-const previewName=document.getElementById("previewName");
-const previewPosition=document.getElementById("previewPosition");
-const previewServices=document.getElementById("previewServices");
-
-previewName.innerText=nameInput.value||"Your Name";
-previewPosition.innerText=positionInput.value||"Your Position";
+document.getElementById("previewName").innerText=name.value||"Your Name";
+document.getElementById("previewPosition").innerText=position.value||"Your Position";
 
 previewServices.innerHTML="";
 document.querySelectorAll("#servicesContainer input").forEach(i=>{
@@ -303,33 +282,14 @@ previewServices.appendChild(d);
 });
 }
 
-/* MODAL */
-function openModal(){document.getElementById("imageModal").classList.add("active");}
-function closeModal(){document.getElementById("imageModal").classList.remove("active");}
+function submitForm(){
+document.getElementById("loading").classList.add("active");
 
-let tempImage=null;
-
-document.getElementById("modalImageInput").addEventListener("change",function(){
-const file=this.files[0];
-if(!file)return;
-
-const reader=new FileReader();
-reader.onload=e=>tempImage=e.target.result;
-reader.readAsDataURL(file);
-});
-
-function applyImage(){
-if(!tempImage)return;
-document.getElementById("previewImage").src=tempImage;
-closeModal();
+setTimeout(()=>{
+window.location.href="../upgrade.html?id=demo";
+},900);
 }
 
-/* FAKE ACTION */
-function fakeAction(){
-alert("Available after setup ✨");
-}
-
-/* INIT */
 addService();
 </script>
 
