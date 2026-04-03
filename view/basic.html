@@ -316,7 +316,29 @@ function showModal(msg){
 window.closeModal = function(){
   document.getElementById("modal").classList.remove("active");
 };
+function downloadVCard(){
 
+  const name = document.querySelector(".name").innerText;
+  const phone = "+639000000000"; // replace later with dynamic
+  const email = "email@example.com"; // replace later
+
+  const vCardData = `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+TEL:${phone}
+EMAIL:${email}
+END:VCARD`;
+
+  const blob = new Blob([vCardData], { type: "text/vcard" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "contact.vcf";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
 /* INIT */
 loadUser();
 
