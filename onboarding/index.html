@@ -25,9 +25,7 @@ body {
   width:350px;
 }
 
-h2 {
-  margin-bottom:20px;
-}
+h2 { margin-bottom:20px; }
 
 input {
   width:100%;
@@ -59,6 +57,7 @@ button {
   width:20%;
   background:#111;
   border-radius:10px;
+  transition:0.3s;
 }
 </style>
 </head>
@@ -79,31 +78,30 @@ button {
     <input id="position" placeholder="Your Position">
     <input id="company" placeholder="Company">
   </div>
-  
+
   <!-- STEP 2 -->
   <div id="step2" style="display:none;">
     <input id="phone" placeholder="Phone">
     <input id="email" placeholder="Email">
   </div>
-  
+
   <!-- STEP 3 -->
   <div id="step3" style="display:none;">
     <p>Add your services</p>
-  
+
     <div id="servicesContainer"></div>
 
-  <button type="button" onclick="addService()">+ Add Service</button>
-</div>
+    <button type="button" onclick="addService()">+ Add Service</button>
+  </div>
 
-  
-  <button onclick="nextStep()">Continue</button>
+  <button id="continueBtn">Continue</button>
 
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -117,17 +115,30 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let step = 1;
+let currentUser = null;
 
+// 🔐 WAIT FOR USER
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    alert("Please login first");
+    window.location.href = "../auth/login.html";
+    return;
+  }
+  currentUser = user;
+});
+
+// BUTTON
+document.getElementById("continueBtn").addEventListener("click", nextStep);
+
+// MAIN FLOW
 async function nextStep() {
 
-  const user = auth.currentUser;
-
-  if (!user) {
-    alert("Not logged in");
+  if (!currentUser) {
+    alert("User not ready yet");
     return;
   }
 
-  const clientId = user.uid;
+  const clientId = currentUser.uid;
 
   // STEP 1
   if (step === 1) {
@@ -142,7 +153,7 @@ async function nextStep() {
       createdAt: new Date()
     });
 
-    await setDoc(doc(db, "users", user.uid), {
+    await setDoc(doc(db, "users", clientId), {
       clientId: clientId
     }, { merge: true });
 
@@ -157,47 +168,48 @@ async function nextStep() {
   }
 
   // STEP 2
-    if (step === 2) {
-    
-      await setDoc(doc(db, "clients", clientId), {
-        phone: document.getElementById("phone").value,
-        email: document.getElementById("email").value
-      }, { merge: true });
-    
-      // 👉 MOVE TO STEP 3
-      document.getElementById("step2").style.display = "none";
-      document.getElementById("step3").style.display = "block";
-    
-      document.getElementById("progressBar").style.width = "60%";
-      document.getElementById("title").innerText = "Add your services";
-    
-      step = 3;
-      return;
-    }
-    
-    if (step === 3) {
-  
+  if (step === 2) {
+
+    await setDoc(doc(db, "clients", clientId), {
+      phone: document.getElementById("phone").value,
+      email: document.getElementById("email").value
+    }, { merge: true });
+
+    document.getElementById("step2").style.display = "none";
+    document.getElementById("step3").style.display = "block";
+
+    document.getElementById("progressBar").style.width = "60%";
+    document.getElementById("title").innerText = "Add your services";
+
+    step = 3;
+    return;
+  }
+
+  // STEP 3
+  if (step === 3) {
+
     const inputs = document.querySelectorAll(".serviceInput");
     const services = [];
-  
+
     inputs.forEach(input => {
       if (input.value.trim()) {
         services.push(input.value.trim());
       }
     });
-  
+
     await setDoc(doc(db, "clients", clientId), {
       services: services
     }, { merge: true });
 
     alert("Services saved!");
 
-  // 👉 NEXT: PROMO SYSTEM 🔥
+    console.log("Next: Promo Step");
+
+    step = 4;
+  }
 }
-  
-window.nextStep = nextStep;
-  
-// ADD SERVICE INPUT
+
+// ADD SERVICE
 function addService(value = "") {
   const div = document.createElement("div");
   div.style.display = "flex";
@@ -211,6 +223,10 @@ function addService(value = "") {
 
   document.getElementById("servicesContainer").appendChild(div);
 }
+
+// DEFAULT INPUT
+addService();
+
 </script>
 
 </body>
