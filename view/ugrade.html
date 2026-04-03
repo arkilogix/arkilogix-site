@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Upgrade Your Card</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:#020617;
+color:#fff;
+height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+/* HEADER */
+.header{
+text-align:center;
+padding:30px 20px 10px;
+}
+
+.header h1{
+font-size:26px;
+font-weight:600;
+}
+
+.header p{
+font-size:13px;
+color:#94a3b8;
+margin-top:6px;
+}
+
+/* MAIN */
+.main{
+flex:1;
+display:flex;
+gap:24px;
+padding:20px;
+}
+
+/* LEFT */
+.left{
+flex:1;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+}
+
+.left h3{
+font-size:13px;
+color:#64748b;
+margin-bottom:12px;
+}
+
+/* RIGHT */
+.right{
+flex:2;
+display:flex;
+gap:24px;
+justify-content:center;
+align-items:center;
+}
+
+/* PREVIEW BOX */
+.preview-box{
+background:#020617;
+border-radius:20px;
+padding:14px;
+width:260px;
+text-align:center;
+border:1px solid rgba(255,255,255,0.05);
+transition:.3s;
+}
+
+.preview-box:hover{
+transform:translateY(-6px);
+border-color:#2563eb;
+}
+
+/* IFRAME */
+iframe{
+width:100%;
+height:420px;
+border:none;
+border-radius:16px;
+background:#fff;
+}
+
+/* PLAN TITLE */
+.plan-title{
+margin-top:10px;
+font-size:15px;
+font-weight:600;
+}
+
+.tag{
+font-size:11px;
+margin-top:4px;
+color:#22c55e;
+}
+
+/* BUTTON */
+.btn{
+margin-top:12px;
+padding:10px;
+border-radius:999px;
+font-size:12px;
+cursor:pointer;
+border:none;
+width:100%;
+}
+
+.btn-primary{
+background:#2563eb;
+color:#fff;
+}
+
+.btn-secondary{
+background:#1e293b;
+color:#94a3b8;
+}
+
+/* PRO HIGHLIGHT */
+.pro{
+border:1px solid #2563eb;
+box-shadow:0 0 25px rgba(37,99,235,0.25);
+}
+
+/* FOOTER */
+.footer{
+text-align:center;
+font-size:11px;
+color:#64748b;
+padding-bottom:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>Your card is ready 🎉</h1>
+<p>Unlock more features to elevate your digital identity</p>
+</div>
+
+<div class="main">
+
+<!-- LEFT: BASIC -->
+<div class="left">
+<h3>Current Plan</h3>
+
+<div class="preview-box">
+<iframe id="basicFrame"></iframe>
+<div class="plan-title">Basic</div>
+<div class="tag">Free</div>
+</div>
+</div>
+
+<!-- RIGHT: UPGRADES -->
+<div class="right">
+
+<!-- PRO -->
+<div class="preview-box pro">
+<iframe id="proFrame"></iframe>
+<div class="plan-title">Pro</div>
+<div class="tag">Most Popular</div>
+<button class="btn btn-primary" onclick="upgrade('pro')">
+Unlock Features
+</button>
+</div>
+
+<!-- ELITE -->
+<div class="preview-box">
+<iframe id="eliteFrame"></iframe>
+<div class="plan-title">Elite</div>
+<div class="tag">Premium</div>
+<button class="btn btn-secondary" onclick="upgrade('elite')">
+Unlock Features
+</button>
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+Upgrade anytime. No pressure.
+</div>
+
+<script>
+
+/* GET USER ID */
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id") || "demo";
+
+/* LOAD YOUR ACTUAL PAGES */
+document.getElementById("basicFrame").src = "view/basic.html?id=" + id;
+document.getElementById("proFrame").src = "view/pro.html?id=" + id;
+document.getElementById("eliteFrame").src = "view/elite.html?id=" + id;
+
+/* UPGRADE ACTION */
+function upgrade(plan){
+alert("Upgrade to " + plan + " (connect Firebase/Stripe next)");
+}
+
+</script>
+
+</body>
+</html>
