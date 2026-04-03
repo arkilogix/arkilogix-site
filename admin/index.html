@@ -202,16 +202,35 @@ button {
 <!-- USER PANEL -->
 <div class="panel" id="panel">
   <div class="close" onclick="closePanel()">← Back</div>
+
   <h2 id="pName"></h2>
   <p id="pEmail"></p>
   <p id="pPhone"></p>
   <p id="pPlan"></p>
+  <p id="pStatus"></p>
+  <p id="pPayment"></p>
 
   <br>
+
+  <!-- ACTIONS -->
+  <button onclick="viewCard()">🔗 View Card</button>
+  <button onclick="copyLink()">📋 Copy Link</button>
+
+  <br><br>
+
+  <button onclick="toggleStatus()" id="statusBtn">Disable User</button>
+
+  <br><br>
 
   <button onclick="updatePlan('basic')">Set Basic</button>
   <button onclick="updatePlan('pro')">Set Pro</button>
   <button onclick="updatePlan('elite')">Set Elite</button>
+
+  <br><br>
+
+  <h3>Manual Payment</h3>
+  <button onclick="approvePayment('pro')">Approve Pro</button>
+  <button onclick="approvePayment('elite')">Approve Elite</button>
 </div>
 
 <!-- FIREBASE -->
