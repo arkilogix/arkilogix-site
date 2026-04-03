@@ -288,13 +288,7 @@ body{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getFirestore, 
-  doc, 
-  getDoc,
-  updateDoc,
-  increment
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
@@ -304,75 +298,44 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-// =========================
-// TRACK VIEW FUNCTION
-// =========================
-async function trackView(docRef) {
-  try {
-    const source = new URLSearchParams(window.location.search).get("source");
 
-    await updateDoc(docRef, {
-      views: increment(1),
-      lastViewed: new Date(),
-      taps: source === "nfc" ? increment(1) : increment(0)
-    });
-
-  } catch (err) {
-    console.log("Tracking error:", err);
-  }
-}
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-if (!id) {
-  document.body.innerHTML = "Missing ID";
+let currentPlan = "basic";
+
+async function loadUser(){
+
+  const snap = await getDoc(doc(db, "clients", id));
+
+  if(snap.exists()){
+    const data = snap.data();
+    currentPlan = data.plan || "basic";
+  }
 }
 
-// 🔥 FETCH
-getDoc(doc(db, "clients", id)).then((snap) => {
+/* ELITE LOCK */
+window.openGallery = function(){
 
-  if (!snap.exists()) {
-    document.body.innerHTML = "Client not found";
+  if(currentPlan !== "elite"){
+    showModal("Upgrade to Elite to unlock gallery ✨");
     return;
   }
 
-  const data = snap.data();
-  trackView(doc(db, "clients", id));
-  
-  // TEXT
-  document.getElementById("name").textContent = data.name || "";
-  document.getElementById("position").textContent = data.position || "";
-  document.getElementById("highlightTitle").textContent = data.highlightTitle || "";
-  document.getElementById("company").textContent = data.company || "";
+  // actual gallery logic later
+};
 
-  // IMAGES
-  if (data.profileImage)
-    document.getElementById("profileImage").src = data.profileImage;
+/* MODAL */
+function showModal(msg){
+  document.getElementById("modal").classList.add("active");
+  document.querySelector("#modal p").innerText = msg;
+}
 
-  if (data.bannerImage)
-    document.getElementById("highlightImage").src = data.bannerImage;
+window.closeModal = function(){
+  document.getElementById("modal").classList.remove("active");
+};
 
-  // PROJECTS
-  if (data.projectImages?.length) {
-    if (data.projectImages[0]) document.getElementById("project1").src = data.projectImages[0];
-    if (data.projectImages[1]) document.getElementById("project2").src = data.projectImages[1];
-    if (data.projectImages[2]) document.getElementById("project3").src = data.projectImages[2];
-  }
-
-  // ACTIONS
-  if (data.phone) {
-    document.getElementById("phoneBtn").href = "tel:" + data.phone;
-    document.getElementById("smsBtn").href = "sms:" + data.phone;
-  }
-
-  if (data.email) {
-    document.getElementById("emailBtn").href = "mailto:" + data.email;
-  }
-
-}).catch(err => {
-  console.error(err);
-  document.body.innerHTML = "Error loading";
-});
+loadUser();
 
 </script>
 
