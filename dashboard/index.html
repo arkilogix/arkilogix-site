@@ -1,9 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFC Dashboard</title>
+
   <link rel="stylesheet" href="dashboard.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, sans-serif;
+      background: #f5f5f5;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background: black;
+      color: white;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #clientsContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-content input,
+    .modal-content select {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
 
 <header>
@@ -13,9 +91,10 @@
 
 <section id="clientsContainer"></section>
 
-<!-- CREATE / EDIT MODAL -->
+<!-- MODAL -->
 <div id="modal" class="modal">
   <div class="modal-content">
+
     <h2>Create Client</h2>
 
     <input id="name" placeholder="Name">
@@ -29,11 +108,35 @@
       <option value="elite">Elite</option>
     </select>
 
-    <button onclick="saveClient()">Save</button>
+    <div class="modal-actions">
+      <button onclick="saveClient()">Save</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+
   </div>
 </div>
 
-<script src="firebase.js"></script>
-<script src="dashboard.js"></script>
+<!-- MODULE SCRIPT (IMPORTANT) -->
+<script type="module" src="dashboard.js"></script>
+
+<!-- MODAL LOGIC (GLOBAL FUNCTIONS) -->
+<script>
+  function openCreateModal() {
+    document.getElementById("modal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+
+  // Close when clicking outside modal
+  window.onclick = function(e) {
+    const modal = document.getElementById("modal");
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  };
+</script>
+
 </body>
 </html>
