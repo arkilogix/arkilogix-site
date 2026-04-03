@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<header>
+  <h1>NFC Dashboard</h1>
+  <button onclick="openCreateModal()">+ New Client</button>
+</header>
+
+<section id="clientsContainer"></section>
+
+<!-- CREATE / EDIT MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h2>Create Client</h2>
+
+    <input id="name" placeholder="Name">
+    <input id="position" placeholder="Position">
+    <input id="email" placeholder="Email">
+    <input id="phone" placeholder="Phone">
+
+    <select id="plan">
+      <option value="basic">Basic</option>
+      <option value="pro">Pro</option>
+      <option value="elite">Elite</option>
+    </select>
+
+    <button onclick="saveClient()">Save</button>
+  </div>
+</div>
+
+<script src="firebase.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>
