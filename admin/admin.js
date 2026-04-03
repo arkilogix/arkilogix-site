@@ -37,7 +37,7 @@ async function loadUsers() {
   updateStats();
 }
 
-// ✅ RENDER TABLE
+// ✅ RENDER
 function render(data) {
   const table = document.getElementById("table");
   table.innerHTML = "";
@@ -70,7 +70,7 @@ function updateStats() {
   document.getElementById("elite").innerText = elite;
 }
 
-// ✅ SEARCH (safe load)
+// ✅ SEARCH
 window.addEventListener("DOMContentLoaded", () => {
   const search = document.getElementById("search");
 
@@ -88,7 +88,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ✅ PANEL
+// ✅ OPEN PANEL
 function openPanel(id) {
   selectedUser = USERS.find(u => u.id === id);
 
@@ -99,10 +99,65 @@ function openPanel(id) {
   document.getElementById("pPhone").innerText = selectedUser.phone || "-";
   document.getElementById("pPlan").innerText =
     "Plan: " + (selectedUser.plan || "basic");
+
+  document.getElementById("pStatus").innerText =
+    "Status: " + (selectedUser.status || "active");
+
+  document.getElementById("pPayment").innerText =
+    "Payment: " + (selectedUser.paymentStatus || "none");
+
+  updateStatusButton();
 }
 
 function closePanel() {
   document.getElementById("panel").classList.remove("open");
+}
+
+// ✅ CARD LINK
+function getCardLink(user) {
+  const base = window.location.origin;
+  const plan = user.plan || "basic";
+  return `${base}/view/${plan}.html?id=${user.id}`;
+}
+
+// 🔗 VIEW CARD
+function viewCard() {
+  if (!selectedUser) return;
+  window.open(getCardLink(selectedUser), "_blank");
+}
+
+// 📋 COPY LINK
+function copyLink() {
+  const link = getCardLink(selectedUser);
+  navigator.clipboard.writeText(link);
+  alert("Link copied!");
+}
+
+// 🚫 TOGGLE STATUS
+async function toggleStatus() {
+  const newStatus =
+    (selectedUser.status || "active") === "active"
+      ? "disabled"
+      : "active";
+
+  await db.collection("clients").doc(selectedUser.id).update({
+    status: newStatus
+  });
+
+  alert("User updated");
+  closePanel();
+  loadUsers();
+}
+
+// UPDATE BUTTON TEXT
+function updateStatusButton() {
+  const btn = document.getElementById("statusBtn");
+
+  if ((selectedUser.status || "active") === "active") {
+    btn.innerText = "Disable User";
+  } else {
+    btn.innerText = "Enable User";
+  }
 }
 
 // ✅ UPDATE PLAN
@@ -115,7 +170,25 @@ async function updatePlan(plan) {
     plan: plan
   });
 
-  alert("Updated");
+  alert("Plan updated");
+
+  closePanel();
+  loadUsers();
+}
+
+// 💸 APPROVE PAYMENT (OPTION A)
+async function approvePayment(plan) {
+  if (!selectedUser) return;
+
+  if (!confirm(`Approve ${plan} payment?`)) return;
+
+  await db.collection("clients").doc(selectedUser.id).update({
+    plan: plan,
+    paymentStatus: "paid",
+    upgradedAt: new Date()
+  });
+
+  alert("Payment approved");
 
   closePanel();
   loadUsers();
