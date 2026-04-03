@@ -87,6 +87,16 @@ button {
   font-weight: 600;
   cursor: pointer;
 }
+
+/* REMEMBER */
+.remember {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  color:#9ca3af;
+  margin-bottom:14px;
+}
 </style>
 </head>
 
@@ -108,6 +118,12 @@ button {
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
 
+    <!-- ✅ REMEMBER ME -->
+    <label class="remember">
+      <input type="checkbox" id="remember">
+      Remember me
+    </label>
+
     <button onclick="login()">Sign In</button>
 
   </div>
@@ -116,12 +132,12 @@ button {
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } 
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// ✅ FULL CONFIG (IMPORTANT)
+/* CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -135,36 +151,19 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// AUTO LOGIN
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
-
-  const adminDoc = await getDoc(doc(db, "admins", user.uid));
-  if (adminDoc.exists()) {
-    window.location.href = "/admin/index.html";
-    return;
-  }
-
-  const clientDoc = await getDoc(doc(db, "clients", user.uid));
-
-  if (!clientDoc.exists()) {
-    window.location.href = "/onboarding/index.html";
-    return;
-  }
-
-  const data = clientDoc.data();
-  const plan = data.plan || "basic";
-
-  window.location.href = `/view/${plan}.html?id=${user.uid}`;
-});
-
-// LOGIN
+/* LOGIN */
 async function login() {
-  const email = email.value;
-  const password = password.value;
+
+  const emailVal = document.getElementById("email").value;
+  const passwordVal = document.getElementById("password").value;
+  const remember = document.getElementById("remember").checked;
 
   try {
-    const userCred = await signInWithEmailAndPassword(auth, email, password);
+
+    /* 🔥 SET PERSISTENCE */
+    await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
+
+    const userCred = await signInWithEmailAndPassword(auth, emailVal, passwordVal);
     const user = userCred.user;
 
     const adminDoc = await getDoc(doc(db, "admins", user.uid));
