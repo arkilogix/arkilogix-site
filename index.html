@@ -1211,7 +1211,6 @@ inputs.forEach(el => {
 
       updateProgress("Finalizing order...", 90);
       await sendEmailNow(params);
-       params.link = link;
       await sendToGoogleSheets(params);;
 
       updateProgress("Saving data...", 95);
