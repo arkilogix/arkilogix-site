@@ -298,6 +298,14 @@ body{
 
   color:#6b7280; /* soft gray */
 }
+  .cta-wrap{
+  transition:transform 0.35s ease, opacity 0.35s ease;
+}
+
+.cta-hidden{
+  transform:translate(-50%, 100%);
+  opacity:0;
+}
 </style>
     <link rel="icon" type="image/png" href="../logo.png">
 </head>
@@ -401,4 +409,27 @@ a1 1 0 0 1 1-1h3z"/>
 </div>
 </div>
 </body>
+  <script>
+let lastScroll = 0;
+const cta = document.querySelector('.cta-wrap');
+
+window.addEventListener('scroll', () => {
+  let currentScroll = window.pageYOffset;
+
+  if (currentScroll <= 0) {
+    cta.classList.remove('cta-hidden');
+    return;
+  }
+
+  if (currentScroll > lastScroll) {
+    // scrolling down
+    cta.classList.add('cta-hidden');
+  } else {
+    // scrolling up
+    cta.classList.remove('cta-hidden');
+  }
+
+  lastScroll = currentScroll;
+});
+</script>
 </html>
