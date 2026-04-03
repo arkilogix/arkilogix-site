@@ -68,14 +68,23 @@ button {
 <div class="container">
 
   <div class="progress">
-    <div class="progress-bar"></div>
+    <div id="progressBar" class="progress-bar"></div>
   </div>
 
-  <h2>Let’s build your card</h2>
+  <h2 id="title">Let’s build your card</h2>
 
-  <input id="name" placeholder="Your Name">
-  <input id="position" placeholder="Your Position">
-  <input id="company" placeholder="Company">
+  <!-- STEP 1 -->
+  <div id="step1">
+    <input id="name" placeholder="Your Name">
+    <input id="position" placeholder="Your Position">
+    <input id="company" placeholder="Company">
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step2" style="display:none;">
+    <input id="phone" placeholder="Phone">
+    <input id="email" placeholder="Email">
+  </div>
 
   <button onclick="nextStep()">Continue</button>
 
@@ -97,8 +106,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// STEP 1 SAVE
+let step = 1;
+
 async function nextStep() {
+
   const user = auth.currentUser;
 
   if (!user) {
@@ -108,24 +119,43 @@ async function nextStep() {
 
   const clientId = user.uid;
 
-  await setDoc(doc(db, "clients", clientId), {
-    name: document.getElementById("name").value,
-    position: document.getElementById("position").value,
-    company: document.getElementById("company").value,
-    plan: "basic",
-    views: 0,
-    taps: 0,
-    createdAt: new Date()
-  });
+  // STEP 1
+  if (step === 1) {
 
-  // 🔥 LINK USER → CLIENT
-  await setDoc(doc(db, "users", user.uid), {
-    clientId: clientId
-  }, { merge: true });
+    await setDoc(doc(db, "clients", clientId), {
+      name: document.getElementById("name").value,
+      position: document.getElementById("position").value,
+      company: document.getElementById("company").value,
+      plan: "basic",
+      views: 0,
+      taps: 0,
+      createdAt: new Date()
+    });
 
-  alert("Step 1 saved!");
+    await setDoc(doc(db, "users", user.uid), {
+      clientId: clientId
+    }, { merge: true });
 
-  // NEXT STEP COMES NEXT MESSAGE
+    document.getElementById("step1").style.display = "none";
+    document.getElementById("step2").style.display = "block";
+
+    document.getElementById("progressBar").style.width = "40%";
+    document.getElementById("title").innerText = "Add your contact info";
+
+    step = 2;
+    return;
+  }
+
+  // STEP 2
+  if (step === 2) {
+
+    await setDoc(doc(db, "clients", clientId), {
+      phone: document.getElementById("phone").value,
+      email: document.getElementById("email").value
+    }, { merge: true });
+
+    alert("Step 2 complete!");
+  }
 }
 
 window.nextStep = nextStep;
