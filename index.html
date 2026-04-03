@@ -1132,6 +1132,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if(!form) return;
 
   form.addEventListener("submit", async function(e){
+    let clientId = "temp-" + Date.now();
 e.preventDefault();
 const name = document.getElementById("name");
 const position = document.getElementById("position");
@@ -1183,7 +1184,9 @@ inputs.forEach(el => {
 };
 
       const profile = profilePhoto.files[0];
-      const highlight = highlightPhoto.files[0];
+    const highlight1 = document.getElementById("highlightPhoto1").files[0];
+    const highlight2 = document.getElementById("highlightPhoto2").files[0];
+    const highlight3 = document.getElementById("highlightPhoto3").files[0];
 
       if(!profile) throw "Please upload a profile photo";
 
@@ -1191,10 +1194,18 @@ inputs.forEach(el => {
       params.profile = await uploadToCloudinary(profile);
 
       if(selectedPlan==="pro" || selectedPlan==="elite"){
-        if(highlight){
-          updateProgress("Uploading highlight...", 45);
-          params.highlight = await uploadToCloudinary(highlight);
-        }
+      
+        updateProgress("Uploading projects...", 50);
+      
+        let projectImages = [];
+      
+        if(highlight1) projectImages.push(await uploadToCloudinary(highlight1));
+        if(highlight2) projectImages.push(await uploadToCloudinary(highlight2));
+        if(highlight3) projectImages.push(await uploadToCloudinary(highlight3));
+      
+        params.projectImages = projectImages;
+      
+      }
 
         const files = portfolioPhotos.files;
         let urls = [];
@@ -1224,8 +1235,6 @@ Object.keys(params).forEach(key => {
 
 console.log("STEP 1: before firebase");
 
-let clientId = "temp-" + Date.now();
-
 try {
   const timeout = new Promise((_, reject) =>
     setTimeout(() => reject("Firebase timeout"), 5000)
@@ -1251,9 +1260,6 @@ let page = selectedPlan === "elite" ? "elite.html" :
            selectedPlan === "pro" ? "pro.html" : "basic.html";
 
 const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
-
-// ❗ FIX: DO NOT use raw variable
-console.log("CLIENT LINK:", link);
 
 console.log("STEP 4: updating UI");
 
@@ -1371,8 +1377,16 @@ document.addEventListener("keydown", function(e){
 <input type="file" id="profilePhoto" accept="image/*" required>
 
 <div id="highlightUpload" style="display:none;">
-  <label class="upload-label">Highlighted Project (Required)</label>
-  <input type="file" id="highlightPhoto" accept="image/*">
+
+  <label class="upload-label">Project Highlight 1</label>
+  <input type="file" id="highlightPhoto1" accept="image/*">
+
+  <label class="upload-label">Project Highlight 2</label>
+  <input type="file" id="highlightPhoto2" accept="image/*">
+
+  <label class="upload-label">Project Highlight 3</label>
+  <input type="file" id="highlightPhoto3" accept="image/*">
+
 </div>
 
 <div id="portfolioUpload" style="display:none;">
