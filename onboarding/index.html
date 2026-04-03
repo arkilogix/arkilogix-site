@@ -8,23 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-:root{--accent:#2563eb;}
-
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-
-body{
-  display:flex;
-  height:100vh;
-  background:#f9fafb;
-}
-
+body{display:flex;height:100vh;background:#f9fafb;}
 .container{display:flex;width:100%;}
 .left,.right{flex:1;display:flex;justify-content:center;align-items:center;}
 
 /* FORM */
 .card{width:100%;max-width:420px;padding:28px;}
 .progress{height:4px;background:#eee;margin-bottom:20px;}
-.progress-bar{height:100%;width:0%;background:var(--accent);transition:.4s;}
+.progress-bar{height:100%;width:0%;background:#2563eb;transition:.4s;}
 
 .step{display:none;}
 .step.active{display:block;}
@@ -33,11 +25,11 @@ h1{font-size:20px;}
 .subtitle{font-size:13px;color:#666;margin-bottom:20px;}
 
 input{
-  width:100%;
-  padding:12px;
-  margin-bottom:12px;
-  border-radius:10px;
-  border:1px solid #ddd;
+width:100%;
+padding:12px;
+margin-bottom:12px;
+border-radius:10px;
+border:1px solid #ddd;
 }
 
 .actions{display:flex;justify-content:space-between;}
@@ -45,85 +37,101 @@ button{padding:12px 18px;border-radius:10px;border:none;cursor:pointer;}
 .btn-primary{background:#111;color:#fff;}
 .btn-secondary{background:none;color:#777;}
 
-/* SERVICES */
+/* SERVICES INPUT */
 .service-item{display:flex;gap:8px;margin-bottom:10px;}
 .service-item input{flex:1;}
 .remove-btn{background:#eee;padding:0 10px;border-radius:8px;cursor:pointer;}
 
+.add-service-btn{
+width:100%;
+padding:10px;
+border-radius:10px;
+border:1px dashed #d1d5db;
+background:#fff;
+font-size:12px;
+cursor:pointer;
+}
+
 /* PREVIEW */
 .preview-card{
-  width:320px;
-  padding:32px 24px;
-  border-radius:22px;
-  text-align:center;
-  background:linear-gradient(145deg,#ffffffcc,#e5e7ebcc);
-  backdrop-filter:blur(14px);
-  border:1px solid rgba(0,0,0,0.08);
-  box-shadow:0 10px 30px rgba(0,0,0,0.08),
-  inset 0 1px 0 rgba(255,255,255,0.6);
+width:320px;
+padding:32px 24px;
+border-radius:22px;
+text-align:center;
+background:linear-gradient(145deg,#ffffffcc,#e5e7ebcc);
+backdrop-filter:blur(14px);
+border:1px solid rgba(0,0,0,0.08);
+box-shadow:0 10px 30px rgba(0,0,0,0.08),
+inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
 /* PROFILE */
 .profile-wrap{
-  width:110px;height:110px;margin:auto;border-radius:50%;
-  overflow:hidden;border:2px solid #d1d5db;margin-bottom:18px;cursor:pointer;
+width:110px;height:110px;margin:auto;border-radius:50%;
+overflow:hidden;border:2px solid #d1d5db;margin-bottom:18px;cursor:pointer;
 }
 .profile-wrap img{width:100%;height:100%;object-fit:cover;}
 
 /* TEXT */
 .preview-name{font-size:22px;font-weight:700;}
 .preview-position{font-size:14px;color:#555;}
-.preview-contact{font-size:12px;color:#777;margin-top:10px;}
 
 /* ICONS */
-.icon{
-  width:18px;height:18px;
-  stroke:#374151;fill:none;stroke-width:2;
-  transition:.2s;
-}
-
-.actions-preview{
-  display:flex;justify-content:center;gap:16px;margin:18px 0;
-}
+.icon{width:18px;height:18px;stroke:#374151;fill:none;stroke-width:2;}
+.actions-preview{display:flex;justify-content:center;gap:16px;margin:18px 0;}
 
 .icon-btn{
-  width:42px;height:42px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(145deg,#ffffff,#e5e7eb);
-  box-shadow:inset 0 1px 2px rgba(255,255,255,0.6),
-  0 3px 6px rgba(0,0,0,0.08);
-  transition:.2s;
+width:42px;height:42px;border-radius:50%;
+display:flex;align-items:center;justify-content:center;
+background:linear-gradient(145deg,#ffffff,#e5e7eb);
+box-shadow:0 3px 6px rgba(0,0,0,0.08);
+cursor:pointer;
 }
-.icon-btn:hover{transform:scale(1.1);background:#111827;}
-.icon-btn:hover .icon{stroke:white;}
 
 /* SOCIAL */
-.socials{
-  display:flex;justify-content:center;gap:14px;margin-bottom:14px;
-}
+.socials{display:flex;justify-content:center;gap:14px;margin-bottom:14px;}
 .social-icon{
-  width:38px;height:38px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:#fff;box-shadow:0 3px 6px rgba(0,0,0,0.08);
-  transition:.2s;
+width:38px;height:38px;border-radius:50%;
+display:flex;align-items:center;justify-content:center;
+background:#fff;box-shadow:0 3px 6px rgba(0,0,0,0.08);
+cursor:pointer;
 }
-.social-icon:hover{background:#111827;transform:scale(1.1);}
-.social-icon:hover .icon{stroke:#fff;}
 
 /* BUTTON */
 .btn-preview{
-  display:block;padding:10px;border-radius:30px;
-  margin-top:8px;font-size:12px;
-  border:1px solid #ddd;text-decoration:none;
+display:block;padding:10px;border-radius:30px;
+margin-top:8px;font-size:12px;border:1px solid #ddd;
 }
 .btn-preview.primary{background:#111;color:#fff;border:none;}
 
-/* SERVICES */
-.services{margin-top:20px;}
+/* SERVICES PREVIEW */
+.preview-services{text-align:center;margin-top:20px;}
 .services-title{
-  font-size:11px;letter-spacing:2px;color:#666;margin-bottom:10px;
+font-size:11px;letter-spacing:2px;color:#666;margin-bottom:10px;
 }
-.preview-service{font-size:13px;}
+
+.preview-service{
+display:inline-block;
+padding:6px 14px;
+border-radius:999px;
+font-size:11px;
+background:rgba(0,0,0,0.05);
+margin:4px;
+}
+
+/* MODAL */
+.modal{
+position:fixed;inset:0;background:rgba(0,0,0,0.4);
+display:flex;justify-content:center;align-items:center;
+opacity:0;pointer-events:none;transition:.3s;
+}
+.modal.active{opacity:1;pointer-events:auto;}
+
+.modal-content{
+background:#fff;padding:20px;border-radius:16px;width:300px;text-align:center;
+}
+
+.modal-actions{margin-top:14px;display:flex;justify-content:space-between;}
 </style>
 </head>
 
@@ -139,23 +147,15 @@ button{padding:12px 18px;border-radius:10px;border:none;cursor:pointer;}
 
 <div class="step active" id="step1">
 <h1>Identity</h1>
-<p class="subtitle">Basic info</p>
-
 <input id="name" placeholder="Full Name" oninput="updatePreview()">
 <input id="position" placeholder="Position" oninput="updatePreview()">
-
-<div class="actions">
-<div></div>
 <button class="btn-primary" onclick="nextStep()">Next</button>
-</div>
 </div>
 
 <div class="step" id="step2">
 <h1>Contact</h1>
-
-<input id="email" placeholder="Email" oninput="updatePreview()">
-<input id="phone" placeholder="Phone" oninput="updatePreview()">
-
+<input id="email" placeholder="Email">
+<input id="phone" placeholder="Phone">
 <div class="actions">
 <button class="btn-secondary" onclick="prevStep()">Back</button>
 <button class="btn-primary" onclick="nextStep()">Next</button>
@@ -164,10 +164,8 @@ button{padding:12px 18px;border-radius:10px;border:none;cursor:pointer;}
 
 <div class="step" id="step3">
 <h1>Services</h1>
-
 <div id="servicesContainer"></div>
-<div onclick="addService()">+ Add Service</div>
-
+<button class="add-service-btn" onclick="addService()">+ Add Service</button>
 <div class="actions">
 <button class="btn-secondary" onclick="prevStep()">Back</button>
 <button class="btn-primary" onclick="submitForm()">Finish</button>
@@ -182,70 +180,37 @@ button{padding:12px 18px;border-radius:10px;border:none;cursor:pointer;}
 
 <div class="preview-card">
 
-<div class="profile-wrap" onclick="triggerUpload()">
+<div class="profile-wrap" onclick="openModal()">
 <img id="previewImage" src="https://via.placeholder.com/150">
-<input type="file" id="imageUpload" hidden>
 </div>
 
 <div class="preview-name" id="previewName">Your Name</div>
 <div class="preview-position" id="previewPosition">Your Position</div>
-<div class="preview-contact" id="previewContact">Email • Phone</div>
 
 <div class="actions-preview">
-
-<a class="icon-btn">
-<svg class="icon" viewBox="0 0 24 24">
-<path d="M22 16.92V21a2 2 0 0 1-2.18 2
-19.79 19.79 0 0 1-8.63-3.07
-19.5 19.5 0 0 1-6-6
-19.79 19.79 0 0 1-3.07-8.67
-A2 2 0 0 1 3 2h4.09
-a2 2 0 0 1 2 1.72
-c.12.9.37 1.78.73 2.6
-a2 2 0 0 1-.45 2.11L8.09 9.91
-a16 16 0 0 0 6 6l1.48-1.28
-a2 2 0 0 1 2.11-.45
-c.82.36 1.7.61 2.6.73
-A2 2 0 0 1 22 16.92z"/>
-</svg>
-</a>
-
-<a class="icon-btn">
-<svg class="icon" viewBox="0 0 24 24">
-<path d="M21 15a4 4 0 0 1-4 4H7l-4 4V5a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
-</svg>
-</a>
-
-<a class="icon-btn">
-<svg class="icon" viewBox="0 0 24 24">
-<path d="M4 4h16v16H4z"/>
-<path d="M22 6l-10 7L2 6"/>
-</svg>
-</a>
-
+<div class="icon-btn" onclick="fakeAction()">
+<svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92V21"/></svg>
+</div>
+<div class="icon-btn" onclick="fakeAction()">
+<svg class="icon" viewBox="0 0 24 24"><path d="M21 15"/></svg>
+</div>
+<div class="icon-btn" onclick="fakeAction()">
+<svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16"/></svg>
+</div>
 </div>
 
 <div class="socials">
-
-<a class="social-icon">
-<svg class="icon" viewBox="0 0 24 24">
-<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-</svg>
-</a>
-
-<a class="social-icon">
-<svg class="icon" viewBox="0 0 24 24">
-<rect x="2" y="2" width="20" height="20" rx="5"/>
-<path d="M16 11.37a4 4 0 1 1-2.63-2.63A4 4 0 0 1 16 11.37z"/>
-<line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/>
-</svg>
-</a>
-
+<div class="social-icon" onclick="fakeAction()">
+<svg class="icon" viewBox="0 0 24 24"><path d="M18 2h-3"/></svg>
+</div>
+<div class="social-icon" onclick="fakeAction()">
+<svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20"/></svg>
+</div>
 </div>
 
-<a class="btn-preview primary">Save Contact</a>
+<div class="btn-preview primary" onclick="fakeAction()">Save Contact</div>
 
-<div class="services">
+<div class="preview-services">
 <div class="services-title">SERVICES</div>
 <div id="previewServices"></div>
 </div>
@@ -256,12 +221,23 @@ A2 2 0 0 1 22 16.92z"/>
 
 </div>
 
+<!-- MODAL -->
+<div id="imageModal" class="modal">
+<div class="modal-content">
+<h3>Upload Photo</h3>
+<input type="file" id="modalImageInput">
+<div class="modal-actions">
+<button onclick="closeModal()">Cancel</button>
+<button class="btn-primary" onclick="applyImage()">Apply</button>
+</div>
+</div>
+</div>
+
 <script>
 let currentStep=1;
 
 function nextStep(){if(currentStep<3){currentStep++;showStep();}}
 function prevStep(){if(currentStep>1){currentStep--;showStep();}}
-
 function showStep(){
 document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
 document.getElementById("step"+currentStep).classList.add("active");
@@ -269,20 +245,17 @@ document.getElementById("progressBar").style.width=((currentStep-1)/2)*100+"%";
 }
 
 /* SERVICES */
-function addService(val=""){
+function addService(){
 const div=document.createElement("div");
 div.className="service-item";
-div.innerHTML=`
-<input value="${val}" oninput="updatePreview()">
-<div class="remove-btn" onclick="this.parentElement.remove();updatePreview()">×</div>`;
+div.innerHTML=`<input oninput="updatePreview()"><div class="remove-btn" onclick="this.parentElement.remove();updatePreview()">×</div>`;
 servicesContainer.appendChild(div);
 }
 
 /* PREVIEW */
 function updatePreview(){
-previewName.innerText=name.value||"Your Name";
-previewPosition.innerText=position.value||"Your Position";
-previewContact.innerText=(email.value||"Email")+" • "+(phone.value||"Phone");
+document.getElementById("previewName").innerText=name.value||"Your Name";
+document.getElementById("previewPosition").innerText=position.value||"Your Position";
 
 previewServices.innerHTML="";
 document.querySelectorAll("#servicesContainer input").forEach(i=>{
@@ -295,36 +268,31 @@ previewServices.appendChild(d);
 });
 }
 
-/* IMAGE */
-function triggerUpload(){imageUpload.click();}
+/* MODAL */
+function openModal(){imageModal.classList.add("active");}
+function closeModal(){imageModal.classList.remove("active");}
 
-imageUpload.onchange=function(){
-const file=this.files[0];
+let tempImage=null;
+
+modalImageInput.onchange=function(){
 const reader=new FileReader();
+reader.onload=e=>tempImage=e.target.result;
+reader.readAsDataURL(this.files[0]);
+}
 
-reader.onload=function(e){
-const img=new Image();
-img.onload=function(){
-const canvas=document.createElement("canvas");
-const size=Math.min(img.width,img.height);
-canvas.width=300;canvas.height=300;
-const ctx=canvas.getContext("2d");
+function applyImage(){
+if(!tempImage)return;
+previewImage.src=tempImage;
+closeModal();
+}
 
-ctx.drawImage(img,(img.width-size)/2,(img.height-size)/2,size,size,0,0,300,300);
-previewImage.src=canvas.toDataURL();
-};
-img.src=e.target.result;
-};
-reader.readAsDataURL(file);
+/* FAKE ACTION */
+function fakeAction(){
+alert("Available after setup ✨");
 }
 
 /* INIT */
 addService();
-
-/* SUBMIT */
-function submitForm(){
-alert("Connect Firebase here");
-}
 </script>
 
 </body>
