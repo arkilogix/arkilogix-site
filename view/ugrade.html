@@ -9,12 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
 
 body{
 background:#020617;
@@ -24,32 +19,12 @@ display:flex;
 flex-direction:column;
 }
 
-/* HEADER */
-.header{
-text-align:center;
-padding:30px 20px 10px;
-}
+.header{text-align:center;padding:30px 20px 10px;}
+.header h1{font-size:26px;font-weight:600;}
+.header p{font-size:13px;color:#94a3b8;margin-top:6px;}
 
-.header h1{
-font-size:26px;
-font-weight:600;
-}
+.main{flex:1;display:flex;gap:24px;padding:20px;}
 
-.header p{
-font-size:13px;
-color:#94a3b8;
-margin-top:6px;
-}
-
-/* MAIN */
-.main{
-flex:1;
-display:flex;
-gap:24px;
-padding:20px;
-}
-
-/* LEFT */
 .left{
 flex:1;
 display:flex;
@@ -58,13 +33,8 @@ align-items:center;
 justify-content:center;
 }
 
-.left h3{
-font-size:13px;
-color:#64748b;
-margin-bottom:12px;
-}
+.left h3{font-size:13px;color:#64748b;margin-bottom:12px;}
 
-/* RIGHT */
 .right{
 flex:2;
 display:flex;
@@ -73,7 +43,6 @@ justify-content:center;
 align-items:center;
 }
 
-/* PREVIEW BOX */
 .preview-box{
 background:#020617;
 border-radius:20px;
@@ -89,7 +58,6 @@ transform:translateY(-6px);
 border-color:#2563eb;
 }
 
-/* IFRAME */
 iframe{
 width:100%;
 height:420px;
@@ -98,20 +66,9 @@ border-radius:16px;
 background:#fff;
 }
 
-/* PLAN TITLE */
-.plan-title{
-margin-top:10px;
-font-size:15px;
-font-weight:600;
-}
+.plan-title{margin-top:10px;font-size:15px;font-weight:600;}
+.tag{font-size:11px;margin-top:4px;color:#22c55e;}
 
-.tag{
-font-size:11px;
-margin-top:4px;
-color:#22c55e;
-}
-
-/* BUTTON */
 .btn{
 margin-top:12px;
 padding:10px;
@@ -122,23 +79,21 @@ border:none;
 width:100%;
 }
 
-.btn-primary{
-background:#2563eb;
-color:#fff;
-}
+.btn-primary{background:#2563eb;color:#fff;}
+.btn-secondary{background:#1e293b;color:#94a3b8;}
 
-.btn-secondary{
-background:#1e293b;
-color:#94a3b8;
-}
-
-/* PRO HIGHLIGHT */
 .pro{
 border:1px solid #2563eb;
 box-shadow:0 0 25px rgba(37,99,235,0.25);
 }
 
-/* FOOTER */
+.payment-info{
+margin-top:10px;
+font-size:11px;
+color:#94a3b8;
+line-height:1.5;
+}
+
 .footer{
 text-align:center;
 font-size:11px;
@@ -171,21 +126,35 @@ padding-bottom:16px;
 <!-- RIGHT -->
 <div class="right">
 
+<!-- PRO -->
 <div class="preview-box pro">
 <iframe id="proFrame"></iframe>
 <div class="plan-title">Pro</div>
-<div class="tag">Most Popular</div>
-<button class="btn btn-primary" onclick="upgrade('pro')">
-Unlock Features
+<div class="tag">₱299 • Most Popular</div>
+
+<div class="payment-info">
+GCash: 09XXXXXXXXX<br>
+Send payment then click below
+</div>
+
+<button class="btn btn-primary" onclick="requestUpgrade('pro')">
+I Have Paid
 </button>
 </div>
 
+<!-- ELITE -->
 <div class="preview-box">
 <iframe id="eliteFrame"></iframe>
 <div class="plan-title">Elite</div>
-<div class="tag">Premium</div>
-<button class="btn btn-secondary" onclick="upgrade('elite')">
-Unlock Features
+<div class="tag">₱599 • Premium</div>
+
+<div class="payment-info">
+GCash: 09XXXXXXXXX<br>
+Send payment then click below
+</div>
+
+<button class="btn btn-secondary" onclick="requestUpgrade('elite')">
+I Have Paid
 </button>
 </div>
 
@@ -194,7 +163,7 @@ Unlock Features
 </div>
 
 <div class="footer">
-Upgrade anytime. No pressure.
+Manual approval required. You’ll be upgraded shortly.
 </div>
 
 <!-- 🔥 FIREBASE -->
@@ -203,21 +172,16 @@ Upgrade anytime. No pressure.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* ✅ YOUR REAL CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
-  projectId: "arkilogix-clients",
-  storageBucket: "arkilogix-clients.firebasestorage.app",
-  messagingSenderId: "1074947351840",
-  appId: "1:1074947351840:web:b077eb79963fff59316345",
-  measurementId: "G-HFPXDVR2BZ"
+  projectId: "arkilogix-clients"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* GET USER ID */
+// GET USER ID
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
@@ -225,27 +189,26 @@ if(!id){
   alert("Missing user ID");
 }
 
-/* LOAD PREVIEWS */
-document.getElementById("basicFrame").src = "view/basic.html?id=" + id;
-document.getElementById("proFrame").src = "view/pro.html?id=" + id;
-document.getElementById("eliteFrame").src = "view/elite.html?id=" + id;
+// LOAD PREVIEWS
+document.getElementById("basicFrame").src = "/view/basic.html?id=" + id;
+document.getElementById("proFrame").src = "/view/pro.html?id=" + id;
+document.getElementById("eliteFrame").src = "/view/elite.html?id=" + id;
 
-/* 🔥 UPGRADE FUNCTION */
-window.upgrade = async function(plan){
+// 🔥 REQUEST UPGRADE (NOT AUTO APPROVE)
+window.requestUpgrade = async function(plan){
 
   try{
 
     await updateDoc(doc(db, "clients", id), {
-      plan: plan
+      paymentStatus: "pending",
+      requestedPlan: plan
     });
 
-    alert("Upgraded to " + plan + " 🎉");
-
-    window.location.href = "view/" + plan + ".html?id=" + id;
+    alert("Payment submitted! Please wait for approval.");
 
   }catch(err){
     console.error(err);
-    alert("Upgrade failed");
+    alert("Request failed");
   }
 
 }
