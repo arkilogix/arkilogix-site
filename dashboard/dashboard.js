@@ -19,13 +19,14 @@ async function loadClients() {
     const data = docSnap.data();
     const id = docSnap.id;
 
-    const link = `/view/${data.plan}.html?id=${id}`;
+    const plan = data.plan || "basic";
+    const link = `/view/${plan}.html?id=${id}`;
 
     container.innerHTML += `
       <div class="card">
         <h3>${data.name}</h3>
         <p>${data.position || ""}</p>
-        <p><b>${data.plan.toUpperCase()}</b></p>
+        <p><b>${(data.plan || "basic").toUpperCase()}</b></p>
 
         <p>Views: ${data.views || 0}</p>
         <p>Last: ${data.lastViewed || "-"}</p>
