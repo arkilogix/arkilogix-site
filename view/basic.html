@@ -292,7 +292,7 @@ Save Contact
 
 <!-- SERVICES -->
 <div class="services" id="services"></div>
-  
+
 <!-- BRANDING -->
   <a href="https://arkilogix.com" target="_blank" class="branding">
   <img src="../logo.png" alt="Arkilogix Logo">
@@ -314,7 +314,7 @@ Save Contact
 <button onclick="closeModal()">Cancel</button>
 </div>
 </div>
-  
+
 
 <script type="module">
 
@@ -326,7 +326,7 @@ import {
   updateDoc, 
   increment 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  
+
 /* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
@@ -339,7 +339,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-  
+
 /* GET USER */
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
@@ -353,65 +353,57 @@ async function loadUser(){
 
   const snap = await getDoc(doc(db, "clients", id));
 
-  if(!snap.exists()) return;
+  if(snap.exists()){
+    const data = snap.data();
 
-  const data = snap.data();
-
-  // 🚨 BLOCK DISABLED USERS
-  if (data.status === "disabled") {
-    document.body.innerHTML = `
-      <div style="
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        height:100vh;
-        font-family:sans-serif;
-        background:#0f1115;
-        color:white;
-        text-align:center;
-      ">
-        <div>
-          <h2>Account Disabled</h2>
-          <p>This digital card is no longer available.</p>
+    // 🚨 BLOCK DISABLED USERS
+    if (data.status === "disabled") {
+      document.body.innerHTML = `
+        <div style="
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          height:100vh;
+          font-family:sans-serif;
+          background:#0f1115;
+          color:white;
+          text-align:center;
+        ">
+          <div>
+            <h2>Account Disabled</h2>
+            <p>This digital card is no longer available.</p>
+          </div>
         </div>
-      </div>
-    `;
-    return;
-  }
+      `;
+      return;
+    }
 
-  // 📊 TRACK VIEW
-  updateDoc(doc(db, "clients", id), {
-    "stats.views": increment(1)
-  });
-
-  // 🧠 STORE GLOBALS
+/* TRACK VIEW */
+updateDoc(doc(db, "clients", id), {
+  "stats.views": increment(1)
+});
+  // CONTINUE NORMAL UI
   currentPlan = data.plan || "basic";
-  window.vcardUrl = data.vcardUrl || "";
 
-  // 👤 BASIC INFO
   document.querySelector(".name").innerText = data.name || "Your Name";
   document.querySelector(".position").innerText = data.position || "Your Position";
 
-  // 🖼 PROFILE IMAGE (CLOUDINARY)
-  if(data.profileImage){
-    document.getElementById("profile").src = data.profileImage;
+  renderServices(data.services || []);
+    }
   }
 
-  // 🛠 SERVICES
-  if(data.services && data.services.length > 0){
-    renderServices(data.services);
+/* SERVICES */
+function renderServices(list){
+  const el = document.getElementById("services");
+  el.innerHTML="";
 
-    // show header if hidden (optional future use)
-    const header = document.querySelector(".services-header");
-    if(header) header.style.display = "flex";
-  } else {
-    // hide services section if empty (clean UI)
-    const services = document.getElementById("services");
-    const header = document.querySelector(".services-header");
-
-    if(services) services.style.display = "none";
-    if(header) header.style.display = "none";
-  }
+  list.slice(0,3).forEach(s=>{
+    const d=document.createElement("div");
+    d.className="service";
+    d.innerText=s;
+    el.appendChild(d);
+  });
+}
 
 /* MODAL SYSTEM */
 function showModal(msg){
@@ -422,6 +414,7 @@ function showModal(msg){
 window.closeModal = function(){
   document.getElementById("modal").classList.remove("active");
 };
+function downloadVCard(){
 window.downloadVCard = function(){
 
   const name = document.querySelector(".name").innerText;
@@ -447,6 +440,7 @@ END:VCARD`;
 }
 
 /* TRACK CLICKS */
+  function trackClick(){
   window.trackClick = function(){
   if(!id) return;
 
@@ -454,7 +448,7 @@ END:VCARD`;
     "stats.clicks": increment(1)
   });
 }
-  
+
 /* INIT */
 loadUser();
 
