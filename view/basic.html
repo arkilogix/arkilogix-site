@@ -389,6 +389,9 @@ updateDoc(doc(db, "clients", id), {
   document.querySelector(".position").innerText = data.position || "Your Position";
 
   renderServices(data.services || []);
+    if(data.profileImage){
+  document.getElementById("profile").src = data.profileImage;
+}
     }
   }
 
@@ -414,12 +417,11 @@ function showModal(msg){
 window.closeModal = function(){
   document.getElementById("modal").classList.remove("active");
 };
-function downloadVCard(){
 window.downloadVCard = function(){
 
   const name = document.querySelector(".name").innerText;
-  const phone = "+639000000000"; // replace later with dynamic
-  const email = "email@example.com"; // replace later
+  const phone = "+639000000000";
+  const email = "email@example.com";
 
   const vCardData = `BEGIN:VCARD
 VERSION:3.0
@@ -440,8 +442,7 @@ END:VCARD`;
 }
 
 /* TRACK CLICKS */
-  function trackClick(){
-  window.trackClick = function(){
+window.trackClick = function(){
   if(!id) return;
 
   updateDoc(doc(db, "clients", id), {
