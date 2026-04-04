@@ -251,10 +251,14 @@ Save Contact
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getFirestore, doc, getDoc, updateDoc, increment } 
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  updateDoc, 
+  increment 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   
 /* FIREBASE CONFIG */
 const firebaseConfig = {
@@ -267,7 +271,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
+const db = getFirestore(app);
+  
 /* GET USER */
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
@@ -305,7 +310,7 @@ async function loadUser(){
       `;
       return;
     }
-    /* TRACK VIEW */
+
 /* TRACK VIEW */
 updateDoc(doc(db, "clients", id), {
   "stats.views": increment(1)
@@ -316,8 +321,9 @@ updateDoc(doc(db, "clients", id), {
   document.querySelector(".name").innerText = data.name || "Your Name";
   document.querySelector(".position").innerText = data.position || "Your Position";
 
-  renderServices(data.services || []);  
-}
+  renderServices(data.services || []);
+    }
+  }
 
 /* SERVICES */
 function renderServices(list){
@@ -366,10 +372,6 @@ END:VCARD`;
 
   URL.revokeObjectURL(url);
 }
-
-
-const db = getFirestore();
-
 
 /* TRACK CLICKS */
   function trackClick(){
