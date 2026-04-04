@@ -666,8 +666,14 @@ document.getElementById("servicesContainer").appendChild(div);
 function updatePreview(){
 
 // NAME + POSITION
-document.getElementById("previewName").innerText = name.value || "Your Name";
-document.getElementById("previewPosition").innerText = position.value || "Your Position";
+const nameInput = document.getElementById("name");
+const positionInput = document.getElementById("position");
+
+document.getElementById("previewName").innerText =
+  (nameInput && nameInput.value) ? nameInput.value : "Your Name";
+
+document.getElementById("previewPosition").innerText =
+  (positionInput && positionInput.value) ? positionInput.value : "Your Position";
 
 // SERVICES
 previewServices.innerHTML="";
