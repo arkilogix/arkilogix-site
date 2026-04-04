@@ -177,6 +177,23 @@ button:active{
     width: 100%;
   }
 }
+  .signup{
+  margin-top:18px;
+  text-align:center;
+  font-size:13px;
+  color:#9ca3af;
+}
+
+.signup a{
+  color:#C9A96E;
+  text-decoration:none;
+  font-weight:500;
+  margin-left:4px;
+}
+
+.signup a:hover{
+  text-decoration:underline;
+}
 </style>
 </head>
 
@@ -211,10 +228,12 @@ button:active{
         Remember me
       </label>
     </div>
-
     <button onclick="login()">Sign In</button>
-
   </div>
+  <div class="signup">
+  <span>No account yet?</span>
+  <a href="signup.html">Create one</a>
+</div>
 </div>
 
 <script type="module">
