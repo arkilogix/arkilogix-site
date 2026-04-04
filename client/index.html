@@ -18,16 +18,28 @@
     <div class="logo">ArkiLogix</div>
 
     <div class="user-area">
-      <span id="userName">...</span>
-      <span id="planBadge" class="badge">BASIC</span>
+
+      <!-- PROFILE IMAGE -->
+      <div class="user-profile">
+        <img id="headerProfile" src="/logo.png">
+      </div>
+
+      <!-- USER INFO -->
+      <div class="user-info">
+        <span id="userName">...</span>
+        <span id="planBadge" class="badge">BASIC</span>
+      </div>
+
+      <!-- UPGRADE -->
       <button id="upgradeBtn" class="upgrade-btn">Upgrade</button>
+
     </div>
   </header>
 
   <!-- HERO -->
   <section class="hero">
 
-    <!-- CARD -->
+    <!-- CARD PREVIEW -->
     <div class="card-preview glass">
       <h3 id="cardName">Name</h3>
       <p id="cardPosition">Position</p>
@@ -47,35 +59,36 @@
   <!-- ANALYTICS -->
   <section id="analytics" class="analytics">
 
-  <div class="stat glass">
-    <h4>Views</h4>
-    <p id="views">0</p>
-    <div class="bar"><div id="viewsBar"></div></div>
-  </div>
+    <div class="stat glass">
+      <h4>Views</h4>
+      <p id="views">0</p>
+      <div class="bar"><div id="viewsBar"></div></div>
+    </div>
 
-  <div class="stat glass">
-    <h4>Taps</h4>
-    <p id="taps">0</p>
-    <div class="bar"><div id="tapsBar"></div></div>
-  </div>
+    <div class="stat glass">
+      <h4>Taps</h4>
+      <p id="taps">0</p>
+      <div class="bar"><div id="tapsBar"></div></div>
+    </div>
 
-  <div class="stat glass">
-    <h4>Clicks</h4>
-    <p id="clicks">0</p>
-    <div class="bar"><div id="clicksBar"></div></div>
-  </div>
-</section>
+    <div class="stat glass">
+      <h4>Clicks</h4>
+      <p id="clicks">0</p>
+      <div class="bar"><div id="clicksBar"></div></div>
+    </div>
+
+  </section>
 
   <!-- LINKS -->
   <section class="links-section glass">
-  
     <h3>Manage Links</h3>
-  
+
     <div id="linksContainer"></div>
-  
-    <button class="btn" onclick="addLink()">+ Add Link</button>
-    <button class="btn primary" onclick="saveLinks()">Save Links</button>
-  
+
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="btn" onclick="addLink()">+ Add Link</button>
+      <button class="btn primary" onclick="saveLinks()">Save Links</button>
+    </div>
   </section>
 
   <!-- THEMES -->
@@ -108,7 +121,7 @@
 
 <script type="module" src="client.js"></script>
 
-  <!-- EDIT PROFILE MODAL -->
+<!-- EDIT PROFILE MODAL -->
 <div id="editModal" class="modal">
   <div class="modal-content glass">
 
@@ -140,13 +153,11 @@
     <!-- ACTIONS -->
     <div class="modal-actions">
       <button class="btn secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn" onclick="saveProfile()">Save</button>
+      <button class="btn primary" onclick="saveProfile()">Save</button>
     </div>
 
   </div>
-
 </div>
 
 </body>
-  
 </html>
