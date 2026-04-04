@@ -206,9 +206,9 @@ button:active{
 
   <input id="email" placeholder="Email">
 
+    <!-- PASSWORD -->
     <div class="password-wrap">
       <input id="password" type="password" placeholder="Password" oninput="validatePasswords()">
-      <input id="confirmPassword" type="password" placeholder="Retype Password" oninput="validatePasswords()">
       <span class="toggle" onclick="togglePassword('password', this)">
         <svg viewBox="0 0 24 24" class="eye">
           <path d="M12 5C6 5 2 12 2 12s4 7 10 7 10-7 10-7-4-7-10-7z"/>
@@ -216,6 +216,19 @@ button:active{
         </svg>
       </span>
     </div>
+    
+    <!-- CONFIRM PASSWORD -->
+    <div class="password-wrap">
+      <input id="confirmPassword" type="password" placeholder="Retype Password" oninput="validatePasswords()">
+      <span class="toggle" onclick="togglePassword('confirmPassword', this)">
+        <svg viewBox="0 0 24 24" class="eye">
+          <path d="M12 5C6 5 2 12 2 12s4 7 10 7 10-7 10-7-4-7-10-7z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </span>
+    </div>
+  
+    <!-- PASSWORD ERROR -->
       <div id="passwordError" style="
       font-size:12px;
       color:#ef4444;
@@ -227,6 +240,7 @@ button:active{
     </div>
   <button id="signupBtn" onclick="signup()" disabled>Create Account</button>
 
+  <!-- EXISTING ACCOUNT -->
   <div class="link">
     Already have an account?
     <a href="login.html">Login</a>
