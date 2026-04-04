@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" type="image/png" href="../logo.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create Account • ArkiLogix</title>
@@ -155,8 +156,16 @@ button:active{
   <div class="sub">Start building your digital identity</div>
 
   <input id="email" placeholder="Email">
+  <div class="password-wrap">
   <input id="password" type="password" placeholder="Password">
+  <span class="toggle" onclick="togglePassword('password', this)">Show</span>
+</div>
 
+<div class="password-wrap">
+  <input id="confirmPassword" type="password" placeholder="Retype Password">
+  <span class="toggle" onclick="togglePassword('confirmPassword', this)">Show</span>
+</div>
+  
   <button onclick="signup()">Create Account</button>
 
   <div class="link">
