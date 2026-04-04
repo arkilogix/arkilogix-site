@@ -456,3 +456,37 @@ transition:0.5s;
 *{
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
+.plans{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.plan{
+  padding:15px;
+  border-radius:12px;
+  background: rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.plan h3{
+  margin-bottom:5px;
+}
+
+.plan p{
+  color:#C9A96E;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.plan ul{
+  font-size:13px;
+  opacity:0.8;
+  margin-bottom:10px;
+}
+
+.featured{
+  border:1px solid #C9A96E;
+  box-shadow:0 0 15px rgba(201,169,110,0.3);
+  transform: scale(1.02);
+}
