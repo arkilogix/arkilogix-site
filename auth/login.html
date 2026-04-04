@@ -290,7 +290,7 @@ async function login() {
     }
 
     const plan = data.plan || "basic";
-    window.location.href = `/view/${plan}.html?id=${user.uid}`;
+    window.location.href = "/client/index.html";
 
   } catch (err) {
     alert(err.message);
