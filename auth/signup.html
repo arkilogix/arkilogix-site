@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" type="image/png" href="../logo.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create Account • ArkiLogix</title>
@@ -100,6 +99,27 @@ input:focus{
   transform:scale(1.02);
 }
 
+/* PASSWORD WRAP */
+.password-wrap{
+  position:relative;
+  margin-bottom:14px;
+}
+
+.password-wrap input{
+  padding-right:60px;
+}
+
+.toggle{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:12px;
+  color:#C9A96E;
+  cursor:pointer;
+  user-select:none;
+}
+
 /* BUTTON */
 button{
   width:100%;
@@ -156,15 +176,16 @@ button:active{
   <div class="sub">Start building your digital identity</div>
 
   <input id="email" placeholder="Email">
-  <div class="password-wrap">
-  <input id="password" type="password" placeholder="Password">
-  <span class="toggle" onclick="togglePassword('password', this)">Show</span>
-</div>
 
-<div class="password-wrap">
-  <input id="confirmPassword" type="password" placeholder="Retype Password">
-  <span class="toggle" onclick="togglePassword('confirmPassword', this)">Show</span>
-</div>
+  <div class="password-wrap">
+    <input id="password" type="password" placeholder="Password">
+    <span class="toggle" onclick="togglePassword('password', this)">Show</span>
+  </div>
+
+  <div class="password-wrap">
+    <input id="confirmPassword" type="password" placeholder="Retype Password">
+    <span class="toggle" onclick="togglePassword('confirmPassword', this)">Show</span>
+  </div>
   
   <button onclick="signup()">Create Account</button>
 
@@ -194,15 +215,34 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// 🔥 TOGGLE PASSWORD
+function togglePassword(id, el){
+  const input = document.getElementById(id);
+
+  if(input.type === "password"){
+    input.type = "text";
+    el.innerText = "Hide";
+  } else {
+    input.type = "password";
+    el.innerText = "Show";
+  }
+}
+
+// 🔥 SIGNUP
 async function signup() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if(password !== confirmPassword){
+    alert("Passwords do not match");
+    return;
+  }
 
   try {
     const userCred = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
 
-    // ✅ CREATE CLIENT RECORD (IMPORTANT CHANGE)
     await setDoc(doc(db, "clients", user.uid), {
       email: email,
       plan: "basic",
