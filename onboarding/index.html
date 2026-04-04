@@ -259,6 +259,46 @@ button:active{transform:scale(.97);}
 @media(max-width:900px){
   .right{display:none;}
 }
+/* GLASS ICON BUTTON */
+.icon-btn,
+.social-icon{
+width:42px;
+height:42px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);
+
+border:1px solid rgba(255,255,255,0.3);
+
+box-shadow:
+0 4px 12px rgba(0,0,0,0.08),
+inset 0 1px 0 rgba(255,255,255,0.6);
+
+cursor:pointer;
+transition:.2s;
+}
+
+/* HOVER */
+.icon-btn:hover,
+.social-icon:hover{
+transform:translateY(-2px);
+background:rgba(255,255,255,0.25);
+}
+
+/* ICON STYLE */
+.icon{
+width:18px;
+height:18px;
+stroke:#374151;
+fill:none;
+stroke-width:2;
+}
+  
 </style>
 </head>
 
