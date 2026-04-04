@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="client.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">ArkiLogix</div>
+
+    <div class="user-area">
+      <span id="userName">...</span>
+      <span id="planBadge" class="badge">BASIC</span>
+      <button id="upgradeBtn" class="upgrade-btn">Upgrade</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <!-- CARD -->
+    <div class="card-preview glass">
+      <h3 id="cardName">Name</h3>
+      <p id="cardPosition">Position</p>
+      <div id="cardServices"></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions glass">
+      <button class="btn">Edit Profile</button>
+      <button class="btn">Share Card</button>
+      <button class="btn">Download vCard</button>
+    </div>
+
+  </section>
+
+  <!-- ANALYTICS -->
+  <section id="analytics" class="analytics">
+
+    <div class="stat glass locked">
+      <h4>Views</h4>
+      <p id="views">0</p>
+    </div>
+
+    <div class="stat glass locked">
+      <h4>Taps</h4>
+      <p id="taps">0</p>
+    </div>
+
+    <div class="stat glass locked">
+      <h4>Clicks</h4>
+      <p id="clicks">0</p>
+    </div>
+
+  </section>
+
+  <!-- LINKS -->
+  <section class="section glass">
+    <h3>Links</h3>
+    <button class="btn">Manage Links</button>
+  </section>
+
+  <!-- THEMES -->
+  <section class="themes">
+
+    <div class="theme glass active">
+      <h4>Basic</h4>
+      <p>Default</p>
+    </div>
+
+    <div class="theme glass locked" data-plan="pro">
+      <h4>Pro Theme</h4>
+      <p>Upgrade to Pro</p>
+    </div>
+
+    <div class="theme glass locked" data-plan="elite">
+      <h4>Elite Custom</h4>
+      <p>Upgrade to Elite</p>
+    </div>
+
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="section glass">
+    <h3>Settings</h3>
+    <button class="btn logout">Logout</button>
+  </section>
+
+</div>
+
+<script type="module" src="client.js"></script>
+</body>
+</html>
