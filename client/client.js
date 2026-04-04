@@ -1,3 +1,5 @@
+let currentData = {};
+let profileImageUrl = "";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth,
@@ -64,6 +66,10 @@ onAuthStateChanged(auth, async (user) => {
     const div = document.createElement("div");
     div.textContent = s;
     cardServices.appendChild(div);
+currentData = data;
+profileImageUrl = data.profileImage || "";
+
+document.getElementById("modalImage").src = profileImageUrl || "/logo.png";
   });
 
   /* STATS */
@@ -112,3 +118,133 @@ document.querySelector(".logout").addEventListener("click", () => {
     window.location.href = "/auth/login.html";
   });
 });
+document.querySelector(".actions .btn").addEventListener("click", openModal);
+
+function openModal(){
+  document.getElementById("editModal").style.display = "flex";
+
+  document.getElementById("editName").value = currentData.name || "";
+  document.getElementById("editPosition").value = currentData.position || "";
+
+  renderServicesEdit();
+  updateStrength();
+}
+
+function closeModal(){
+  document.getElementById("editModal").style.display = "none";
+}
+
+function renderServicesEdit(){
+  const container = document.getElementById("servicesEdit");
+  container.innerHTML = "";
+
+  const services = currentData.services || [];
+
+  services.forEach(s => {
+    addServiceField(s);
+  });
+
+  if(services.length === 0) addServiceField();
+}
+
+function addServiceField(value=""){
+  const container = document.getElementById("servicesEdit");
+
+  if(container.children.length >= 3){
+    alert("Basic plan allows max 3 services");
+    return;
+  }
+
+  const div = document.createElement("div");
+  div.className = "service-row";
+
+  div.innerHTML = `
+    <input value="${value}" oninput="updateStrength()">
+    <button class="remove" onclick="this.parentElement.remove();updateStrength()">x</button>
+  `;
+
+  container.appendChild(div);
+}
+window.addServiceField = addServiceField;
+
+document.getElementById("imageInput").addEventListener("change", uploadImage);
+
+async function uploadImage(e){
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "arkilogix_profile");
+  formData.append("folder", `arkilogix/clients/${auth.currentUser.uid}`);
+  formData.append("public_id", "profile");
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload`, {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+
+  profileImageUrl = data.secure_url;
+
+  document.getElementById("modalImage").src = profileImageUrl;
+
+  updateStrength();
+}
+
+function updateStrength(){
+  let score = 0;
+
+  const name = document.getElementById("editName").value;
+  const position = document.getElementById("editPosition").value;
+
+  const services = [...document.querySelectorAll("#servicesEdit input")]
+    .map(i => i.value)
+    .filter(v => v);
+
+  if(name) score += 25;
+  if(position) score += 25;
+  if(services.length >= 3) score += 25;
+  if(profileImageUrl) score += 25;
+
+  document.getElementById("strengthValue").textContent = score + "%";
+}
+window.updateStrength = updateStrength;
+window.closeModal = closeModal;
+
+import { updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+async function saveProfile(){
+
+  const name = document.getElementById("editName").value;
+  const position = document.getElementById("editPosition").value;
+
+  const services = [...document.querySelectorAll("#servicesEdit input")]
+    .map(i => i.value)
+    .filter(v => v);
+
+  const ref = doc(db, "clients", auth.currentUser.uid);
+
+  await updateDoc(ref, {
+    name,
+    position,
+    services,
+    profileImage: profileImageUrl,
+    updatedAt: new Date()
+  });
+
+  /* UPDATE UI */
+  cardName.textContent = name;
+  cardPosition.textContent = position;
+
+  cardServices.innerHTML = "";
+  services.forEach(s => {
+    const div = document.createElement("div");
+    div.textContent = s;
+    cardServices.appendChild(div);
+  });
+
+  closeModal();
+}
+window.saveProfile = saveProfile;
