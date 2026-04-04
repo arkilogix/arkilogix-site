@@ -605,9 +605,22 @@ function updatePreview(){
   try{
 
     await setDoc(doc(db, "clients", user.uid), {
-      name: name,
-      position: position,
-      services: services,
+      name: name || "",
+      position: position || "",
+      services: services || [],
+      plan: "basic",
+    
+      stats: {
+        views: 0,
+        taps: 0,
+        clicks: 0
+      },
+    
+      links: [],
+    
+      theme: "default",
+    
+      createdAt: new Date(),
       updatedAt: new Date()
     }, { merge: true });
 
