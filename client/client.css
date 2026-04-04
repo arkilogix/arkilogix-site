@@ -142,3 +142,108 @@ margin-bottom:20px;
 background:#444;
 color:#fff;
 }
+
+/* MODAL */
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.6);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:1000;
+}
+
+.modal-content{
+width:400px;
+max-width:90%;
+padding:25px;
+border-radius:16px;
+}
+
+.modal input{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.1);
+background:rgba(255,255,255,0.05);
+color:#fff;
+}
+
+/* PROFILE IMAGE */
+.profile-upload{
+width:90px;
+height:90px;
+margin:auto;
+border-radius:50%;
+overflow:hidden;
+cursor:pointer;
+margin-bottom:15px;
+position:relative;
+}
+
+.profile-upload img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.upload-label{
+position:absolute;
+bottom:0;
+left:0;
+right:0;
+background:rgba(0,0,0,0.6);
+font-size:11px;
+text-align:center;
+}
+
+/* SERVICES */
+.service-row{
+display:flex;
+gap:8px;
+margin-bottom:8px;
+}
+
+.service-row input{
+flex:1;
+}
+
+.remove{
+background:#444;
+border:none;
+color:#fff;
+padding:0 10px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.add-service-btn{
+margin-top:5px;
+background:none;
+border:1px dashed rgba(255,255,255,0.2);
+padding:8px;
+border-radius:10px;
+color:#aaa;
+cursor:pointer;
+}
+
+/* STRENGTH */
+.strength{
+margin:15px 0;
+font-size:14px;
+color:#C9A96E;
+}
+
+/* ACTIONS */
+.modal-actions{
+display:flex;
+justify-content:space-between;
+margin-top:10px;
+}
+
+.secondary{
+background:#444;
+color:#fff;
+}
