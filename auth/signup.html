@@ -189,6 +189,27 @@ button:active{
   box-shadow:none;
   transform:none;
 }
+
+  .feedback{
+  font-size:12px;
+  margin-top:-8px;
+  margin-bottom:12px;
+  min-height:16px;
+  opacity:0;
+  transition:.25s;
+}
+
+.feedback.show{
+  opacity:1;
+}
+
+.feedback.error{
+  color:#ef4444;
+}
+
+.feedback.success{
+  color:#22c55e;
+}
 </style>
 </head>
 
@@ -229,15 +250,7 @@ button:active{
     </div>
   
     <!-- PASSWORD ERROR -->
-      <div id="passwordError" style="
-      font-size:12px;
-      color:#ef4444;
-      margin-top:-8px;
-      margin-bottom:10px;
-      display:none;
-    ">
-      Passwords do not match
-    </div>
+  <div id="passwordFeedback" class="feedback"></div>
   <button id="signupBtn" onclick="signup()" disabled>Create Account</button>
 
   <!-- EXISTING ACCOUNT -->
@@ -332,22 +345,30 @@ function validatePasswords(){
   const password = document.getElementById("password").value;
   const confirm = document.getElementById("confirmPassword").value;
   const btn = document.getElementById("signupBtn");
-  const error = document.getElementById("passwordError");
+  const feedback = document.getElementById("passwordFeedback");
 
+  // nothing typed
   if(!password && !confirm){
+    feedback.className = "feedback";
+    feedback.innerText = "";
     btn.disabled = true;
-    error.style.display = "none";
     return;
   }
 
+  // match
   if(password === confirm){
+    feedback.className = "feedback success show";
+    feedback.innerText = "Passwords match";
     btn.disabled = false;
-    error.style.display = "none";
-  } else {
+  } 
+  // mismatch
+  else{
+    feedback.className = "feedback error show";
+    feedback.innerText = "Passwords do not match";
     btn.disabled = true;
-    error.style.display = "block";
   }
 }
+  
   window.signup = signup;
   window.togglePassword = togglePassword;
   window.validatePasswords = validatePasswords;
