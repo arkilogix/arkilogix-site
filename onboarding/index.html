@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Setup Your Card</title>
-
+<link rel="icon" type="image/png" href="../logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
@@ -154,11 +154,32 @@ button:active{transform:scale(.97);}
 /* SERVICES */
 .service-item{display:flex;gap:8px;margin-bottom:10px;}
 .service-item input{flex:1;}
+/* SERVICE REMOVE BUTTON (CIRCLE) */
 .remove-btn{
-  background:rgba(255,255,255,0.05);
-  padding:0 12px;
-  border-radius:10px;
-  cursor:pointer;
+width:28px;
+height:28px;
+border-radius:50%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.12);
+
+color:#9ca3af;
+font-size:14px;
+cursor:pointer;
+
+transition:.2s;
+}
+
+/* HOVER */
+.remove-btn:hover{
+background:#ef4444;
+color:#fff;
+border-color:#ef4444;
+transform:scale(1.1);
 }
 
 .add-service-btn{
@@ -397,6 +418,9 @@ transform:translateY(-2px);
 <h1>How can people reach you?</h1>
 <input id="email" placeholder="Email">
 <input id="phone" placeholder="Phone">
+<input id="facebook" placeholder="Facebook Profile Link (optional)" oninput="updatePreview()">
+<input id="instagram" placeholder="Instagram Profile Link (optional)" oninput="updatePreview()">
+  
 <div class="actions">
 <button class="btn-secondary" onclick="prevStep()">Back</button>
 <button class="btn-primary" onclick="nextStep()">Next</button>
@@ -479,7 +503,7 @@ transform:translateY(-2px);
 </div>
 
 <!-- SOCIALS -->
-<div class="socials">
+<div class="socials" id="previewSocials"></div>
 
   <!-- FACEBOOK -->
   <div class="icon-btn" onclick="fakeAction()">
@@ -585,25 +609,48 @@ document.getElementById("servicesContainer").appendChild(div);
 }
 
 function updatePreview(){
-  const nameInput = document.getElementById("name");
-  const positionInput = document.getElementById("position");
-  const previewName = document.getElementById("previewName");
-  const previewPosition = document.getElementById("previewPosition");
-  const previewServices = document.getElementById("previewServices");
 
-  previewName.innerText = nameInput.value || "Your Name";
-  previewPosition.innerText = positionInput.value || "Your Position";
+// NAME + POSITION
+document.getElementById("previewName").innerText = name.value || "Your Name";
+document.getElementById("previewPosition").innerText = position.value || "Your Position";
 
-  previewServices.innerHTML = "";
+// SERVICES
+previewServices.innerHTML="";
+document.querySelectorAll("#servicesContainer input").forEach(i=>{
+if(i.value){
+const d=document.createElement("div");
+d.className="preview-service";
+d.innerText=i.value;
+previewServices.appendChild(d);
+}
+});
 
-  document.querySelectorAll("#servicesContainer input").forEach(i=>{
-    if(i.value){
-      const d=document.createElement("div");
-      d.className="preview-service";
-      d.innerText=i.value;
-      previewServices.appendChild(d);
-    }
-  });
+// SOCIALS
+const socials = document.getElementById("previewSocials");
+socials.innerHTML = "";
+
+if(document.getElementById("facebook").value){
+socials.innerHTML += `
+<div class="icon-btn" onclick="fakeAction()">
+<svg class="icon" viewBox="0 0 24 24">
+<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+</svg>
+</div>
+`;
+}
+
+if(document.getElementById("instagram").value){
+socials.innerHTML += `
+<div class="icon-btn" onclick="fakeAction()">
+<svg class="icon" viewBox="0 0 24 24">
+<rect x="2" y="2" width="20" height="20" rx="5"/>
+<circle cx="12" cy="12" r="4"/>
+<circle cx="17.5" cy="6.5" r="1"/>
+</svg>
+</div>
+`;
+}
+
 }
 
   async function submitForm(){
