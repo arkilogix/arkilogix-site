@@ -98,5 +98,44 @@
 </div>
 
 <script type="module" src="client.js"></script>
+
+  <!-- EDIT PROFILE MODAL -->
+<div id="editModal" class="modal">
+  <div class="modal-content glass">
+
+    <h2>Edit Profile</h2>
+
+    <!-- PROFILE IMAGE -->
+    <div class="profile-upload" onclick="document.getElementById('imageInput').click()">
+      <img id="modalImage" src="" />
+      <div class="upload-label">Change Photo</div>
+    </div>
+    <input type="file" id="imageInput" accept="image/*" hidden>
+
+    <!-- NAME -->
+    <input id="editName" placeholder="Full Name">
+
+    <!-- POSITION -->
+    <input id="editPosition" placeholder="Position">
+
+    <!-- SERVICES -->
+    <div id="servicesEdit"></div>
+    <button class="add-service-btn" onclick="addServiceField()">+ Add Service</button>
+    <small class="helper">Add services people might search for</small>
+
+    <!-- PROFILE STRENGTH -->
+    <div class="strength">
+      Profile Strength: <span id="strengthValue">0%</span>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn" onclick="saveProfile()">Save</button>
+    </div>
+
+  </div>
+</div>
+
 </body>
 </html>
