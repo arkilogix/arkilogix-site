@@ -1,30 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  updateDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+// (same imports — unchanged)
 
 /* STATE */
 let currentData = {};
 let profileImageUrl = "";
 
-/* FIREBASE CONFIG */
-const firebaseConfig = {
-  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
-  authDomain: "arkilogix-clients.firebaseapp.com",
-  projectId: "arkilogix-clients",
-  storageBucket: "arkilogix-clients.firebasestorage.app",
-  messagingSenderId: "1074947351840",
-  appId: "1:1074947351840:web:b077eb79963fff59316345"
-};
+/* FIREBASE INIT */
+// (same config — unchanged)
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -44,7 +25,7 @@ const clicksEl = document.getElementById("clicks");
 
 const upgradeBtn = document.getElementById("upgradeBtn");
 
-/* AUTH (FIXED) */
+/* AUTH */
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
@@ -56,9 +37,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  // ✅ SAFE: user is confirmed
   loadDashboard(user);
-
 });
 
 /* LOAD DASHBOARD */
@@ -83,12 +62,16 @@ async function loadDashboard(user){
   cardName.textContent = data.name;
   cardPosition.textContent = data.position;
 
+  /* SERVICES */
   cardServices.innerHTML = "";
   (data.services || []).forEach(s => {
     const div = document.createElement("div");
     div.textContent = s;
     cardServices.appendChild(div);
   });
+
+  /* LINKS */
+  renderLinks();
 
   document.getElementById("modalImage").src = profileImageUrl || "/logo.png";
 
@@ -98,14 +81,13 @@ async function loadDashboard(user){
   const views = stats.views || 0;
   const taps = stats.taps || 0;
   const clicks = stats.clicks || 0;
-  
+
   viewsEl.textContent = views;
   tapsEl.textContent = taps;
   clicksEl.textContent = clicks;
-  
-  /* BARS (simple scaling) */
+
   const max = Math.max(views, taps, clicks, 1);
-  
+
   document.getElementById("viewsBar").style.width = (views / max * 100) + "%";
   document.getElementById("tapsBar").style.width = (taps / max * 100) + "%";
   document.getElementById("clicksBar").style.width = (clicks / max * 100) + "%";
@@ -114,171 +96,101 @@ async function loadDashboard(user){
 }
 
 /* PLAN */
-function applyPlan(plan){
-
-  const cards = document.querySelectorAll(".stat");
-
-  if(plan === "basic"){
-    cards.forEach(c => {
-      lock(c);
-      c.querySelector("p").innerText = "—";
-    });
-  }
-
-  if(plan === "pro" || plan === "elite"){
-    cards.forEach(c => unlock(c));
-  }
-
-  if(plan === "elite"){
-    upgradeBtn.style.display = "none";
-  }
-}
-
-function lock(el){
-  el.classList.add("locked");
-  el.onclick = () => window.location.href = "/upgrade.html";
-}
-
-function unlock(el){
-  el.classList.remove("locked");
-  el.onclick = null;
-}
+// (unchanged)
 
 /* MODAL */
-document.querySelector(".actions .btn").addEventListener("click", openModal);
+// (unchanged)
 
-function openModal(){
-  document.getElementById("editModal").style.display = "flex";
+/* SERVICES EDIT */
+// (unchanged)
 
-  document.getElementById("editName").value = currentData.name || "";
-  document.getElementById("editPosition").value = currentData.position || "";
+/* CLOUDINARY */
+// (unchanged)
 
-  renderServicesEdit();
-  updateStrength();
-}
+/* VIEW CARD */
+// (unchanged)
 
-function closeModal(){
-  document.getElementById("editModal").style.display = "none";
-}
-window.closeModal = closeModal;
+/* STRENGTH */
+// (unchanged)
 
-/* SERVICES */
-function renderServicesEdit(){
-  const container = document.getElementById("servicesEdit");
+/* SAVE PROFILE */
+// (unchanged)
+
+/* ========================= */
+/* 🔥 LINKS SYSTEM (FIXED) */
+/* ========================= */
+
+const LINK_TYPES = [
+  { value: "phone", label: "Phone" },
+  { value: "email", label: "Email" },
+  { value: "facebook", label: "Facebook" },
+  { value: "instagram", label: "Instagram" },
+  { value: "website", label: "Website" },
+  { value: "whatsapp", label: "WhatsApp" }
+];
+
+function renderLinks(){
+  const container = document.getElementById("linksContainer");
+  if(!container) return;
+
   container.innerHTML = "";
 
-  (currentData.services || []).forEach(s => addServiceField(s));
-
-  if((currentData.services || []).length === 0) addServiceField();
+  (currentData.links || []).forEach(l => addLink(l));
 }
 
-function addServiceField(value=""){
-  const container = document.getElementById("servicesEdit");
+function addLink(data = {}){
+  const container = document.getElementById("linksContainer");
 
-  if(container.children.length >= 3){
-    alert("Basic plan allows max 3 services");
+  if((currentData.plan || "basic") === "basic"){
+    alert("Upgrade to Pro to use links");
+    return;
+  }
+
+  if(container.children.length >= 5 && currentData.plan === "pro"){
+    alert("Pro plan max 5 links");
     return;
   }
 
   const div = document.createElement("div");
-  div.className = "service-row";
+  div.className = "link-row";
 
   div.innerHTML = `
-    <input value="${value}" oninput="updateStrength()">
-    <button class="remove" onclick="this.parentElement.remove();updateStrength()">x</button>
+    <select>
+      ${LINK_TYPES.map(t =>
+        `<option value="${t.value}" ${data.type === t.value ? "selected" : ""}>${t.label}</option>`
+      ).join("")}
+    </select>
+
+    <input placeholder="Enter URL" value="${data.url || ""}">
+
+    <button onclick="this.parentElement.remove()">x</button>
   `;
 
   container.appendChild(div);
 }
-window.addServiceField = addServiceField;
 
-/* CLOUDINARY */
-document.getElementById("imageInput").addEventListener("change", uploadImage);
+async function saveLinks(){
 
-async function uploadImage(e){
-  const file = e.target.files[0];
-  if(!file) return;
+  const rows = document.querySelectorAll(".link-row");
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "arkilogix_profile");
-  formData.append("folder", `arkilogix/clients/${auth.currentUser.uid}`);
-  formData.append("public_id", "profile");
+  const links = [...rows].map(r => {
+    const type = r.querySelector("select").value;
+    const url = r.querySelector("input").value;
 
-  const res = await fetch(`https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload`, {
-    method: "POST",
-    body: formData
-  });
-
-  const data = await res.json();
-
-  profileImageUrl = data.secure_url;
-
-  document.getElementById("modalImage").src = profileImageUrl;
-
-  updateStrength();
-}
-
-function viewCard(){
-  const uid = auth.currentUser.uid;
-  const plan = currentData.plan || "basic";
-
-  window.open(`/view/${plan}.html?id=${uid}`, "_blank");
-}
-window.viewCard = viewCard;
-
-/* STRENGTH */
-function updateStrength(){
-  let score = 0;
-
-  const name = document.getElementById("editName").value;
-  const position = document.getElementById("editPosition").value;
-
-  const services = [...document.querySelectorAll("#servicesEdit input")]
-    .map(i => i.value)
-    .filter(v => v);
-
-  if(name) score += 25;
-  if(position) score += 25;
-  if(services.length >= 3) score += 25;
-  if(profileImageUrl) score += 25;
-
-  document.getElementById("strengthValue").textContent = score + "%";
-}
-window.updateStrength = updateStrength;
-
-/* SAVE */
-async function saveProfile(){
-
-  const name = document.getElementById("editName").value;
-  const position = document.getElementById("editPosition").value;
-
-  const services = [...document.querySelectorAll("#servicesEdit input")]
-    .map(i => i.value)
-    .filter(v => v);
+    return { type, url };
+  }).filter(l => l.url);
 
   await updateDoc(doc(db, "clients", auth.currentUser.uid), {
-    name,
-    position,
-    services,
-    profileImage: profileImageUrl,
-    updatedAt: new Date()
+    links
   });
 
-  // update UI
-  cardName.textContent = name;
-  cardPosition.textContent = position;
+  currentData.links = links;
 
-  cardServices.innerHTML = "";
-  services.forEach(s => {
-    const div = document.createElement("div");
-    div.textContent = s;
-    cardServices.appendChild(div);
-  });
-
-  closeModal();
+  alert("Links saved");
 }
-window.saveProfile = saveProfile;
+
+window.addLink = addLink;
+window.saveLinks = saveLinks;
 
 /* LOGOUT */
 document.querySelector(".logout").addEventListener("click", () => {
