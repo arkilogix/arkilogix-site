@@ -64,13 +64,18 @@
     <p id="clicks">0</p>
     <div class="bar"><div id="clicksBar"></div></div>
   </div>
-
 </section>
 
   <!-- LINKS -->
-  <section class="section glass">
-    <h3>Links</h3>
-    <button class="btn">Manage Links</button>
+  <section class="links-section glass">
+  
+    <h3>Manage Links</h3>
+  
+    <div id="linksContainer"></div>
+  
+    <button class="btn" onclick="addLink()">+ Add Link</button>
+    <button class="btn primary" onclick="saveLinks()">Save Links</button>
+  
   </section>
 
   <!-- THEMES -->
@@ -139,7 +144,9 @@
     </div>
 
   </div>
+
 </div>
 
 </body>
+  
 </html>
