@@ -263,3 +263,196 @@ background:#C9A96E;
 width:0%;
 transition:0.5s;
 }
+
+/* =========================
+   PREMIUM UI UPGRADE
+========================= */
+
+/* GLOBAL DEPTH */
+.glass{
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  transition: 0.25s ease;
+}
+
+.glass:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+}
+
+/* HERO LAYOUT IMPROVEMENT */
+.hero{
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 25px;
+}
+
+/* CARD = PRODUCT FEEL */
+.card-preview{
+  text-align: left;
+  padding: 30px;
+}
+
+#cardName{
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+#cardPosition{
+  opacity: 0.6;
+  margin-bottom: 12px;
+}
+
+/* SERVICES PILLS */
+#cardServices span{
+  display: inline-block;
+  background: rgba(255,255,255,0.06);
+  padding: 6px 10px;
+  border-radius: 999px;
+  margin: 4px 6px 0 0;
+  font-size: 12px;
+}
+
+/* ACTION PANEL */
+.actions{
+  padding: 20px;
+}
+
+/* BUTTON SYSTEM (STRIPE STYLE) */
+.btn{
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border-radius: 10px;
+  padding: 11px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.btn:hover{
+  background: rgba(255,255,255,0.12);
+}
+
+/* PRIMARY BUTTON */
+.btn.primary{
+  background: linear-gradient(135deg, #C9A96E, #E7C98B);
+  color: #000;
+  font-weight: 600;
+}
+
+/* SECONDARY */
+.secondary{
+  background: rgba(255,255,255,0.08);
+}
+
+/* UPGRADE BUTTON = PREMIUM */
+.upgrade-btn{
+  background: linear-gradient(135deg, #FFD700, #FFB800);
+  border: none;
+  color: #000;
+  font-weight: 600;
+  padding: 7px 14px;
+}
+
+/* ANALYTICS = SAAS STYLE */
+.stat{
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.stat h4{
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.stat p{
+  font-size: 26px;
+  font-weight: 600;
+  margin: 6px 0;
+}
+
+/* BARS GLOW */
+.bar{
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+}
+
+.bar div{
+  background: linear-gradient(90deg, #C9A96E, #E7C98B);
+  box-shadow: 0 0 10px rgba(201,169,110,0.5);
+}
+
+/* LINKS SECTION */
+.links-section{
+  padding: 22px;
+}
+
+#linksContainer{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+/* THEMES = CLICKABLE CARDS */
+.theme{
+  padding: 18px;
+  border-radius: 14px;
+  transition: 0.25s;
+  cursor: pointer;
+}
+
+.theme:hover{
+  transform: translateY(-3px);
+}
+
+.theme.active{
+  border: 1px solid #C9A96E;
+  box-shadow: 0 0 12px rgba(201,169,110,0.4);
+}
+
+.locked{
+  opacity: 0.4;
+}
+
+/* HEADER POLISH */
+.logo{
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+/* MODAL PREMIUM */
+.modal-content{
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+.modal input:focus{
+  outline: none;
+  border: 1px solid #C9A96E;
+}
+
+/* PROFILE IMAGE HOVER */
+.profile-upload:hover{
+  transform: scale(1.05);
+}
+
+/* SERVICE INPUT */
+.service-row input{
+  background: rgba(255,255,255,0.04);
+}
+
+/* LOGOUT BUTTON */
+.logout{
+  background: rgba(255,0,0,0.1);
+}
+
+.logout:hover{
+  background: rgba(255,0,0,0.2);
+}
+
+/* SMOOTH EVERYTHING */
+*{
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
