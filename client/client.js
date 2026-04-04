@@ -211,6 +211,7 @@ function viewCard(){
 
   window.open(`/view/${plan}.html?id=${uid}`, "_blank");
 }
+window.viewCard = viewCard;
 
 /* STRENGTH */
 function updateStrength(){
