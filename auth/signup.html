@@ -291,7 +291,6 @@ async function signup() {
     return;
   }
 
-  // 🔄 START LOADING
   btn.disabled = true;
   const originalText = btn.innerText;
   btn.innerText = "Creating...";
@@ -307,21 +306,13 @@ async function signup() {
       createdAt: new Date()
     });
 
+    // ✅ ONLY REDIRECT HERE
     window.location.href = "../onboarding/index.html";
 
   } catch (err) {
     alert(err.message);
-
-    // ❌ RESET BUTTON ON ERROR
     btn.disabled = false;
     btn.innerText = originalText;
-  }
-}
-
-   
-
-  } catch (err) {
-    alert(err.message);
   }
 }
 
@@ -349,7 +340,6 @@ function validatePasswords(){
   window.signup = signup;
   window.togglePassword = togglePassword;
   window.validatePasswords = validatePasswords;
-  window.location.href = "../onboarding/index.html";
 </script>
 
 </body>
