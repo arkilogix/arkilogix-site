@@ -95,9 +95,20 @@ async function loadDashboard(user){
   /* STATS */
   const stats = data.stats || {};
 
-  viewsEl.textContent = stats.views || 0;
-  tapsEl.textContent = stats.taps || 0;
-  clicksEl.textContent = stats.clicks || 0;
+  const views = stats.views || 0;
+  const taps = stats.taps || 0;
+  const clicks = stats.clicks || 0;
+  
+  viewsEl.textContent = views;
+  tapsEl.textContent = taps;
+  clicksEl.textContent = clicks;
+  
+  /* BARS (simple scaling) */
+  const max = Math.max(views, taps, clicks, 1);
+  
+  document.getElementById("viewsBar").style.width = (views / max * 100) + "%";
+  document.getElementById("tapsBar").style.width = (taps / max * 100) + "%";
+  document.getElementById("clicksBar").style.width = (clicks / max * 100) + "%";
 
   applyPlan(data.plan || "basic");
 }
@@ -108,7 +119,10 @@ function applyPlan(plan){
   const cards = document.querySelectorAll(".stat");
 
   if(plan === "basic"){
-    cards.forEach(c => lock(c));
+    cards.forEach(c => {
+      lock(c);
+      c.querySelector("p").innerText = "—";
+    });
   }
 
   if(plan === "pro" || plan === "elite"){
