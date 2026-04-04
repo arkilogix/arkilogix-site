@@ -181,6 +181,32 @@ font-size:11px;
 color:#555;
 letter-spacing:0.5px;
 }
+
+  /* SERVICES HEADER */
+.services-header{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+margin-top:25px;
+margin-bottom:10px;
+}
+
+.services-header p{
+font-size:10px;
+letter-spacing:1.5px;
+color:#777;
+white-space:nowrap;
+}
+
+/* DIVIDER */
+.divider{
+height:1px;
+width:75px; /* controls length */
+background:rgba(0,0,0,0.15);
+flex-shrink:0;
+}
+
 </style>
 
 </head>
@@ -257,9 +283,18 @@ a1 1 0 0 1 1-1h3z"/>
 Save Contact
 </div>
 
+<!-- SERVICES HEADER -->
+<div class="services-header">
+  <div class="divider"></div>
+  <p>SERVICES OFFERED</p>
+  <div class="divider"></div>
+</div>
+
 <!-- SERVICES -->
 <div class="services" id="services"></div>
+  
 <!-- BRANDING -->
+  <div class="divider"></div>
   <a href="https://arkilogix.com" target="_blank" class="branding">
   <img src="../logo.png" alt="Arkilogix Logo">
   <p>Powered by <strong>Arkilogix</strong></p>
