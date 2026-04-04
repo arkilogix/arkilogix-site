@@ -1,15 +1,35 @@
-// (same imports — unchanged)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
-/* STATE */
-let currentData = {};
-let profileImageUrl = "";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-/* FIREBASE INIT */
-// (same config — unchanged)
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
+  authDomain: "arkilogix-clients.firebaseapp.com",
+  projectId: "arkilogix-clients",
+  storageBucket: "arkilogix-clients.firebasestorage.app",
+  messagingSenderId: "1074947351840",
+  appId: "1:1074947351840:web:b077eb79963fff59316345"
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+/* STATE */
+let currentData = {};
+let profileImageUrl = "";
 
 /* ELEMENTS */
 const userName = document.getElementById("userName");
@@ -55,14 +75,14 @@ async function loadDashboard(user){
   currentData = data;
   profileImageUrl = data.profileImage || "";
 
-  /* UI */
+  /* HEADER */
   userName.textContent = data.name || "User";
   planBadge.textContent = (data.plan || "basic").toUpperCase();
 
-  cardName.textContent = data.name;
-  cardPosition.textContent = data.position;
+  /* CARD */
+  cardName.textContent = data.name || "Name";
+  cardPosition.textContent = data.position || "Position";
 
-  /* SERVICES */
   cardServices.innerHTML = "";
   (data.services || []).forEach(s => {
     const div = document.createElement("div");
@@ -70,12 +90,13 @@ async function loadDashboard(user){
     cardServices.appendChild(div);
   });
 
-  /* LINKS */
-  renderLinks();
+  /* PROFILE IMAGE */
+  const modalImg = document.getElementById("modalImage");
+  if(modalImg){
+    modalImg.src = profileImageUrl || "/logo.png";
+  }
 
-  document.getElementById("modalImage").src = profileImageUrl || "/logo.png";
-
-  /* STATS */
+  /* ANALYTICS */
   const stats = data.stats || {};
 
   const views = stats.views || 0;
@@ -92,32 +113,132 @@ async function loadDashboard(user){
   document.getElementById("tapsBar").style.width = (taps / max * 100) + "%";
   document.getElementById("clicksBar").style.width = (clicks / max * 100) + "%";
 
+  /* LINKS */
+  renderLinks();
+
   applyPlan(data.plan || "basic");
 }
 
 /* PLAN */
-// (unchanged)
+function applyPlan(plan){
 
-/* MODAL */
-// (unchanged)
+  const cards = document.querySelectorAll(".stat");
 
-/* SERVICES EDIT */
-// (unchanged)
+  if(plan === "basic"){
+    cards.forEach(c => {
+      c.classList.add("locked");
+      c.querySelector("p").innerText = "—";
+      c.onclick = () => window.location.href = "/upgrade.html";
+    });
+  }
 
-/* CLOUDINARY */
-// (unchanged)
+  if(plan === "pro" || plan === "elite"){
+    cards.forEach(c => {
+      c.classList.remove("locked");
+      c.onclick = null;
+    });
+  }
 
-/* VIEW CARD */
-// (unchanged)
-
-/* STRENGTH */
-// (unchanged)
-
-/* SAVE PROFILE */
-// (unchanged)
+  if(plan === "elite"){
+    upgradeBtn.style.display = "none";
+  }
+}
 
 /* ========================= */
-/* 🔥 LINKS SYSTEM (FIXED) */
+/* MODAL */
+/* ========================= */
+
+document.querySelector(".btn").addEventListener("click", openModal);
+
+function openModal(){
+  document.getElementById("editModal").style.display = "flex";
+
+  document.getElementById("editName").value = currentData.name || "";
+  document.getElementById("editPosition").value = currentData.position || "";
+
+  renderServicesEdit();
+  updateStrength();
+}
+
+function closeModal(){
+  document.getElementById("editModal").style.display = "none";
+}
+
+window.closeModal = closeModal;
+
+/* ========================= */
+/* SERVICES EDIT */
+/* ========================= */
+
+function renderServicesEdit(){
+  const container = document.getElementById("servicesEdit");
+  container.innerHTML = "";
+
+  (currentData.services || []).forEach(s => addServiceField(s));
+
+  if((currentData.services || []).length === 0){
+    addServiceField();
+  }
+}
+
+function addServiceField(value=""){
+  const container = document.getElementById("servicesEdit");
+
+  const div = document.createElement("div");
+  div.className = "service-row";
+
+  div.innerHTML = `
+    <input value="${value}" oninput="updateStrength()">
+    <button class="remove" onclick="this.parentElement.remove();updateStrength()">x</button>
+  `;
+
+  container.appendChild(div);
+}
+
+window.addServiceField = addServiceField;
+
+/* ========================= */
+/* SAVE PROFILE */
+/* ========================= */
+
+async function saveProfile(){
+
+  const name = document.getElementById("editName").value;
+  const position = document.getElementById("editPosition").value;
+
+  const services = [...document.querySelectorAll("#servicesEdit input")]
+    .map(i => i.value)
+    .filter(v => v);
+
+  await updateDoc(doc(db, "clients", auth.currentUser.uid), {
+    name,
+    position,
+    services,
+    profileImage: profileImageUrl,
+    updatedAt: new Date()
+  });
+
+  currentData.name = name;
+  currentData.position = position;
+  currentData.services = services;
+
+  cardName.textContent = name;
+  cardPosition.textContent = position;
+
+  cardServices.innerHTML = "";
+  services.forEach(s => {
+    const div = document.createElement("div");
+    div.textContent = s;
+    cardServices.appendChild(div);
+  });
+
+  closeModal();
+}
+
+window.saveProfile = saveProfile;
+
+/* ========================= */
+/* LINKS SYSTEM */
 /* ========================= */
 
 const LINK_TYPES = [
@@ -192,7 +313,47 @@ async function saveLinks(){
 window.addLink = addLink;
 window.saveLinks = saveLinks;
 
+/* ========================= */
+/* VIEW CARD */
+/* ========================= */
+
+function viewCard(){
+  const uid = auth.currentUser.uid;
+  const plan = currentData.plan || "basic";
+
+  window.open(`/view/${plan}.html?id=${uid}`, "_blank");
+}
+
+window.viewCard = viewCard;
+
+/* ========================= */
+/* STRENGTH */
+/* ========================= */
+
+function updateStrength(){
+  let score = 0;
+
+  const name = document.getElementById("editName").value;
+  const position = document.getElementById("editPosition").value;
+
+  const services = [...document.querySelectorAll("#servicesEdit input")]
+    .map(i => i.value)
+    .filter(v => v);
+
+  if(name) score += 25;
+  if(position) score += 25;
+  if(services.length >= 3) score += 25;
+  if(profileImageUrl) score += 25;
+
+  document.getElementById("strengthValue").textContent = score + "%";
+}
+
+window.updateStrength = updateStrength;
+
+/* ========================= */
 /* LOGOUT */
+/* ========================= */
+
 document.querySelector(".logout").addEventListener("click", () => {
   signOut(auth).then(() => {
     window.location.href = "/auth/login.html";
