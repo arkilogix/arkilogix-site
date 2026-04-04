@@ -471,6 +471,11 @@ document.addEventListener("keydown",(e)=>{
 
 addService();
   
+  document.getElementById("name").addEventListener("input", updatePreview);
+  document.getElementById("position").addEventListener("input", updatePreview);
+  
+updatePreview();
+  
   function handleImageUpload(event){
   const file = event.target.files[0];
   if(!file) return;
