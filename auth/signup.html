@@ -249,6 +249,27 @@ const db = getFirestore(app);
 
 // 🔥 TOGGLE PASSWORD
 function togglePassword(id, el){
+  const input = document.getElementById(id);
+  const svg = el.querySelector("svg");
+
+  if(input.type === "password"){
+    input.type = "text";
+
+    svg.innerHTML = `
+      <path d="M3 3l18 18"/>
+      <path d="M10.5 10.5a3 3 0 004 4"/>
+      <path d="M2 12s4-7 10-7c2.2 0 4.2.8 5.8 2"/>
+      <path d="M22 12s-4 7-10 7c-2.2 0-4.2-.8-5.8-2"/>
+    `;
+  } else {
+    input.type = "password";
+
+    svg.innerHTML = `
+      <path d="M12 5C6 5 2 12 2 12s4 7 10 7 10-7 10-7-4-7-10-7z"/>
+      <circle cx="12" cy="12" r="3"/>
+    `;
+  }
+}
 
 // 🔥 SIGNUP
 async function signup() {
