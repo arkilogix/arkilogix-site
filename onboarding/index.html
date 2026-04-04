@@ -183,7 +183,7 @@ button:active{transform:scale(.97);}
 
 /* PREVIEW */
 .preview-card{
-  width:340px;
+  width:360px;
   padding:40px 24px;
   border-radius:22px;
   text-align:center;
@@ -259,47 +259,62 @@ button:active{transform:scale(.97);}
 @media(max-width:900px){
   .right{display:none;}
 }
-/* CENTER EVERYTHING */
+/* ===== PREMIUM ICON SYSTEM ===== */
+
 .actions-preview{
 display:flex;
 justify-content:center;
-gap:12px;
-margin:18px 0 10px;
+gap:14px;
+margin:24px 0 14px;
 flex-wrap:wrap;
 }
 
 .socials{
 display:flex;
 justify-content:center;
-gap:12px;
-margin-bottom:18px;
+gap:14px;
+margin-bottom:22px;
 }
 
-/* GLASS ICONS */
+/* ICON BUTTON (UPGRADED) */
 .icon-btn{
-width:42px;
-height:42px;
+width:48px;
+height:48px;
 border-radius:50%;
 
 display:flex;
 align-items:center;
 justify-content:center;
 
-background:rgba(255,255,255,0.25);
-backdrop-filter:blur(10px);
-border:1px solid rgba(255,255,255,0.4);
+background:rgba(255,255,255,0.6);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+
+border:1px solid rgba(255,255,255,0.8);
 
 box-shadow:
-0 4px 12px rgba(0,0,0,0.08),
-inset 0 1px 0 rgba(255,255,255,0.7);
+0 8px 20px rgba(0,0,0,0.12),
+inset 0 1px 0 rgba(255,255,255,0.9);
 
 cursor:pointer;
-transition:.2s;
+transition:.25s ease;
 }
 
+/* ICON INSIDE */
+.icon{
+width:20px;
+height:20px;
+stroke:#374151;
+stroke-width:1.8;
+fill:none;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+/* HOVER */
 .icon-btn:hover{
-transform:translateY(-2px);
-background:rgba(255,255,255,0.35);
+transform:translateY(-3px) scale(1.05);
+background:rgba(255,255,255,0.75);
 }
 
 /* BUTTON GROUP */
@@ -307,36 +322,44 @@ background:rgba(255,255,255,0.35);
 display:flex;
 flex-direction:column;
 align-items:center;
-gap:10px;
-margin-top:10px;
+gap:12px;
+margin-top:8px;
 }
 
-/* PILL BUTTONS */
-.btn-pill{
-padding:10px 18px;
+/* PRIMARY BUTTON */
+.btn-pill.primary{
+padding:13px 26px;
 border-radius:999px;
 font-size:13px;
-cursor:pointer;
+font-weight:500;
 
-background:rgba(255,255,255,0.25);
+background:#111;
+color:#fff;
+border:none;
+
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* SECONDARY BUTTON */
+.btn-pill{
+padding:12px 24px;
+border-radius:999px;
+font-size:13px;
+
+background:rgba(255,255,255,0.6);
 backdrop-filter:blur(10px);
-border:1px solid rgba(255,255,255,0.4);
+
+border:1px solid rgba(255,255,255,0.8);
 
 box-shadow:
-0 4px 12px rgba(0,0,0,0.08),
-inset 0 1px 0 rgba(255,255,255,0.7);
+0 6px 16px rgba(0,0,0,0.1),
+inset 0 1px 0 rgba(255,255,255,0.9);
 
 transition:.2s;
 }
 
-.btn-pill.primary{
-background:#111;
-color:#fff;
-border:none;
-}
-
 .btn-pill:hover{
-transform:translateY(-1px);
+transform:translateY(-2px);
 }
 </style>
 </head>
