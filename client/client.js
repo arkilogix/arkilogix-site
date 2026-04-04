@@ -1,5 +1,3 @@
-let currentData = {};
-let profileImageUrl = "";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth,
@@ -10,17 +8,22 @@ import {
 import {
   getFirestore,
   doc,
-  getDoc
+  getDoc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* STATE */
+let currentData = {};
+let profileImageUrl = "";
 
 /* FIREBASE CONFIG */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
+  authDomain: "arkilogix-clients.firebaseapp.com",
+  projectId: "arkilogix-clients",
+  storageBucket: "arkilogix-clients.firebasestorage.app",
+  messagingSenderId: "1074947351840",
+  appId: "1:1074947351840:web:b077eb79963fff59316345"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -41,40 +44,39 @@ const clicksEl = document.getElementById("clicks");
 
 const upgradeBtn = document.getElementById("upgradeBtn");
 
-/* AUTH */
-let initialized = false;
-
+/* AUTH (FIXED) */
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
-    if (initialized) {
-      window.location.href = "/auth/login.html";
-    }
+    setTimeout(() => {
+      if (!auth.currentUser) {
+        window.location.href = "/auth/login.html";
+      }
+    }, 300);
     return;
   }
 
-  initialized = true;
+  // ✅ SAFE: user is confirmed
+  loadDashboard(user);
 
-  // ✅ continue loading user data
+});
+
+/* LOAD DASHBOARD */
+async function loadDashboard(user){
+
   const docSnap = await getDoc(doc(db, "clients", user.uid));
 
-  if (!docSnap.exists()) return;
+  if (!docSnap.exists()) {
+    window.location.href = "/onboarding/index.html";
+    return;
+  }
 
   const data = docSnap.data();
 
   currentData = data;
   profileImageUrl = data.profileImage || "";
 
-  // your existing UI updates...
-});
-
-  const docSnap = await getDoc(doc(db, "clients", user.uid));
-
-  if (!docSnap.exists()) return;
-
-  const data = docSnap.data();
-
-  /* DISPLAY */
+  /* UI */
   userName.textContent = data.name || "User";
   planBadge.textContent = (data.plan || "basic").toUpperCase();
 
@@ -86,11 +88,9 @@ onAuthStateChanged(auth, async (user) => {
     const div = document.createElement("div");
     div.textContent = s;
     cardServices.appendChild(div);
-currentData = data;
-profileImageUrl = data.profileImage || "";
-
-document.getElementById("modalImage").src = profileImageUrl || "/logo.png";
   });
+
+  document.getElementById("modalImage").src = profileImageUrl || "/logo.png";
 
   /* STATS */
   const stats = data.stats || {};
@@ -100,19 +100,19 @@ document.getElementById("modalImage").src = profileImageUrl || "/logo.png";
   clicksEl.textContent = stats.clicks || 0;
 
   applyPlan(data.plan || "basic");
-});
+}
 
-/* PLAN CONTROL */
+/* PLAN */
 function applyPlan(plan){
 
-  const analyticsCards = document.querySelectorAll(".stat");
+  const cards = document.querySelectorAll(".stat");
 
   if(plan === "basic"){
-    analyticsCards.forEach(c => lock(c));
+    cards.forEach(c => lock(c));
   }
 
   if(plan === "pro" || plan === "elite"){
-    analyticsCards.forEach(c => unlock(c));
+    cards.forEach(c => unlock(c));
   }
 
   if(plan === "elite"){
@@ -120,24 +120,17 @@ function applyPlan(plan){
   }
 }
 
-/* LOCK */
 function lock(el){
   el.classList.add("locked");
   el.onclick = () => window.location.href = "/upgrade.html";
 }
 
-/* UNLOCK */
 function unlock(el){
   el.classList.remove("locked");
   el.onclick = null;
 }
 
-/* LOGOUT */
-document.querySelector(".logout").addEventListener("click", () => {
-  signOut(auth).then(() => {
-    window.location.href = "/auth/login.html";
-  });
-});
+/* MODAL */
 document.querySelector(".actions .btn").addEventListener("click", openModal);
 
 function openModal(){
@@ -153,18 +146,16 @@ function openModal(){
 function closeModal(){
   document.getElementById("editModal").style.display = "none";
 }
+window.closeModal = closeModal;
 
+/* SERVICES */
 function renderServicesEdit(){
   const container = document.getElementById("servicesEdit");
   container.innerHTML = "";
 
-  const services = currentData.services || [];
+  (currentData.services || []).forEach(s => addServiceField(s));
 
-  services.forEach(s => {
-    addServiceField(s);
-  });
-
-  if(services.length === 0) addServiceField();
+  if((currentData.services || []).length === 0) addServiceField();
 }
 
 function addServiceField(value=""){
@@ -187,6 +178,7 @@ function addServiceField(value=""){
 }
 window.addServiceField = addServiceField;
 
+/* CLOUDINARY */
 document.getElementById("imageInput").addEventListener("change", uploadImage);
 
 async function uploadImage(e){
@@ -213,6 +205,7 @@ async function uploadImage(e){
   updateStrength();
 }
 
+/* STRENGTH */
 function updateStrength(){
   let score = 0;
 
@@ -231,10 +224,8 @@ function updateStrength(){
   document.getElementById("strengthValue").textContent = score + "%";
 }
 window.updateStrength = updateStrength;
-window.closeModal = closeModal;
 
-import { updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+/* SAVE */
 async function saveProfile(){
 
   const name = document.getElementById("editName").value;
@@ -244,9 +235,7 @@ async function saveProfile(){
     .map(i => i.value)
     .filter(v => v);
 
-  const ref = doc(db, "clients", auth.currentUser.uid);
-
-  await updateDoc(ref, {
+  await updateDoc(doc(db, "clients", auth.currentUser.uid), {
     name,
     position,
     services,
@@ -254,7 +243,7 @@ async function saveProfile(){
     updatedAt: new Date()
   });
 
-  /* UPDATE UI */
+  // update UI
   cardName.textContent = name;
   cardPosition.textContent = position;
 
@@ -268,3 +257,10 @@ async function saveProfile(){
   closeModal();
 }
 window.saveProfile = saveProfile;
+
+/* LOGOUT */
+document.querySelector(".logout").addEventListener("click", () => {
+  signOut(auth).then(() => {
+    window.location.href = "/auth/login.html";
+  });
+});
