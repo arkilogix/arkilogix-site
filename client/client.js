@@ -1,11 +1,25 @@
-// (same imports — unchanged)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-/* STATE */
-let currentData = {};
-let profileImageUrl = "";
+import {
+  getFirestore,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-/* FIREBASE INIT */
-// (same config — unchanged)
+/* FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
+  authDomain: "arkilogix-clients.firebaseapp.com",
+  projectId: "arkilogix-clients",
+  storageBucket: "arkilogix-clients.firebasestorage.app",
+  messagingSenderId: "1074947351840",
+  appId: "1:1074947351840:web:b077eb79963fff59316345"
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -18,51 +32,43 @@ const planBadge = document.getElementById("planBadge");
 const cardName = document.getElementById("cardName");
 const cardPosition = document.getElementById("cardPosition");
 const cardServices = document.getElementById("cardServices");
+const profileImage = document.getElementById("profileImage");
 
-const viewsEl = document.getElementById("views");
-const tapsEl = document.getElementById("taps");
-const clicksEl = document.getElementById("clicks");
-
-const upgradeBtn = document.getElementById("upgradeBtn");
-
-/* AUTH */
+/* AUTH CHECK */
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
-    setTimeout(() => {
-      if (!auth.currentUser) {
-        window.location.href = "/auth/login.html";
-      }
-    }, 300);
+    window.location.href = "/auth/login.html";
     return;
   }
 
   loadDashboard(user);
+
 });
 
-/* LOAD DASHBOARD */
+/* LOAD DATA */
 async function loadDashboard(user){
 
-  const docSnap = await getDoc(doc(db, "clients", user.uid));
+  const ref = doc(db, "clients", user.uid);
+  const snap = await getDoc(ref);
 
-  if (!docSnap.exists()) {
+  if (!snap.exists()) {
     window.location.href = "/onboarding/index.html";
     return;
   }
 
-  const data = docSnap.data();
+  const data = snap.data();
 
-  currentData = data;
-  profileImageUrl = data.profileImage || "";
-
-  /* UI */
+  /* HEADER */
   userName.textContent = data.name || "User";
   planBadge.textContent = (data.plan || "basic").toUpperCase();
 
-  cardName.textContent = data.name;
-  cardPosition.textContent = data.position;
+  /* CARD */
+  cardName.textContent = data.name || "Your Name";
+  cardPosition.textContent = data.position || "Your Position";
 
-  /* SERVICES */
+  profileImage.src = data.profileImage || "/logo.png";
+
   cardServices.innerHTML = "";
   (data.services || []).forEach(s => {
     const div = document.createElement("div");
@@ -70,127 +76,7 @@ async function loadDashboard(user){
     cardServices.appendChild(div);
   });
 
-  /* LINKS */
-  renderLinks();
-
-  document.getElementById("modalImage").src = profileImageUrl || "/logo.png";
-
-  /* STATS */
-  const stats = data.stats || {};
-
-  const views = stats.views || 0;
-  const taps = stats.taps || 0;
-  const clicks = stats.clicks || 0;
-
-  viewsEl.textContent = views;
-  tapsEl.textContent = taps;
-  clicksEl.textContent = clicks;
-
-  const max = Math.max(views, taps, clicks, 1);
-
-  document.getElementById("viewsBar").style.width = (views / max * 100) + "%";
-  document.getElementById("tapsBar").style.width = (taps / max * 100) + "%";
-  document.getElementById("clicksBar").style.width = (clicks / max * 100) + "%";
-
-  applyPlan(data.plan || "basic");
 }
-
-/* PLAN */
-// (unchanged)
-
-/* MODAL */
-// (unchanged)
-
-/* SERVICES EDIT */
-// (unchanged)
-
-/* CLOUDINARY */
-// (unchanged)
-
-/* VIEW CARD */
-// (unchanged)
-
-/* STRENGTH */
-// (unchanged)
-
-/* SAVE PROFILE */
-// (unchanged)
-
-/* ========================= */
-/* 🔥 LINKS SYSTEM (FIXED) */
-/* ========================= */
-
-const LINK_TYPES = [
-  { value: "phone", label: "Phone" },
-  { value: "email", label: "Email" },
-  { value: "facebook", label: "Facebook" },
-  { value: "instagram", label: "Instagram" },
-  { value: "website", label: "Website" },
-  { value: "whatsapp", label: "WhatsApp" }
-];
-
-function renderLinks(){
-  const container = document.getElementById("linksContainer");
-  if(!container) return;
-
-  container.innerHTML = "";
-
-  (currentData.links || []).forEach(l => addLink(l));
-}
-
-function addLink(data = {}){
-  const container = document.getElementById("linksContainer");
-
-  if((currentData.plan || "basic") === "basic"){
-    alert("Upgrade to Pro to use links");
-    return;
-  }
-
-  if(container.children.length >= 5 && currentData.plan === "pro"){
-    alert("Pro plan max 5 links");
-    return;
-  }
-
-  const div = document.createElement("div");
-  div.className = "link-row";
-
-  div.innerHTML = `
-    <select>
-      ${LINK_TYPES.map(t =>
-        `<option value="${t.value}" ${data.type === t.value ? "selected" : ""}>${t.label}</option>`
-      ).join("")}
-    </select>
-
-    <input placeholder="Enter URL" value="${data.url || ""}">
-
-    <button onclick="this.parentElement.remove()">x</button>
-  `;
-
-  container.appendChild(div);
-}
-
-async function saveLinks(){
-
-  const rows = document.querySelectorAll(".link-row");
-
-  const links = [...rows].map(r => {
-    const type = r.querySelector("select").value;
-    const url = r.querySelector("input").value;
-
-    return { type, url };
-  }).filter(l => l.url);
-
-  await updateDoc(doc(db, "clients", auth.currentUser.uid), {
-    links
-  });
-
-  currentData.links = links;
-
-  alert("Links saved");
-}
-
-window.addLink = addLink;
-window.saveLinks = saveLinks;
 
 /* LOGOUT */
 document.querySelector(".logout").addEventListener("click", () => {
