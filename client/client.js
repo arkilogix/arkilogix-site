@@ -205,6 +205,13 @@ async function uploadImage(e){
   updateStrength();
 }
 
+function viewCard(){
+  const uid = auth.currentUser.uid;
+  const plan = currentData.plan || "basic";
+
+  window.open(`/view/${plan}.html?id=${uid}`, "_blank");
+}
+
 /* STRENGTH */
 function updateStrength(){
   let score = 0;
