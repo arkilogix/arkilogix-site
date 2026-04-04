@@ -225,7 +225,7 @@ a1 1 0 0 1 1-1h3z"/>
 </div>
 
 <!-- SAVE CONTACT -->
-<div class="btn primary" onclick="openModal()">
+<div class="btn primary" onclick="trackClick(); openModal()">
 Save Contact
 </div>
 
@@ -253,7 +253,9 @@ Save Contact
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+import { getFirestore, doc, getDoc, updateDoc, increment } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  
 /* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
@@ -265,7 +267,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 /* GET USER */
 const params = new URLSearchParams(window.location.search);
@@ -282,14 +283,40 @@ async function loadUser(){
 
   if(snap.exists()){
     const data = snap.data();
+  
+    // 🚨 BLOCK DISABLED USERS
+    if (data.status === "disabled") {
+      document.body.innerHTML = `
+        <div style="
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          height:100vh;
+          font-family:sans-serif;
+          background:#0f1115;
+          color:white;
+          text-align:center;
+        ">
+          <div>
+            <h2>Account Disabled</h2>
+            <p>This digital card is no longer available.</p>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    /* TRACK VIEW */
+/* TRACK VIEW */
+updateDoc(doc(db, "clients", id), {
+  "stats.views": increment(1)
+});
+  // CONTINUE NORMAL UI
+  currentPlan = data.plan || "basic";
 
-    currentPlan = data.plan || "basic";
+  document.querySelector(".name").innerText = data.name || "Your Name";
+  document.querySelector(".position").innerText = data.position || "Your Position";
 
-    document.querySelector(".name").innerText = data.name || "Your Name";
-    document.querySelector(".position").innerText = data.position || "Your Position";
-
-    renderServices(data.services || []);
-  }
+  renderServices(data.services || []);  
 }
 
 /* SERVICES */
@@ -339,10 +366,20 @@ END:VCARD`;
 
   URL.revokeObjectURL(url);
 }
-  if (data.status === "disabled") {
-  document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>Account Disabled</h2>";
-  return;
+
+
+const db = getFirestore();
+
+
+/* TRACK CLICKS */
+  function trackClick(){
+  if(!id) return;
+
+  updateDoc(doc(db, "clients", id), {
+    "stats.clicks": increment(1)
+  });
 }
+  
 /* INIT */
 loadUser();
 
