@@ -262,13 +262,19 @@ transform:scale(1.1);
 }
 
 /* SERVICES */
-.preview-services{margin-top:24px;}
-.services-title{
-  font-size:11px;letter-spacing:2px;color:#6b7280;margin-bottom:12px;
+.preview-services{
+  margin-top:26px;
+  text-align:center;
 }
-.preview-service{
-  display:inline-block;padding:6px 14px;border-radius:999px;
-  font-size:11px;background:rgba(255,255,255,0.08);margin:4px;
+
+.services-title{
+  text-align:center;
+}
+
+#previewServices{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
 }
 
 /* LOADING */
@@ -519,9 +525,6 @@ flex-shrink:0;
 
 <!-- SOCIALS -->
 <div class="socials" id="previewSocials"></div>
-
-</div>
-
 <!-- ACTION BUTTONS -->
 <div class="preview-actions">
 
@@ -534,7 +537,8 @@ flex-shrink:0;
   </div>
 
 </div>
-  
+</div>
+
 <div class="preview-services">
 <div class="services-title">SERVICES</div>
 <div id="previewServices"></div>
