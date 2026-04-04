@@ -279,7 +279,7 @@ function togglePassword(id, el){
     `;
   }
 }
-window.togglePassword = togglePassword;
+
 // 🔥 SIGNUP
 async function signup() {
   const email = document.getElementById("email").value;
@@ -330,10 +330,10 @@ function validatePasswords(){
     error.style.display = "block";
   }
 }
-  
-  window.location.href = "../onboarding/index.html";
   window.signup = signup;
+  window.togglePassword = togglePassword;
   window.validatePasswords = validatePasswords;
+  window.location.href = "../onboarding/index.html";
 </script>
 
 </body>
