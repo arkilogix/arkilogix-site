@@ -42,11 +42,31 @@ const clicksEl = document.getElementById("clicks");
 const upgradeBtn = document.getElementById("upgradeBtn");
 
 /* AUTH */
+let initialized = false;
+
 onAuthStateChanged(auth, async (user) => {
+
   if (!user) {
-    window.location.href = "/auth/login.html";
+    if (initialized) {
+      window.location.href = "/auth/login.html";
+    }
     return;
   }
+
+  initialized = true;
+
+  // ✅ continue loading user data
+  const docSnap = await getDoc(doc(db, "clients", user.uid));
+
+  if (!docSnap.exists()) return;
+
+  const data = docSnap.data();
+
+  currentData = data;
+  profileImageUrl = data.profileImage || "";
+
+  // your existing UI updates...
+});
 
   const docSnap = await getDoc(doc(db, "clients", user.uid));
 
