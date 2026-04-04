@@ -353,57 +353,65 @@ async function loadUser(){
 
   const snap = await getDoc(doc(db, "clients", id));
 
-  if(snap.exists()){
-    const data = snap.data();
-  
-    // 🚨 BLOCK DISABLED USERS
-    if (data.status === "disabled") {
-      document.body.innerHTML = `
-        <div style="
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          height:100vh;
-          font-family:sans-serif;
-          background:#0f1115;
-          color:white;
-          text-align:center;
-        ">
-          <div>
-            <h2>Account Disabled</h2>
-            <p>This digital card is no longer available.</p>
-          </div>
+  if(!snap.exists()) return;
+
+  const data = snap.data();
+
+  // 🚨 BLOCK DISABLED USERS
+  if (data.status === "disabled") {
+    document.body.innerHTML = `
+      <div style="
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        height:100vh;
+        font-family:sans-serif;
+        background:#0f1115;
+        color:white;
+        text-align:center;
+      ">
+        <div>
+          <h2>Account Disabled</h2>
+          <p>This digital card is no longer available.</p>
         </div>
-      `;
-      return;
-    }
+      </div>
+    `;
+    return;
+  }
 
-/* TRACK VIEW */
-updateDoc(doc(db, "clients", id), {
-  "stats.views": increment(1)
-});
-  // CONTINUE NORMAL UI
+  // 📊 TRACK VIEW
+  updateDoc(doc(db, "clients", id), {
+    "stats.views": increment(1)
+  });
+
+  // 🧠 STORE GLOBALS
   currentPlan = data.plan || "basic";
+  window.vcardUrl = data.vcardUrl || "";
 
+  // 👤 BASIC INFO
   document.querySelector(".name").innerText = data.name || "Your Name";
   document.querySelector(".position").innerText = data.position || "Your Position";
 
-  renderServices(data.services || []);
-    }
+  // 🖼 PROFILE IMAGE (CLOUDINARY)
+  if(data.profileImage){
+    document.getElementById("profile").src = data.profileImage;
   }
 
-/* SERVICES */
-function renderServices(list){
-  const el = document.getElementById("services");
-  el.innerHTML="";
+  // 🛠 SERVICES
+  if(data.services && data.services.length > 0){
+    renderServices(data.services);
 
-  list.slice(0,3).forEach(s=>{
-    const d=document.createElement("div");
-    d.className="service";
-    d.innerText=s;
-    el.appendChild(d);
-  });
-}
+    // show header if hidden (optional future use)
+    const header = document.querySelector(".services-header");
+    if(header) header.style.display = "flex";
+  } else {
+    // hide services section if empty (clean UI)
+    const services = document.getElementById("services");
+    const header = document.querySelector(".services-header");
+
+    if(services) services.style.display = "none";
+    if(header) header.style.display = "none";
+  }
 
 /* MODAL SYSTEM */
 function showModal(msg){
