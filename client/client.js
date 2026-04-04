@@ -44,6 +44,7 @@ const tapsEl = document.getElementById("taps");
 const clicksEl = document.getElementById("clicks");
 
 const upgradeBtn = document.getElementById("upgradeBtn");
+const upgradeModal = document.getElementById("upgradeModal");
 
 /* AUTH */
 onAuthStateChanged(auth, async (user) => {
@@ -85,9 +86,9 @@ async function loadDashboard(user){
 
   cardServices.innerHTML = "";
   (data.services || []).forEach(s => {
-    const div = document.createElement("div");
-    div.textContent = s;
-    cardServices.appendChild(div);
+    const span = document.createElement("span");
+    span.textContent = s;
+    cardServices.appendChild(span);
   });
 
   /* PROFILE IMAGE */
@@ -113,27 +114,25 @@ async function loadDashboard(user){
   document.getElementById("tapsBar").style.width = (taps / max * 100) + "%";
   document.getElementById("clicksBar").style.width = (clicks / max * 100) + "%";
 
-  /* LINKS */
   renderLinks();
-
   applyPlan(data.plan || "basic");
 }
 
-/* PLAN */
+/* PLAN SYSTEM */
 function applyPlan(plan){
 
-  const cards = document.querySelectorAll(".stat");
+  const statsCards = document.querySelectorAll(".stat");
 
   if(plan === "basic"){
-    cards.forEach(c => {
+    statsCards.forEach(c => {
       c.classList.add("locked");
       c.querySelector("p").innerText = "—";
-      c.onclick = () => window.location.href = "/upgrade.html";
+      c.onclick = () => openUpgrade();
     });
   }
 
   if(plan === "pro" || plan === "elite"){
-    cards.forEach(c => {
+    statsCards.forEach(c => {
       c.classList.remove("locked");
       c.onclick = null;
     });
@@ -145,10 +144,36 @@ function applyPlan(plan){
 }
 
 /* ========================= */
+/* UPGRADE MODAL */
+/* ========================= */
+
+function openUpgrade(){
+  if(upgradeModal){
+    upgradeModal.style.display = "flex";
+  }
+}
+
+function closeUpgrade(){
+  if(upgradeModal){
+    upgradeModal.style.display = "none";
+  }
+}
+
+if(upgradeBtn){
+  upgradeBtn.addEventListener("click", openUpgrade);
+}
+
+window.closeUpgrade = closeUpgrade;
+
+/* ========================= */
 /* MODAL */
 /* ========================= */
 
-document.querySelector(".btn").addEventListener("click", openModal);
+const editBtn = document.querySelectorAll(".actions .btn")[0];
+
+if(editBtn){
+  editBtn.addEventListener("click", openModal);
+}
 
 function openModal(){
   document.getElementById("editModal").style.display = "flex";
@@ -165,6 +190,18 @@ function closeModal(){
 }
 
 window.closeModal = closeModal;
+
+/* ========================= */
+/* LIVE PREVIEW */
+/* ========================= */
+
+document.getElementById("editName").addEventListener("input", e=>{
+  cardName.textContent = e.target.value || "Name";
+});
+
+document.getElementById("editPosition").addEventListener("input", e=>{
+  cardPosition.textContent = e.target.value || "Position";
+});
 
 /* ========================= */
 /* SERVICES EDIT */
@@ -215,7 +252,7 @@ async function saveProfile(){
     position,
     services,
     profileImage: profileImageUrl,
-    updatedAt: new Date()
+    updatedAt: Date.now()
   });
 
   currentData.name = name;
@@ -227,15 +264,13 @@ async function saveProfile(){
 
   cardServices.innerHTML = "";
   services.forEach(s => {
-    const div = document.createElement("div");
-    div.textContent = s;
-    cardServices.appendChild(div);
+    const span = document.createElement("span");
+    span.textContent = s;
+    cardServices.appendChild(span);
   });
 
   closeModal();
 }
-
-window.saveProfile = saveProfile;
 
 /* ========================= */
 /* LINKS SYSTEM */
@@ -263,12 +298,12 @@ function addLink(data = {}){
   const container = document.getElementById("linksContainer");
 
   if((currentData.plan || "basic") === "basic"){
-    alert("Upgrade to Pro to use links");
+    openUpgrade();
     return;
   }
 
   if(container.children.length >= 5 && currentData.plan === "pro"){
-    alert("Pro plan max 5 links");
+    openUpgrade();
     return;
   }
 
