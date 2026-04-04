@@ -34,6 +34,7 @@ let profileImageUrl = "";
 /* ELEMENTS */
 const userName = document.getElementById("userName");
 const planBadge = document.getElementById("planBadge");
+const headerProfile = document.getElementById("headerProfile");
 
 const cardName = document.getElementById("cardName");
 const cardPosition = document.getElementById("cardPosition");
@@ -80,6 +81,10 @@ async function loadDashboard(user){
   userName.textContent = data.name || "User";
   planBadge.textContent = (data.plan || "basic").toUpperCase();
 
+  if(headerProfile){
+    headerProfile.src = profileImageUrl || "/logo.png";
+  }
+
   /* CARD */
   cardName.textContent = data.name || "Name";
   cardPosition.textContent = data.position || "Position";
@@ -91,7 +96,7 @@ async function loadDashboard(user){
     cardServices.appendChild(span);
   });
 
-  /* PROFILE IMAGE */
+  /* MODAL IMAGE */
   const modalImg = document.getElementById("modalImage");
   if(modalImg){
     modalImg.src = profileImageUrl || "/logo.png";
@@ -127,7 +132,7 @@ function applyPlan(plan){
     statsCards.forEach(c => {
       c.classList.add("locked");
       c.querySelector("p").innerText = "—";
-      c.onclick = () => openUpgrade();
+      c.onclick = openUpgrade;
     });
   }
 
@@ -166,13 +171,19 @@ if(upgradeBtn){
 window.closeUpgrade = closeUpgrade;
 
 /* ========================= */
-/* MODAL */
+/* EDIT MODAL */
 /* ========================= */
 
 const editBtn = document.querySelectorAll(".actions .btn")[0];
 
 if(editBtn){
   editBtn.addEventListener("click", openModal);
+}
+
+/* CLICK PROFILE = EDIT */
+const profileBtn = document.querySelector(".user-profile");
+if(profileBtn){
+  profileBtn.addEventListener("click", openModal);
 }
 
 function openModal(){
