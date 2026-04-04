@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Basic Card</title>
-
+<link rel="icon" type="image/png" href="../logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
@@ -154,7 +154,35 @@ border-radius:16px;
 width:280px;
 text-align:center;
 }
+
+/* BRANDING */
+.branding{
+margin-top:30px;
+text-align:center;
+opacity:0.7;
+text-decoration:none;
+display:block;
+transition:0.2s;
+}
+
+.branding:hover{
+opacity:1;
+transform:translateY(-2px);
+}
+
+.branding img{
+width:70px;
+margin-bottom:6px;
+opacity:0.85;
+}
+
+.branding p{
+font-size:11px;
+color:#555;
+letter-spacing:0.5px;
+}
 </style>
+
 </head>
 
 <body>
@@ -231,7 +259,11 @@ Save Contact
 
 <!-- SERVICES -->
 <div class="services" id="services"></div>
-
+<!-- BRANDING -->
+  <a href="https://arkilogix.com" target="_blank" class="branding">
+  <img src="../logo.png" alt="Arkilogix Logo">
+  <p>Powered by <strong>Arkilogix</strong></p>
+</a>
 </div>
 
 <!-- TOAST -->
@@ -248,6 +280,7 @@ Save Contact
 <button onclick="closeModal()">Cancel</button>
 </div>
 </div>
+  
 
 <script type="module">
 
