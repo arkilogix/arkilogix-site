@@ -285,11 +285,16 @@ async function signup() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
+  const btn = document.getElementById("signupBtn");
 
   if(password !== confirmPassword){
-    alert("Passwords do not match");
     return;
   }
+
+  // 🔄 START LOADING
+  btn.disabled = true;
+  const originalText = btn.innerText;
+  btn.innerText = "Creating...";
 
   try {
     const userCred = await createUserWithEmailAndPassword(auth, email, password);
@@ -301,6 +306,17 @@ async function signup() {
       status: "active",
       createdAt: new Date()
     });
+
+    window.location.href = "../onboarding/index.html";
+
+  } catch (err) {
+    alert(err.message);
+
+    // ❌ RESET BUTTON ON ERROR
+    btn.disabled = false;
+    btn.innerText = originalText;
+  }
+}
 
    
 
