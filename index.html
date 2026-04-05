@@ -749,6 +749,9 @@ form#orderForm::-webkit-scrollbar-thumb{
   display:flex;
   justify-content:center;
   align-items:center;
+  position: relative;
+  transform: scale(0.8);
+  transform-origin: top center;
 }
   
 @media(max-width:768px){
@@ -1435,6 +1438,7 @@ window.nextStep = function(){
 
   } else {
     // 🔥 FINAL STEP → SUBMIT YOUR EXISTING LOGIC
+    
     document.getElementById("orderForm").dispatchEvent(new Event("submit"));
   }
 }
