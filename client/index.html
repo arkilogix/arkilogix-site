@@ -12,7 +12,12 @@
 <body>
 
 <div class="dashboard">
-
+<div class="step-progress">
+  <div class="bar-step active"></div>
+  <div class="bar-step"></div>
+  <div class="bar-step"></div>
+  <div class="bar-step"></div>
+</div>
   <!-- HEADER -->
   <header class="header">
     <div class="logo">ArkiLogix</div>
@@ -160,28 +165,35 @@
     </div>
 
     <!-- STEP 3: SERVICES -->
-    <div class="step" data-step="3">
-
-      <div id="servicesEdit"></div>
-
-      <button class="add-service-btn" onclick="addServiceField()">+ Add Service</button>
-
-      <small class="helper">Max 3 for Basic users</small>
-
+      <div class="step" data-step="3">
+  
+        <div id="servicesEdit"></div>
+  
+      <button class="add-service-btn">+ Add Service</button>
+      <small class="helper center">Max 3 for Basic users</small>
+  
+      </div>
+  
+      <!-- STEP 4: UPGRADE -->
+     <div class="step" data-step="4">
+  
+    <div class="upgrade-box">
+  
+      <h3>Unlock More Power</h3>
+      <p>Get more leads, more visibility, and premium branding</p>
+  
+      <ul class="upgrade-features">
+        <li>✔ Unlimited Services</li>
+        <li>✔ More Links</li>
+        <li>✔ Premium Themes</li>
+      </ul>
+  
+      <button class="btn primary big">Upgrade to Pro</button>
+      <button class="btn ghost" onclick="closeModal()">Skip for now</button>
+  
     </div>
-
-    <!-- STEP 4: UPGRADE -->
-    <div class="step" data-step="4">
-
-      <h3>Unlock More Features</h3>
-      <p style="opacity:.6;margin-bottom:15px;">
-        Add more services, links, and customization
-      </p>
-
-      <button class="btn primary" onclick="openUpgrade()">Upgrade to Pro</button>
-      <button class="btn secondary" onclick="closeModal()">Skip for now</button>
-
-    </div>
+  
+  </div>
 
     <!-- NAVIGATION -->
     <div class="step-actions">
