@@ -18,7 +18,13 @@
 
   <!-- HEADER -->
   <div class="header">
-    <div class="logo">ArkiLogix Admin</div>
+    <div class="brand">
+      <img src="../logo.png" class="logo-img">
+      <div>
+        <h2>ArkiLogix</h2>
+        <span>Admin Panel</span>
+      </div>
+    </div>
 
     <input id="search" class="search" placeholder="Search clients...">
 
@@ -27,25 +33,10 @@
 
   <!-- ANALYTICS -->
   <div class="analytics">
-    <div class="glass stat">
-      <h3>Total Clients</h3>
-      <p id="totalClients">0</p>
-    </div>
-
-    <div class="glass stat">
-      <h3>Total Views</h3>
-      <p id="totalViews">0</p>
-    </div>
-
-    <div class="glass stat">
-      <h3>Total Taps</h3>
-      <p id="totalTaps">0</p>
-    </div>
-
-    <div class="glass stat">
-      <h3>Top Client</h3>
-      <p id="topClient">-</p>
-    </div>
+    <div class="glass stat"><h3>Total Clients</h3><p id="totalClients">0</p></div>
+    <div class="glass stat"><h3>Total Views</h3><p id="totalViews">0</p></div>
+    <div class="glass stat"><h3>Total Taps</h3><p id="totalTaps">0</p></div>
+    <div class="glass stat"><h3>Top Client</h3><p id="topClient">-</p></div>
   </div>
 
   <!-- CLIENT GRID -->
@@ -53,10 +44,9 @@
 
 </div>
 
-<!-- MODAL -->
+<!-- CREATE / EDIT MODAL -->
 <div id="modal" class="modal">
   <div class="modal-content">
-
     <input id="name" placeholder="Name">
     <input id="position" placeholder="Position">
     <input id="email" placeholder="Email">
@@ -70,7 +60,22 @@
 
     <button class="btn primary" onclick="saveClient()">Save</button>
     <button class="btn" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
 
+<!-- UPGRADE MODAL -->
+<div id="upgradeModal" class="modal">
+  <div class="modal-content">
+    <h3>Upgrade Plan</h3>
+
+    <select id="upgradePlan">
+      <option value="basic">Basic</option>
+      <option value="pro">Pro</option>
+      <option value="elite">Elite</option>
+    </select>
+
+    <button class="btn gold" onclick="confirmUpgrade()">Confirm</button>
+    <button class="btn" onclick="closeUpgrade()">Cancel</button>
   </div>
 </div>
 
