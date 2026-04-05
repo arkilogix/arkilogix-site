@@ -31,6 +31,10 @@ const db = getFirestore(app);
 let currentData = {};
 let profileImageUrl = "";
 
+/* CLOUDINARY */
+const CLOUD_NAME = "dnlzwtkhs";
+const UPLOAD_PRESET = "arkilogix-client";
+
 /* ELEMENTS */
 const userName = document.getElementById("userName");
 const planBadge = document.getElementById("planBadge");
@@ -77,7 +81,6 @@ async function loadDashboard(user){
   currentData = data;
   profileImageUrl = data.profileImage || "";
 
-  /* HEADER */
   userName.textContent = data.name || "User";
   planBadge.textContent = (data.plan || "basic").toUpperCase();
 
@@ -85,7 +88,6 @@ async function loadDashboard(user){
     headerProfile.src = profileImageUrl || "/logo.png";
   }
 
-  /* CARD */
   cardName.textContent = data.name || "Name";
   cardPosition.textContent = data.position || "Position";
 
@@ -96,15 +98,12 @@ async function loadDashboard(user){
     cardServices.appendChild(span);
   });
 
-  /* MODAL IMAGE */
   const modalImg = document.getElementById("modalImage");
   if(modalImg){
     modalImg.src = profileImageUrl || "/logo.png";
   }
 
-  /* ANALYTICS */
   const stats = data.stats || {};
-
   const views = stats.views || 0;
   const taps = stats.taps || 0;
   const clicks = stats.clicks || 0;
@@ -123,9 +122,8 @@ async function loadDashboard(user){
   applyPlan(data.plan || "basic");
 }
 
-/* PLAN SYSTEM */
+/* PLAN */
 function applyPlan(plan){
-
   const statsCards = document.querySelectorAll(".stat");
 
   if(plan === "basic"){
@@ -134,9 +132,7 @@ function applyPlan(plan){
       c.querySelector("p").innerText = "—";
       c.onclick = openUpgrade;
     });
-  }
-
-  if(plan === "pro" || plan === "elite"){
+  } else {
     statsCards.forEach(c => {
       c.classList.remove("locked");
       c.onclick = null;
@@ -148,39 +144,28 @@ function applyPlan(plan){
   }
 }
 
-/* ========================= */
-/* UPGRADE MODAL */
-/* ========================= */
-
+/* UPGRADE */
 function openUpgrade(){
   if(upgradeModal){
     upgradeModal.style.display = "flex";
   }
 }
-
 function closeUpgrade(){
   if(upgradeModal){
     upgradeModal.style.display = "none";
   }
 }
-
 if(upgradeBtn){
   upgradeBtn.addEventListener("click", openUpgrade);
 }
-
 window.closeUpgrade = closeUpgrade;
 
-/* ========================= */
-/* EDIT MODAL */
-/* ========================= */
-
+/* MODAL */
 const editBtn = document.querySelectorAll(".actions .btn")[0];
-
 if(editBtn){
   editBtn.addEventListener("click", openModal);
 }
 
-/* CLICK PROFILE = EDIT */
 const profileBtn = document.querySelector(".user-profile");
 if(profileBtn){
   profileBtn.addEventListener("click", openModal);
@@ -193,46 +178,24 @@ function openModal(){
   document.getElementById("editPosition").value = currentData.position || "";
 
   renderServicesEdit();
+  updateServiceLimitUI();
   updateStrength();
 }
 
 function closeModal(){
   document.getElementById("editModal").style.display = "none";
 }
-
 window.closeModal = closeModal;
 
-/* ========================= */
 /* LIVE PREVIEW */
-/* ========================= */
-
 document.getElementById("editName").addEventListener("input", e=>{
   cardName.textContent = e.target.value || "Name";
 });
-
 document.getElementById("editPosition").addEventListener("input", e=>{
   cardPosition.textContent = e.target.value || "Position";
 });
 
-/* ========================= */
 /* IMAGE UPLOAD */
-/* ========================= */
-
-const imageInput = document.getElementById("imageInput");
-
-if(imageInput){
-  imageInput.addEventListener("change", (e) => {
-
-    const file = e.target.files[0];
-    if(!file) return;
-
-    /* ========================= */
-/* IMAGE UPLOAD (CLOUDINARY) */
-/* ========================= */
-
-const CLOUD_NAME = "dnlzwtkhs";
-const UPLOAD_PRESET = "arkilogix-client";
-
 const imageInput = document.getElementById("imageInput");
 
 if(imageInput){
@@ -248,43 +211,28 @@ if(imageInput){
     try{
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        {
-          method: "POST",
-          body: formData
-        }
+        { method: "POST", body: formData }
       );
 
       const data = await res.json();
-
       const imageUrl = data.secure_url;
 
-      // SAVE TEMP
       profileImageUrl = imageUrl;
 
-      // UPDATE UI
       document.getElementById("modalImage").src = imageUrl;
 
-      const headerProfile = document.getElementById("headerProfile");
       if(headerProfile){
         headerProfile.src = imageUrl;
       }
 
     }catch(err){
-      alert("Upload failed");
       console.error(err);
+      alert("Upload failed");
     }
-
   });
 }
 
-    reader.readAsDataURL(file);
-  });
-}
-
-/* ========================= */
-/* SERVICES EDIT */
-/* ========================= */
-
+/* SERVICES */
 function renderServicesEdit(){
   const container = document.getElementById("servicesEdit");
   container.innerHTML = "";
@@ -297,63 +245,116 @@ function renderServicesEdit(){
 }
 
 function addServiceField(value=""){
+
   const container = document.getElementById("servicesEdit");
+
+  const currentCount = container.querySelectorAll("input").length;
+  const plan = currentData.plan || "basic";
+
+  if(plan === "basic" && currentCount >= 3){
+    openUpgrade();
+    return;
+  }
 
   const div = document.createElement("div");
   div.className = "service-row";
 
   div.innerHTML = `
     <input value="${value}" oninput="updateStrength()">
-    <button class="remove" onclick="this.parentElement.remove();updateStrength()">x</button>
+    <button class="remove" onclick="this.parentElement.remove();updateStrength();updateServiceLimitUI()">×</button>
   `;
 
   container.appendChild(div);
+  updateServiceLimitUI();
 }
-
 window.addServiceField = addServiceField;
 
-/* ========================= */
-/* SAVE PROFILE */
-/* ========================= */
+function updateServiceLimitUI(){
 
-async function saveProfile(){
+  const container = document.getElementById("servicesEdit");
+  const addBtn = document.querySelector(".add-service-btn");
 
-  const name = document.getElementById("editName").value;
-  const position = document.getElementById("editPosition").value;
+  if(!addBtn) return;
 
-  const services = [...document.querySelectorAll("#servicesEdit input")]
-    .map(i => i.value)
-    .filter(v => v);
+  const count = container.querySelectorAll("input").length;
+  const plan = currentData.plan || "basic";
 
-  await updateDoc(doc(db, "clients", auth.currentUser.uid), {
-    name,
-    position,
-    services,
-    profileImage: profileImageUrl,
-    updatedAt: Date.now()
-  });
-
-  currentData.name = name;
-  currentData.position = position;
-  currentData.services = services;
-
-  cardName.textContent = name;
-  cardPosition.textContent = position;
-
-  cardServices.innerHTML = "";
-  services.forEach(s => {
-    const span = document.createElement("span");
-    span.textContent = s;
-    cardServices.appendChild(span);
-  });
-
-  closeModal();
+  if(plan === "basic" && count >= 3){
+    addBtn.innerText = "Limit reached (3)";
+    addBtn.style.opacity = "0.5";
+  }else{
+    addBtn.innerText = "+ Add Service";
+    addBtn.style.opacity = "1";
+  }
 }
 
-/* ========================= */
-/* LINKS SYSTEM */
-/* ========================= */
+/* SAVE PROFILE */
+async function saveProfile(){
 
+  const saveBtn = document.getElementById("saveBtn");
+
+  saveBtn.disabled = true;
+  saveBtn.innerText = "Saving...";
+
+  try{
+
+    const name = document.getElementById("editName").value;
+    const position = document.getElementById("editPosition").value;
+
+    let services = [...document.querySelectorAll("#servicesEdit input")]
+      .map(i => i.value)
+      .filter(v => v);
+
+    const plan = currentData.plan || "basic";
+
+    if(plan === "basic" && services.length > 3){
+      openUpgrade();
+      saveBtn.disabled = false;
+      saveBtn.innerText = "Save";
+      return;
+    }
+
+    await updateDoc(doc(db, "clients", auth.currentUser.uid), {
+      name,
+      position,
+      services,
+      profileImage: profileImageUrl,
+      updatedAt: Date.now()
+    });
+
+    currentData.name = name;
+    currentData.position = position;
+    currentData.services = services;
+
+    cardName.textContent = name;
+    cardPosition.textContent = position;
+
+    cardServices.innerHTML = "";
+    services.forEach(s => {
+      const span = document.createElement("span");
+      span.textContent = s;
+      cardServices.appendChild(span);
+    });
+
+    saveBtn.innerText = "Saved ✓";
+
+    setTimeout(()=>{
+      closeModal();
+      saveBtn.innerText = "Save";
+      saveBtn.disabled = false;
+    }, 600);
+
+  }catch(err){
+    console.error(err);
+    saveBtn.innerText = "Error";
+    setTimeout(()=>{
+      saveBtn.innerText = "Save";
+      saveBtn.disabled = false;
+    }, 1000);
+  }
+}
+
+/* LINKS */
 const LINK_TYPES = [
   { value: "phone", label: "Phone" },
   { value: "email", label: "Email" },
@@ -368,7 +369,6 @@ function renderLinks(){
   if(!container) return;
 
   container.innerHTML = "";
-
   (currentData.links || []).forEach(l => addLink(l));
 }
 
@@ -394,9 +394,7 @@ function addLink(data = {}){
         `<option value="${t.value}" ${data.type === t.value ? "selected" : ""}>${t.label}</option>`
       ).join("")}
     </select>
-
     <input placeholder="Enter URL" value="${data.url || ""}">
-
     <button onclick="this.parentElement.remove()">x</button>
   `;
 
@@ -410,13 +408,10 @@ async function saveLinks(){
   const links = [...rows].map(r => {
     const type = r.querySelector("select").value;
     const url = r.querySelector("input").value;
-
     return { type, url };
   }).filter(l => l.url);
 
-  await updateDoc(doc(db, "clients", auth.currentUser.uid), {
-    links
-  });
+  await updateDoc(doc(db, "clients", auth.currentUser.uid), { links });
 
   currentData.links = links;
 
@@ -426,23 +421,15 @@ async function saveLinks(){
 window.addLink = addLink;
 window.saveLinks = saveLinks;
 
-/* ========================= */
 /* VIEW CARD */
-/* ========================= */
-
 function viewCard(){
   const uid = auth.currentUser.uid;
   const plan = currentData.plan || "basic";
-
   window.open(`/view/${plan}.html?id=${uid}`, "_blank");
 }
-
 window.viewCard = viewCard;
 
-/* ========================= */
 /* STRENGTH */
-/* ========================= */
-
 function updateStrength(){
   let score = 0;
 
@@ -460,13 +447,9 @@ function updateStrength(){
 
   document.getElementById("strengthValue").textContent = score + "%";
 }
-
 window.updateStrength = updateStrength;
 
-/* ========================= */
 /* LOGOUT */
-/* ========================= */
-
 document.querySelector(".logout").addEventListener("click", () => {
   signOut(auth).then(() => {
     window.location.href = "/auth/login.html";
