@@ -739,6 +739,38 @@ form#orderForm::-webkit-scrollbar-thumb{
   background:#000;
   transition:width .3s ease;
 }
+  .split-modal{
+  display:flex;
+  gap:20px;
+  max-width:900px; /* 🔥 wider modal */
+}
+
+.modal-left{
+  flex:1;
+  min-width:280px;
+}
+
+.modal-right{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+  
+@media(max-width:768px){
+  .split-modal{
+    flex-direction:column;
+  }
+
+  .modal-right{
+    margin-top:20px;
+  }
+}
+/* preview smaller inside modal */
+.modal-right .preview-phone{
+  transform:scale(0.85);
+}
+  
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
@@ -1037,6 +1069,17 @@ window.setPlan = function(plan,index,el){
     phoneImage.src="phone-elite.png";
     previewServices.classList.add("hidden");
     previewAbout.classList.add("hidden");
+  }
+  const phoneImage = document.getElementById("phoneImage");
+  
+  if(plan === "basic"){
+    phoneImage.src = "phone-basic.png";
+  } 
+  else if(plan === "pro"){
+    phoneImage.src = "phone-pro.png";
+  } 
+  else {
+    phoneImage.src = "phone-elite.png";
   }
 }
 
@@ -1410,12 +1453,16 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- ===== ORDER MODAL START ===== -->
 <div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
 
-  <form id="orderForm" class="modal-content">
+<form id="orderForm" class="modal-content split-modal">
+  
+  <!-- LEFT SIDE -->
+  <div class="modal-left">
 
     <span class="close-btn" onclick="closeOrderModal()">&times;</span>
 
     <h2 id="stepTitle">Activate Your Card</h2>
     <p class="modal-sub" id="stepSub">Step 1 of 6</p>
+
     <div class="step-progress">
       <div class="step-progress-fill" id="stepProgressFill"></div>
     </div>
@@ -1496,7 +1543,24 @@ document.addEventListener("DOMContentLoaded", () => {
       <button type="button" class="modal-btn" onclick="prevStep()">Back</button>
       <button type="button" class="modal-btn" id="nextBtn" onclick="nextStep()">Next</button>
     </div>
+    </div> <!-- END LEFT -->
 
+    <!-- RIGHT SIDE -->
+    <div class="modal-right">
+
+      <div class="preview-phone" id="phoneBox">
+        <img id="phoneImage" src="phone-pro.png">
+
+        <div class="overlay name" id="previewName">Juan Dela Cruz</div>
+        <div class="overlay profession" id="previewProfession">Architect</div>
+        <div class="overlay company" id="previewCompany">Your Company</div>
+        <div class="overlay about" id="previewAbout">About</div>
+        <div class="overlay services hidden" id="previewServices"></div>
+      </div>
+
+    </div>
+
+</form>
   </form>
 </div>
 <!-- ===== ORDER MODAL END ===== -->
