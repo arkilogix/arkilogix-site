@@ -1360,21 +1360,16 @@ console.log("STEP 5: success shown");
       alert(err || "Something went wrong.");
     }
 
-    finally {
-  console.log("FINAL BLOCK RUNNING");
-
-  updateProgress("Completed!", 100);
-
-  let page = selectedPlan === "elite" ? "elite.html" :
-             selectedPlan === "pro" ? "pro.html" : "basic.html";
-
-  const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + (clientId || "temp");
-
-  document.getElementById("clientLinkBox").value = link;
-
-  document.getElementById("formContent").classList.add("hidden");
-  document.getElementById("successContent").classList.remove("hidden");
-}
+        finally {
+    
+      console.log("FINAL BLOCK RUNNING");
+    
+      updateProgress("Completed!", 100);
+    
+      // 🔥 REDIRECT TO PAYMENT
+      window.location.href = "payment.html?clientId=" + clientId;
+    
+    }
     
     btn.innerText = "Secure My NFC Card";
     btn.disabled = false;
@@ -1566,7 +1561,6 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
 
 </form>
-  </form>
 </div>
 <!-- ===== ORDER MODAL END ===== -->
 <!-- ===== ORDER MODAL END ===== -->
