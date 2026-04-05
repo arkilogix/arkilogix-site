@@ -1337,6 +1337,8 @@ function handleOutsideClick(e){
 }
 
 function showStep(index){
+  const steps = document.querySelectorAll(".step");
+
   steps.forEach(s => s.classList.remove("active"));
   steps[index].classList.add("active");
 
@@ -1350,6 +1352,18 @@ function showStep(index){
     "Shipping Details",
     "Review"
   ];
+
+  document.getElementById("stepTitle").innerText = titles[index];
+
+  document.getElementById("progressFill").style.width =
+    ((index+1)/6)*100 + "%";
+
+  document.getElementById("backBtn").style.display =
+    index === 0 ? "none" : "block";
+
+  document.getElementById("nextBtn").innerText =
+    index === 5 ? "Activate My Card" : "Next";
+}
 
   document.getElementById("stepTitle").innerText = titles[index];
 
@@ -1381,7 +1395,8 @@ window.prevStep = function(){
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+
+  document.addEventListener("DOMContentLoaded", () => {
   showStep(0);
 });
 </script>
