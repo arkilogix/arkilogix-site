@@ -365,9 +365,26 @@ position:absolute;
 bottom:0;
 left:0;
 right:0;
-background:rgba(0,0,0,0.6);
+
+background:rgba(0,0,0,0.65);
+backdrop-filter:blur(6px);
+
 font-size:11px;
 text-align:center;
+padding:6px;
+
+opacity:0;
+transition:.2s;
+}
+
+/* SHOW ON HOVER */
+.profile-upload:hover .upload-label{
+opacity:1;
+}
+
+/* ALSO SHOW ON MOBILE (IMPORTANT) */
+.profile-upload .upload-label{
+opacity:1;
 }
 
 /* SERVICES EDIT */
@@ -378,12 +395,31 @@ margin-bottom:8px;
 }
 
 .remove{
-background:#444;
-border:none;
-color:#fff;
-padding:0 10px;
-border-radius:8px;
+width:28px;
+height:28px;
+
+border-radius:50%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.12);
+
+color:#9ca3af;
+font-size:12px;
 cursor:pointer;
+
+transition:.2s;
+}
+
+/* HOVER */
+.remove:hover{
+background:#ef4444;
+color:#fff;
+border-color:#ef4444;
+transform:scale(1.1);
 }
 
 .add-service-btn{
