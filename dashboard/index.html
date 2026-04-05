@@ -16,7 +16,6 @@
 
 <div class="dashboard">
 
-  <!-- HEADER -->
   <div class="header">
     <div class="brand">
       <img src="../logo.png" class="logo-img">
@@ -31,7 +30,6 @@
     <button class="btn primary" onclick="openModal()">+ New Client</button>
   </div>
 
-  <!-- ANALYTICS -->
   <div class="analytics">
     <div class="glass stat"><h3>Total Clients</h3><p id="totalClients">0</p></div>
     <div class="glass stat"><h3>Total Views</h3><p id="totalViews">0</p></div>
@@ -39,12 +37,11 @@
     <div class="glass stat"><h3>Top Client</h3><p id="topClient">-</p></div>
   </div>
 
-  <!-- CLIENT GRID -->
   <div id="clientsContainer" class="clients"></div>
 
 </div>
 
-<!-- CREATE / EDIT MODAL -->
+<!-- MODALS -->
 <div id="modal" class="modal">
   <div class="modal-content">
     <input id="name" placeholder="Name">
@@ -63,7 +60,6 @@
   </div>
 </div>
 
-<!-- UPGRADE MODAL -->
 <div id="upgradeModal" class="modal">
   <div class="modal-content">
     <h3>Upgrade Plan</h3>
@@ -80,6 +76,5 @@
 </div>
 
 <script type="module" src="dashboard.js"></script>
-
 </body>
 </html>
