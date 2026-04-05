@@ -739,19 +739,23 @@ form#orderForm::-webkit-scrollbar-thumb{
   background:#000;
   transition:width .3s ease;
 }
-  .split-modal{
-  display:flex;
-  gap:20px;
-  max-width:900px; /* 🔥 wider modal */
+.split-modal{
+  display:flex !important;
+  flex-direction:row;
+  gap:30px;
+  max-width:900px;
+  width:100%;
 }
 
 .modal-left{
   flex:1;
-  min-width:280px;
+  min-width:300px;
 }
 
 .modal-right{
   flex:1;
+  min-width:300px;
+
   display:flex;
   justify-content:center;
   align-items:center;
