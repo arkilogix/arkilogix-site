@@ -32,21 +32,15 @@ const $ = (id) => document.getElementById(id);
 /* AUTH */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    setTimeout(() => {
-      if (!auth.currentUser) {
-        window.location.href = "/auth/login.html";
-      }
-    }, 300);
+    window.location.href = "/auth/login.html";
     return;
   }
-
   loadDashboard(user);
 });
 
-/* LOAD DASHBOARD */
+/* LOAD */
 async function loadDashboard(user){
   const snap = await getDoc(doc(db, "clients", user.uid));
-
   if (!snap.exists()) {
     window.location.href = "/onboarding/index.html";
     return;
@@ -73,31 +67,21 @@ async function loadDashboard(user){
   }
 
   if($("modalImage")) $("modalImage").src = profileImageUrl || "/logo.png";
-
-  renderLinks();
 }
 
 /* =========================
-   FIX BUTTONS (IMPORTANT)
+   FIX BUTTONS
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
 
   const editBtn = document.querySelector(".actions .btn");
-
   if(editBtn){
-    editBtn.addEventListener("click", (e)=>{
-      e.preventDefault();
-      openModal();
-    });
+    editBtn.onclick = openModal;
   }
 
   const profileBtn = document.querySelector(".user-profile");
-
   if(profileBtn){
-    profileBtn.addEventListener("click", (e)=>{
-      e.preventDefault();
-      openModal();
-    });
+    profileBtn.onclick = openModal;
   }
 
 });
@@ -120,26 +104,29 @@ function openModal(){
 }
 
 function closeModal(){
-  if($("editModal")) $("editModal").style.display = "none";
+  $("editModal").style.display = "none";
 }
 window.closeModal = closeModal;
 
 /* =========================
-   STEP SYSTEM
+   STEP SYSTEM (FIXED)
 ========================= */
 function showStep(step){
 
-  if(step < 1) step = 1;
-  if(step > TOTAL_STEPS) step = TOTAL_STEPS;
-
   currentStep = step;
 
-  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".step").forEach(s=>{
+    s.style.display = "none";
+  });
 
-  const el = document.querySelector(`.step[data-step="${step}"]`);
-  if(el) el.classList.add("active");
+  const active = document.querySelector(`.step[data-step="${step}"]`);
+  if(active){
+    active.style.display = "block";
+  }
 
-  if($("stepIndicator")) $("stepIndicator").innerText = `${step} / ${TOTAL_STEPS}`;
+  if($("stepIndicator")){
+    $("stepIndicator").innerText = `${step} / ${TOTAL_STEPS}`;
+  }
 
   const titles = {
     1:"Step 1: Identity",
@@ -148,7 +135,9 @@ function showStep(step){
     4:"Upgrade"
   };
 
-  if($("stepTitle")) $("stepTitle").innerText = titles[step];
+  if($("stepTitle")){
+    $("stepTitle").innerText = titles[step];
+  }
 
   if($("nextBtn")){
     $("nextBtn").innerText = step === TOTAL_STEPS ? "Finish" : "Next";
@@ -157,7 +146,8 @@ function showStep(step){
 
 function nextStep(){
   if(currentStep < TOTAL_STEPS){
-    showStep(currentStep + 1);
+    currentStep++;
+    showStep(currentStep);
   } else {
     saveProfile();
   }
@@ -165,7 +155,8 @@ function nextStep(){
 
 function prevStep(){
   if(currentStep > 1){
-    showStep(currentStep - 1);
+    currentStep--;
+    showStep(currentStep);
   }
 }
 
@@ -183,24 +174,16 @@ if(imageInput){
     fd.append("file", file);
     fd.append("upload_preset", UPLOAD_PRESET);
 
-    try{
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{
-        method:"POST",
-        body:fd
-      });
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{
+      method:"POST",
+      body:fd
+    });
 
-      const data = await res.json();
-      profileImageUrl = data.secure_url;
+    const data = await res.json();
+    profileImageUrl = data.secure_url;
 
-      if($("modalImage")) $("modalImage").src = profileImageUrl;
-      if($("headerProfile")) $("headerProfile").src = profileImageUrl;
-
-      imageInput.value = "";
-
-    }catch(e){
-      console.error(e);
-      alert("Upload failed");
-    }
+    if($("modalImage")) $("modalImage").src = profileImageUrl;
+    if($("headerProfile")) $("headerProfile").src = profileImageUrl;
   });
 }
 
@@ -228,7 +211,6 @@ function addServiceField(value=""){
   const plan = currentData.plan || "basic";
 
   if(plan === "basic" && count >= 3){
-    openUpgrade();
     return;
   }
 
@@ -245,7 +227,7 @@ function addServiceField(value=""){
 window.addServiceField = addServiceField;
 
 /* =========================
-   SAVE PROFILE
+   SAVE
 ========================= */
 async function saveProfile(){
 
@@ -267,21 +249,7 @@ async function saveProfile(){
 }
 
 /* =========================
-   LINKS (SAFE)
-========================= */
-function renderLinks(){
-  const container = $("linksContainer");
-  if(!container) return;
-  container.innerHTML = "";
-}
-function addLink(){}
-function saveLinks(){}
-
-window.addLink = addLink;
-window.saveLinks = saveLinks;
-
-/* =========================
-   VIEW CARD
+   VIEW
 ========================= */
 function viewCard(){
   const uid = auth.currentUser.uid;
@@ -294,9 +262,9 @@ window.viewCard = viewCard;
 ========================= */
 const logoutBtn = document.querySelector(".logout");
 if(logoutBtn){
-  logoutBtn.addEventListener("click",()=>{
+  logoutBtn.onclick = ()=>{
     signOut(auth).then(()=>{
       window.location.href = "/auth/login.html";
     });
-  });
+  };
 }
