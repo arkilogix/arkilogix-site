@@ -24,7 +24,7 @@ const TOTAL_STEPS = 4;
 
 /* CLOUDINARY */
 const CLOUD_NAME = "dnlzwtkhs";
-const UPLOAD_PRESET = "arkilogix";
+const UPLOAD_PRESET = "arkilogix_profile";
 
 /* HELPER */
 const $ = (id) => document.getElementById(id);
