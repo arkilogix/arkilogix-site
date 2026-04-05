@@ -1067,8 +1067,15 @@ window.openOrderModal = function(){
 
   const isPro = selectedPlan==="pro" || selectedPlan==="elite";
 
-  document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
-  document.getElementById("aboutSection").style.display = isPro ? "block" : "none";
+  const highlightUpload = document.getElementById("highlightUpload");
+  if(highlightUpload){
+    highlightUpload.style.display = isPro ? "block" : "none";
+  }
+  
+  const aboutSection = document.getElementById("aboutSection");
+  if(aboutSection){
+    aboutSection.style.display = isPro ? "block" : "none";
+  }
 
   document.getElementById("formContent").classList.remove("hidden");
   document.getElementById("successContent").classList.add("hidden");
@@ -1328,7 +1335,7 @@ const steps = document.querySelectorAll(".step");
 const stepTitle = document.getElementById("stepTitle");
 const stepSub = document.getElementById("stepSub");
 
-function showStep(index){
+window.showStep = function(index){
   steps.forEach(s => s.classList.remove("active"));
   steps[index].classList.add("active");
 
@@ -1346,7 +1353,7 @@ function showStep(index){
   stepTitle.innerText = titles[index];
 }
 
-function nextStep(){
+window.nextStep = function(){
   if(currentStep < steps.length - 1){
     currentStep++;
     showStep(currentStep);
@@ -1364,7 +1371,7 @@ function nextStep(){
   }
 }
 
-function prevStep(){
+window.prevStep = function(){
   if(currentStep > 0){
     currentStep--;
     showStep(currentStep);
