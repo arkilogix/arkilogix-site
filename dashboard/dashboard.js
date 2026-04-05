@@ -44,7 +44,11 @@ function render(){
 
   data.forEach(c=>{
     const initials = (c.name||"").split(" ").map(n=>n[0]).join("").toUpperCase();
-    const avatar = c.photoURL ? `<img src="${c.photoURL}">` : initials;
+          <div class="avatar">
+        ${c.photoURL 
+          ? `<img src="${c.photoURL}" onerror="this.remove()">`
+          : initials}
+      </div>
 
     container.innerHTML += `
     <div class="client-card glass ${c.disabled?"disabled":""}">
@@ -53,7 +57,7 @@ function render(){
         <div class="client-left">
           <div class="avatar">${avatar}</div>
           <div>
-            <h3>${c.name}</h3>
+            <h3>${c.name || "No Name"}</h3>
             <p>${c.position||""}</p>
           </div>
         </div>
