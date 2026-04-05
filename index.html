@@ -1080,7 +1080,7 @@ window.handleOutsideClick = function(e){
     return;
   }
 
-  const modalContent = document.querySelector("#orderModal .modal-content");
+  const modalContent = document.querySelector("#orderModal .modal-box");
   
   if(!modalContent.contains(e.target)){
     closeOrderModal();
