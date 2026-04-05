@@ -475,37 +475,89 @@ html {
   align-items:center;
 }
 
-.modal-content{
+.modal-box{
   background:#fff;
   width:90%;
   max-width:420px;
-  padding:28px;
-  border-radius:18px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  max-height:85vh;
+  overflow:hidden;
+  border-radius:16px;
+  padding:20px;
+  position:relative;
 
   display:flex;
   flex-direction:column;
-  gap:12px;
-
-  animation:fadeUp .3s ease;
 }
 
-@keyframes fadeUp{
-  from{
-    opacity:0;
-    transform:translateY(20px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
+.modal-box form{
+  overflow-y:auto;
+  max-height:60vh;
+  padding-right:5px;
 }
+
+.modal-sub{
+  font-size:13px;
+  color:#777;
+  margin-bottom:10px;
+}
+
+.progress{
+  height:6px;
+  background:#eee;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:#000;
+  transition:.3s;
+}
+
+.step{
+  display:none;
+}
+
+.step.active{
+  display:block;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+
+.nav{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.nav button{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:30px;
+  background:#000;
+  color:#fff;
+  cursor:pointer;
+}
+
+.summary{
+  font-size:14px;
+  line-height:1.6;
+}
+
 .close-btn{
   position:absolute;
-  right:15px;
-  top:12px;
-  font-size:20px;
+  top:10px;
+  right:14px;
   cursor:pointer;
+  font-size:18px;
 }
   .order-summary{
   background:#f9f9f9;
@@ -637,13 +689,6 @@ form#orderForm::-webkit-scrollbar-thumb{
   transition:width .3s ease;
 }
 
-.close-btn{
-  position:absolute;
-  top:12px;
-  right:16px;
-  cursor:pointer;
-  font-size:18px;
-}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
@@ -1263,58 +1308,71 @@ document.addEventListener("keydown", function(e){
   }
 });
   let currentStep = 0;
-
 const steps = document.querySelectorAll(".step");
-const stepTitle = document.getElementById("stepTitle");
-const stepSub = document.getElementById("stepSub");
 
-    window.showStep = function(index){
-      const steps = document.querySelectorAll(".step");
-    
-      steps.forEach(s => s.classList.remove("active"));
-      steps[index].classList.add("active");
-    
-      const stepSub = document.getElementById("stepSub");
-      const stepTitle = document.getElementById("stepTitle");
-      const progressFill = document.getElementById("stepProgressFill");
-    
-      stepSub.innerText = "Step " + (index+1) + " of 6";
-    
-      const titles = [
-        "Your Identity",
-        "Contact Details",
-        "Services",
-        "Uploads",
-        "Delivery Details",
-        "Review & Activate"
-      ];
-    
-      stepTitle.innerText = titles[index];
-    
-      const progressPercent = ((index + 1) / steps.length) * 100;
-      progressFill.style.width = progressPercent + "%";
-    }
+function openOrderModal(){
+  document.getElementById("orderModal").classList.add("show");
+  document.body.style.overflow = "hidden";
 
-window.nextStep = function(){
-  if(currentStep < steps.length - 1){
-    currentStep++;
-    showStep(currentStep);
+  document.getElementById("summaryPlan").innerText = selectedPlan;
+  document.getElementById("summaryCard").innerText = selectedCard;
+  document.getElementById("summaryPrice").innerText =
+    "₱" + (basePrices[selectedPlan] + cardPrice).toLocaleString();
 
-    // 🔥 Change button text on last step
-    if(currentStep === steps.length - 1){
-      document.getElementById("nextBtn").innerText = "Activate My Card";
-    } else {
-      document.getElementById("nextBtn").innerText = "Next";
-    }
+  const isPro = selectedPlan === "pro" || selectedPlan === "elite";
+  document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
 
-  } else {
-    // 🔥 FINAL STEP → SUBMIT YOUR EXISTING LOGIC
-    
-    document.getElementById("orderForm").dispatchEvent(new Event("submit"));
+  showStep(0);
+}
+
+function closeOrderModal(){
+  document.getElementById("orderModal").classList.remove("show");
+  document.body.style.overflow = "auto";
+}
+
+function handleOutsideClick(e){
+  if(!document.querySelector(".modal-box").contains(e.target)){
+    closeOrderModal();
   }
 }
 
-window.prevStep = function(){
+function showStep(index){
+  steps.forEach(s => s.classList.remove("active"));
+  steps[index].classList.add("active");
+
+  document.getElementById("stepSub").innerText = `Step ${index+1} of 6`;
+
+  const titles = [
+    "Your Identity",
+    "Contact Details",
+    "Services",
+    "Uploads",
+    "Shipping Details",
+    "Review"
+  ];
+
+  document.getElementById("stepTitle").innerText = titles[index];
+
+  document.getElementById("progressFill").style.width =
+    ((index+1)/6)*100 + "%";
+
+  document.getElementById("backBtn").style.display = index === 0 ? "none" : "block";
+
+  document.getElementById("nextBtn").innerText =
+    index === 5 ? "Activate My Card" : "Next";
+}
+
+function nextStep(){
+  if(currentStep < steps.length - 1){
+    currentStep++;
+    showStep(currentStep);
+  }else{
+    document.getElementById("orderForm")
+      .dispatchEvent(new Event("submit"));
+  }
+}
+
+function prevStep(){
   if(currentStep > 0){
     currentStep--;
     showStep(currentStep);
@@ -1326,22 +1384,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
   
-<!-- ===== ORDER MODAL START ===== -->
-<form id="orderForm" class="modal-content">
-  <div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
+<!-- MODAL -->
+<div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
 
-  <div class="modal-content">
+  <div class="modal-box">
 
     <span class="close-btn" onclick="closeOrderModal()">&times;</span>
 
-    <h2 id="stepTitle">Activate Your Card</h2>
+    <!-- HEADER -->
+    <h2 id="stepTitle">Your Identity</h2>
     <p class="modal-sub" id="stepSub">Step 1 of 6</p>
 
-    <div class="step-progress">
-      <div class="step-progress-fill" id="stepProgressFill"></div>
+    <!-- PROGRESS -->
+    <div class="progress">
+      <div class="progress-fill" id="progressFill"></div>
     </div>
 
-    <!-- ✅ FORM START -->
+    <!-- FORM (ONLY ONE) -->
     <form id="orderForm">
 
       <!-- STEP 1 -->
@@ -1354,41 +1413,62 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="step">
         <input type="email" id="email" placeholder="Email Address" required>
         <input type="text" id="phone" placeholder="Phone Number" required>
+        <input type="text" id="facebook" placeholder="Facebook URL">
+        <input type="text" id="instagram" placeholder="Instagram URL">
+        <input type="text" id="website" placeholder="Website / Portfolio URL">
       </div>
 
       <!-- STEP 3 -->
       <div class="step">
         <input type="text" id="service1" placeholder="Service 1">
         <input type="text" id="service2" placeholder="Service 2">
+        <input type="text" id="service3" placeholder="Service 3">
+        <input type="text" id="service4" placeholder="Service 4">
       </div>
 
       <!-- STEP 4 -->
       <div class="step">
-        <input type="file" id="profilePhoto">
+        <label>Profile Photo</label>
+        <input type="file" id="profilePhoto" accept="image/*" required>
+
+        <div id="highlightUpload">
+          <label>Highlight 1</label>
+          <input type="file" id="highlightPhoto1">
+
+          <label>Highlight 2</label>
+          <input type="file" id="highlightPhoto2">
+
+          <label>Highlight 3</label>
+          <input type="file" id="highlightPhoto3">
+        </div>
       </div>
 
       <!-- STEP 5 -->
       <div class="step">
-        <input type="text" id="address" placeholder="Address">
+        <input type="text" id="address" placeholder="Full Address" required>
+        <input type="text" id="city" placeholder="City">
+        <input type="text" id="notes" placeholder="Additional Notes">
       </div>
 
       <!-- STEP 6 -->
       <div class="step">
-        <div class="order-summary">
-          <p id="summaryPlan"></p>
-          <p id="summaryCard"></p>
-          <p id="summaryPrice"></p>
+        <div class="summary">
+          <div><strong>Plan:</strong> <span id="summaryPlan"></span></div>
+          <div><strong>Card:</strong> <span id="summaryCard"></span></div>
+          <div><strong>Total:</strong> <span id="summaryPrice"></span></div>
         </div>
       </div>
 
       <!-- NAV -->
-      <div style="display:flex; gap:10px; margin-top:15px;">
-        <button type="button" class="modal-btn" onclick="prevStep()">Back</button>
-        <button type="button" class="modal-btn" id="nextBtn" onclick="nextStep()">Next</button>
+      <div class="nav">
+        <button type="button" onclick="prevStep()" id="backBtn">Back</button>
+        <button type="button" onclick="nextStep()" id="nextBtn">Next</button>
       </div>
 
     </form>
-    <!-- ✅ FORM END -->
+
+  </div>
+</div>
 
   </div>
 </div>
