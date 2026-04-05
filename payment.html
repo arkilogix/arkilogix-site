@@ -43,7 +43,7 @@ h1{
 .label{
   font-size:12px;
   color:#999;
-  margin-bottom:5px;
+  margin-top:10px;
 }
 
 .value{
@@ -75,11 +75,6 @@ h1{
   cursor:pointer;
 }
 
-.btn.secondary{
-  background:#eee;
-  color:#000;
-}
-
 .upload{
   margin-top:10px;
 }
@@ -88,6 +83,13 @@ h1{
   font-size:12px;
   color:#666;
   margin-top:10px;
+}
+
+.note{
+  font-size:11px;
+  color:#888;
+  margin-top:10px;
+  line-height:1.4;
 }
 </style>
 </head>
@@ -101,18 +103,24 @@ h1{
 
   <!-- ORDER SUMMARY -->
   <div class="section">
+
     <div class="label">Plan</div>
     <div class="value" id="plan">Loading...</div>
 
+    <div class="label">Card Type</div>
+    <div class="value" id="card">Loading...</div>
+
     <div class="label">Total</div>
     <div class="value" id="price">₱0</div>
+
   </div>
 
   <!-- GCASH -->
   <div class="payment-box">
+
     <div class="label">GCash</div>
 
-    <!-- Replace with your real QR -->
+    <!-- 🔥 Replace with your real QR -->
     <img src="gcash-qr.png" class="qr">
 
     <div class="value">0917-XXX-XXXX</div>
@@ -123,15 +131,12 @@ h1{
     <button class="btn" onclick="submitPayment()">Confirm Payment</button>
 
     <div class="status" id="status"></div>
-  </div>
 
-  <!-- BANK -->
-  <div class="payment-box">
-    <div class="label">Bank Transfer</div>
+    <div class="note">
+      We’ll verify your payment within 24 hours.<br>
+      Your NFC card will be processed after confirmation.
+    </div>
 
-    <div class="value">BPI</div>
-    <div class="value">1234 5678 90</div>
-    <div class="value">Your Name</div>
   </div>
 
 </div>
@@ -139,9 +144,9 @@ h1{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 CONFIG (same as index)
+// 🔥 Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -151,7 +156,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔥 GET clientId from URL
+// 🔥 Get clientId
 const params = new URLSearchParams(window.location.search);
 const clientId = params.get("clientId");
 
@@ -160,7 +165,7 @@ if(!clientId){
   window.location.href = "index.html";
 }
 
-// 🔥 LOAD DATA FROM FIREBASE
+// 🔥 Load Data
 async function loadData(){
 
   const docRef = doc(db, "clients", clientId);
@@ -173,17 +178,35 @@ async function loadData(){
 
   const data = snap.data();
 
-  // 🔥 DISPLAY DATA
   document.getElementById("plan").innerText = data.plan?.toUpperCase() || "-";
+  document.getElementById("card").innerText = data.card?.toUpperCase() || "-";
   document.getElementById("price").innerText = "₱" + (data.price || 0).toLocaleString();
-
 }
 
 loadData();
 
 
-// 🔥 PAYMENT SUBMIT
-window.submitPayment = function(){
+// 🔥 CLOUDINARY UPLOAD
+async function uploadProof(file){
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "nfc_upload");
+  formData.append("folder", `nfc-clients/${clientId}`);
+  formData.append("public_id", "payment-proof");
+
+  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+  return data.secure_url;
+}
+
+
+// 🔥 SUBMIT PAYMENT
+window.submitPayment = async function(){
 
   const file = document.getElementById("proof").files[0];
 
@@ -192,19 +215,31 @@ window.submitPayment = function(){
     return;
   }
 
-  document.getElementById("status").innerText = "Uploading...";
+  const status = document.getElementById("status");
+  status.innerText = "Uploading proof...";
 
-  // 🔥 TEMP (we will connect Cloudinary next)
-  setTimeout(() => {
+  try{
 
-    document.getElementById("status").innerText =
-      "Payment submitted. We’ll verify within 24 hours.";
+    const url = await uploadProof(file);
+
+    status.innerText = "Saving payment...";
+
+    // 🔥 SAVE TO FIREBASE
+    await updateDoc(doc(db, "clients", clientId), {
+      paymentStatus: "submitted",
+      paymentProof: url
+    });
+
+    status.innerText = "Payment submitted! Redirecting...";
 
     setTimeout(() => {
       window.location.href = "signup.html?clientId=" + clientId;
     }, 1500);
 
-  }, 1500);
+  }catch(err){
+    console.error(err);
+    alert("Upload failed. Try again.");
+  }
 }
 
 </script>
