@@ -25,7 +25,14 @@
     </div>
 
     <input id="search" class="search" placeholder="Search clients...">
-    <button class="btn primary" onclick="openModal()">+ New Client</button>
+
+    <button class="new-btn" onclick="openModal()">
+      <svg viewBox="0 0 24 24">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      <span>New</span>
+    </button>
   </div>
 
   <!-- ANALYTICS -->
@@ -41,11 +48,11 @@
 
   <!-- FILTERS -->
   <div class="filters">
-    <button onclick="setFilter('all')" class="filter active">All</button>
-    <button onclick="setFilter('basic')" class="filter">Basic</button>
-    <button onclick="setFilter('pro')" class="filter">Pro</button>
-    <button onclick="setFilter('elite')" class="filter">Elite</button>
-    <button onclick="setFilter('disabled')" class="filter">Disabled</button>
+    <button onclick="setFilter(event,'all')" class="filter active">All</button>
+    <button onclick="setFilter(event,'basic')" class="filter">Basic</button>
+    <button onclick="setFilter(event,'pro')" class="filter">Pro</button>
+    <button onclick="setFilter(event,'elite')" class="filter">Elite</button>
+    <button onclick="setFilter(event,'disabled')" class="filter">Disabled</button>
   </div>
 
   <!-- GRID -->
@@ -53,7 +60,7 @@
 
 </div>
 
-<!-- MODALS -->
+<!-- CREATE / EDIT MODAL -->
 <div id="modal" class="modal">
   <div class="modal-content">
     <input id="name" placeholder="Name">
@@ -72,14 +79,17 @@
   </div>
 </div>
 
+<!-- UPGRADE MODAL -->
 <div id="upgradeModal" class="modal">
   <div class="modal-content">
     <h3>Upgrade Plan</h3>
+
     <select id="upgradePlan">
       <option value="basic">Basic</option>
       <option value="pro">Pro</option>
       <option value="elite">Elite</option>
     </select>
+
     <button class="btn gold" onclick="confirmUpgrade()">Confirm</button>
     <button class="btn" onclick="closeUpgrade()">Cancel</button>
   </div>
