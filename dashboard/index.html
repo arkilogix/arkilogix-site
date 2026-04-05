@@ -3,149 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Arkilogix Dashboard</title>
-<link rel="icon" type="image/png" href="../logo.png">
+
+<title>ArkiLogix Admin</title>
+
+<link rel="icon" href="../logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-<style>
-body {
-  margin:0;
-  font-family:'Inter', sans-serif;
-  background:#f5f7fb;
-}
-
-/* LAYOUT */
-.layout { display:flex; }
-
-/* SIDEBAR */
-.sidebar {
-  width:240px;
-  background:#111;
-  color:#fff;
-  height:100vh;
-  padding:25px;
-}
-
-.sidebar h2 { margin-bottom:30px; }
-
-.sidebar button {
-  width:100%;
-  padding:12px;
-  background:#222;
-  border:none;
-  border-radius:8px;
-  color:#fff;
-  cursor:pointer;
-}
-
-/* MAIN */
-.main {
-  flex:1;
-  padding:30px;
-}
-
-/* HEADER */
-.header {
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:20px;
-}
-
-.search {
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ddd;
-}
-
-/* ANALYTICS */
-.analytics {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
-  margin-bottom:25px;
-}
-
-.card-box {
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-}
-
-.card-box h3 { font-size:13px; color:#888; }
-.card-box p { font-size:24px; font-weight:600; }
-
-/* CLIENTS */
-.clients {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:20px;
-}
-
-.client-card {
-  background:#fff;
-  padding:16px;
-  border-radius:12px;
-}
-
-.actions { margin-top:10px; display:flex; gap:6px; }
-
-button.edit { background:#1677ff; color:#fff; }
-button.delete { background:#ff4d4f; color:#fff; }
-
-/* MODAL */
-.modal {
-  display:none;
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.4);
-  justify-content:center;
-  align-items:center;
-}
-
-.modal-content {
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  width:300px;
-}
-</style>
+<link rel="stylesheet" href="dashboard.css">
 </head>
 
 <body>
 
-<div class="layout">
+<div class="dashboard">
 
-<div class="sidebar">
-  <h2>Arkilogix</h2>
-  <button onclick="openModal()">+ New Client</button>
-</div>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">ArkiLogix Admin</div>
 
-<div class="main">
+    <input id="search" class="search" placeholder="Search clients...">
 
-<div class="header">
-  <h2>Dashboard</h2>
-  <input id="search" class="search" placeholder="Search...">
-</div>
+    <button class="btn primary" onclick="openModal()">+ New Client</button>
+  </div>
 
-<div class="analytics">
-  <div class="card-box"><h3>Total Clients</h3><p id="totalClients">0</p></div>
-  <div class="card-box"><h3>Total Views</h3><p id="totalViews">0</p></div>
-  <div class="card-box"><h3>Total Taps</h3><p id="totalTaps">0</p></div>
-  <div class="card-box"><h3>Top Client</h3><p id="topClient">-</p></div>
-</div>
+  <!-- ANALYTICS -->
+  <div class="analytics">
+    <div class="glass stat">
+      <h3>Total Clients</h3>
+      <p id="totalClients">0</p>
+    </div>
 
-<div id="clientsContainer" class="clients"></div>
+    <div class="glass stat">
+      <h3>Total Views</h3>
+      <p id="totalViews">0</p>
+    </div>
 
-</div>
+    <div class="glass stat">
+      <h3>Total Taps</h3>
+      <p id="totalTaps">0</p>
+    </div>
+
+    <div class="glass stat">
+      <h3>Top Client</h3>
+      <p id="topClient">-</p>
+    </div>
+  </div>
+
+  <!-- CLIENT GRID -->
+  <div id="clientsContainer" class="clients"></div>
+
 </div>
 
 <!-- MODAL -->
 <div id="modal" class="modal">
   <div class="modal-content">
+
     <input id="name" placeholder="Name">
     <input id="position" placeholder="Position">
     <input id="email" placeholder="Email">
@@ -157,11 +68,13 @@ button.delete { background:#ff4d4f; color:#fff; }
       <option value="elite">Elite</option>
     </select>
 
-    <button onclick="saveClient()">Save</button>
-    <button onclick="closeModal()">Cancel</button>
+    <button class="btn primary" onclick="saveClient()">Save</button>
+    <button class="btn" onclick="closeModal()">Cancel</button>
+
   </div>
 </div>
 
 <script type="module" src="dashboard.js"></script>
+
 </body>
 </html>
