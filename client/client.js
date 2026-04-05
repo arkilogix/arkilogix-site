@@ -187,30 +187,67 @@ function prevStep(){
 /* =========================
    IMAGE UPLOAD
 ========================= */
-const imageInput = $("imageInput");
+const CLOUD_NAME = "dnlzwtkhs";
+const UPLOAD_PRESET = "arkilogix_profile";
+
+const imageInput = document.getElementById("imageInput");
+
+// trigger file input on click
+document.querySelectorAll(".profile-upload, .change-photo-btn").forEach(el=>{
+  el.addEventListener("click", ()=>{
+    if(imageInput) imageInput.click();
+  });
+});
 
 if(imageInput){
-  imageInput.addEventListener("change", async (e)=>{
+  imageInput.addEventListener("change", async (e) => {
+
     const file = e.target.files[0];
     if(!file) return;
 
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("upload_preset", UPLOAD_PRESET);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
 
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{
-      method:"POST",
-      body:fd
-    });
+    try{
 
-    const data = await res.json();
-    profileImageUrl = data.secure_url;
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData
+        }
+      );
 
-    if($("modalImage")) $("modalImage").src = profileImageUrl;
-    if($("headerProfile")) $("headerProfile").src = profileImageUrl;
+      const data = await res.json();
+
+      if(!data.secure_url){
+        console.error(data);
+        alert("Upload failed");
+        return;
+      }
+
+      const imageUrl = data.secure_url;
+
+      profileImageUrl = imageUrl;
+
+      // update modal
+      const modalImg = document.getElementById("modalImage");
+      if(modalImg) modalImg.src = imageUrl;
+
+      // update header
+      const headerProfile = document.getElementById("headerProfile");
+      if(headerProfile) headerProfile.src = imageUrl;
+
+      imageInput.value = "";
+
+    }catch(err){
+      console.error(err);
+      alert("Upload failed");
+    }
+
   });
 }
-
 /* =========================
    SERVICES
 ========================= */
