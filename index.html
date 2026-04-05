@@ -1362,17 +1362,19 @@ function showStep(index){
     index === 5 ? "Activate My Card" : "Next";
 }
 
-function nextStep(){
+window.nextStep = function(){
+  const steps = document.querySelectorAll(".step");
+
   if(currentStep < steps.length - 1){
     currentStep++;
     showStep(currentStep);
-  }else{
+  } else {
     document.getElementById("orderForm")
       .dispatchEvent(new Event("submit"));
   }
 }
 
-function prevStep(){
+window.prevStep = function(){
   if(currentStep > 0){
     currentStep--;
     showStep(currentStep);
