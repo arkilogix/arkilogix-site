@@ -703,6 +703,27 @@ form#orderForm::-webkit-scrollbar-thumb{
   .hidden {
   display: none !important;
 }
+  .step{
+  display:none;
+}
+
+.step.active{
+  display:block;
+}
+
+.locked{
+  opacity:0.5;
+  border:1px dashed #ccc;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+.locked small{
+  display:block;
+  font-size:11px;
+  margin-top:5px;
+}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
@@ -1299,123 +1320,143 @@ document.addEventListener("keydown", function(e){
     }
   }
 });
+  let currentStep = 0;
+
+const steps = document.querySelectorAll(".step");
+const stepTitle = document.getElementById("stepTitle");
+const stepSub = document.getElementById("stepSub");
+
+function showStep(index){
+  steps.forEach(s => s.classList.remove("active"));
+  steps[index].classList.add("active");
+
+  stepSub.innerText = "Step " + (index+1) + " of 6";
+
+  const titles = [
+    "Your Identity",
+    "Contact Details",
+    "Services",
+    "Uploads",
+    "Delivery Details",
+    "Review & Activate"
+  ];
+
+  stepTitle.innerText = titles[index];
+}
+
+function nextStep(){
+  if(currentStep < steps.length - 1){
+    currentStep++;
+    showStep(currentStep);
+  } else {
+    alert("Ready for activation (connect this to your submit logic)");
+  }
+}
+
+function prevStep(){
+  if(currentStep > 0){
+    currentStep--;
+    showStep(currentStep);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  showStep(0);
+});
 </script>
   
 <!-- ===== ORDER MODAL START ===== -->
+<!-- ===== ORDER MODAL START ===== -->
 <div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
 
-  <div class="modal-content" id="formContent">
-    
+  <div class="modal-content">
+
     <span class="close-btn" onclick="closeOrderModal()">&times;</span>
 
-    <h2>Confirm Your Order</h2>
-    <p class="modal-sub">You're one step away from your NFC business card</p>
+    <h2 id="stepTitle">Activate Your Card</h2>
+    <p class="modal-sub" id="stepSub">Step 1 of 6</p>
 
-    <!-- 🔥 ORDER SUMMARY -->
-    <div class="order-summary">
-
-      <div class="summary-row">
-        <span>Plan:</span>
-        <strong id="summaryPlan">Pro</strong>
-      </div>
-
-      <div class="summary-row">
-        <span>Card:</span>
-        <strong id="summaryCard">Black</strong>
-      </div>
-
-      <div class="summary-row total-row">
-        <span>Total:</span>
-        <strong id="summaryPrice">₱1,199</strong>
-      </div>
-
-    </div>
-
-    <div class="urgency">
-      ⚡ Limited slots available this week
-    </div>
-
-    <!-- FORM -->
-    <form id="orderForm">
-<!-- 🔥 PROGRESS UI -->
-<div class="progress-box" id="progressBox" style="display:none;">
-  <div class="progress-text" id="progressText">Preparing order...</div>
-  <div class="progress-bar">
-    <div class="progress-fill" id="progressFill"></div>
-  </div>
-</div>
+    <!-- STEP 1 -->
+    <div class="step active">
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="text" id="position" placeholder="Profession / Position" required>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
       <input type="email" id="email" placeholder="Email Address" required>
       <input type="text" id="phone" placeholder="Phone Number" required>
       <input type="text" id="facebook" placeholder="Facebook URL">
       <input type="text" id="instagram" placeholder="Instagram URL">
-      <input type="text" id="website" placeholder="Website / Portfolio URL">
-      <div id="aboutSection" style="display:none;">
-  <textarea id="notes" placeholder="About You (optional)"></textarea>
-</div>
 
-<div id="servicesSection">
+      <div class="locked">
+        <input type="text" placeholder="Website / Portfolio (Pro Feature)" disabled>
+        <small>🔒 Upgrade to Pro</small>
+      </div>
+    </div>
 
-  <label class="upload-label">Services (up to 4)</label>
+    <!-- STEP 3 -->
+    <div class="step">
+      <input type="text" placeholder="Service 1">
+      <input type="text" placeholder="Service 2">
+      <input type="text" placeholder="Service 3">
+      <input type="text" placeholder="Service 4">
 
-  <input type="text" id="service1" placeholder="Service 1">
-  <input type="text" id="service2" placeholder="Service 2">
-  <input type="text" id="service3" placeholder="Service 3">
-  <input type="text" id="service4" placeholder="Service 4">
+      <div class="locked">
+        <input type="text" placeholder="+ Add Service (Pro Feature)" disabled>
+        <small>🔒 Unlimited services in Pro</small>
+      </div>
+    </div>
 
-</div>
-<div class="upload-box">
+    <!-- STEP 4 -->
+    <div class="step">
 
-<label class="upload-label">Profile Photo</label>
-<input type="file" id="profilePhoto" accept="image/*" required>
+      <label>Profile Photo</label>
+      <input type="file" id="profilePhoto" accept="image/*">
 
-<div id="highlightUpload" style="display:none;">
+      <div class="locked">
+        <label>Banner Image</label>
+        <input type="file" disabled>
+        <small>🔒 Pro Feature</small>
+      </div>
 
-  <label class="upload-label">Project Highlight 1</label>
-  <input type="file" id="highlightPhoto1" accept="image/*">
+      <div class="locked">
+        <label>Project Highlights</label>
+        <input type="file" disabled>
+        <input type="file" disabled>
+        <input type="file" disabled>
+        <small>🔒 Available in Pro / Elite</small>
+      </div>
 
-  <label class="upload-label">Project Highlight 2</label>
-  <input type="file" id="highlightPhoto2" accept="image/*">
+    </div>
 
-  <label class="upload-label">Project Highlight 3</label>
-  <input type="file" id="highlightPhoto3" accept="image/*">
+    <!-- STEP 5 -->
+    <div class="step">
+      <input type="text" placeholder="Full Address">
+      <input type="text" placeholder="City">
+      <input type="text" placeholder="Province">
+      <input type="text" placeholder="ZIP Code">
+    </div>
 
-</div>
+    <!-- STEP 6 -->
+    <div class="step">
+      <div class="order-summary">
+        <p><strong>Review your card details</strong></p>
+        <p id="summaryPlan"></p>
+        <p id="summaryCard"></p>
+        <p id="summaryPrice"></p>
+      </div>
+    </div>
 
-</div>
-<button type="submit" class="modal-btn" id="submitBtn">
-  Secure My NFC Card
-</button>
-
-    </form>
-
-    <div class="trust">
-      ✔ We’ll contact you within 24 hours  
-      ✔ No app required  
-      ✔ Works on iPhone & Android
+    <!-- NAV -->
+    <div style="display:flex; gap:10px; margin-top:15px;">
+      <button type="button" class="modal-btn" onclick="prevStep()">Back</button>
+      <button type="button" class="modal-btn" onclick="nextStep()">Next</button>
     </div>
 
   </div>
-<!-- SUCCESS SCREEN -->
-<div class="modal-content" id="successContent">
-
-<h2>✅ Order Received</h2>
-<p>
-Thank you! Please proceed with payment.  
-Your digital card will be activated after confirmation.
-</p>
-
-    <input id="clientLinkBox" readonly
-      style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;">
-
-    <button onclick="copyLink()" class="modal-btn">
-      Copy Link
-    </button>
-
-  </div>
 </div>
-  
+<!-- ===== ORDER MODAL END ===== -->
 <!-- ===== ORDER MODAL END ===== -->
 </body>
 </html>
