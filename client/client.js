@@ -113,17 +113,33 @@ window.closeModal = closeModal;
 ========================= */
 function showStep(step){
 
+  if(step < 1) step = 1;
+  if(step > TOTAL_STEPS) step = TOTAL_STEPS;
+
   currentStep = step;
 
+  // HIDE ALL
   document.querySelectorAll(".step").forEach(s=>{
     s.style.display = "none";
   });
 
+  // SHOW ACTIVE
   const active = document.querySelector(`.step[data-step="${step}"]`);
   if(active){
     active.style.display = "block";
   }
 
+  // 🔥 PROGRESS BARS
+  const bars = document.querySelectorAll(".bar-step");
+  bars.forEach((b,i)=>{
+    if(i < currentStep){
+      b.classList.add("active");
+    }else{
+      b.classList.remove("active");
+    }
+  });
+
+  // HEADER TEXT
   if($("stepIndicator")){
     $("stepIndicator").innerText = `${step} / ${TOTAL_STEPS}`;
   }
@@ -139,8 +155,16 @@ function showStep(step){
     $("stepTitle").innerText = titles[step];
   }
 
-  if($("nextBtn")){
-    $("nextBtn").innerText = step === TOTAL_STEPS ? "Finish" : "Next";
+  // BUTTON TEXT + VISIBILITY
+  const nextBtn = $("nextBtn");
+  const backBtn = document.querySelector(".step-actions .secondary");
+
+  if(nextBtn){
+    nextBtn.innerText = step === TOTAL_STEPS ? "Finish" : "Next";
+  }
+
+  if(backBtn){
+    backBtn.style.visibility = step === 1 ? "hidden" : "visible";
   }
 }
 
