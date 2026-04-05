@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>ArkiLogix Admin</title>
 
 <link rel="icon" href="../logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="dashboard.css">
 </head>
 
@@ -16,6 +14,7 @@
 
 <div class="dashboard">
 
+  <!-- HEADER -->
   <div class="header">
     <div class="brand">
       <img src="../logo.png" class="logo-img">
@@ -26,17 +25,30 @@
     </div>
 
     <input id="search" class="search" placeholder="Search clients...">
-
     <button class="btn primary" onclick="openModal()">+ New Client</button>
   </div>
 
+  <!-- ANALYTICS -->
   <div class="analytics">
-    <div class="glass stat"><h3>Total Clients</h3><p id="totalClients">0</p></div>
-    <div class="glass stat"><h3>Total Views</h3><p id="totalViews">0</p></div>
-    <div class="glass stat"><h3>Total Taps</h3><p id="totalTaps">0</p></div>
-    <div class="glass stat"><h3>Top Client</h3><p id="topClient">-</p></div>
+    <div class="glass stat"><h3>Clients</h3><p id="totalClients">0</p></div>
+    <div class="glass stat"><h3>Views</h3><p id="totalViews">0</p></div>
+    <div class="glass stat"><h3>Taps</h3><p id="totalTaps">0</p></div>
+    <div class="glass stat"><h3>Top</h3><p id="topClient">-</p></div>
   </div>
 
+  <!-- TOP CLIENT -->
+  <div id="topCard" class="top-card glass"></div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <button onclick="setFilter('all')" class="filter active">All</button>
+    <button onclick="setFilter('basic')" class="filter">Basic</button>
+    <button onclick="setFilter('pro')" class="filter">Pro</button>
+    <button onclick="setFilter('elite')" class="filter">Elite</button>
+    <button onclick="setFilter('disabled')" class="filter">Disabled</button>
+  </div>
+
+  <!-- GRID -->
   <div id="clientsContainer" class="clients"></div>
 
 </div>
@@ -63,13 +75,11 @@
 <div id="upgradeModal" class="modal">
   <div class="modal-content">
     <h3>Upgrade Plan</h3>
-
     <select id="upgradePlan">
       <option value="basic">Basic</option>
       <option value="pro">Pro</option>
       <option value="elite">Elite</option>
     </select>
-
     <button class="btn gold" onclick="confirmUpgrade()">Confirm</button>
     <button class="btn" onclick="closeUpgrade()">Cancel</button>
   </div>
