@@ -123,41 +123,79 @@
 
 <!-- EDIT PROFILE MODAL -->
 <div id="editModal" class="modal">
-  <div class="modal-content glass">
+  <div class="modal-content glass step-modal">
 
-    <h2>Edit Profile</h2>
-
-    <!-- PROFILE IMAGE -->
-    <div class="profile-upload" onclick="document.getElementById('imageInput').click()">
-      <img id="modalImage" src="" />
-      <div class="upload-label">Change Photo</div>
-    </div>
-    <input type="file" id="imageInput" accept="image/*" hidden>
-
-    <!-- NAME -->
-    <input id="editName" placeholder="Full Name">
-
-    <!-- POSITION -->
-    <input id="editPosition" placeholder="Position">
-
-    <!-- SERVICES -->
-    <div id="servicesEdit"></div>
-    <button class="add-service-btn" onclick="addServiceField()">+ Add Service</button>
-    <small class="helper">Add services people might search for</small>
-
-    <!-- PROFILE STRENGTH -->
-    <div class="strength">
-      Profile Strength: <span id="strengthValue">0%</span>
+    <!-- STEP HEADER -->
+    <div class="step-header">
+      <span id="stepTitle">Step 1: Identity</span>
+      <span id="stepIndicator">1 / 4</span>
     </div>
 
-    <!-- ACTIONS -->
-    <div class="modal-actions">
-      <button class="btn secondary" onclick="closeModal()">Cancel</button>
-      <button id="saveBtn" class="btn primary" onclick="saveProfile()">Save</button>
+    <!-- STEP 1: IDENTITY -->
+    <div class="step active" data-step="1">
+
+      <div class="profile-upload-wrap">
+        <div class="profile-upload" onclick="document.getElementById('imageInput').click()">
+          <img id="modalImage" src="">
+        </div>
+
+        <button class="change-photo-btn" onclick="document.getElementById('imageInput').click()">
+          Change Photo
+        </button>
+      </div>
+
+      <input id="editName" placeholder="Full Name">
+      <input id="editPosition" placeholder="Profession">
+
+    </div>
+
+    <!-- STEP 2: CONTACTS -->
+    <div class="step" data-step="2">
+
+      <input id="contactPhone" placeholder="Phone Number">
+      <input id="contactEmail" placeholder="Email">
+      <input id="contactFacebook" placeholder="Facebook Link">
+      <input id="contactInstagram" placeholder="Instagram Link">
+
+    </div>
+
+    <!-- STEP 3: SERVICES -->
+    <div class="step" data-step="3">
+
+      <div id="servicesEdit"></div>
+
+      <button class="add-service-btn" onclick="addServiceField()">+ Add Service</button>
+
+      <small class="helper">Max 3 for Basic users</small>
+
+    </div>
+
+    <!-- STEP 4: UPGRADE -->
+    <div class="step" data-step="4">
+
+      <h3>Unlock More Features</h3>
+      <p style="opacity:.6;margin-bottom:15px;">
+        Add more services, links, and customization
+      </p>
+
+      <button class="btn primary" onclick="openUpgrade()">Upgrade to Pro</button>
+      <button class="btn secondary" onclick="closeModal()">Skip for now</button>
+
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="step-actions">
+
+      <button class="btn secondary" onclick="prevStep()">Back</button>
+
+      <button class="btn primary" id="nextBtn" onclick="nextStep()">Next</button>
+
     </div>
 
   </div>
 </div>
+
+<input type="file" id="imageInput" accept="image/*" hidden>
 
 </body>
 </html>
