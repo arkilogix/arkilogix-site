@@ -7,7 +7,6 @@ import {
 const container = document.getElementById("clientsContainer");
 
 let clients = [];
-let editingId = null;
 let upgradeId = null;
 
 /* LOAD */
@@ -25,17 +24,7 @@ async function loadClients() {
 function render(data) {
   container.innerHTML = "";
 
-  let totalViews = 0, totalTaps = 0, topViews = 0, topClient = "-";
-
   data.forEach(c => {
-
-    totalViews += c.views || 0;
-    totalTaps += c.taps || 0;
-
-    if ((c.views || 0) > topViews) {
-      topViews = c.views;
-      topClient = c.name;
-    }
 
     const initials = (c.name || "")
       .split(" ")
@@ -69,39 +58,55 @@ function render(data) {
         <div class="divider"></div>
 
         <div class="client-stats">
-          <span>Views ${c.views || 0}</span>
-          <span>Taps ${c.taps || 0}</span>
+          <div class="stat-item">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            ${c.views || 0}
+          </div>
+
+          <div class="stat-item">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M4 4l7 17 2-7 7-2z"></path>
+            </svg>
+            ${c.taps || 0}
+          </div>
         </div>
 
         <div class="divider"></div>
 
         <div class="client-actions">
 
-          <button class="icon-btn" onclick="openClient('${c.id}')">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M14 3h7v7"></path>
-              <path d="M10 14L21 3"></path>
-              <path d="M21 14v7h-7"></path>
-              <path d="M3 10l11 11"></path>
-            </svg>
-          </button>
+          <div class="actions-left">
 
-          <button class="btn" onclick="editClient('${c.id}')">Edit</button>
+            <button class="icon-btn open" onclick="openClient('${c.id}')">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M14 3h7v7"></path>
+                <path d="M10 14L21 3"></path>
+                <path d="M3 10v11h11"></path>
+              </svg>
+            </button>
 
-          <button class="icon-btn" onclick="deleteClient('${c.id}')">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M3 6h18"></path>
-              <path d="M8 6v12"></path>
-              <path d="M16 6v12"></path>
-            </svg>
-          </button>
+            <button class="btn" onclick="editClient('${c.id}')">Edit</button>
 
-          <button class="icon-btn" onclick="toggleDisable('${c.id}', ${c.disabled})">
-            <svg class="icon" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="4" y1="4" x2="20" y2="20"></line>
-            </svg>
-          </button>
+            <button class="icon-btn delete" onclick="deleteClient('${c.id}')">
+              <svg class="icon" viewBox="0 0 24 24">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+              </svg>
+            </button>
+
+            <button class="icon-btn disable" onclick="toggleDisable('${c.id}', ${c.disabled})">
+              <svg class="icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="4" y1="4" x2="20" y2="20"></line>
+              </svg>
+            </button>
+
+          </div>
 
           <button class="btn gold" onclick="openUpgrade('${c.id}')">
             ${c.plan === "elite" ? "✔ Elite" : "Upgrade"}
@@ -112,28 +117,26 @@ function render(data) {
       </div>
     `;
   });
-
-  document.getElementById("totalClients").textContent = data.length;
-  document.getElementById("totalViews").textContent = totalViews;
-  document.getElementById("totalTaps").textContent = totalTaps;
-  document.getElementById("topClient").textContent = topClient;
 }
 
-/* CRUD */
-async function saveClient() { /* same as before */ }
-async function deleteClient(id) {
-  await updateDoc(doc(db, "clients", id), { deleted:true });
+/* ACTIONS */
+async function deleteClient(id){
+  await updateDoc(doc(db,"clients",id),{ deleted:true });
   loadClients();
 }
 
-async function toggleDisable(id, state){
-  await updateDoc(doc(db,"clients",id),{ disabled: !state });
+async function toggleDisable(id,state){
+  await updateDoc(doc(db,"clients",id),{ disabled:!state });
   loadClients();
+}
+
+function openClient(id){
+  window.open(`/card.html?id=${id}`,"_blank");
 }
 
 /* UPGRADE */
 function openUpgrade(id){
-  upgradeId = id;
+  upgradeId=id;
   upgradeModal.style.display="flex";
 }
 
@@ -142,21 +145,17 @@ function closeUpgrade(){
 }
 
 async function confirmUpgrade(){
-  const newPlan = upgradePlan.value;
-  await updateDoc(doc(db,"clients",upgradeId),{ plan:newPlan });
+  await updateDoc(doc(db,"clients",upgradeId),{
+    plan: upgradePlan.value
+  });
   closeUpgrade();
   loadClients();
 }
 
-/* OPEN */
-function openClient(id){
-  window.open(`/card.html?id=${id}`,"_blank");
-}
-
 /* GLOBAL */
-window.openClient=openClient;
 window.deleteClient=deleteClient;
 window.toggleDisable=toggleDisable;
+window.openClient=openClient;
 window.openUpgrade=openUpgrade;
 window.closeUpgrade=closeUpgrade;
 window.confirmUpgrade=confirmUpgrade;
