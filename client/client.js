@@ -24,9 +24,9 @@ const TOTAL_STEPS = 4;
 
 /* CLOUDINARY */
 const CLOUD_NAME = "dnlzwtkhs";
-const UPLOAD_PRESET = "arkilogix_profile";
+const UPLOAD_PRESET = "arkilogix";
 
-/* SAFE GETTERS */
+/* HELPER */
 const $ = (id) => document.getElementById(id);
 
 /* AUTH */
@@ -39,10 +39,11 @@ onAuthStateChanged(auth, async (user) => {
     }, 300);
     return;
   }
+
   loadDashboard(user);
 });
 
-/* LOAD */
+/* LOAD DASHBOARD */
 async function loadDashboard(user){
   const snap = await getDoc(doc(db, "clients", user.uid));
 
@@ -76,8 +77,37 @@ async function loadDashboard(user){
   renderLinks();
 }
 
-/* MODAL */
+/* =========================
+   FIX BUTTONS (IMPORTANT)
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+  const editBtn = document.querySelector(".actions .btn");
+
+  if(editBtn){
+    editBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      openModal();
+    });
+  }
+
+  const profileBtn = document.querySelector(".user-profile");
+
+  if(profileBtn){
+    profileBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      openModal();
+    });
+  }
+
+});
+
+/* =========================
+   MODAL
+========================= */
 function openModal(){
+  if(!$("editModal")) return;
+
   $("editModal").style.display = "flex";
 
   if($("editName")) $("editName").value = currentData.name || "";
@@ -90,11 +120,13 @@ function openModal(){
 }
 
 function closeModal(){
-  $("editModal").style.display = "none";
+  if($("editModal")) $("editModal").style.display = "none";
 }
 window.closeModal = closeModal;
 
-/* STEP SYSTEM */
+/* =========================
+   STEP SYSTEM
+========================= */
 function showStep(step){
 
   if(step < 1) step = 1;
@@ -137,8 +169,11 @@ function prevStep(){
   }
 }
 
-/* IMAGE UPLOAD */
+/* =========================
+   IMAGE UPLOAD
+========================= */
 const imageInput = $("imageInput");
+
 if(imageInput){
   imageInput.addEventListener("change", async (e)=>{
     const file = e.target.files[0];
@@ -164,11 +199,14 @@ if(imageInput){
 
     }catch(e){
       console.error(e);
+      alert("Upload failed");
     }
   });
 }
 
-/* SERVICES */
+/* =========================
+   SERVICES
+========================= */
 function renderServicesEdit(){
   const container = $("servicesEdit");
   if(!container) return;
@@ -206,7 +244,9 @@ function addServiceField(value=""){
 }
 window.addServiceField = addServiceField;
 
-/* SAVE */
+/* =========================
+   SAVE PROFILE
+========================= */
 async function saveProfile(){
 
   const name = $("editName")?.value || "";
@@ -226,11 +266,12 @@ async function saveProfile(){
   closeModal();
 }
 
-/* LINKS */
+/* =========================
+   LINKS (SAFE)
+========================= */
 function renderLinks(){
   const container = $("linksContainer");
   if(!container) return;
-
   container.innerHTML = "";
 }
 function addLink(){}
@@ -239,14 +280,18 @@ function saveLinks(){}
 window.addLink = addLink;
 window.saveLinks = saveLinks;
 
-/* VIEW */
+/* =========================
+   VIEW CARD
+========================= */
 function viewCard(){
   const uid = auth.currentUser.uid;
   window.open(`/view/basic.html?id=${uid}`,"_blank");
 }
 window.viewCard = viewCard;
 
-/* LOGOUT */
+/* =========================
+   LOGOUT
+========================= */
 const logoutBtn = document.querySelector(".logout");
 if(logoutBtn){
   logoutBtn.addEventListener("click",()=>{
