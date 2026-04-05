@@ -9,38 +9,27 @@
 
 <style>
 
-/* ===== COLOR SYSTEM ===== */
-:root{
-  --bg: #f5f5f7;
-  --card: #ffffff;
-  --text: #111;
-  --subtext: #6b7280;
-  --border: #e5e7eb;
-  --black: #111;
-}
-
 /* ===== BASE ===== */
 body{
   margin:0;
   font-family:'Inter', sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  padding-bottom:120px;
+  background:#f5f5f7;
+  color:#111;
 }
 
 /* ===== CONTAINER ===== */
 .wrapper{
   max-width:430px;
-  margin:0 auto;
-  background:var(--card);
+  margin:auto;
+  background:#fff;
   min-height:100vh;
+  padding-bottom:120px;
 }
 
 /* ===== HERO ===== */
 .hero{
   position:relative;
   height:260px;
-  overflow:hidden;
 }
 
 .hero img{
@@ -55,24 +44,13 @@ body{
   width:100%;
   padding:16px;
   background:linear-gradient(transparent, rgba(0,0,0,0.6));
-}
-
-.highlight-title{
-  font-size:15px;
-  font-weight:600;
   color:#fff;
-}
-
-.company{
-  font-size:12px;
-  color:#ddd;
 }
 
 /* ===== PROFILE ===== */
 .profile{
   text-align:center;
   margin-top:-60px;
-  padding:0 20px;
 }
 
 .profile img{
@@ -84,18 +62,10 @@ body{
   box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
-.name{
-  font-size:20px;
-  font-weight:600;
-  margin-top:10px;
-}
+.name{font-size:20px;font-weight:600;margin-top:10px;}
+.position{font-size:13px;color:#666;}
 
-.position{
-  font-size:13px;
-  color:var(--subtext);
-}
-
-/* ===== ACTION ICONS ===== */
+/* ===== ACTIONS ===== */
 .actions{
   display:flex;
   justify-content:center;
@@ -104,125 +74,92 @@ body{
 }
 
 .icon-btn{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  background:linear-gradient(145deg,#ffffff,#e9edf3);
-  border:1px solid var(--border);
-
-  box-shadow:
-    inset 0 2px 4px rgba(255,255,255,0.9),
-    inset 0 -3px 6px rgba(0,0,0,0.08),
-    0 6px 15px rgba(0,0,0,0.08);
-
-  transition:.25s;
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff;border:1px solid #eee;
+  box-shadow:0 6px 15px rgba(0,0,0,0.08);
+  transition:.2s;
 }
 
 .icon-btn svg{
   width:20px;
   height:20px;
   stroke:#5b6f8f;
+  fill:none;
+  stroke-width:2;
 }
 
-/* ===== BUTTON SYSTEM ===== */
+.icon-btn:active{
+  transform:scale(0.95);
+}
+
+/* ===== BUTTONS ===== */
 .center{
   display:flex;
-  justify-content:center;
-  margin-top:15px;
+  flex-direction:column;
+  gap:10px;
+  margin:15px 20px;
 }
 
 .btn{
-  padding:12px 24px;
+  padding:14px;
   border-radius:30px;
-
-  background:linear-gradient(145deg,#ffffff,#e9edf3);
-  border:1px solid var(--border);
-
-  box-shadow:
-    inset 0 2px 4px rgba(255,255,255,0.9),
-    inset 0 -3px 6px rgba(0,0,0,0.08),
-    0 6px 15px rgba(0,0,0,0.08);
-
+  text-align:center;
   text-decoration:none;
-  color:var(--text);
   font-size:14px;
-  font-weight:500;
 }
 
-/* ===== SECTION TITLE ===== */
-.section-title{
-  margin:30px 20px 10px;
-  font-size:14px;
-  color:var(--subtext);
+.btn.primary{
+  background:#111;
+  color:#fff;
 }
 
-/* ===== GALLERY (SCROLL) ===== */
+.btn.secondary{
+  background:#f3f4f6;
+  color:#111;
+  border:1px solid #e5e7eb;
+}
+
+/* ===== PROJECTS ===== */
 .projects{
-  display:flex;
-  gap:14px;
-  overflow-x:auto;
-  padding:0 20px 25px;
+  margin-top:25px;
+  padding:0 20px;
 }
 
-.projects img{
-  height:200px;
-  border-radius:16px;
+.project-card{
+  margin-bottom:16px;
+}
+
+.project-card img{
+  width:100%;
+  height:220px;
   object-fit:cover;
+  border-radius:16px;
+  cursor:pointer;
 }
 
-/* ===== CTA GLASS ===== */
+/* ===== CTA ===== */
 .cta-wrap{
   position:fixed;
   bottom:0;
-  left:50%;
-  transform:translateX(-50%);
   width:100%;
   max-width:430px;
-
-  padding:12px 16px 20px;
-
-  background:rgba(255,255,255,0.6);
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(255,255,255,0.7);
   backdrop-filter:blur(12px);
-  border-top:1px solid var(--border);
-}
-
-.cta{
-  display:flex;
-  justify-content:center;
+  padding:12px;
 }
 
 .cta a{
-  width:100%;
-  max-width:360px;
-  text-align:center;
+  display:block;
+  background:#111;
+  color:#fff;
   padding:16px;
   border-radius:50px;
-
-  background:var(--black);
-  color:#fff;
+  text-align:center;
   text-decoration:none;
   font-weight:600;
-}
-
-/* ===== FOOTER ===== */
-.footer{
-  text-align:center;
-  padding:40px 20px 120px;
-}
-
-.footer img{
-  width:60px;
-  opacity:0.7;
-}
-
-.footer-text{
-  font-size:11px;
-  letter-spacing:1.5px;
-  color:#9ca3af;
 }
 
 </style>
@@ -236,8 +173,8 @@ body{
 <div class="hero">
   <img id="highlightImage">
   <div class="hero-overlay">
-    <div id="highlightTitle" class="highlight-title"></div>
-    <div id="company" class="company"></div>
+    <div id="highlightTitle"></div>
+    <div id="company"></div>
   </div>
 </div>
 
@@ -250,37 +187,49 @@ body{
 
 <!-- ACTIONS -->
 <div class="actions">
-  <a id="phoneBtn" class="icon-btn"></a>
-  <a id="smsBtn" class="icon-btn"></a>
-  <a id="emailBtn" class="icon-btn"></a>
+
+  <!-- PHONE -->
+  <a id="phoneBtn" class="icon-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M22 16.92V21a2 2 0 0 1-2.18 2
+      19.79 19.79 0 0 1-8.63-3.07
+      19.5 19.5 0 0 1-6-6
+      19.79 19.79 0 0 1-3.07-8.67
+      A2 2 0 0 1 3 2h4.09
+      a2 2 0 0 1 2 1.72
+      c.12.9.37 1.78.73 2.6
+      a2 2 0 0 1-.45 2.11L8.09 9.91
+      a16 16 0 0 0 6 6l1.48-1.28
+      a2 2 0 0 1 2.11-.45
+      c.82.36 1.7.61 2.6.73
+      A2 2 0 0 1 22 16.92z"/>
+    </svg>
+  </a>
+
+  <!-- EMAIL -->
+  <a id="emailBtn" class="icon-btn">
+    <svg viewBox="0 0 24 24">
+      <rect x="4" y="4" width="16" height="16"/>
+      <path d="M22 6l-10 7L2 6"/>
+    </svg>
+  </a>
+
 </div>
 
-<!-- SAVE -->
+<!-- BUTTONS -->
 <div class="center">
-  <a id="saveContact" class="btn">Save Contact</a>
+  <a id="saveContact" class="btn primary">Save Contact</a>
+  <a id="portfolioBtn" class="btn secondary" target="_blank">View Portfolio</a>
 </div>
 
-<!-- TITLE -->
-<div class="section-title">Project Highlights</div>
-
-<!-- GALLERY -->
-<div class="projects">
-  <img id="project1">
-  <img id="project2">
-  <img id="project3">
-</div>
+<!-- PROJECTS -->
+<div class="projects" id="projects"></div>
 
 <!-- CTA -->
 <div class="cta-wrap">
   <div class="cta">
-    <a id="ctaBtn">Book a Shoot</a>
+    <a id="ctaBtn">Work With Me</a>
   </div>
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-  <img src="../logo.png">
-  <div class="footer-text">POWERED BY ARKILOGIX</div>
 </div>
 
 </div>
@@ -302,42 +251,68 @@ const db = getFirestore(app);
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-let currentPlan = "basic";
-
 async function loadUser(){
 
+  if(!id) return;
+
   const snap = await getDoc(doc(db, "clients", id));
+  if(!snap.exists()) return;
 
-  if(snap.exists()){
-    const data = snap.data();
-    currentPlan = data.plan || "basic";
-  }
-}
+  const data = snap.data();
 
-/* ELITE LOCK */
-window.openGallery = function(){
-
-  if(currentPlan !== "elite"){
-    showModal("Upgrade to Elite to unlock gallery ✨");
+  /* BLOCK DISABLED */
+  if (data.status === "disabled") {
+    document.body.innerHTML = "<h2 style='text-align:center;margin-top:50px;'>Account Disabled</h2>";
     return;
   }
 
-  // actual gallery logic later
-};
+  /* PROFILE */
+  document.getElementById("name").innerText = data.name || "";
+  document.getElementById("position").innerText = data.position || "";
+  document.getElementById("profileImage").src = data.profile || "";
 
-/* MODAL */
-function showModal(msg){
-  document.getElementById("modal").classList.add("active");
-  document.querySelector("#modal p").innerText = msg;
+  /* HERO */
+  document.getElementById("highlightImage").src =
+    data.projectImages?.[0] || data.profile || "";
+
+  document.getElementById("highlightTitle").innerText = data.position || "";
+  document.getElementById("company").innerText = data.company || "";
+
+  /* ACTIONS */
+  if(data.phone){
+    document.getElementById("phoneBtn").href = "tel:" + data.phone;
+  } else {
+    document.getElementById("phoneBtn").style.display = "none";
+  }
+
+  if(data.email){
+    document.getElementById("emailBtn").href = "mailto:" + data.email;
+  } else {
+    document.getElementById("emailBtn").style.display = "none";
+  }
+
+  /* PORTFOLIO BUTTON */
+  if(data.website){
+    document.getElementById("portfolioBtn").href = data.website;
+  } else {
+    document.getElementById("portfolioBtn").style.display = "none";
+  }
+
+  /* PROJECTS */
+  const container = document.getElementById("projects");
+  container.innerHTML = "";
+
+  (data.projectImages || []).forEach(img => {
+    const div = document.createElement("div");
+    div.className = "project-card";
+
+    div.innerHTML = `<img src="${img}" onclick="window.open('${img}')">`;
+
+    container.appendChild(div);
+  });
+
 }
 
-window.closeModal = function(){
-  document.getElementById("modal").classList.remove("active");
-};
-if (data.status === "disabled") {
-  document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>Account Disabled</h2>";
-  return;
-}
 loadUser();
 
 </script>
