@@ -215,6 +215,73 @@ document.getElementById("editPosition").addEventListener("input", e=>{
 });
 
 /* ========================= */
+/* IMAGE UPLOAD */
+/* ========================= */
+
+const imageInput = document.getElementById("imageInput");
+
+if(imageInput){
+  imageInput.addEventListener("change", (e) => {
+
+    const file = e.target.files[0];
+    if(!file) return;
+
+    /* ========================= */
+/* IMAGE UPLOAD (CLOUDINARY) */
+/* ========================= */
+
+const CLOUD_NAME = "dnlzwtkhs";
+const UPLOAD_PRESET = "arkilogix-client";
+
+const imageInput = document.getElementById("imageInput");
+
+if(imageInput){
+  imageInput.addEventListener("change", async (e) => {
+
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    try{
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData
+        }
+      );
+
+      const data = await res.json();
+
+      const imageUrl = data.secure_url;
+
+      // SAVE TEMP
+      profileImageUrl = imageUrl;
+
+      // UPDATE UI
+      document.getElementById("modalImage").src = imageUrl;
+
+      const headerProfile = document.getElementById("headerProfile");
+      if(headerProfile){
+        headerProfile.src = imageUrl;
+      }
+
+    }catch(err){
+      alert("Upload failed");
+      console.error(err);
+    }
+
+  });
+}
+
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ========================= */
 /* SERVICES EDIT */
 /* ========================= */
 
