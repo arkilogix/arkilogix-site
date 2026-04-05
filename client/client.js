@@ -33,7 +33,7 @@ let profileImageUrl = "";
 
 /* CLOUDINARY */
 const CLOUD_NAME = "dnlzwtkhs";
-const UPLOAD_PRESET = "arkilogix-client";
+const UPLOAD_PRESET = "arkilogix";
 
 /* ELEMENTS */
 const userName = document.getElementById("userName");
