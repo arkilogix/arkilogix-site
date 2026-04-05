@@ -30,10 +30,11 @@ const db = getFirestore(app);
 /* STATE */
 let currentData = {};
 let profileImageUrl = "";
+let currentStep = 1;
 
 /* CLOUDINARY */
 const CLOUD_NAME = "dnlzwtkhs";
-const UPLOAD_PRESET = "arkilogix";
+const UPLOAD_PRESET = "arkilogix_profile";
 
 /* ELEMENTS */
 const userName = document.getElementById("userName");
@@ -108,15 +109,20 @@ async function loadDashboard(user){
   const taps = stats.taps || 0;
   const clicks = stats.clicks || 0;
 
-  viewsEl.textContent = views;
-  tapsEl.textContent = taps;
-  clicksEl.textContent = clicks;
+  if(viewsEl) viewsEl.textContent = views;
+  if(tapsEl) tapsEl.textContent = taps;
+  if(clicksEl) clicksEl.textContent = clicks;
 
   const max = Math.max(views, taps, clicks, 1);
 
-  document.getElementById("viewsBar").style.width = (views / max * 100) + "%";
-  document.getElementById("tapsBar").style.width = (taps / max * 100) + "%";
-  document.getElementById("clicksBar").style.width = (clicks / max * 100) + "%";
+  if(document.getElementById("viewsBar"))
+    document.getElementById("viewsBar").style.width = (views / max * 100) + "%";
+
+  if(document.getElementById("tapsBar"))
+    document.getElementById("tapsBar").style.width = (taps / max * 100) + "%";
+
+  if(document.getElementById("clicksBar"))
+    document.getElementById("clicksBar").style.width = (clicks / max * 100) + "%";
 
   renderLinks();
   applyPlan(data.plan || "basic");
@@ -129,7 +135,8 @@ function applyPlan(plan){
   if(plan === "basic"){
     statsCards.forEach(c => {
       c.classList.add("locked");
-      c.querySelector("p").innerText = "—";
+      const p = c.querySelector("p");
+      if(p) p.innerText = "—";
       c.onclick = openUpgrade;
     });
   } else {
@@ -139,7 +146,7 @@ function applyPlan(plan){
     });
   }
 
-  if(plan === "elite"){
+  if(plan === "elite" && upgradeBtn){
     upgradeBtn.style.display = "none";
   }
 }
@@ -174,8 +181,14 @@ if(profileBtn){
 function openModal(){
   document.getElementById("editModal").style.display = "flex";
 
-  document.getElementById("editName").value = currentData.name || "";
-  document.getElementById("editPosition").value = currentData.position || "";
+  const nameInput = document.getElementById("editName");
+  const posInput = document.getElementById("editPosition");
+
+  if(nameInput) nameInput.value = currentData.name || "";
+  if(posInput) posInput.value = currentData.position || "";
+
+  currentStep = 1;
+  showStep(1);
 
   renderServicesEdit();
   updateServiceLimitUI();
@@ -188,12 +201,19 @@ function closeModal(){
 window.closeModal = closeModal;
 
 /* LIVE PREVIEW */
-document.getElementById("editName").addEventListener("input", e=>{
-  cardName.textContent = e.target.value || "Name";
-});
-document.getElementById("editPosition").addEventListener("input", e=>{
-  cardPosition.textContent = e.target.value || "Position";
-});
+const nameInput = document.getElementById("editName");
+if(nameInput){
+  nameInput.addEventListener("input", e=>{
+    cardName.textContent = e.target.value || "Name";
+  });
+}
+
+const posInput = document.getElementById("editPosition");
+if(posInput){
+  posInput.addEventListener("input", e=>{
+    cardPosition.textContent = e.target.value || "Position";
+  });
+}
 
 /* IMAGE UPLOAD */
 const imageInput = document.getElementById("imageInput");
@@ -219,11 +239,14 @@ if(imageInput){
 
       profileImageUrl = imageUrl;
 
-      document.getElementById("modalImage").src = imageUrl;
+      const modalImg = document.getElementById("modalImage");
+      if(modalImg) modalImg.src = imageUrl;
 
       if(headerProfile){
         headerProfile.src = imageUrl;
       }
+
+      imageInput.value = "";
 
     }catch(err){
       console.error(err);
@@ -235,6 +258,8 @@ if(imageInput){
 /* SERVICES */
 function renderServicesEdit(){
   const container = document.getElementById("servicesEdit");
+  if(!container) return;
+
   container.innerHTML = "";
 
   (currentData.services || []).forEach(s => addServiceField(s));
@@ -247,6 +272,7 @@ function renderServicesEdit(){
 function addServiceField(value=""){
 
   const container = document.getElementById("servicesEdit");
+  if(!container) return;
 
   const currentCount = container.querySelectorAll("input").length;
   const plan = currentData.plan || "basic";
@@ -274,7 +300,7 @@ function updateServiceLimitUI(){
   const container = document.getElementById("servicesEdit");
   const addBtn = document.querySelector(".add-service-btn");
 
-  if(!addBtn) return;
+  if(!container || !addBtn) return;
 
   const count = container.querySelectorAll("input").length;
   const plan = currentData.plan || "basic";
@@ -292,14 +318,15 @@ function updateServiceLimitUI(){
 async function saveProfile(){
 
   const saveBtn = document.getElementById("saveBtn");
+  if(!saveBtn) return;
 
   saveBtn.disabled = true;
   saveBtn.innerText = "Saving...";
 
   try{
 
-    const name = document.getElementById("editName").value;
-    const position = document.getElementById("editPosition").value;
+    const name = document.getElementById("editName")?.value || "";
+    const position = document.getElementById("editPosition")?.value || "";
 
     let services = [...document.querySelectorAll("#servicesEdit input")]
       .map(i => i.value)
@@ -374,6 +401,7 @@ function renderLinks(){
 
 function addLink(data = {}){
   const container = document.getElementById("linksContainer");
+  if(!container) return;
 
   if((currentData.plan || "basic") === "basic"){
     openUpgrade();
@@ -433,8 +461,8 @@ window.viewCard = viewCard;
 function updateStrength(){
   let score = 0;
 
-  const name = document.getElementById("editName").value;
-  const position = document.getElementById("editPosition").value;
+  const name = document.getElementById("editName")?.value || "";
+  const position = document.getElementById("editPosition")?.value || "";
 
   const services = [...document.querySelectorAll("#servicesEdit input")]
     .map(i => i.value)
@@ -445,13 +473,62 @@ function updateStrength(){
   if(services.length >= 3) score += 25;
   if(profileImageUrl) score += 25;
 
-  document.getElementById("strengthValue").textContent = score + "%";
+  const el = document.getElementById("strengthValue");
+  if(el) el.textContent = score + "%";
 }
 window.updateStrength = updateStrength;
 
-/* LOGOUT */
-document.querySelector(".logout").addEventListener("click", () => {
-  signOut(auth).then(() => {
-    window.location.href = "/auth/login.html";
+/* STEPS */
+function showStep(step){
+
+  document.querySelectorAll(".step").forEach(s=>{
+    s.classList.remove("active");
   });
-});
+
+  const current = document.querySelector(`.step[data-step="${step}"]`);
+  if(current) current.classList.add("active");
+
+  const indicator = document.getElementById("stepIndicator");
+  if(indicator) indicator.innerText = `${step} / 4`;
+
+  const titles = {
+    1: "Step 1: Identity",
+    2: "Step 2: Contacts",
+    3: "Step 3: Services",
+    4: "Upgrade"
+  };
+
+  const title = document.getElementById("stepTitle");
+  if(title) title.innerText = titles[step];
+
+  const nextBtn = document.getElementById("nextBtn");
+
+  if(nextBtn){
+    nextBtn.innerText = step === 4 ? "Finish" : "Next";
+  }
+}
+
+function nextStep(){
+  if(currentStep === 4){
+    saveProfile();
+    return;
+  }
+  currentStep++;
+  showStep(currentStep);
+}
+
+function prevStep(){
+  if(currentStep === 1) return;
+  currentStep--;
+  showStep(currentStep);
+}
+
+/* LOGOUT */
+const logoutBtn = document.querySelector(".logout");
+if(logoutBtn){
+  logoutBtn.addEventListener("click", () => {
+    signOut(auth).then(() => {
+      window.location.href = "/auth/login.html";
+    });
+  });
+}
