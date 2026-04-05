@@ -1218,7 +1218,9 @@ params.services = [
     const highlight2 = document.getElementById("highlightPhoto2").files[0];
     const highlight3 = document.getElementById("highlightPhoto3").files[0];
 
-      if(!profile) throw "Please upload a profile photo";
+      if(selectedPlan === "basic" && !profile){
+        throw "Please upload a profile photo";
+      }
 
       updateProgress("Uploading profile...", 25);
       params.profile = await uploadToCloudinary(profile, clientId, "profile");
@@ -1348,8 +1350,17 @@ function nextStep(){
   if(currentStep < steps.length - 1){
     currentStep++;
     showStep(currentStep);
+
+    // 🔥 Change button text on last step
+    if(currentStep === steps.length - 1){
+      document.getElementById("nextBtn").innerText = "Activate My Card";
+    } else {
+      document.getElementById("nextBtn").innerText = "Next";
+    }
+
   } else {
-    alert("Ready for activation (connect this to your submit logic)");
+    // 🔥 FINAL STEP → SUBMIT YOUR EXISTING LOGIC
+    document.getElementById("orderForm").dispatchEvent(new Event("submit"));
   }
 }
 
@@ -1366,10 +1377,9 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
   
 <!-- ===== ORDER MODAL START ===== -->
-<!-- ===== ORDER MODAL START ===== -->
 <div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
 
-  <div class="modal-content">
+  <form id="orderForm" class="modal-content">
 
     <span class="close-btn" onclick="closeOrderModal()">&times;</span>
 
@@ -1397,10 +1407,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <!-- STEP 3 -->
     <div class="step">
-      <input type="text" placeholder="Service 1">
-      <input type="text" placeholder="Service 2">
-      <input type="text" placeholder="Service 3">
-      <input type="text" placeholder="Service 4">
+      <input type="text" id="service1" placeholder="Service 1">
+      <input type="text" id="service2" placeholder="Service 2">
+      <input type="text" id="service3" placeholder="Service 3">
+      <input type="text" id="service4" placeholder="Service 4">
 
       <div class="locked">
         <input type="text" placeholder="+ Add Service (Pro Feature)" disabled>
@@ -1432,10 +1442,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <!-- STEP 5 -->
     <div class="step">
-      <input type="text" placeholder="Full Address">
-      <input type="text" placeholder="City">
-      <input type="text" placeholder="Province">
-      <input type="text" placeholder="ZIP Code">
+      <input type="text" id="address" placeholder="Full Address">
+      <input type="text" id="city" placeholder="City">
+      <input type="text" id="province" placeholder="Province">
+      <input type="text" id="zip" placeholder="ZIP Code">
     </div>
 
     <!-- STEP 6 -->
@@ -1451,10 +1461,10 @@ document.addEventListener("DOMContentLoaded", () => {
     <!-- NAV -->
     <div style="display:flex; gap:10px; margin-top:15px;">
       <button type="button" class="modal-btn" onclick="prevStep()">Back</button>
-      <button type="button" class="modal-btn" onclick="nextStep()">Next</button>
+      <button type="button" class="modal-btn" id="nextBtn" onclick="nextStep()">Next</button>
     </div>
 
-  </div>
+  </form>
 </div>
 <!-- ===== ORDER MODAL END ===== -->
 <!-- ===== ORDER MODAL END ===== -->
