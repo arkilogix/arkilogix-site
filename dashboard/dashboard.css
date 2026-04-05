@@ -1,30 +1,251 @@
-body {
-  font-family: Inter, sans-serif;
-  background: #f5f5f5;
-  margin: 0;
+/* BASE */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  background: black;
-  color: white;
+body{
+background:
+radial-gradient(circle at 20% 0%, rgba(62,198,211,0.08), transparent 40%),
+radial-gradient(circle at 80% 100%, rgba(201,169,110,0.05), transparent 40%),
+#050607;
+color:#fff;
 }
 
-#clientsContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-  padding: 20px;
+/* LAYOUT */
+.dashboard{
+max-width:1200px;
+margin:auto;
+padding:20px;
 }
 
-.card {
-  background: white;
-  padding: 16px;
-  border-radius: 12px;
+/* HEADER */
+.header{
+display:flex;
+gap:10px;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
 }
 
-.modal {
-  display: none;
+.logo{
+font-size:18px;
+font-weight:600;
+}
+
+.search{
+flex:1;
+padding:10px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.1);
+background:rgba(255,255,255,0.05);
+color:#fff;
+}
+
+/* BUTTONS */
+.btn{
+padding:10px 14px;
+border:none;
+border-radius:10px;
+background:rgba(255,255,255,0.05);
+color:#fff;
+cursor:pointer;
+transition:.2s;
+}
+
+.btn:hover{
+background:rgba(255,255,255,0.1);
+}
+
+.btn.primary{
+background:linear-gradient(135deg,#3EC6D3,#2aa7b3);
+color:#001418;
+font-weight:600;
+}
+
+.btn.primary:hover{
+box-shadow:0 0 20px rgba(62,198,211,0.4);
+}
+
+.btn.danger{
+background:rgba(255,0,0,0.12);
+color:#ff4d4f;
+}
+
+.btn.danger:hover{
+background:#ff4d4f;
+color:#fff;
+}
+
+/* GLASS */
+.glass{
+background:rgba(255,255,255,0.03);
+border:1px solid rgba(255,255,255,0.06);
+border-radius:18px;
+padding:20px;
+backdrop-filter:blur(16px);
+box-shadow:
+0 10px 40px rgba(0,0,0,0.6),
+inset 0 1px 0 rgba(255,255,255,0.04);
+transition:.25s;
+}
+
+.glass:hover{
+transform:translateY(-2px);
+box-shadow:
+0 20px 60px rgba(0,0,0,0.8);
+}
+
+/* ANALYTICS */
+.analytics{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+margin-bottom:25px;
+}
+
+.stat{
+text-align:center;
+}
+
+.stat h3{
+font-size:12px;
+color:#9ca3af;
+}
+
+.stat p{
+font-size:24px;
+font-weight:600;
+}
+
+/* CLIENT GRID */
+.clients{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:18px;
+}
+
+/* CLIENT CARD */
+.client-card{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+/* HEADER */
+.client-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.client-left{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:linear-gradient(135deg,#3EC6D3,#2aa7b3);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:600;
+color:#001418;
+}
+
+.client-info h3{
+font-size:14px;
+}
+
+.client-info p{
+font-size:12px;
+color:#9ca3af;
+}
+
+/* BADGE */
+.badge{
+padding:5px 10px;
+border-radius:999px;
+font-size:11px;
+}
+
+.badge.basic{
+background:rgba(255,255,255,0.08);
+}
+
+.badge.pro{
+background:rgba(62,198,211,0.15);
+color:#3EC6D3;
+}
+
+.badge.elite{
+background:rgba(201,169,110,0.15);
+color:#C9A96E;
+}
+
+/* DIVIDER */
+.divider{
+height:1px;
+background:rgba(255,255,255,0.06);
+}
+
+/* STATS */
+.client-stats{
+display:flex;
+justify-content:space-between;
+}
+
+.stat-box{
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.stat-box strong{
+font-size:16px;
+}
+
+.stat-box small{
+font-size:11px;
+color:#9ca3af;
+}
+
+/* ACTIONS */
+.client-actions{
+display:flex;
+gap:8px;
+}
+
+/* MODAL */
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.7);
+justify-content:center;
+align-items:center;
+}
+
+.modal-content{
+width:350px;
+padding:20px;
+border-radius:18px;
+background:rgba(10,12,14,0.95);
+border:1px solid rgba(255,255,255,0.08);
+}
+
+.modal input{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.1);
+background:rgba(255,255,255,0.05);
+color:#fff;
 }
