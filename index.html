@@ -873,12 +873,11 @@ No problem. You can still share your card using a direct link.
 </div>
 </div>
 
-<script type="module">
-// 🔥 FIREBASE IMPORTS
+  <script type="module">
+// ================= FIREBASE =================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -888,34 +887,32 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ================= INIT ================= */
+// ================= INIT =================
 (function(){
   emailjs.init("Wp1sOcLJH-dg_dkLs");
 })();
 
-/* ================= STATE ================= */
+// ================= STATE =================
 const basePrices = { basic:599, pro:1199, elite:1999 };
 
 let selectedPlan = "pro";
 let selectedCard = "white";
 let cardPrice = 0;
+let currentStep = 0;
 
-/* ================= HELPERS ================= */
-
+// ================= HELPERS =================
 const formatPeso = val => "₱" + val.toLocaleString();
 
+// ================= CLOUDINARY =================
 async function uploadToCloudinary(file, clientId, type){
-
   if(!file) return "";
 
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", "nfc_upload");
-
   formData.append("folder", `nfc-clients/${clientId}`);
   formData.append("public_id", type);
-
-  formData.append("overwrite", "true"); // ✅ ADD HERE
+  formData.append("overwrite", "true");
 
   const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
     method: "POST",
@@ -926,38 +923,16 @@ async function uploadToCloudinary(file, clientId, type){
   return data.secure_url;
 }
 
-/* ================= PRICE ================= */
-function animatePrice(el, start, end){
-  const duration = 300;
-  let startTime = null;
-
-  function update(t){
-    if(!startTime) startTime = t;
-    const progress = Math.min((t - startTime) / duration, 1);
-    const value = Math.floor(start + (end - start) * progress);
-
-    el.innerText = formatPeso(value);
-
-    if(progress < 1) requestAnimationFrame(update);
-  }
-
-  requestAnimationFrame(update);
-}
-
+// ================= PRICE =================
 function updateTotal(){
-  const service = basePrices[selectedPlan];
-  const total = service + cardPrice;
+  const total = basePrices[selectedPlan] + cardPrice;
 
-  document.getElementById("servicePrice").innerText = formatPeso(service);
+  document.getElementById("servicePrice").innerText = formatPeso(basePrices[selectedPlan]);
   document.getElementById("cardPriceDisplay").innerText = formatPeso(cardPrice);
-
-  const totalEl = document.getElementById("totalPrice");
-  const current = parseInt(totalEl.innerText.replace(/[^\d]/g,'')) || 0;
-
-  animatePrice(totalEl, current, total);
+  document.getElementById("totalPrice").innerText = formatPeso(total);
 }
 
-/* ================= PLAN ================= */
+// ================= PLAN =================
 window.setPlan = function(plan,index,el){
   document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
   el.classList.add("active");
@@ -966,41 +941,9 @@ window.setPlan = function(plan,index,el){
 
   selectedPlan = plan;
   updateTotal();
-
-  const phoneImage = document.getElementById("phoneImage");
-  const phoneBox = document.getElementById("phoneBox");
-  const previewServices = document.getElementById("previewServices");
-  const previewAbout = document.getElementById("previewAbout");
-
-  phoneBox.classList.remove("basic","pro","elite");
-  phoneBox.classList.add(plan);
-
-  if(plan==="basic"){
-    phoneImage.src="phone-basic.png";
-    previewServices.classList.remove("hidden");
-    previewAbout.classList.add("hidden");
-  } else if(plan==="pro"){
-    phoneImage.src="phone-pro.png";
-    previewServices.classList.add("hidden");
-    previewAbout.classList.remove("hidden");
-  } else {
-    phoneImage.src="phone-elite.png";
-    previewServices.classList.add("hidden");
-    previewAbout.classList.add("hidden");
-  }
-  
-  if(plan === "basic"){
-    phoneImage.src = "phone-basic.png";
-  } 
-  else if(plan === "pro"){
-    phoneImage.src = "phone-pro.png";
-  } 
-  else {
-    phoneImage.src = "phone-elite.png";
-  }
 }
 
-/* ================= CARD ================= */
+// ================= CARD =================
 window.selectCard = function(price,el,type){
   cardPrice = price;
   selectedCard = type;
@@ -1008,334 +951,56 @@ window.selectCard = function(price,el,type){
   document.querySelectorAll(".card-options button").forEach(b=>b.classList.remove("active"));
   el.classList.add("active");
 
-  const cardDisplay = document.getElementById("cardDisplay");
-
-  cardDisplay.style.opacity = "0.7";
-
-  setTimeout(()=>{
-    cardDisplay.src = type + "-front.png";
-    cardDisplay.style.opacity = "1";
-  },150);
+  document.getElementById("cardDisplay").src = type + "-front.png";
 
   updateTotal();
 }
 
-/* ================= PREVIEW ================= */
-document.getElementById("inputName").oninput = e => document.getElementById("previewName").innerText = e.target.value || "Juan Dela Cruz";
-document.getElementById("inputProfession").oninput = e => document.getElementById("previewProfession").innerText = e.target.value || "Architect";
-document.getElementById("inputCompany").oninput = e => document.getElementById("previewCompany").innerText = e.target.value || "Your Arch Studio";
-document.getElementById("inputAbout").oninput = e => document.getElementById("previewAbout").innerText = e.target.value || "About";
+// ================= PREVIEW =================
+document.getElementById("inputName").oninput = e =>
+  document.getElementById("previewName").innerText = e.target.value || "Juan Dela Cruz";
 
-/* ================= FAQ ================= */
-window.toggleFAQ = function(el){
-  el.classList.toggle("active");
-}
+document.getElementById("inputProfession").oninput = e =>
+  document.getElementById("previewProfession").innerText = e.target.value || "Architect";
 
-/* ================= MODAL ================= */
+document.getElementById("inputCompany").oninput = e =>
+  document.getElementById("previewCompany").innerText = e.target.value || "Your Arch Studio";
+
+document.getElementById("inputAbout").oninput = e =>
+  document.getElementById("previewAbout").innerText = e.target.value || "About";
+
+// ================= FAQ =================
+window.toggleFAQ = el => el.classList.toggle("active");
+
+// ================= MODAL =================
 window.openOrderModal = function(){
   document.getElementById("orderModal").classList.add("show");
   document.body.style.overflow = "hidden";
 
   document.getElementById("summaryPlan").innerText = selectedPlan;
   document.getElementById("summaryCard").innerText = selectedCard;
-  document.getElementById("summaryPrice").innerText = formatPeso(basePrices[selectedPlan] + cardPrice);
+  document.getElementById("summaryPrice").innerText =
+    formatPeso(basePrices[selectedPlan] + cardPrice);
 
   const isPro = selectedPlan==="pro" || selectedPlan==="elite";
-
-  const highlightUpload = document.getElementById("highlightUpload");
-  if(highlightUpload){
-    highlightUpload.style.display = isPro ? "block" : "none";
-  }
-  
-  const aboutSection = document.getElementById("aboutSection");
-  if(aboutSection){
-    aboutSection.style.display = isPro ? "block" : "none";
-  }
-
-  const formContent = document.getElementById("formContent");
-  if(formContent){
-    formContent.classList.remove("hidden");
-  }
-  
-  const successContent = document.getElementById("successContent");
-  if(successContent){
-    successContent.classList.add("hidden");
-  }
-  
-}
-
-window.closeOrderModal = function(){
-  const btn = document.getElementById("submitBtn");
-  if(btn && btn.classList.contains("loading")) return;
-
-  document.getElementById("orderModal").classList.remove("show");
-  document.body.style.overflow = "auto";
-}
-
-window.handleOutsideClick = function(e){
-  const btn = document.getElementById("submitBtn");
-
-  // 🔥 Prevent closing while submitting
-  if(btn && btn.classList.contains("loading")){
-    return;
-  }
-
-  const modalContent = document.querySelector("#orderModal .modal-box");
-  
-  if(!modalContent.contains(e.target)){
-    closeOrderModal();
-  }
-}
-
-/* ================= EMAIL ================= */
-async function sendEmailNow(params){
-  try{
-    await emailjs.send("service_gxckvp8","template_dbofkzz",params);
-    await emailjs.send("service_gxckvp8","template_07td6mf",params);
-  }catch(e){
-    console.log("Email failed:", e);
-  }
-}
-
-/* ================= PROGRESS ================= */
-function updateProgress(text, percent){
-  const box = document.getElementById("progressBox");
-  const fill = document.getElementById("progressFill");
-  const txt = document.getElementById("progressText");
-
-  box.style.display = "block";
-  txt.innerText = text;
-  fill.style.width = percent + "%";
-}
-
-/* ================= COPY ================= */
-window.copyLink = function(){
-  const input = document.getElementById("clientLinkBox");
-  input.select();
-  document.execCommand("copy");
-  alert("Link copied!");
-}
-
-async function sendToGoogleSheets(data){
-  try{
-    const res = await fetch("https://script.google.com/macros/s/AKfycbxf0obv-2zjz3QhTPViKkPPuPesOnu1TQaen4VEJ7q1ZqQv2uA8wHjbnlp5l24XCLryuA/exec", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "text/plain"
-      }
-    });
-
-    const text = await res.text();
-    console.log("Sheet response:", text);
-
-  } catch(err){
-    console.error("Sheet error:", err);
-  }
-}
-  
-/* ================= MAIN ================= */
-document.addEventListener("DOMContentLoaded", () => {
-
-  setPlan("pro",1,document.querySelector(".selector span.active"));
-  selectCard(0, document.querySelector(".card-options button"), "white");
-
-  const form = document.getElementById("orderForm");
-
-  if(!form) return;
-
-  form.addEventListener("submit", async function(e){
-e.preventDefault();
-    let clientId = "client-" + Date.now();
-const name = document.getElementById("name");
-const position = document.getElementById("position");
-const email = document.getElementById("email");
-const phone = document.getElementById("phone");
-const notes = document.getElementById("notes");
-
-const facebook = document.getElementById("facebook");
-const instagram = document.getElementById("instagram");
-const website = document.getElementById("website");
-
-const service1 = document.getElementById("service1");
-const service2 = document.getElementById("service2");
-const service3 = document.getElementById("service3");
-const service4 = document.getElementById("service4");
-    
-    const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
-    btn.classList.add("loading");
-    btn.innerText = "Processing...";
-// 🔥 LOCK ALL INPUTS
-const inputs = document.querySelectorAll("#orderForm input, #orderForm textarea, #orderForm button");
-
-inputs.forEach(el => {
-  el.disabled = true;
-});
-    
-    updateProgress("Preparing order...", 10);
-
-    try{
-      const params = {
-  name: name?.value || "",
-  position: position?.value || "",
-  email: email?.value || "",
-  phone: phone?.value || "",
-  notes: notes?.value || "",
-  facebook: facebook?.value || "",
-  instagram: instagram?.value || "",
-  website: website?.value || "",
-
-  service1: service1?.value || "",
-  service2: service2?.value || "",
-  service3: service3?.value || "",
-  service4: service4?.value || "",
-
-  plan: selectedPlan || "",
-  card: selectedCard || "",
-  price: (basePrices[selectedPlan] + cardPrice) || 0
-};
-
-params.services = [
-  params.service1,
-  params.service2,
-  params.service3,
-  params.service4
-].filter(s => s);
-
-    const profile = document.getElementById("profilePhoto").files[0];
-    const highlight1 = document.getElementById("highlightPhoto1").files[0];
-    const highlight2 = document.getElementById("highlightPhoto2").files[0];
-    const highlight3 = document.getElementById("highlightPhoto3").files[0];
-
-      if(selectedPlan === "basic" && !profile){
-        throw "Please upload a profile photo";
-      }
-
-      updateProgress("Uploading profile...", 25);
-      params.profile = await uploadToCloudinary(profile, clientId, "profile");
-
-    if(selectedPlan==="pro" || selectedPlan==="elite"){
-    
-      updateProgress("Uploading projects...", 50);
-    
-      let projectImages = [];
-    
-      if(highlight1) projectImages.push(await uploadToCloudinary(highlight1, clientId, "project1"));
-      if(highlight2) projectImages.push(await uploadToCloudinary(highlight2, clientId, "project2"));
-      if(highlight3) projectImages.push(await uploadToCloudinary(highlight3, clientId, "project3"));
-    
-      params.projectImages = projectImages;
-    
-    }
-
-
-      updateProgress("Finalizing order...", 90);
-      await sendEmailNow(params);
-      await sendToGoogleSheets(params);;
-
-      updateProgress("Saving data...", 95);
-
-// 🔥 CLEAN UNDEFINED VALUES
-Object.keys(params).forEach(key => {
-  if (params[key] === undefined) {
-    params[key] = "";
-  }
-});
-
-console.log("STEP 1: before firebase");
-
-try {
-  const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject("Firebase timeout"), 5000)
-  );
-
-  await Promise.race([
-    setDoc(doc(db, "clients", clientId), params),
-    timeout
-  ]);
-
-  console.log("STEP 2: firebase done", clientId);
-
-} catch (e) {
-  console.warn("STEP 2 ERROR:", e);
-}
-
-console.log("STEP 3: after firebase");
-
-updateProgress("Completed!", 100);
-
-// 🔥 GENERATE LINK
-let page = selectedPlan === "elite" ? "elite.html" :
-           selectedPlan === "pro" ? "pro.html" : "basic.html";
-
-console.log("STEP 4: updating UI");
-
-// ❗ FIX: DO NOT use raw variables
-document.getElementById("formContent").classList.add("hidden");
-document.getElementById("orderForm").reset();
-console.log("STEP 5: success shown");
-
-    }catch(err){
-      console.log(err);
-      alert(err || "Something went wrong.");
-    }
-
-        finally {
-    
-      console.log("FINAL BLOCK RUNNING");
-    
-      updateProgress("Completed!", 100);
-    
-      // 🔥 REDIRECT TO PAYMENT
-      window.location.href = "payment.html?clientId=" + clientId;
-    
-    }
-    
-    btn.innerText = "Secure My NFC Card";
-    btn.disabled = false;
-    btn.classList.remove("loading");
-  });
-});
-
-/* ================= ESC CLOSE ================= */
-document.addEventListener("keydown", function(e){
-  if(e.key === "Escape"){
-    const modal = document.getElementById("orderModal");
-    if(modal.classList.contains("show")){
-      closeOrderModal();
-    }
-  }
-});
-  let currentStep = 0;
-const steps = document.querySelectorAll(".step");
-
-function openOrderModal(){
-  document.getElementById("orderModal").classList.add("show");
-  document.body.style.overflow = "hidden";
-
-  document.getElementById("summaryPlan").innerText = selectedPlan;
-  document.getElementById("summaryCard").innerText = selectedCard;
-  document.getElementById("summaryPrice").innerText =
-    "₱" + (basePrices[selectedPlan] + cardPrice).toLocaleString();
-
-  const isPro = selectedPlan === "pro" || selectedPlan === "elite";
   document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
 
   showStep(0);
 }
 
-function closeOrderModal(){
+window.closeOrderModal = function(){
   document.getElementById("orderModal").classList.remove("show");
   document.body.style.overflow = "auto";
 }
 
-function handleOutsideClick(e){
-  if(!document.querySelector(".modal-box").contains(e.target)){
+window.handleOutsideClick = function(e){
+  const modal = document.querySelector("#orderModal .modal-box");
+  if(modal && !modal.contains(e.target)){
     closeOrderModal();
   }
 }
 
+// ================= STEPS =================
 function showStep(index){
   const steps = document.querySelectorAll(".step");
 
@@ -1365,17 +1030,6 @@ function showStep(index){
     index === 5 ? "Activate My Card" : "Next";
 }
 
-  document.getElementById("stepTitle").innerText = titles[index];
-
-  document.getElementById("progressFill").style.width =
-    ((index+1)/6)*100 + "%";
-
-  document.getElementById("backBtn").style.display = index === 0 ? "none" : "block";
-
-  document.getElementById("nextBtn").innerText =
-    index === 5 ? "Activate My Card" : "Next";
-}
-
 window.nextStep = function(){
   const steps = document.querySelectorAll(".step");
 
@@ -1395,12 +1049,47 @@ window.prevStep = function(){
   }
 }
 
+// ================= FORM SUBMIT =================
+document.addEventListener("DOMContentLoaded", () => {
 
-  document.addEventListener("DOMContentLoaded", () => {
   showStep(0);
+  updateTotal();
+
+  const form = document.getElementById("orderForm");
+
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const clientId = "client-" + Date.now();
+
+    const params = {
+      name: document.getElementById("name").value,
+      position: document.getElementById("position").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      plan: selectedPlan,
+      card: selectedCard,
+      price: basePrices[selectedPlan] + cardPrice
+    };
+
+    const profile = document.getElementById("profilePhoto").files[0];
+    params.profile = await uploadToCloudinary(profile, clientId, "profile");
+
+    await setDoc(doc(db, "clients", clientId), params);
+
+    window.location.href = "payment.html?clientId=" + clientId;
+  });
+
+});
+
+// ================= ESC CLOSE =================
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape"){
+    closeOrderModal();
+  }
 });
 </script>
-  
+
 <!-- MODAL -->
 <div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
 
