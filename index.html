@@ -1134,8 +1134,16 @@ window.openOrderModal = function(){
     aboutSection.style.display = isPro ? "block" : "none";
   }
 
-  document.getElementById("formContent").classList.remove("hidden");
-  document.getElementById("successContent").classList.add("hidden");
+  const formContent = document.getElementById("formContent");
+  if(formContent){
+    formContent.classList.remove("hidden");
+  }
+  
+  const successContent = document.getElementById("successContent");
+  if(successContent){
+    successContent.classList.add("hidden");
+  }
+  
 }
 
 window.closeOrderModal = function(){
