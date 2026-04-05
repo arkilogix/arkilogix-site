@@ -101,6 +101,10 @@ function openModal(){
   showStep(1);
 
   renderServicesEdit();
+    document.getElementById("contactPhone").value = currentData.phone || "";
+    document.getElementById("contactEmail").value = currentData.email || "";
+    document.getElementById("contactFacebook").value = currentData.facebook || "";
+    document.getElementById("contactInstagram").value = currentData.instagram || "";
 }
 
 function closeModal(){
@@ -296,13 +300,27 @@ async function saveProfile(){
     .map(i=>i.value)
     .filter(v=>v);
 
-  await updateDoc(doc(db, "clients", auth.currentUser.uid),{
-    name,
-    position,
-    services,
-    profileImage: profileImageUrl
-  });
+  const phone = document.getElementById("contactPhone")?.value || "";
+  const email = document.getElementById("contactEmail")?.value || "";
+  const facebook = document.getElementById("contactFacebook")?.value || "";
+  const instagram = document.getElementById("contactInstagram")?.value || "";
 
+await updateDoc(doc(db, "clients", auth.currentUser.uid),{
+  name,
+  position,
+  services,
+  profileImage: profileImageUrl,
+
+  // 🔥 NEW
+  phone,
+  email,
+  facebook,
+  instagram
+});
+    currentData.phone = phone;
+    currentData.email = email;
+    currentData.facebook = facebook;
+    currentData.instagram = instagram;
   closeModal();
 }
 
