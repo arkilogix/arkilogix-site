@@ -187,9 +187,6 @@ function prevStep(){
 /* =========================
    IMAGE UPLOAD
 ========================= */
-const CLOUD_NAME = "dnlzwtkhs";
-const UPLOAD_PRESET = "arkilogix_profile";
-
 const imageInput = document.getElementById("imageInput");
 
 // trigger file input on click
