@@ -225,7 +225,7 @@ flex-shrink:0;
 <!-- ACTION ICONS -->
 <div class="actions">
 
-<div class="icon-btn">
+<div class="icon-btn" onclick="handlePhone()">
 <svg class="icon" viewBox="0 0 24 24">
 <path d="M22 16.92V21a2 2 0 0 1-2.18 2
 19.79 19.79 0 0 1-8.63-3.07
@@ -242,14 +242,14 @@ A2 2 0 0 1 22 16.92z"/>
 </svg>
 </div>
 
-<div class="icon-btn">
+<div class="icon-btn" onclick="handleSMS()">
 <svg class="icon" viewBox="0 0 24 24">
 <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V5
 a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
 </svg>
 </div>
 
-<div class="icon-btn">
+<div class="icon-btn" onclick="handleEmail()">
 <svg class="icon" viewBox="0 0 24 24">
 <rect x="4" y="4" width="16" height="16"/>
 <path d="M22 6l-10 7L2 6"/>
@@ -261,14 +261,14 @@ a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
 <!-- SOCIAL -->
 <div class="socials">
 
-<div class="icon-btn">
+<div class="icon-btn" onclick="handleInstagram()">
 <svg class="icon" viewBox="0 0 24 24">
 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7
 a1 1 0 0 1 1-1h3z"/>
 </svg>
 </div>
 
-<div class="icon-btn">
+<div class="icon-btn" onclick="handleEmail()">
 <svg class="icon" viewBox="0 0 24 24">
 <rect x="2" y="2" width="20" height="20" rx="5"/>
 <circle cx="12" cy="12" r="4"/>
@@ -355,7 +355,12 @@ async function loadUser(){
 
   if(snap.exists()){
     const data = snap.data();
-
+      window.userData = {
+        phone: data.phone || "",
+        email: data.email || "",
+        facebook: data.facebook || "",
+        instagram: data.instagram || ""
+      };
     // 🚨 BLOCK DISABLED USERS
     if (data.status === "disabled") {
       document.body.innerHTML = `
