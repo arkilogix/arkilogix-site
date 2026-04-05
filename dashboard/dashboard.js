@@ -4,160 +4,120 @@ import {
   doc, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const container = document.getElementById("clientsContainer");
-
 let clients = [];
+let filter = "all";
 let upgradeId = null;
 
+const container = document.getElementById("clientsContainer");
+
 /* LOAD */
-async function loadClients() {
-  const snapshot = await getDocs(collection(db, "clients"));
-
-  clients = snapshot.docs
-    .map(d => ({ id: d.id, ...d.data() }))
-    .filter(c => !c.deleted);
-
-  render(clients);
+async function loadClients(){
+  const snap = await getDocs(collection(db,"clients"));
+  clients = snap.docs.map(d=>({id:d.id,...d.data()})).filter(c=>!c.deleted);
+  render();
 }
 
+/* FILTER */
+window.setFilter = (f)=>{
+  filter = f;
+  document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
+  render();
+};
+
 /* RENDER */
-function render(data) {
+function render(){
+  let data = clients;
+
+  if(filter==="disabled") data = clients.filter(c=>c.disabled);
+  else if(filter!=="all") data = clients.filter(c=>c.plan===filter && !c.disabled);
+
   container.innerHTML = "";
 
-  data.forEach(c => {
+  let top = clients.sort((a,b)=>(b.views||0)-(a.views||0))[0];
 
-    const initials = (c.name || "")
-      .split(" ")
-      .map(n => n[0])
-      .join("")
-      .toUpperCase();
+  document.getElementById("topCard").innerHTML = top ? `
+    <h3>Top Performer ⭐</h3>
+    <p>${top.name}</p>
+    <p>${top.views||0} views</p>
+  ` : "";
 
-    const avatar = c.photoURL
-      ? `<img src="${c.photoURL}" onerror="this.parentElement.innerHTML='${initials}'">`
-      : initials;
-
-    const disabledClass = c.disabled ? "disabled" : "";
+  data.forEach(c=>{
+    const initials = (c.name||"").split(" ").map(n=>n[0]).join("").toUpperCase();
+    const avatar = c.photoURL ? `<img src="${c.photoURL}">` : initials;
 
     container.innerHTML += `
-      <div class="client-card glass ${disabledClass}">
+    <div class="client-card glass ${c.disabled?"disabled":""}">
 
-        <div class="client-header">
-          <div class="client-left">
-            <div class="avatar">${avatar}</div>
-            <div>
-              <h3>${c.name}</h3>
-              <p>${c.position || ""}</p>
-            </div>
-          </div>
-
-          <div class="badge ${c.disabled ? "disabled" : c.plan}">
-            ${c.disabled ? "Disabled" : c.plan}
+      <div class="client-header">
+        <div class="client-left">
+          <div class="avatar">${avatar}</div>
+          <div>
+            <h3>${c.name}</h3>
+            <p>${c.position||""}</p>
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="badge ${c.disabled?"disabled":c.plan}">
+          ${c.disabled?"Disabled":c.plan}
+        </div>
+      </div>
 
-        <div class="client-stats">
-          <div class="stat-item">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            ${c.views || 0}
-          </div>
+      <div class="divider"></div>
 
-          <div class="stat-item">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M4 4l7 17 2-7 7-2z"></path>
-            </svg>
-            ${c.taps || 0}
-          </div>
+      <div class="client-stats">
+        <div class="stat-item">${c.views||0} views</div>
+        <div class="stat-item">${c.taps||0} taps</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="client-actions">
+
+        <div class="actions-left">
+          <button onclick="openClient('${c.id}')">🔗</button>
+          <button onclick="editClient('${c.id}')">Edit</button>
+          <button onclick="deleteClient('${c.id}')">🗑</button>
+          <button onclick="toggleDisable('${c.id}',${c.disabled})">🚫</button>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="client-actions">
-
-          <div class="actions-left">
-
-            <button class="icon-btn open" onclick="openClient('${c.id}')">
-              <svg class="icon" viewBox="0 0 24 24">
-                <path d="M14 3h7v7"></path>
-                <path d="M10 14L21 3"></path>
-                <path d="M3 10v11h11"></path>
-              </svg>
-            </button>
-
-            <button class="btn" onclick="editClient('${c.id}')">Edit</button>
-
-            <button class="icon-btn delete" onclick="deleteClient('${c.id}')">
-              <svg class="icon" viewBox="0 0 24 24">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6l-1 14H6L5 6"></path>
-                <path d="M10 11v6"></path>
-                <path d="M14 11v6"></path>
-              </svg>
-            </button>
-
-            <button class="icon-btn disable" onclick="toggleDisable('${c.id}', ${c.disabled})">
-              <svg class="icon" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="4" y1="4" x2="20" y2="20"></line>
-              </svg>
-            </button>
-
-          </div>
-
-          <button class="btn gold" onclick="openUpgrade('${c.id}')">
-            ${c.plan === "elite" ? "✔ Elite" : "Upgrade"}
-          </button>
-
-        </div>
+        <button class="btn gold" onclick="openUpgrade('${c.id}')">
+          ${c.plan==="elite"?"✔ Elite":"Upgrade"}
+        </button>
 
       </div>
-    `;
+
+    </div>`;
   });
 }
 
 /* ACTIONS */
-async function deleteClient(id){
-  await updateDoc(doc(db,"clients",id),{ deleted:true });
-  loadClients();
-}
+window.openClient=(id)=>window.open(`/card.html?id=${id}`);
 
-async function toggleDisable(id,state){
-  await updateDoc(doc(db,"clients",id),{ disabled:!state });
+window.deleteClient=async(id)=>{
+  await updateDoc(doc(db,"clients",id),{deleted:true});
   loadClients();
-}
+};
 
-function openClient(id){
-  window.open(`/card.html?id=${id}`,"_blank");
-}
+window.toggleDisable=async(id,state)=>{
+  await updateDoc(doc(db,"clients",id),{disabled:!state});
+  loadClients();
+};
 
 /* UPGRADE */
-function openUpgrade(id){
+window.openUpgrade=(id)=>{
   upgradeId=id;
   upgradeModal.style.display="flex";
-}
+};
 
-function closeUpgrade(){
-  upgradeModal.style.display="none";
-}
+window.closeUpgrade=()=>upgradeModal.style.display="none";
 
-async function confirmUpgrade(){
+window.confirmUpgrade=async()=>{
   await updateDoc(doc(db,"clients",upgradeId),{
     plan: upgradePlan.value
   });
   closeUpgrade();
   loadClients();
-}
-
-/* GLOBAL */
-window.deleteClient=deleteClient;
-window.toggleDisable=toggleDisable;
-window.openClient=openClient;
-window.openUpgrade=openUpgrade;
-window.closeUpgrade=closeUpgrade;
-window.confirmUpgrade=confirmUpgrade;
+};
 
 loadClients();
