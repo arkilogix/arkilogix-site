@@ -255,6 +255,10 @@ function viewCard(){
   const uid = auth.currentUser.uid;
   window.open(`/view/basic.html?id=${uid}`,"_blank");
 }
+window.nextStep = nextStep;
+window.prevStep = prevStep;
+window.openModal = openModal;
+window.closeModal = closeModal;
 window.viewCard = viewCard;
 
 /* =========================
