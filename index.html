@@ -463,114 +463,33 @@ html {
 .modal{
   display:none;
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-
-  background:rgba(0,0,0,0.5);
-
-  justify-content:center;
-  align-items:center;
-
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(6px);
   z-index:999;
 }
 
 .modal.show{
   display:flex;
-}
-  
-.modal.show{
-  display:flex;
   justify-content:center;
   align-items:center;
 }
+
 .modal-content{
   background:#fff;
-
   width:90%;
   max-width:420px;
-  
   padding:28px;
   border-radius:18px;
-
-  box-shadow:0 20px 60px rgba(0,0,0,0.15);
-
-  position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
 
   display:flex;
   flex-direction:column;
   gap:12px;
 
-  animation:fadeIn 0.25s ease;
-}
-.modal-content h2{
-  margin:0 0 5px;
+  animation:fadeUp .3s ease;
 }
 
-.modal-sub{
-  font-size:13px;
-  color:#777;
-  margin-bottom:18px;
-}
-
-.modal-content input,
-.modal-content textarea{
-  width:100%;
-  padding:12px 14px;
-  margin-bottom:12px;
-  border-radius:10px;
-  border:1px solid #ddd;
-}
-
-.modal-content input:focus,
-.modal-content textarea:focus{
-  border-color:#000;
-  outline:none;
-}
-
-.modal-btn{
-  width:100%;
-  padding:13px;
-  border:none;
-  border-radius:30px;
-  background:#000;
-  color:#fff;
-  font-size:13px;
-  transition:.25s;
-}
-
-.modal-btn:hover{
-  transform:translateY(-2px);
-  opacity:.9;
-}
-.order-summary{
-  width:100%;
-}
-
-form#orderForm{
-  width:100%;
-  margin:0 auto;
-  overflow-y:auto;
-  max-height:55vh;
-  padding-right:4px;
-  box-sizing:border-box;
-}
-
-.modal-content input,
-.modal-content textarea{
-  text-align:left; 
-}
-
-.close-btn{
-  position:absolute;
-  right:15px;
-  top:12px;
-  font-size:20px;
-  cursor:pointer;
-}
-
-/* ANIMATION */
 @keyframes fadeUp{
   from{
     opacity:0;
@@ -580,6 +499,13 @@ form#orderForm{
     opacity:1;
     transform:translateY(0);
   }
+}
+.close-btn{
+  position:absolute;
+  right:15px;
+  top:12px;
+  font-size:20px;
+  cursor:pointer;
 }
   .order-summary{
   background:#f9f9f9;
@@ -662,24 +588,6 @@ form#orderForm::-webkit-scrollbar-thumb{
   background:#000;
   transition:width .4s ease;
 }
-
-
-#orderModal .modal-content{
-  position:relative;
-}
-.modal-content{
-  transition:opacity .3s ease;
-}
-  .modal-content.hidden{
-  display:none;
-}
-  .modal{
-  pointer-events:none;
-}
-
-.modal.show{
-  pointer-events:auto;
-}
   #formContent.hidden,
 #successContent.hidden{
   display: none !important;
@@ -728,18 +636,7 @@ form#orderForm::-webkit-scrollbar-thumb{
   background:#000;
   transition:width .3s ease;
 }
-.split-modal{
-  display:flex !important;
-  flex-direction:row;
-  gap:30px;
-  max-width:900px;
-  width:100%;
-}
 
-.modal-left{
-  flex:1;
-  min-width:300px;
-}
 .close-btn{
   position:absolute;
   top:12px;
@@ -1430,12 +1327,10 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
   
 <!-- ===== ORDER MODAL START ===== -->
-<div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
+<form id="orderForm" class="modal-content">
+  <div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
 
-<form id="orderForm">
-  
-  <!-- LEFT SIDE -->
-  <form id="orderForm" class="modal-content">
+  <div class="modal-content">
 
     <span class="close-btn" onclick="closeOrderModal()">&times;</span>
 
@@ -1445,88 +1340,59 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="step-progress">
       <div class="step-progress-fill" id="stepProgressFill"></div>
     </div>
-    <!-- STEP 1 -->
-    <div class="step active">
-      <input type="text" id="name" placeholder="Full Name" required>
-      <input type="text" id="position" placeholder="Profession / Position" required>
-    </div>
 
-    <!-- STEP 2 -->
-    <div class="step">
-      <input type="email" id="email" placeholder="Email Address" required>
-      <input type="text" id="phone" placeholder="Phone Number" required>
-      <input type="text" id="facebook" placeholder="Facebook URL">
-      <input type="text" id="instagram" placeholder="Instagram URL">
+    <!-- ✅ FORM START -->
+    <form id="orderForm">
 
-      <div class="locked">
-        <input type="text" placeholder="Website / Portfolio (Pro Feature)" disabled>
-        <small>🔒 Upgrade to Pro</small>
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="step">
-      <input type="text" id="service1" placeholder="Service 1">
-      <input type="text" id="service2" placeholder="Service 2">
-      <input type="text" id="service3" placeholder="Service 3">
-      <input type="text" id="service4" placeholder="Service 4">
-
-      <div class="locked">
-        <input type="text" placeholder="+ Add Service (Pro Feature)" disabled>
-        <small>🔒 Unlimited services in Pro</small>
-      </div>
-    </div>
-
-    <!-- STEP 4 -->
-    <div class="step">
-
-      <label>Profile Photo</label>
-      <input type="file" id="profilePhoto" accept="image/*">
-
-      <div class="locked">
-        <label>Banner Image</label>
-        <input type="file" disabled>
-        <small>🔒 Pro Feature</small>
+      <!-- STEP 1 -->
+      <div class="step active">
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="text" id="position" placeholder="Profession / Position" required>
       </div>
 
-      <div class="locked">
-        <label>Project Highlights</label>
-        <input type="file" disabled>
-        <input type="file" disabled>
-        <input type="file" disabled>
-        <small>🔒 Available in Pro / Elite</small>
+      <!-- STEP 2 -->
+      <div class="step">
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="text" id="phone" placeholder="Phone Number" required>
       </div>
 
-    </div>
-
-    <!-- STEP 5 -->
-    <div class="step">
-      <input type="text" id="address" placeholder="Full Address">
-      <input type="text" id="city" placeholder="City">
-      <input type="text" id="province" placeholder="Province">
-      <input type="text" id="zip" placeholder="ZIP Code">
-    </div>
-
-    <!-- STEP 6 -->
-    <div class="step">
-      <div class="order-summary">
-        <p><strong>Review your card details</strong></p>
-        <p id="summaryPlan"></p>
-        <p id="summaryCard"></p>
-        <p id="summaryPrice"></p>
+      <!-- STEP 3 -->
+      <div class="step">
+        <input type="text" id="service1" placeholder="Service 1">
+        <input type="text" id="service2" placeholder="Service 2">
       </div>
-    </div>
 
-    <!-- NAV -->
-    <div style="display:flex; gap:10px; margin-top:15px;">
-      <button type="button" class="modal-btn" onclick="prevStep()">Back</button>
-      <button type="button" class="modal-btn" id="nextBtn" onclick="nextStep()">Next</button>
-    </div>
-    </div> <!-- END LEFT -->
+      <!-- STEP 4 -->
+      <div class="step">
+        <input type="file" id="profilePhoto">
+      </div>
 
-</form>
+      <!-- STEP 5 -->
+      <div class="step">
+        <input type="text" id="address" placeholder="Address">
+      </div>
+
+      <!-- STEP 6 -->
+      <div class="step">
+        <div class="order-summary">
+          <p id="summaryPlan"></p>
+          <p id="summaryCard"></p>
+          <p id="summaryPrice"></p>
+        </div>
+      </div>
+
+      <!-- NAV -->
+      <div style="display:flex; gap:10px; margin-top:15px;">
+        <button type="button" class="modal-btn" onclick="prevStep()">Back</button>
+        <button type="button" class="modal-btn" id="nextBtn" onclick="nextStep()">Next</button>
+      </div>
+
+    </form>
+    <!-- ✅ FORM END -->
+
+  </div>
 </div>
-<!-- ===== ORDER MODAL END ===== -->
-<!-- ===== ORDER MODAL END ===== -->
+</form>
+
 </body>
 </html>
