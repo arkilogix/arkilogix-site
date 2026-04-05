@@ -476,22 +476,22 @@ html {
 }
 .modal-content{
   background:#fff;
-  width:92%;
-  max-width:480px;
-  max-height:85vh; /* 🔥 LIMIT HEIGHT */
+  width:90%;
+  max-width:420px;
   padding:28px;
   border-radius:18px;
   position:relative;
-  animation:fadeUp .35s ease;
 
   display:flex;
   flex-direction:column;
   align-items:center;
   text-align:center;
 
-  overflow:hidden; /* prevent overflow outside */
+  margin:auto;
 }
-
+.modal-content{
+  animation:fadeUp .35s ease;
+}
 .modal-content h2{
   margin:0 0 5px;
 }
@@ -723,6 +723,21 @@ form#orderForm::-webkit-scrollbar-thumb{
   display:block;
   font-size:11px;
   margin-top:5px;
+}
+  .step-progress{
+  width:100%;
+  height:6px;
+  background:#eee;
+  border-radius:10px;
+  margin:10px 0 20px;
+  overflow:hidden;
+}
+
+.step-progress-fill{
+  height:100%;
+  width:0%;
+  background:#000;
+  transition:width .3s ease;
 }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
@@ -1335,23 +1350,32 @@ const steps = document.querySelectorAll(".step");
 const stepTitle = document.getElementById("stepTitle");
 const stepSub = document.getElementById("stepSub");
 
-window.showStep = function(index){
-  steps.forEach(s => s.classList.remove("active"));
-  steps[index].classList.add("active");
-
-  stepSub.innerText = "Step " + (index+1) + " of 6";
-
-  const titles = [
-    "Your Identity",
-    "Contact Details",
-    "Services",
-    "Uploads",
-    "Delivery Details",
-    "Review & Activate"
-  ];
-
-  stepTitle.innerText = titles[index];
-}
+    window.showStep = function(index){
+      const steps = document.querySelectorAll(".step");
+    
+      steps.forEach(s => s.classList.remove("active"));
+      steps[index].classList.add("active");
+    
+      const stepSub = document.getElementById("stepSub");
+      const stepTitle = document.getElementById("stepTitle");
+      const progressFill = document.getElementById("stepProgressFill");
+    
+      stepSub.innerText = "Step " + (index+1) + " of 6";
+    
+      const titles = [
+        "Your Identity",
+        "Contact Details",
+        "Services",
+        "Uploads",
+        "Delivery Details",
+        "Review & Activate"
+      ];
+    
+      stepTitle.innerText = titles[index];
+    
+      const progressPercent = ((index + 1) / steps.length) * 100;
+      progressFill.style.width = progressPercent + "%";
+    }
 
 window.nextStep = function(){
   if(currentStep < steps.length - 1){
@@ -1392,7 +1416,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <h2 id="stepTitle">Activate Your Card</h2>
     <p class="modal-sub" id="stepSub">Step 1 of 6</p>
-
+    <div class="step-progress">
+      <div class="step-progress-fill" id="stepProgressFill"></div>
+    </div>
     <!-- STEP 1 -->
     <div class="step active">
       <input type="text" id="name" placeholder="Full Name" required>
