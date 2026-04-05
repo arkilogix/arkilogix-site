@@ -475,14 +475,18 @@ html {
 }
 .modal-content{
   background:#fff;
-  width:50%;
-  max-width:900px; 
+  width:90%;
+  max-width:420px;
   padding:28px;
   border-radius:18px;
-  margin:auto;
+  position:relative;
 
   display:flex;
-  flex-direction:row; 
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+
+  margin:auto;
 }
 .modal-content h2{
   margin:0 0 5px;
@@ -546,19 +550,16 @@ html {
 
 form#orderForm{
   width:100%;
-  max-width:100%;     /* 🔥 FULL WIDTH now */
   margin:0 auto;
-
   overflow-y:auto;
   max-height:55vh;
-
   padding-right:4px;
-  box-sizing:border-box; /* 🔥 prevents overflow */
+  box-sizing:border-box;
 }
 
 .modal-content input,
 .modal-content textarea{
-  text-align:left; /* 👈 keeps typing natural */
+  text-align:left; 
 }
 
 .close-btn{
@@ -742,32 +743,7 @@ form#orderForm::-webkit-scrollbar-thumb{
   flex:1;
   min-width:300px;
 }
-.modal-right{
-  flex:1;
-  min-width:300px;
 
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position: relative;
-  transform: scale(0.8);
-  transform-origin: top center;
-}
-  
-@media(max-width:768px){
-  .split-modal{
-    flex-direction:column;
-  }
-
-  .modal-right{
-    margin-top:20px;
-  }
-}
-/* preview smaller inside modal */
-.modal-right .preview-phone{
-  transform:scale(0.85);
-}
-  
 </style>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
@@ -1453,10 +1429,10 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- ===== ORDER MODAL START ===== -->
 <div id="orderModal" class="modal" onclick="handleOutsideClick(event)">
 
-<form id="orderForm" class="modal-content split-modal">
+<form id="orderForm">
   
   <!-- LEFT SIDE -->
-  <div class="modal-left">
+  <form id="orderForm" class="modal-content">
 
     <span class="close-btn" onclick="closeOrderModal()">&times;</span>
 
@@ -1544,21 +1520,6 @@ document.addEventListener("DOMContentLoaded", () => {
       <button type="button" class="modal-btn" id="nextBtn" onclick="nextStep()">Next</button>
     </div>
     </div> <!-- END LEFT -->
-
-    <!-- RIGHT SIDE -->
-    <div class="modal-right">
-
-      <div class="preview-phone" id="phoneBox">
-        <img id="phoneImage" src="phone-pro.png">
-
-        <div class="overlay name" id="previewName">Juan Dela Cruz</div>
-        <div class="overlay profession" id="previewProfession">Architect</div>
-        <div class="overlay company" id="previewCompany">Your Company</div>
-        <div class="overlay about" id="previewAbout">About</div>
-        <div class="overlay services hidden" id="previewServices"></div>
-      </div>
-
-    </div>
 
 </form>
 </div>
