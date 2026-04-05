@@ -136,18 +136,54 @@ h1{
 
 </div>
 
-<script>
+<script type="module">
 
-// GET CLIENT ID
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 🔥 CONFIG (same as index)
+const firebaseConfig = {
+  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
+  authDomain: "arkilogix-clients.firebaseapp.com",
+  projectId: "arkilogix-clients"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔥 GET clientId from URL
 const params = new URLSearchParams(window.location.search);
 const clientId = params.get("clientId");
 
-// TEMP DATA (replace with Firebase later)
-document.getElementById("plan").innerText = "Pro";
-document.getElementById("price").innerText = "₱1,199";
+if(!clientId){
+  alert("Invalid access");
+  window.location.href = "index.html";
+}
 
-// SUBMIT PAYMENT
-function submitPayment(){
+// 🔥 LOAD DATA FROM FIREBASE
+async function loadData(){
+
+  const docRef = doc(db, "clients", clientId);
+  const snap = await getDoc(docRef);
+
+  if(!snap.exists()){
+    alert("Order not found");
+    return;
+  }
+
+  const data = snap.data();
+
+  // 🔥 DISPLAY DATA
+  document.getElementById("plan").innerText = data.plan?.toUpperCase() || "-";
+  document.getElementById("price").innerText = "₱" + (data.price || 0).toLocaleString();
+
+}
+
+loadData();
+
+
+// 🔥 PAYMENT SUBMIT
+window.submitPayment = function(){
 
   const file = document.getElementById("proof").files[0];
 
@@ -158,12 +194,12 @@ function submitPayment(){
 
   document.getElementById("status").innerText = "Uploading...";
 
-  // 🔥 TEMP SIMULATION
+  // 🔥 TEMP (we will connect Cloudinary next)
   setTimeout(() => {
-    document.getElementById("status").innerText = 
+
+    document.getElementById("status").innerText =
       "Payment submitted. We’ll verify within 24 hours.";
 
-    // 👉 Redirect to signup
     setTimeout(() => {
       window.location.href = "signup.html?clientId=" + clientId;
     }, 1500);
