@@ -833,7 +833,7 @@ form#orderForm::-webkit-scrollbar-thumb{
 </button>
 </div>
   <div class="preview-right">
-  <div class="preview-phone" id="phoneBox">
+  <div class="preview-phone pro" id="phoneBox">
 <img id="phoneImage" src="phone-pro.png">
 <div class="text-stack">
   <div class="name" id="previewName">Juan Dela Cruz</div>
@@ -972,12 +972,22 @@ function updateTotal(){
 
 // ================= PLAN =================
 window.setPlan = function(plan,index,el){
+
+  // selector UI
   document.querySelectorAll(".selector span").forEach(s=>s.classList.remove("active"));
   el.classList.add("active");
-
   document.getElementById("slider").style.left=(index*33.33)+"%";
 
   selectedPlan = plan;
+
+  // 🔥 CHANGE PHONE IMAGE
+  document.getElementById("phoneImage").src = `phone-${plan}.png`;
+
+  // 🔥 CHANGE STYLE CLASS
+  const phoneBox = document.getElementById("phoneBox");
+  phoneBox.classList.remove("basic","pro","elite");
+  phoneBox.classList.add(plan);
+
   updateTotal();
 }
 
@@ -1252,9 +1262,6 @@ document.addEventListener("keydown", e => {
   </div>
 </div>
 
-  </div>
-</div>
-</form>
 
 </body>
 </html>
