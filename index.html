@@ -695,6 +695,31 @@ form#orderForm::-webkit-scrollbar-thumb{
   text-align:center;
   line-height:1.4;
 }
+/* ===== DYNAMIC TEXT STACK ===== */
+.text-stack{
+  position:absolute;
+  top:32%;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  width:80%;
+}
+
+.text-stack .name{
+  font-size:14px;
+  font-weight:600;
+}
+
+.text-stack .profession{
+  font-size:11px;
+}
+
+.text-stack .company{
+  font-size:10px;
+}
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
@@ -804,10 +829,11 @@ form#orderForm::-webkit-scrollbar-thumb{
   <div class="preview-right">
   <div class="preview-phone" id="phoneBox">
 <img id="phoneImage" src="phone-pro.png">
-<div class="overlay name" id="previewName">Juan Dela Cruz</div>
-<div class="overlay profession" id="previewProfession">Architect</div>
-<div class="overlay company" id="previewCompany">Your Arch Studio</div>
-<div class="overlay about" id="previewAbout">About</div>
+<div class="text-stack">
+  <div class="name" id="previewName">Juan Dela Cruz</div>
+  <div class="profession" id="previewProfession">Architect</div>
+  <div class="company" id="previewCompany">Your Arch Studio</div>
+</div>
 <div class="overlay services hidden" id="previewServices"></div>
 </div>
 </div>
