@@ -1,283 +1,169 @@
-const db = firebase.firestore();
-const auth = firebase.auth();
-
-let USERS = [];
+// ================= GLOBAL STATE =================
+let users = [];
 let selectedUser = null;
 
-// =========================
-// 💰 PRICING CONFIG
-// =========================
-const PRICING = {
-  pro: 299,
-  elite: 599
-};
+// ================= FIREBASE =================
+const db = firebase.firestore();
 
-// =========================
-// 🔐 ADMIN CHECK
-// =========================
-async function isAdmin(uid) {
-  try {
-    const doc = await db.collection("admins").doc(uid).get();
-    return doc.exists;
-  } catch (err) {
-    console.error("Admin check error:", err);
-    return false;
-  }
-}
+// ================= FETCH USERS =================
+db.collection("clients").orderBy("createdAt", "desc")
+.onSnapshot(snapshot => {
 
-// =========================
-// 🔑 AUTH STATE
-// =========================
-auth.onAuthStateChanged(async (user) => {
-  if (!user) {
-    location.href = "/";
-    return;
-  }
+  users = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
 
-  const admin = await isAdmin(user.uid);
-
-  if (!admin) {
-    alert("Not authorized");
-    location.href = "/";
-    return;
-  }
-
-  console.log("Admin verified:", user.uid);
-  loadUsers();
+  renderTable(users);
+  updateStats(users);
 });
 
-// =========================
-// 📦 LOAD USERS
-// =========================
-async function loadUsers() {
-  try {
-    const snap = await db.collection("clients").get();
+// ================= RENDER TABLE =================
+function renderTable(data){
 
-    USERS = snap.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    render(USERS);
-    updateStats();
-
-  } catch (err) {
-    console.error("Load users error:", err);
-  }
-}
-
-// =========================
-// 🧾 RENDER TABLE
-// =========================
-function render(data) {
   const table = document.getElementById("table");
-  if (!table) return;
-
   table.innerHTML = "";
 
-  if (data.length === 0) {
-    table.innerHTML = `<tr><td colspan="4">No users found</td></tr>`;
-    return;
-  }
+  data.forEach(user => {
 
-  data.forEach(u => {
-    table.innerHTML += `
-      <tr onclick="openPanel('${u.id}')">
-        <td>${u.name || "-"}</td>
-        <td>${u.email || "-"}</td>
-        <td>${u.plan || "basic"}</td>
-        <td><button>View</button></td>
-      </tr>
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${user.name || "-"}</td>
+      <td>${user.email || "-"}</td>
+      <td>${user.plan || "-"}</td>
+      <td><button onclick="openPanel('${user.id}')">View</button></td>
     `;
+
+    table.appendChild(tr);
   });
 }
 
-// =========================
-// 📊 ANALYTICS (FIXED)
-// =========================
-function updateStats() {
-  let total = USERS.length;
-  let paid = 0;
-  let revenue = 0;
+// ================= SEARCH =================
+document.getElementById("search").addEventListener("input", e => {
 
-  USERS.forEach(u => {
+  const value = e.target.value.toLowerCase();
 
-    // ✅ handle old users + manual upgrades
-    const isPaid =
-      u.paymentStatus === "paid" ||
-      u.plan === "pro" ||
-      u.plan === "elite";
+  const filtered = users.filter(u =>
+    (u.name || "").toLowerCase().includes(value) ||
+    (u.email || "").toLowerCase().includes(value)
+  );
 
-    if (isPaid) {
-      paid++;
-
-      if (u.plan === "pro") revenue += PRICING.pro;
-      if (u.plan === "elite") revenue += PRICING.elite;
-    }
-
-  });
-
-  const conversion = total > 0
-    ? ((paid / total) * 100).toFixed(1)
-    : "0.0";
-
-  setText("total", total);
-  setText("paid", paid);
-  setText("conversion", conversion + "%");
-  setText("revenue", "₱" + (revenue || 0).toLocaleString());
-}
-
-// helper
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.innerText = value;
-}
-
-// =========================
-// 🔍 SEARCH
-// =========================
-window.addEventListener("DOMContentLoaded", () => {
-  const search = document.getElementById("search");
-
-  if (!search) return;
-
-  search.addEventListener("input", (e) => {
-    const val = e.target.value.toLowerCase();
-
-    const filtered = USERS.filter(u =>
-      (u.name || "").toLowerCase().includes(val) ||
-      (u.email || "").toLowerCase().includes(val)
-    );
-
-    render(filtered);
-  });
+  renderTable(filtered);
 });
 
-// =========================
-// 📂 PANEL
-// =========================
-function openPanel(id) {
-  selectedUser = USERS.find(u => u.id === id);
-  if (!selectedUser) return;
+// ================= STATS =================
+function updateStats(data){
 
-  const panel = document.getElementById("panel");
-  if (panel) panel.classList.add("open");
+  const total = data.length;
 
-  setText("pName", selectedUser.name || "-");
-  setText("pEmail", selectedUser.email || "-");
-  setText("pPhone", selectedUser.phone || "-");
+  const paid = data.filter(u => u.status === "paid" || u.status === "completed").length;
 
-  setText("pPlan", "Plan: " + (selectedUser.plan || "basic"));
-  setText("pStatus", "Status: " + (selectedUser.status || "active"));
-  setText("pPayment", "Payment: " + (selectedUser.paymentStatus || "none"));
+  const revenue = data
+    .filter(u => u.status === "paid" || u.status === "completed")
+    .reduce((sum, u) => sum + (u.price || 0), 0);
 
-  updateStatusButton();
+  const conversion = total ? ((paid / total) * 100).toFixed(1) : 0;
+
+  document.getElementById("total").innerText = total;
+  document.getElementById("paid").innerText = paid;
+  document.getElementById("conversion").innerText = conversion + "%";
+  document.getElementById("revenue").innerText = "₱" + revenue.toLocaleString();
 }
 
-function closePanel() {
-  const panel = document.getElementById("panel");
-  if (panel) panel.classList.remove("open");
+// ================= PANEL =================
+window.openPanel = function(id){
+
+  selectedUser = users.find(u => u.id === id);
+
+  if(!selectedUser) return;
+
+  document.getElementById("panel").classList.add("open");
+
+  document.getElementById("pName").innerText = selectedUser.name || "-";
+  document.getElementById("pEmail").innerText = selectedUser.email || "-";
+  document.getElementById("pPhone").innerText = selectedUser.phone || "-";
+  document.getElementById("pPlan").innerText = "Plan: " + (selectedUser.plan || "-");
+  document.getElementById("pStatus").innerText = "Status: " + (selectedUser.status || "-");
+
+  document.getElementById("pPayment").innerHTML = selectedUser.paymentProof
+    ? `<a href="${selectedUser.paymentProof}" target="_blank">View Proof</a>`
+    : "No payment proof";
+
+  // Button text
+  document.getElementById("statusBtn").innerText =
+    selectedUser.disabled ? "Enable User" : "Disable User";
 }
 
-// =========================
-// 🔗 CARD LINK
-// =========================
-function getCardLink(user) {
-  const base = window.location.origin;
-  const plan = user.plan || "basic";
-  return `${base}/view/${plan}.html?id=${user.id}`;
+window.closePanel = function(){
+  document.getElementById("panel").classList.remove("open");
 }
 
-function viewCard() {
-  if (!selectedUser) return;
-  window.open(getCardLink(selectedUser), "_blank");
+// ================= UPDATE STATUS =================
+window.toggleStatus = async function(){
+
+  if(!selectedUser) return;
+
+  await db.collection("clients").doc(selectedUser.id).update({
+    disabled: !selectedUser.disabled
+  });
 }
 
-function copyLink() {
-  if (!selectedUser) return;
+// ================= UPDATE PLAN =================
+window.updatePlan = async function(plan){
 
-  const link = getCardLink(selectedUser);
+  if(!selectedUser) return;
 
-  navigator.clipboard.writeText(link)
-    .then(() => alert("Link copied!"))
-    .catch(() => alert("Copy failed"));
+  await db.collection("clients").doc(selectedUser.id).update({
+    plan: plan
+  });
+
+  alert("Plan updated to " + plan);
 }
 
-// =========================
-// 🚫 TOGGLE STATUS
-// =========================
-async function toggleStatus() {
-  if (!selectedUser) return;
+// ================= APPROVE PAYMENT =================
+window.approvePayment = async function(plan){
 
-  const current = selectedUser.status || "active";
-  const newStatus = current === "active" ? "disabled" : "active";
+  if(!selectedUser) return;
 
-  try {
-    await db.collection("clients").doc(selectedUser.id).update({
-      status: newStatus
-    });
+  await db.collection("clients").doc(selectedUser.id).update({
+    status: "paid",
+    plan: plan,
+    paidAt: new Date()
+  });
 
-    alert("User status updated");
-    closePanel();
-    loadUsers();
-
-  } catch (err) {
-    console.error("Status update error:", err);
-  }
+  alert("Payment approved");
 }
 
-function updateStatusButton() {
-  const btn = document.getElementById("statusBtn");
-  if (!btn || !selectedUser) return;
+// ================= VIEW CARD =================
+window.viewCard = function(){
 
-  const status = selectedUser.status || "active";
-  btn.innerText = status === "active"
-    ? "Disable User"
-    : "Enable User";
+  if(!selectedUser) return;
+
+  let page = selectedUser.plan === "elite"
+    ? "elite.html"
+    : selectedUser.plan === "pro"
+    ? "pro.html"
+    : "basic.html";
+
+  const link = `${window.location.origin}/arkilogix-site/view/${page}?id=${selectedUser.id}`;
+
+  window.open(link, "_blank");
 }
 
-// =========================
-// 🔄 UPDATE PLAN
-// =========================
-async function updatePlan(plan) {
-  if (!selectedUser) return;
+// ================= COPY LINK =================
+window.copyLink = function(){
 
-  if (!confirm(`Change plan to ${plan}?`)) return;
+  if(!selectedUser) return;
 
-  try {
-    await db.collection("clients").doc(selectedUser.id).update({
-      plan: plan
-    });
+  let page = selectedUser.plan === "elite"
+    ? "elite.html"
+    : selectedUser.plan === "pro"
+    ? "pro.html"
+    : "basic.html";
 
-    alert("Plan updated");
-    closePanel();
-    loadUsers();
+  const link = `${window.location.origin}/arkilogix-site/view/${page}?id=${selectedUser.id}`;
 
-  } catch (err) {
-    console.error("Plan update error:", err);
-  }
-}
-
-// =========================
-// 💸 APPROVE PAYMENT
-// =========================
-async function approvePayment(plan) {
-  if (!selectedUser) return;
-
-  if (!confirm(`Approve ${plan} payment?`)) return;
-
-  try {
-    await db.collection("clients").doc(selectedUser.id).update({
-      plan: plan,
-      paymentStatus: "paid",
-      upgradedAt: new Date()
-    });
-
-    alert("Payment approved");
-    closePanel();
-    loadUsers();
-
-  } catch (err) {
-    console.error("Payment approval error:", err);
-  }
+  navigator.clipboard.writeText(link);
+  alert("Link copied!");
 }
