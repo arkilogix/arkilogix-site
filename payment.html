@@ -35,7 +35,6 @@ h1{
   margin-bottom:20px;
 }
 
-/* SUMMARY */
 .summary{
   background:#fafafa;
   padding:14px;
@@ -56,7 +55,6 @@ h1{
   margin-top:10px;
 }
 
-/* PAYMENT TOGGLE */
 .tabs{
   display:flex;
   border-radius:999px;
@@ -78,14 +76,12 @@ h1{
   color:#fff;
 }
 
-/* QR */
 .qr{
   width:100%;
   border-radius:12px;
   margin:10px 0;
 }
 
-/* BUTTON */
 .btn{
   width:100%;
   padding:13px;
@@ -104,7 +100,6 @@ h1{
   margin-top:10px;
 }
 
-/* SUCCESS */
 .success{
   display:none;
   text-align:center;
@@ -122,8 +117,6 @@ h1{
   color:#666;
 }
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 
 <body>
@@ -135,9 +128,9 @@ h1{
 
   <!-- SUMMARY -->
   <div class="summary">
-    <div class="row"><span>Plan</span><strong id="plan"></strong></div>
-    <div class="row"><span>Card</span><strong id="card"></strong></div>
-    <div class="row total"><span>Total</span><strong id="price"></strong></div>
+    <div class="row"><span>Plan</span><strong id="plan">-</strong></div>
+    <div class="row"><span>Card</span><strong id="card">-</strong></div>
+    <div class="row total"><span>Total</span><strong id="price">₱0</strong></div>
   </div>
 
   <!-- PAYMENT -->
@@ -182,12 +175,7 @@ h1{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// INIT EMAILJS
-(function(){
-  emailjs.init("Wp1sOcLJH-dg_dkLs");
-})();
-
-// FIREBASE
+// FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -201,18 +189,18 @@ const db = getFirestore(app);
 const params = new URLSearchParams(window.location.search);
 const clientId = params.get("clientId");
 
-// LOAD DATA
+// LOAD ORDER DATA
 async function loadData(){
   const snap = await getDoc(doc(db,"clients",clientId));
   const data = snap.data();
 
-  document.getElementById("plan").innerText = data.plan;
-  document.getElementById("card").innerText = data.card;
-  document.getElementById("price").innerText = "₱" + data.price.toLocaleString();
+  document.getElementById("plan").innerText = data.plan || "-";
+  document.getElementById("card").innerText = data.card || "-";
+  document.getElementById("price").innerText = "₱" + (data.price || 0).toLocaleString();
 }
 loadData();
 
-// SWITCH PAYMENT
+// SWITCH PAYMENT METHOD
 window.switchMethod = function(method,el){
   document.querySelectorAll(".tabs div").forEach(t=>t.classList.remove("active"));
   el.classList.add("active");
@@ -221,7 +209,7 @@ window.switchMethod = function(method,el){
     method === "gcash" ? "gcash-qr.jpeg" : "bpi-qr.png";
 }
 
-// CLOUDINARY
+// CLOUDINARY UPLOAD
 async function uploadProof(file){
   const fd = new FormData();
   fd.append("file", file);
@@ -237,16 +225,49 @@ async function uploadProof(file){
   return data.secure_url;
 }
 
-// EMAIL ADMIN
+// 🔥 RESEND EMAIL
 async function sendAdminEmail(data){
   try{
-    await emailjs.send("service_gxckvp8","payment_notification",data);
-  }catch(e){
-    console.log(e);
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer re_S5EiGgPi_7BQ6rfjaqpvM8o33iTru6aFB",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        from: "ArkiLogix <info@arkilogix.com>",
+        to: ["info@arkilogix.com"],
+        subject: "New Payment - ArkiLogix",
+        html: `
+          <h2>New Payment Received 🚀</h2>
+
+          <p><b>Name:</b> ${data.name}</p>
+          <p><b>Email:</b> ${data.email}</p>
+          <p><b>Phone:</b> ${data.phone}</p>
+
+          <hr>
+
+          <p><b>Plan:</b> ${data.plan}</p>
+          <p><b>Card:</b> ${data.card}</p>
+          <p><b>Total:</b> ${data.price}</p>
+
+          <hr>
+
+          <p><b>Payment Proof:</b></p>
+          <a href="${data.proof}" target="_blank">View Proof</a>
+
+          <hr>
+
+          <p><b>Client ID:</b> ${data.clientId}</p>
+        `
+      })
+    });
+  }catch(err){
+    console.log("Resend error:", err);
   }
 }
 
-// SUBMIT
+// SUBMIT PAYMENT
 window.submitPayment = async function(){
 
   const file = document.getElementById("proof").files[0];
@@ -260,10 +281,10 @@ window.submitPayment = async function(){
 
   try{
 
-    status.innerText = "Uploading...";
+    status.innerText = "Uploading proof...";
     const proofUrl = await uploadProof(file);
 
-    status.innerText = "Saving...";
+    status.innerText = "Saving payment...";
 
     const snap = await getDoc(doc(db,"clients",clientId));
     const data = snap.data();
@@ -274,7 +295,7 @@ window.submitPayment = async function(){
       paidAt: new Date()
     });
 
-    // EMAIL ADMIN
+    // SEND EMAIL
     await sendAdminEmail({
       name: data.name,
       email: data.email,
