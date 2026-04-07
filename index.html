@@ -698,7 +698,6 @@ form#orderForm::-webkit-scrollbar-thumb{
 /* ===== DYNAMIC TEXT STACK ===== */
 .text-stack{
   position:absolute;
-  top:32%;
   left:50%;
   transform:translateX(-50%);
   display:flex;
@@ -706,6 +705,21 @@ form#orderForm::-webkit-scrollbar-thumb{
   align-items:center;
   gap:4px;
   width:80%;
+}
+
+/* ===== PRO (center layout) ===== */
+.pro .text-stack{
+  top:34%;
+}
+
+/* ===== BASIC (slightly higher) ===== */
+.basic .text-stack{
+  top:30%;
+}
+
+/* ===== ELITE (lower because of header image) ===== */
+.elite .text-stack{
+  top:42%;
 }
 
 .text-stack .name{
