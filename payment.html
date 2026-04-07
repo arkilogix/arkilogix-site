@@ -7,6 +7,9 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
+<!-- EMAILJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
 <style>
 body{
   font-family:'Inter', sans-serif;
@@ -14,7 +17,6 @@ body{
   margin:0;
   padding:20px;
 }
-
 .container{
   max-width:420px;
   margin:auto;
@@ -23,64 +25,17 @@ body{
   border-radius:16px;
   box-shadow:0 10px 30px rgba(0,0,0,0.06);
 }
+h1{font-size:20px;margin-bottom:5px;}
+.sub{font-size:13px;color:#777;margin-bottom:20px;}
+.summary{background:#fafafa;padding:14px;border-radius:12px;margin-bottom:20px;}
+.row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
+.total{font-size:16px;font-weight:600;margin-top:10px;}
 
-h1{
-  font-size:20px;
-  margin-bottom:5px;
-}
+.tabs{display:flex;border-radius:999px;background:#eee;overflow:hidden;margin-bottom:15px;}
+.tabs div{flex:1;text-align:center;padding:10px;font-size:13px;cursor:pointer;}
+.tabs .active{background:#000;color:#fff;}
 
-.sub{
-  font-size:13px;
-  color:#777;
-  margin-bottom:20px;
-}
-
-.summary{
-  background:#fafafa;
-  padding:14px;
-  border-radius:12px;
-  margin-bottom:20px;
-}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  margin-bottom:6px;
-}
-
-.total{
-  font-size:16px;
-  font-weight:600;
-  margin-top:10px;
-}
-
-.tabs{
-  display:flex;
-  border-radius:999px;
-  background:#eee;
-  overflow:hidden;
-  margin-bottom:15px;
-}
-
-.tabs div{
-  flex:1;
-  text-align:center;
-  padding:10px;
-  font-size:13px;
-  cursor:pointer;
-}
-
-.tabs .active{
-  background:#000;
-  color:#fff;
-}
-
-.qr{
-  width:100%;
-  border-radius:12px;
-  margin:10px 0;
-}
+.qr{width:100%;border-radius:12px;margin:10px 0;}
 
 .btn{
   width:100%;
@@ -91,31 +46,13 @@ h1{
   color:#fff;
   font-size:14px;
   cursor:pointer;
-  margin-top:10px;
 }
 
-.status{
-  font-size:12px;
-  color:#666;
-  margin-top:10px;
-}
+.status{font-size:12px;color:#666;margin-top:10px;}
 
-.success{
-  display:none;
-  text-align:center;
-}
-
-.success-box{
-  background:#ecfdf5;
-  padding:15px;
-  border-radius:12px;
-  margin-bottom:10px;
-}
-
-.note{
-  font-size:12px;
-  color:#666;
-}
+.success{display:none;text-align:center;}
+.success-box{background:#ecfdf5;padding:15px;border-radius:12px;margin-bottom:10px;}
+.note{font-size:12px;color:#666;}
 </style>
 </head>
 
@@ -123,50 +60,50 @@ h1{
 
 <div class="container">
 
-  <h1>Complete Your Payment</h1>
-  <p class="sub">Activate your NFC card</p>
+<h1>Complete Your Payment</h1>
+<p class="sub">Activate your NFC card</p>
 
-  <!-- SUMMARY -->
-  <div class="summary">
-    <div class="row"><span>Plan</span><strong id="plan">-</strong></div>
-    <div class="row"><span>Card</span><strong id="card">-</strong></div>
-    <div class="row total"><span>Total</span><strong id="price">₱0</strong></div>
+<!-- SUMMARY -->
+<div class="summary">
+  <div class="row"><span>Plan</span><strong id="plan"></strong></div>
+  <div class="row"><span>Card</span><strong id="card"></strong></div>
+  <div class="row total"><span>Total</span><strong id="price"></strong></div>
+</div>
+
+<!-- PAYMENT -->
+<div id="paymentBox">
+
+  <div class="tabs">
+    <div class="active" onclick="switchMethod('gcash',this)">GCash</div>
+    <div onclick="switchMethod('bpi',this)">BPI</div>
   </div>
 
-  <!-- PAYMENT -->
-  <div id="paymentBox">
+  <img id="qrImage" src="gcash-qr.jpeg" class="qr">
 
-    <div class="tabs">
-      <div class="active" onclick="switchMethod('gcash',this)">GCash</div>
-      <div onclick="switchMethod('bpi',this)">BPI</div>
-    </div>
-
-    <img id="qrImage" src="gcash-qr.jpeg" class="qr">
-
-    <div style="font-size:13px;text-align:center;margin-bottom:10px;">
-      Upload proof after payment
-    </div>
-
-    <input type="file" id="proof">
-
-    <button class="btn" onclick="submitPayment()">I've Paid</button>
-
-    <div class="status" id="status"></div>
-
+  <div style="font-size:13px;text-align:center;margin-bottom:10px;">
+    Upload proof after payment
   </div>
 
-  <!-- SUCCESS -->
-  <div id="successBox" class="success">
-    <div class="success-box">
-      <strong>✅ Payment Submitted</strong><br>
-      <span style="font-size:13px;">We are verifying your payment</span>
-    </div>
+  <input type="file" id="proof">
 
-    <div class="note">
-      Status: Pending Verification<br>
-      ETA: Within 24 hours
-    </div>
+  <button class="btn" onclick="submitPayment()">I've Paid</button>
+
+  <div class="status" id="status"></div>
+
+</div>
+
+<!-- SUCCESS -->
+<div id="successBox" class="success">
+  <div class="success-box">
+    <strong>✅ Payment Submitted</strong><br>
+    <span style="font-size:13px;">We are verifying your payment</span>
   </div>
+
+  <div class="note">
+    Status: Pending Verification<br>
+    ETA: Within 24 hours
+  </div>
+</div>
 
 </div>
 
@@ -175,7 +112,12 @@ h1{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// FIREBASE CONFIG
+// 🔥 EMAILJS INIT
+(function(){
+  emailjs.init("Wp1sOcLJH-dg_dkLs");
+})();
+
+// FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -225,45 +167,41 @@ async function uploadProof(file){
   return data.secure_url;
 }
 
-// 🔥 RESEND EMAIL
-async function sendAdminEmail(data){
+// 🔥 SEND EMAILS (ADMIN + CLIENT)
+async function sendEmails(data){
   try{
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer re_S5EiGgPi_7BQ6rfjaqpvM8o33iTru6aFB",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        from: "onboarding@resend.dev",
-        to: ["info@arkilogix.com"],
-        subject: "New Payment - ArkiLogix",
-        html: `
-          <h2>New Payment Received 🚀</h2>
 
-          <p><b>Name:</b> ${data.name}</p>
-          <p><b>Email:</b> ${data.email}</p>
-          <p><b>Phone:</b> ${data.phone}</p>
+    // ADMIN EMAIL
+    await emailjs.send(
+      "service_gxckvp8",
+      "template_dbofkzz",
+      {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        plan: data.plan,
+        card: data.card,
+        price: data.price,
+        proof: data.proof,
+        clientId: data.clientId
+      }
+    );
 
-          <hr>
+    // CLIENT EMAIL
+    await emailjs.send(
+      "service_gxckvp8",
+      "template_07td6mf",
+      {
+        name: data.name,
+        email: data.email,
+        plan: data.plan,
+        card: data.card,
+        price: data.price
+      }
+    );
 
-          <p><b>Plan:</b> ${data.plan}</p>
-          <p><b>Card:</b> ${data.card}</p>
-          <p><b>Total:</b> ${data.price}</p>
-
-          <hr>
-
-          <p><b>Payment Proof:</b></p>
-          <a href="${data.proof}" target="_blank">View Proof</a>
-
-          <hr>
-
-          <p><b>Client ID:</b> ${data.clientId}</p>
-        `
-      })
-    });
   }catch(err){
-    console.log("Resend error:", err);
+    console.log("Email error:", err);
   }
 }
 
@@ -281,10 +219,10 @@ window.submitPayment = async function(){
 
   try{
 
-    status.innerText = "Uploading proof...";
+    status.innerText = "Uploading...";
     const proofUrl = await uploadProof(file);
 
-    status.innerText = "Saving payment...";
+    status.innerText = "Saving...";
 
     const snap = await getDoc(doc(db,"clients",clientId));
     const data = snap.data();
@@ -295,8 +233,8 @@ window.submitPayment = async function(){
       paidAt: new Date()
     });
 
-    // SEND EMAIL
-    await sendAdminEmail({
+    // SEND EMAILS
+    await sendEmails({
       name: data.name,
       email: data.email,
       phone: data.phone,
