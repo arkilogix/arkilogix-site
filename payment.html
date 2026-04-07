@@ -3,15 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Activate Your NFC Card</title>
+<title>Complete Your Payment</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 body{
   font-family:'Inter', sans-serif;
-  background:#f7f7f7;
+  background:#f6f6f6;
   margin:0;
   padding:20px;
 }
@@ -22,7 +21,7 @@ body{
   background:#fff;
   padding:24px;
   border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.05);
+  box-shadow:0 10px 30px rgba(0,0,0,0.06);
 }
 
 h1{
@@ -36,46 +35,66 @@ h1{
   margin-bottom:20px;
 }
 
-.section{
+/* SUMMARY */
+.summary{
+  background:#fafafa;
+  padding:14px;
+  border-radius:12px;
   margin-bottom:20px;
 }
 
-.label{
-  font-size:12px;
-  color:#999;
+.row{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.total{
+  font-size:16px;
+  font-weight:600;
   margin-top:10px;
 }
 
-.value{
-  font-size:14px;
-  font-weight:500;
-}
-
-.payment-box{
-  border:1px solid #eee;
-  border-radius:12px;
-  padding:15px;
+/* PAYMENT TOGGLE */
+.tabs{
+  display:flex;
+  border-radius:999px;
+  background:#eee;
+  overflow:hidden;
   margin-bottom:15px;
 }
 
+.tabs div{
+  flex:1;
+  text-align:center;
+  padding:10px;
+  font-size:13px;
+  cursor:pointer;
+}
+
+.tabs .active{
+  background:#000;
+  color:#fff;
+}
+
+/* QR */
 .qr{
   width:100%;
-  border-radius:10px;
+  border-radius:12px;
   margin:10px 0;
 }
 
+/* BUTTON */
 .btn{
   width:100%;
-  padding:12px;
+  padding:13px;
   border:none;
   border-radius:999px;
   background:#000;
   color:#fff;
   font-size:14px;
   cursor:pointer;
-}
-
-.upload{
   margin-top:10px;
 }
 
@@ -85,58 +104,75 @@ h1{
   margin-top:10px;
 }
 
+/* SUCCESS */
+.success{
+  display:none;
+  text-align:center;
+}
+
+.success-box{
+  background:#ecfdf5;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:10px;
+}
+
 .note{
-  font-size:11px;
-  color:#888;
-  margin-top:10px;
-  line-height:1.4;
+  font-size:12px;
+  color:#666;
 }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 
 <body>
 
 <div class="container">
 
-  <h1>Activate Your NFC Card</h1>
-  <p class="sub">Complete your payment to start production</p>
+  <h1>Complete Your Payment</h1>
+  <p class="sub">Activate your NFC card</p>
 
-  <!-- ORDER SUMMARY -->
-  <div class="section">
-
-    <div class="label">Plan</div>
-    <div class="value" id="plan">Loading...</div>
-
-    <div class="label">Card Type</div>
-    <div class="value" id="card">Loading...</div>
-
-    <div class="label">Total</div>
-    <div class="value" id="price">₱0</div>
-
+  <!-- SUMMARY -->
+  <div class="summary">
+    <div class="row"><span>Plan</span><strong id="plan"></strong></div>
+    <div class="row"><span>Card</span><strong id="card"></strong></div>
+    <div class="row total"><span>Total</span><strong id="price"></strong></div>
   </div>
 
-  <!-- GCASH -->
-  <div class="payment-box">
+  <!-- PAYMENT -->
+  <div id="paymentBox">
 
-    <div class="label">GCash</div>
+    <div class="tabs">
+      <div class="active" onclick="switchMethod('gcash',this)">GCash</div>
+      <div onclick="switchMethod('bpi',this)">BPI</div>
+    </div>
 
-    <!-- 🔥 Replace with your real QR -->
-    <img src="gcash-qr.png" class="qr">
+    <img id="qrImage" src="gcash-qr.jpeg" class="qr">
 
-    <div class="value">0917-XXX-XXXX</div>
-    <div class="value">Your Name</div>
+    <div style="font-size:13px;text-align:center;margin-bottom:10px;">
+      Upload proof after payment
+    </div>
 
-    <input type="file" id="proof" class="upload">
+    <input type="file" id="proof">
 
-    <button class="btn" onclick="submitPayment()">Confirm Payment</button>
+    <button class="btn" onclick="submitPayment()">I've Paid</button>
 
     <div class="status" id="status"></div>
 
-    <div class="note">
-      We’ll verify your payment within 24 hours.<br>
-      Your NFC card will be processed after confirmation.
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="successBox" class="success">
+    <div class="success-box">
+      <strong>✅ Payment Submitted</strong><br>
+      <span style="font-size:13px;">We are verifying your payment</span>
     </div>
 
+    <div class="note">
+      Status: Pending Verification<br>
+      ETA: Within 24 hours
+    </div>
   </div>
 
 </div>
@@ -146,7 +182,12 @@ h1{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 Firebase Config
+// INIT EMAILJS
+(function(){
+  emailjs.init("Wp1sOcLJH-dg_dkLs");
+})();
+
+// FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -156,90 +197,105 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔥 Get clientId
+// GET CLIENT ID
 const params = new URLSearchParams(window.location.search);
 const clientId = params.get("clientId");
 
-if(!clientId){
-  alert("Invalid access");
-  window.location.href = "index.html";
-}
-
-// 🔥 Load Data
+// LOAD DATA
 async function loadData(){
-
-  const docRef = doc(db, "clients", clientId);
-  const snap = await getDoc(docRef);
-
-  if(!snap.exists()){
-    alert("Order not found");
-    return;
-  }
-
+  const snap = await getDoc(doc(db,"clients",clientId));
   const data = snap.data();
 
-  document.getElementById("plan").innerText = data.plan?.toUpperCase() || "-";
-  document.getElementById("card").innerText = data.card?.toUpperCase() || "-";
-  document.getElementById("price").innerText = "₱" + (data.price || 0).toLocaleString();
+  document.getElementById("plan").innerText = data.plan;
+  document.getElementById("card").innerText = data.card;
+  document.getElementById("price").innerText = "₱" + data.price.toLocaleString();
 }
-
 loadData();
 
+// SWITCH PAYMENT
+window.switchMethod = function(method,el){
+  document.querySelectorAll(".tabs div").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
 
-// 🔥 CLOUDINARY UPLOAD
+  document.getElementById("qrImage").src =
+    method === "gcash" ? "gcash-qr.jpeg" : "bpi-qr.png";
+}
+
+// CLOUDINARY
 async function uploadProof(file){
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("upload_preset","nfc_upload");
+  fd.append("folder",`nfc-clients/${clientId}`);
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "nfc_upload");
-  formData.append("folder", `nfc-clients/${clientId}`);
-  formData.append("public_id", "payment-proof");
-
-  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
-    method: "POST",
-    body: formData
+  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload",{
+    method:"POST",
+    body:fd
   });
 
   const data = await res.json();
   return data.secure_url;
 }
 
+// EMAIL ADMIN
+async function sendAdminEmail(data){
+  try{
+    await emailjs.send("service_gxckvp8","payment_notification",data);
+  }catch(e){
+    console.log(e);
+  }
+}
 
-// 🔥 SUBMIT PAYMENT
+// SUBMIT
 window.submitPayment = async function(){
 
   const file = document.getElementById("proof").files[0];
-
-  if(!file){
-    alert("Please upload payment proof");
-    return;
-  }
+  if(!file) return alert("Upload proof first");
 
   const status = document.getElementById("status");
-  status.innerText = "Uploading proof...";
+  const btn = document.querySelector(".btn");
+
+  btn.innerText = "Processing...";
+  btn.disabled = true;
 
   try{
 
-    const url = await uploadProof(file);
+    status.innerText = "Uploading...";
+    const proofUrl = await uploadProof(file);
 
-    status.innerText = "Saving payment...";
+    status.innerText = "Saving...";
 
-    // 🔥 SAVE TO FIREBASE
-    await updateDoc(doc(db, "clients", clientId), {
-      paymentStatus: "submitted",
-      paymentProof: url
+    const snap = await getDoc(doc(db,"clients",clientId));
+    const data = snap.data();
+
+    await updateDoc(doc(db,"clients",clientId),{
+      paymentProof: proofUrl,
+      status: "pending_verification",
+      paidAt: new Date()
     });
 
-    status.innerText = "Payment submitted! Redirecting...";
+    // EMAIL ADMIN
+    await sendAdminEmail({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      plan: data.plan,
+      card: data.card,
+      price: "₱" + data.price,
+      proof: proofUrl,
+      clientId: clientId
+    });
 
-    setTimeout(() => {
-      window.location.href = "signup.html?clientId=" + clientId;
-    }, 1500);
+    // SUCCESS UI
+    document.getElementById("paymentBox").style.display="none";
+    document.getElementById("successBox").style.display="block";
 
-  }catch(err){
-    console.error(err);
-    alert("Upload failed. Try again.");
+  }catch(e){
+    alert("Something went wrong");
+    btn.innerText="I've Paid";
+    btn.disabled=false;
   }
+
 }
 
 </script>
