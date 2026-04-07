@@ -1139,17 +1139,6 @@ window.nextStep = function(){
     document.getElementById("orderForm")
       .dispatchEvent(new Event("submit"));
   }
-
-    const descriptions = [
-  "Enter your basic personal details",
-  "Provide your contact and social links",
-  "List the services you offer",
-  "Upload your profile and highlights",
-  "Where should we deliver your NFC card?",
-  "Review your order before submission"
-];
-
-document.getElementById("stepDesc").innerText = descriptions[index];
 }
 
 window.prevStep = function(){
@@ -1160,7 +1149,16 @@ window.prevStep = function(){
 }
 
 // ================= FORM SUBMIT =================
-document.addEventListener("DOMContentLoaded", () => {
+function buildFullAddress(){
+  const a1 = document.getElementById("addressLine1").value || "";
+  const a2 = document.getElementById("addressLine2").value || "";
+  const brgy = document.getElementById("barangay").value || "";
+  const city = document.getElementById("city").value || "";
+  const prov = document.getElementById("province").value || "";
+
+  return `${a1}, ${a2}, ${brgy}, ${city}, ${prov}`;
+}
+    document.addEventListener("DOMContentLoaded", () => {
 
   showStep(0);
   updateTotal();
