@@ -984,22 +984,33 @@ const formatPeso = val => "₱" + val.toLocaleString();
 
 // ================= CLOUDINARY =================
 async function uploadToCloudinary(file, clientId, type){
-  if(!file) return "";
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "nfc_upload");
-  formData.append("folder", `nfc-clients/${clientId}`);
-  formData.append("public_id", type);
-  formData.append("overwrite", "true");
+  if(!file) return null;
 
-  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
-    method: "POST",
-    body: formData
-  });
+  try{
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "nfc_upload");
+    formData.append("folder", `nfc-clients/${clientId}`);
+    formData.append("public_id", type);
 
-  const data = await res.json();
-  return data.secure_url;
+    const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    if(!res.ok){
+      console.log("Cloudinary upload failed");
+      return null;
+    }
+
+    const data = await res.json();
+    return data.secure_url || null;
+
+  }catch(err){
+    console.log("Upload error:", err);
+    return null;
+  }
 }
 
 // ================= PRICE =================
@@ -1190,8 +1201,14 @@ const params = {
   price: basePrices[selectedPlan] + cardPrice
 };
 
-    const profile = document.getElementById("profilePhoto").files[0];
-    params.profile = await uploadToCloudinary(profile, clientId, "profile");
+  const profile = document.getElementById("profilePhoto").files[0];
+  
+  if(profile){
+    const profileUrl = await uploadToCloudinary(profile, clientId, "profile");
+    if(profileUrl){
+      params.profile = profileUrl;
+    }
+  }
 
     await setDoc(doc(db, "clients", clientId), params);
 
