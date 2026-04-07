@@ -720,6 +720,12 @@ form#orderForm::-webkit-scrollbar-thumb{
 .text-stack .company{
   font-size:10px;
 }
+.modal-desc{
+  font-size:12px;
+  color:#999;
+  margin-bottom:12px;
+  line-height:1.4;
+}
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
@@ -1050,7 +1056,17 @@ function showStep(index){
     "Review"
   ];
 
+  const descriptions = [
+    "Enter your basic personal details",
+    "Provide your contact and social links",
+    "List the services you offer",
+    "Upload your profile and highlights",
+    "Where should we deliver your NFC card?",
+    "Review your order before submission"
+  ];
+
   document.getElementById("stepTitle").innerText = titles[index];
+  document.getElementById("stepDesc").innerText = descriptions[index];
 
   document.getElementById("progressFill").style.width =
     ((index+1)/6)*100 + "%";
@@ -1072,6 +1088,17 @@ window.nextStep = function(){
     document.getElementById("orderForm")
       .dispatchEvent(new Event("submit"));
   }
+
+    const descriptions = [
+  "Enter your basic personal details",
+  "Provide your contact and social links",
+  "List the services you offer",
+  "Upload your profile and highlights",
+  "Where should we deliver your NFC card?",
+  "Review your order before submission"
+];
+
+document.getElementById("stepDesc").innerText = descriptions[index];
 }
 
 window.prevStep = function(){
@@ -1094,15 +1121,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const clientId = "client-" + Date.now();
 
-    const params = {
-      name: document.getElementById("name").value,
-      position: document.getElementById("position").value,
-      email: document.getElementById("email").value,
-      phone: document.getElementById("phone").value,
-      plan: selectedPlan,
-      card: selectedCard,
-      price: basePrices[selectedPlan] + cardPrice
-    };
+const params = {
+  name: document.getElementById("name").value,
+  position: document.getElementById("position").value,
+  email: document.getElementById("email").value,
+  phone: document.getElementById("phone").value,
+
+  addressLine1: document.getElementById("addressLine1").value,
+  addressLine2: document.getElementById("addressLine2").value,
+  barangay: document.getElementById("barangay").value,
+  city: document.getElementById("city").value,
+  province: document.getElementById("province").value,
+  notes: document.getElementById("notes").value,
+
+  fullAddress: buildFullAddress(),
+
+  plan: selectedPlan,
+  card: selectedCard,
+  price: basePrices[selectedPlan] + cardPrice
+};
 
     const profile = document.getElementById("profilePhoto").files[0];
     params.profile = await uploadToCloudinary(profile, clientId, "profile");
@@ -1120,6 +1157,7 @@ document.addEventListener("keydown", e => {
     closeOrderModal();
   }
 });
+
 </script>
 
 <!-- MODAL -->
@@ -1130,8 +1168,9 @@ document.addEventListener("keydown", e => {
     <span class="close-btn" onclick="closeOrderModal()">&times;</span>
 
     <!-- HEADER -->
-    <h2 id="stepTitle">Your Identity</h2>
-    <p class="modal-sub" id="stepSub">Step 1 of 6</p>
+<h2 id="stepTitle">Your Identity</h2>
+<p class="modal-sub" id="stepSub">Step 1 of 6</p>
+<p class="modal-desc" id="stepDesc">Enter your basic personal details</p>
 
     <!-- PROGRESS -->
     <div class="progress">
@@ -1182,11 +1221,16 @@ document.addEventListener("keydown", e => {
       </div>
 
       <!-- STEP 5 -->
-      <div class="step">
-        <input type="text" id="address" placeholder="Full Address" required>
-        <input type="text" id="city" placeholder="City">
-        <input type="text" id="notes" placeholder="Additional Notes">
-      </div>
+<div class="step">
+
+      <input type="text" id="addressLine1" placeholder="Block, Lot, Phase or House No." required>
+      <input type="text" id="addressLine2" placeholder="Street Name / Street No.">
+      <input type="text" id="barangay" placeholder="Barangay" required>
+      <input type="text" id="city" placeholder="City" required>
+      <input type="text" id="province" placeholder="Province" required>
+      <input type="text" id="notes" placeholder="Notes / Landmark (optional)">
+
+</div>
 
       <!-- STEP 6 -->
       <div class="step">
