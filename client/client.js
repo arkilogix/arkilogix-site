@@ -1,21 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { 
-  getAuth, 
-  onAuthStateChanged, 
-  signOut 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-import { 
-  getFirestore, 
-  collection, 
-  query, 
-  where, 
-  getDocs 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* FIREBASE */
 const firebaseConfig = {
-  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
+  apiKey: "AIzaSy...",
   authDomain: "arkilogix-clients.firebaseapp.com",
   projectId: "arkilogix-clients"
 };
@@ -26,85 +15,103 @@ const db = getFirestore(app);
 
 /* STATE */
 let currentData = {};
+let currentDocId = "";
+let step = 1;
 
 /* AUTH */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "/auth/login.html";
-    return;
-  }
+onAuthStateChanged(auth, async (user)=>{
+  if(!user) return location.href="/auth/login.html";
 
-  loadDashboard(user);
+  const q = query(collection(db,"clients"), where("uid","==",user.uid));
+  const snap = await getDocs(q);
+
+  if(snap.empty) return;
+
+  const docSnap = snap.docs[0];
+  currentDocId = docSnap.id;
+  currentData = docSnap.data();
+
+  render();
 });
 
-/* LOAD DASHBOARD */
-async function loadDashboard(user){
+/* RENDER */
+function render(){
+  document.getElementById("userName").innerText=currentData.name||"User";
+  document.getElementById("planBadge").innerText=(currentData.plan||"basic").toUpperCase();
 
-  const q = query(
-    collection(db, "clients"),
-    where("uid", "==", user.uid)
-  );
+  const img=currentData.profile||"/logo.png";
+  headerProfile.src=img;
+  heroProfile.src=img;
 
-  const snapshot = await getDocs(q);
+  cardName.innerText=currentData.name||"Name";
+  cardPosition.innerText=currentData.position||"Position";
 
-  if(snapshot.empty){
-    console.warn("No client linked");
-    return;
-  }
-
-  const docSnap = snapshot.docs[0];
-  const data = docSnap.data();
-
-  currentData = data;
-
-  // HEADER
-  document.getElementById("userName").textContent = data.name || "User";
-  document.getElementById("planBadge").textContent = (data.plan || "basic").toUpperCase();
-
-  // PROFILE
-  const img = data.profile || "/logo.png";
-  document.getElementById("headerProfile").src = img;
-  document.getElementById("heroProfile").src = img;
-
-  // CARD
-  document.getElementById("cardName").textContent = data.name || "Name";
-  document.getElementById("cardPosition").textContent = data.position || "Position";
-
-  const servicesEl = document.getElementById("cardServices");
-  servicesEl.innerHTML = "";
-
-  (data.services || []).forEach(s=>{
-    const span = document.createElement("span");
-    span.textContent = s;
-    servicesEl.appendChild(span);
+  cardServices.innerHTML="";
+  (currentData.services||[]).forEach(s=>{
+    const span=document.createElement("span");
+    span.innerText=s;
+    cardServices.appendChild(span);
   });
 
-  // STATUS
-  const status = data.status || "processing";
-  const statusText = status === "completed" ? "Live" : "Processing";
-  document.getElementById("statusText").textContent = "Status: " + statusText;
-
+  statusText.innerText="Status: "+(currentData.status||"processing");
 }
 
-/* VIEW CARD (FIXED PLAN ROUTING) */
-window.viewCard = function(){
+/* VIEW CARD */
+window.viewCard=()=>{
+  let page="basic.html";
+  if(currentData.plan==="pro") page="pro.html";
+  if(currentData.plan==="elite") page="elite.html";
+  window.open(`/view/${page}?id=${currentDocId}`);
+};
 
-  const plan = currentData.plan || "basic";
+/* MODAL */
+window.openModal=()=>{
+  editModal.style.display="flex";
+};
 
-  let page = "basic.html";
+window.nextStep=()=>{
+  document.querySelector(`[data-step="${step}"]`).classList.remove("active");
+  step++;
+  document.querySelector(`[data-step="${step}"]`).classList.add("active");
+};
 
-  if(plan === "pro") page = "pro.html";
-  if(plan === "elite") page = "elite.html";
+window.prevStep=()=>{
+  document.querySelector(`[data-step="${step}"]`).classList.remove("active");
+  step--;
+  document.querySelector(`[data-step="${step}"]`).classList.add("active");
+};
 
-  const q = new URLSearchParams(window.location.search);
-  const id = q.get("id") || "";
+/* SERVICES */
+window.addServiceField=()=>{
+  const div=document.createElement("div");
+  div.innerHTML=`<input>`;
+  servicesEdit.appendChild(div);
+};
 
-  window.open(`/view/${page}?id=${id}`, "_blank");
+/* SAVE */
+async function save(){
+  await updateDoc(doc(db,"clients",currentDocId), currentData);
+}
+
+/* SHARE */
+window.copyLink=()=>{
+  navigator.clipboard.writeText(window.location.href);
+};
+
+window.downloadVCard=()=>{
+  alert("vCard soon");
+};
+
+/* CTA */
+window.explorePremium=()=>{
+  alert("Premium page soon");
+};
+
+window.exploreProducts=()=>{
+  alert("Pet NFC coming soon");
 };
 
 /* LOGOUT */
-document.querySelector(".logout").onclick = ()=>{
-  signOut(auth).then(()=>{
-    window.location.href = "/auth/login.html";
-  });
+document.querySelector(".logout").onclick=()=>{
+  signOut(auth).then(()=>location.href="/auth/login.html");
 };
