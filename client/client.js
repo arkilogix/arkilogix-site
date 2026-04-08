@@ -109,21 +109,107 @@ window.viewCard = ()=>{
   window.open(`/view/${page}?id=${currentDocId}`);
 };
 
-/* MODAL */
+/* ================= MODAL ================= */
+
 window.openModal = ()=>{
   document.getElementById("editModal").style.display = "flex";
+
+  // 🔥 PREFILL INPUTS
+  document.getElementById("editName").value = currentData.name || "";
+  document.getElementById("editPosition").value = currentData.position || "";
+
+  document.getElementById("contactPhone").value = currentData.phone || "";
+  document.getElementById("contactEmail").value = currentData.email || "";
+  document.getElementById("contactFacebook").value = currentData.facebook || "";
+  document.getElementById("contactInstagram").value = currentData.instagram || "";
+
+  document.getElementById("website").value = currentData.website || "";
+
+  // 🔥 SERVICES
+  const servicesBox = document.getElementById("servicesEdit");
+  servicesBox.innerHTML = "";
+
+  if(currentData.services && currentData.services.length){
+    currentData.services.forEach(s=>{
+      const input = document.createElement("input");
+      input.value = s;
+      servicesBox.appendChild(input);
+    });
+  } else {
+    const input = document.createElement("input");
+    servicesBox.appendChild(input);
+  }
+
+  step = 1;
+  updateSteps();
 };
 
-window.nextStep = ()=>{
-  document.querySelector(`[data-step="${step}"]`).classList.remove("active");
-  step++;
+/* STEP CONTROL */
+function updateSteps(){
+  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
   document.querySelector(`[data-step="${step}"]`).classList.add("active");
+}
+
+window.nextStep = async ()=>{
+  if(step < 5){
+    step++;
+    updateSteps();
+  } else {
+    await saveProfile(); // 🔥 SAVE ON LAST STEP
+  }
 };
 
 window.prevStep = ()=>{
-  document.querySelector(`[data-step="${step}"]`).classList.remove("active");
-  step--;
-  document.querySelector(`[data-step="${step}"]`).classList.add("active");
+  if(step > 1){
+    step--;
+    updateSteps();
+  }
+};
+
+/* ================= SAVE ================= */
+
+async function saveProfile(){
+
+  // 🔥 COLLECT VALUES
+  currentData.name = document.getElementById("editName").value;
+  currentData.position = document.getElementById("editPosition").value;
+
+  currentData.phone = document.getElementById("contactPhone").value;
+  currentData.email = document.getElementById("contactEmail").value;
+  currentData.facebook = document.getElementById("contactFacebook").value;
+  currentData.instagram = document.getElementById("contactInstagram").value;
+
+  currentData.website = document.getElementById("website").value;
+
+  // 🔥 SERVICES ARRAY
+  const serviceInputs = document.querySelectorAll("#servicesEdit input");
+  currentData.services = [];
+
+  serviceInputs.forEach(input=>{
+    if(input.value.trim()){
+      currentData.services.push(input.value.trim());
+    }
+  });
+
+  try{
+    await updateDoc(doc(db,"clients",currentDocId), currentData);
+
+    console.log("Profile updated");
+
+    render(); // 🔥 refresh UI
+
+    document.getElementById("editModal").style.display = "none";
+
+  }catch(err){
+    console.error(err);
+    alert("Failed to save");
+  }
+}
+
+/* SERVICES ADD */
+window.addServiceField = ()=>{
+  const input = document.createElement("input");
+  document.getElementById("servicesEdit").appendChild(input);
 };
 
 /* SERVICES */
