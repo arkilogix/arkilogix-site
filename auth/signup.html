@@ -270,17 +270,25 @@ const toggles = document.querySelectorAll(".toggle");
 
 /* ================= PASSWORD VALIDATION ================= */
 function validatePasswords(){
+  const email = emailInput.value.trim();
   const password = passwordInput.value;
   const confirm = confirmInput.value;
 
-  if(!password && !confirm){
+  if(!email || !password || !confirm){
     feedback.className = "feedback";
     feedback.innerText = "";
     signupBtn.disabled = true;
     return;
   }
 
-  if(password === confirm && password.length >= 6){
+  if(password.length < 6){
+    feedback.className = "feedback error show";
+    feedback.innerText = "Password must be at least 6 characters";
+    signupBtn.disabled = true;
+    return;
+  }
+
+  if(password === confirm){
     feedback.className = "feedback success show";
     feedback.innerText = "Passwords match";
     signupBtn.disabled = false;
@@ -291,8 +299,10 @@ function validatePasswords(){
   }
 }
 
-/* ================= TOGGLE PASSWORD ================= */
-function togglePassword(input){
+/* ================= TOGGLE PASSWORD (FIXED) ================= */
+function togglePassword(inputId){
+  const input = document.getElementById(inputId);
+  if(!input) return;
   input.type = input.type === "password" ? "text" : "password";
 }
 
@@ -301,6 +311,11 @@ async function signup(){
 
   const email = emailInput.value.trim();
   const password = passwordInput.value;
+
+  if(!email || !password){
+    alert("Please fill all fields");
+    return;
+  }
 
   signupBtn.disabled = true;
   signupBtn.innerText = "Creating...";
@@ -314,7 +329,7 @@ async function signup(){
 
     let linked = false;
 
-    // 🔥 LINK VIA clientId
+    /* 🔥 LINK VIA clientId */
     if(clientId){
       const ref = doc(db, "clients", clientId);
       const snap = await getDoc(ref);
@@ -325,7 +340,7 @@ async function signup(){
       }
     }
 
-    // 🔥 FALLBACK LINK BY EMAIL
+    /* 🔥 FALLBACK LINK BY EMAIL */
     if(!linked){
       const q = query(collection(db,"clients"), where("email","==",email));
       const snap = await getDocs(q);
@@ -333,7 +348,7 @@ async function signup(){
       if(!snap.empty){
         await setDoc(snap.docs[0].ref, { uid: user.uid }, { merge:true });
       } else {
-        // 🔥 CREATE NEW CLIENT
+        /* 🔥 CREATE NEW CLIENT */
         await setDoc(doc(db,"clients", user.uid), {
           email,
           uid: user.uid,
@@ -360,8 +375,11 @@ function runActivation(){
   const steps = ["step1","step2","step3","step4"];
 
   steps.forEach((id, i)=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+
     setTimeout(()=>{
-      document.getElementById(id).classList.add("show");
+      el.classList.add("show");
     }, 300 + i*600);
   });
 
@@ -372,18 +390,20 @@ function runActivation(){
 
 /* ================= EVENT LISTENERS ================= */
 
-// password typing
+// validation
+emailInput.addEventListener("input", validatePasswords);
 passwordInput.addEventListener("input", validatePasswords);
 confirmInput.addEventListener("input", validatePasswords);
 
-// signup click
+// signup (ONLY here — make sure NO onclick in HTML)
 signupBtn.addEventListener("click", signup);
 
-// toggle buttons
+// toggle buttons (FIXED)
 toggles.forEach(toggle => {
   toggle.addEventListener("click", () => {
     const input = toggle.parentElement.querySelector("input");
-    togglePassword(input);
+    if(!input) return;
+    togglePassword(input.id);
   });
 });
 
