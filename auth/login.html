@@ -151,7 +151,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, signInWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc } 
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* FIREBASE */
@@ -171,6 +171,11 @@ window.login = async function(){
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
+  if(!email || !password){
+    alert("Please enter email and password");
+    return;
+  }
+
   try{
     const userCred = await signInWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
@@ -184,50 +189,57 @@ window.login = async function(){
       return;
     }
 
-    // ✅ FIND CLIENT BY UID
-    let q = query(collection(db, "clients"), where("uid", "==", user.uid));
-    let snapshot = await getDocs(q);
+    // ✅ DIRECT CLIENT CHECK (FIXED)
+    const clientRef = doc(db, "clients", user.uid);
+    const clientSnap = await getDoc(clientRef);
 
-    if(!snapshot.empty){
+    if(clientSnap.exists()){
       window.location.href = "/client/index.html";
       return;
     }
 
-    // 🔥 FORCE LINK USING EMAIL
-    q = query(collection(db,"clients"), where("email","==",email));
-    snapshot = await getDocs(q);
+    // 🔥 FALLBACK: LINK BY EMAIL
+    const q = query(collection(db,"clients"), where("email","==",email));
+    const snapshot = await getDocs(q);
 
     if(!snapshot.empty){
       const ref = snapshot.docs[0].ref;
 
-      await setDoc(ref, {
-        uid: user.uid
-      }, { merge: true });
-
-      console.log("Linked via email");
+      await setDoc(ref, { uid: user.uid }, { merge: true });
 
       window.location.href = "/client/index.html";
       return;
     }
 
-    // 🔥 LAST RESORT → CREATE CLIENT
-    console.log("Creating new client");
-
-    await setDoc(doc(db,"clients", user.uid), {
-      email: email,
-      uid: user.uid,
-      status: "processing",
-      plan: "basic",
-      createdAt: new Date()
-    });
-
-    window.location.href = "/client/index.html";
+    // ❌ NO CLIENT FOUND → SHOW MODAL
+    showUserNotFoundModal();
 
   }catch(err){
+
+    console.log("LOGIN ERROR:", err.code);
+
+    if(err.code === "auth/user-not-found"){
+      showUserNotFoundModal();
+      return;
+    }
+
+    if(err.code === "auth/wrong-password"){
+      alert("Incorrect password");
+      return;
+    }
+
     alert(err.message);
   }
 
 };
+
+/* USER NOT FOUND MODAL */
+function showUserNotFoundModal(){
+  const confirmSignup = confirm("User not found.\n\nCreate an account?");
+  if(confirmSignup){
+    window.location.href = "signup.html";
+  }
+}
 </script>
 
 </body>
