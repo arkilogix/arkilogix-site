@@ -168,7 +168,7 @@ const db = getFirestore(app);
 /* LOGIN */
 window.login = async function(){
 
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
   try{
@@ -177,40 +177,42 @@ window.login = async function(){
 
     console.log("LOGIN UID:", user.uid);
 
-    // 🔥 ADMIN CHECK
+    // ✅ ADMIN CHECK
     const adminDoc = await getDoc(doc(db, "admins", user.uid));
     if(adminDoc.exists()){
       window.location.href = "/dashboard/index.html";
       return;
     }
 
-    // 🔥 CLIENT CHECK (PRIMARY)
-    const q = query(collection(db, "clients"), where("uid", "==", user.uid));
-    const snapshot = await getDocs(q);
-
-    console.log("CLIENT FOUND:", snapshot.size);
+    // ✅ FIND CLIENT BY UID
+    let q = query(collection(db, "clients"), where("uid", "==", user.uid));
+    let snapshot = await getDocs(q);
 
     if(!snapshot.empty){
       window.location.href = "/client/index.html";
       return;
     }
 
-    // 🔥 FALLBACK: TRY LINKING BY EMAIL
-    const emailQuery = query(collection(db,"clients"), where("email","==",email));
-    const emailSnap = await getDocs(emailQuery);
+    // 🔥 FORCE LINK USING EMAIL
+    q = query(collection(db,"clients"), where("email","==",email));
+    snapshot = await getDocs(q);
 
-    if(!emailSnap.empty){
-      const ref = emailSnap.docs[0].ref;
+    if(!snapshot.empty){
+      const ref = snapshot.docs[0].ref;
 
       await setDoc(ref, {
         uid: user.uid
       }, { merge: true });
+
+      console.log("Linked via email");
 
       window.location.href = "/client/index.html";
       return;
     }
 
     // 🔥 LAST RESORT → CREATE CLIENT
+    console.log("Creating new client");
+
     await setDoc(doc(db,"clients", user.uid), {
       email: email,
       uid: user.uid,
