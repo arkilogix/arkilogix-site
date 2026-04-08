@@ -19,12 +19,48 @@ let currentDocId = "";
 let step = 1;
 
 /* AUTH */
+let authChecked = false;
+
 onAuthStateChanged(auth, async (user)=>{
-  
+
+  // 🔥 FIRST CALL (can be null temporarily)
+  if(!authChecked){
+    authChecked = true;
+
+    if(!user){
+      // wait a bit before deciding
+      setTimeout(() => {
+        if(!auth.currentUser){
+          window.location.replace("/auth/login.html");
+        }
+      }, 500);
+
+      return;
+    }
+  }
+
+  // ✅ USER CONFIRMED
   if(!user){
     window.location.replace("/auth/login.html");
     return;
   }
+
+  console.log("USER OK:", user.uid);
+
+  // ✅ FETCH CLIENT DATA
+  const ref = doc(db, "clients", user.uid);
+  const snap = await getDoc(ref);
+
+  if(!snap.exists()){
+    console.log("No client doc");
+    return;
+  }
+
+  currentDocId = user.uid;
+  currentData = snap.data();
+
+  render();
+});
 
   // ✅ DIRECT CLIENT FETCH (FIXED)
   const ref = doc(db, "clients", user.uid);
