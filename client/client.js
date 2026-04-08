@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* FIREBASE */
 const firebaseConfig = {
@@ -20,72 +20,81 @@ let step = 1;
 
 /* AUTH */
 onAuthStateChanged(auth, async (user)=>{
-  if(!user) return location.href="/auth/login.html";
+  
+  if(!user){
+    window.location.replace("/auth/login.html");
+    return;
+  }
 
-  const q = query(collection(db,"clients"), where("uid","==",user.uid));
-  const snap = await getDocs(q);
+  // ✅ DIRECT CLIENT FETCH (FIXED)
+  const ref = doc(db, "clients", user.uid);
+  const snap = await getDoc(ref);
 
-  if(snap.empty) return;
+  if(!snap.exists()){
+    console.log("No client doc found");
+    return;
+  }
 
-  const docSnap = snap.docs[0];
-  currentDocId = docSnap.id;
-  currentData = docSnap.data();
+  currentDocId = user.uid;
+  currentData = snap.data();
 
   render();
 });
 
 /* RENDER */
 function render(){
-  document.getElementById("userName").innerText=currentData.name||"User";
-  document.getElementById("planBadge").innerText=(currentData.plan||"basic").toUpperCase();
+  document.getElementById("userName").innerText = currentData.name || "User";
+  document.getElementById("planBadge").innerText = (currentData.plan || "basic").toUpperCase();
 
-  const img=currentData.profile||"/logo.png";
-  headerProfile.src=img;
-  heroProfile.src=img;
+  const img = currentData.profile || "/logo.png";
+  document.getElementById("headerProfile").src = img;
+  document.getElementById("heroProfile").src = img;
 
-  cardName.innerText=currentData.name||"Name";
-  cardPosition.innerText=currentData.position||"Position";
+  document.getElementById("cardName").innerText = currentData.name || "Name";
+  document.getElementById("cardPosition").innerText = currentData.position || "Position";
 
-  cardServices.innerHTML="";
-  (currentData.services||[]).forEach(s=>{
-    const span=document.createElement("span");
-    span.innerText=s;
-    cardServices.appendChild(span);
+  const servicesContainer = document.getElementById("cardServices");
+  servicesContainer.innerHTML = "";
+
+  (currentData.services || []).forEach(s=>{
+    const span = document.createElement("span");
+    span.innerText = s;
+    servicesContainer.appendChild(span);
   });
 
-  statusText.innerText="Status: "+(currentData.status||"processing");
+  document.getElementById("statusText").innerText = "Status: " + (currentData.status || "processing");
 }
 
 /* VIEW CARD */
-window.viewCard=()=>{
-  let page="basic.html";
-  if(currentData.plan==="pro") page="pro.html";
-  if(currentData.plan==="elite") page="elite.html";
+window.viewCard = ()=>{
+  let page = "basic.html";
+  if(currentData.plan === "pro") page = "pro.html";
+  if(currentData.plan === "elite") page = "elite.html";
   window.open(`/view/${page}?id=${currentDocId}`);
 };
 
 /* MODAL */
-window.openModal=()=>{
-  editModal.style.display="flex";
+window.openModal = ()=>{
+  document.getElementById("editModal").style.display = "flex";
 };
 
-window.nextStep=()=>{
+window.nextStep = ()=>{
   document.querySelector(`[data-step="${step}"]`).classList.remove("active");
   step++;
   document.querySelector(`[data-step="${step}"]`).classList.add("active");
 };
 
-window.prevStep=()=>{
+window.prevStep = ()=>{
   document.querySelector(`[data-step="${step}"]`).classList.remove("active");
   step--;
   document.querySelector(`[data-step="${step}"]`).classList.add("active");
 };
 
 /* SERVICES */
-window.addServiceField=()=>{
-  const div=document.createElement("div");
-  div.innerHTML=`<input>`;
-  servicesEdit.appendChild(div);
+window.addServiceField = ()=>{
+  const div = document.createElement("div");
+  div.innerHTML = `<input>`;
+  document.getElementById("servicesEdit").appendChild(div);
 };
 
 /* SAVE */
@@ -94,24 +103,24 @@ async function save(){
 }
 
 /* SHARE */
-window.copyLink=()=>{
+window.copyLink = ()=>{
   navigator.clipboard.writeText(window.location.href);
 };
 
-window.downloadVCard=()=>{
+window.downloadVCard = ()=>{
   alert("vCard soon");
 };
 
 /* CTA */
-window.explorePremium=()=>{
+window.explorePremium = ()=>{
   alert("Premium page soon");
 };
 
-window.exploreProducts=()=>{
+window.exploreProducts = ()=>{
   alert("Pet NFC coming soon");
 };
 
 /* LOGOUT */
-document.querySelector(".logout").onclick=()=>{
-  signOut(auth).then(()=>location.href="/auth/login.html");
+document.querySelector(".logout").onclick = ()=>{
+  signOut(auth).then(()=>window.location.replace("/auth/login.html"));
 };
