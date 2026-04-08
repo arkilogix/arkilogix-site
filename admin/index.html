@@ -17,228 +17,258 @@
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  display: flex;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
 }
 
 /* SIDEBAR */
 .sidebar {
-  width: 240px;
-  height: 100vh;
-  border-right: 1px solid var(--border);
-  padding: 20px;
+  width:220px;
+  height:100vh;
+  border-right:1px solid var(--border);
+  padding:20px;
 }
 
 .logo {
-  width: 140px;
-  margin-bottom: 30px;
-}
-
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  width:130px;
+  margin-bottom:30px;
 }
 
 .nav a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 14px;
+  display:block;
+  margin-bottom:10px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
 }
 
 .nav a.active {
-  color: white;
+  color:#fff;
 }
 
 /* MAIN */
 .main {
-  flex: 1;
-  padding: 30px;
+  flex:1;
+  padding:30px;
+}
+
+/* TABS */
+.tabs {
+  display:flex;
+  gap:8px;
+  margin-bottom:20px;
+}
+
+.tabs div {
+  padding:8px 14px;
+  font-size:12px;
+  color:var(--muted);
+  border:1px solid var(--border);
+  border-radius:999px;
+  cursor:pointer;
+}
+
+.tabs .active {
+  background:#fff;
+  color:#000;
 }
 
 /* STATS */
 .stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 30px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:20px;
 }
 
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 20px;
-  border-radius: 14px;
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--card);
 }
 
 .card h3 {
-  font-size: 12px;
-  color: var(--muted);
+  font-size:11px;
+  color:var(--muted);
 }
 
 .card h1 {
-  font-size: 28px;
-}
-
-/* SEARCH */
-.search {
-  margin-bottom: 20px;
-}
-
-.search input {
-  width: 100%;
-  padding: 12px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: white;
-  border-radius: 10px;
+  font-size:22px;
 }
 
 /* TABLE */
 table {
-  width: 100%;
-  border-collapse: collapse;
+  width:100%;
+  border-collapse:collapse;
 }
 
 td, th {
-  padding: 14px;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
+  padding:12px;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
 }
 
 th {
-  color: var(--muted);
-  font-size: 12px;
+  color:var(--muted);
+  text-align:left;
 }
 
-button {
-  padding: 6px 10px;
-  border: none;
-  background: #1f1f22;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
+tr:hover {
+  background:rgba(255,255,255,0.03);
+  cursor:pointer;
+}
+
+/* IMAGE */
+.thumb {
+  width:40px;
+  height:40px;
+  border-radius:8px;
+  object-fit:cover;
+  background:#222;
+}
+
+/* STATUS DOT */
+.status {
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.dot {
+  width:8px;
+  height:8px;
+  border-radius:50%;
+}
+
+.pending_payment { background:#facc15; }
+.pending_verification { background:#60a5fa; }
+.paid { background:#4ade80; }
+.processing { background:#a78bfa; }
+.completed { background:#9ca3af; }
+
+/* ICONS */
+.actions {
+  display:flex;
+  gap:10px;
+}
+
+.actions svg {
+  width:16px;
+  height:16px;
+  stroke:var(--muted);
+  cursor:pointer;
+}
+
+.actions svg:hover {
+  stroke:#fff;
 }
 
 /* PANEL */
 .panel {
-  position: fixed;
-  top: 0;
-  right: -400px;
-  width: 400px;
-  height: 100%;
-  background: #111;
-  border-left: 1px solid var(--border);
-  padding: 20px;
-  transition: 0.3s;
+  position:fixed;
+  right:-400px;
+  top:0;
+  width:400px;
+  height:100%;
+  background:#111;
+  border-left:1px solid var(--border);
+  padding:20px;
+  transition:.3s;
 }
 
 .panel.open {
-  right: 0;
+  right:0;
 }
 
-.panel h2 {
-  margin-bottom: 10px;
+.section {
+  margin-bottom:20px;
 }
 
-.close {
-  cursor: pointer;
-  margin-bottom: 20px;
-  color: var(--muted);
+.section h3 {
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.proof {
+  width:100%;
+  border-radius:10px;
+  margin-top:10px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
   <img src="/logo.png" class="logo">
-
   <div class="nav">
-    <a class="active">Users</a>
+    <a class="active">Orders</a>
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
-  <!-- STATS -->
-    <div class="stats">
-      <div class="card"><h3>Total Users</h3><h1 id="total">0</h1></div>
-      <div class="card"><h3>Paid Users</h3><h1 id="paid">0</h1></div>
-      <div class="card"><h3>Conversion</h3><h1 id="conversion">0%</h1></div>
-      <div class="card"><h3>Revenue</h3><h1 id="revenue">₱0</h1></div>
-    </div>
+<!-- TABS -->
+<div class="tabs">
+  <div class="active" onclick="setFilter('pending_verification', this)">For Verification</div>
+  <div onclick="setFilter('all', this)">All</div>
+  <div onclick="setFilter('pending_payment', this)">Pending</div>
+  <div onclick="setFilter('paid', this)">Paid</div>
+  <div onclick="setFilter('processing', this)">Processing</div>
+  <div onclick="setFilter('completed', this)">Completed</div>
+</div>
 
-  <!-- SEARCH -->
-  <div class="search">
-    <input type="text" id="search" placeholder="Search users...">
-  </div>
+<!-- STATS -->
+<div class="stats">
+  <div class="card"><h3>Total</h3><h1 id="total">0</h1></div>
+  <div class="card"><h3>For Verification</h3><h1 id="verify">0</h1></div>
+  <div class="card"><h3>Paid</h3><h1 id="paid">0</h1></div>
+  <div class="card"><h3>Revenue</h3><h1 id="revenue">₱0</h1></div>
+</div>
 
-  <!-- TABLE -->
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Plan</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="table"></tbody>
-  </table>
+<!-- TABLE -->
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Name</th>
+<th>Plan</th>
+<th>Price</th>
+<th>Status</th>
+<th>Date</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
 
 </div>
 
-<!-- USER PANEL -->
-<div class="panel" id="panel">
-  <div class="close" onclick="closePanel()">← Back</div>
+<!-- PANEL -->
+<div class="panel" id="panel"></div>
 
-  <h2 id="pName"></h2>
-  <p id="pEmail"></p>
-  <p id="pPhone"></p>
-  <p id="pPlan"></p>
-  <p id="pStatus"></p>
-  <p id="pPayment"></p>
-
-  <br>
-
-  <!-- ACTIONS -->
-  <button onclick="viewCard()">🔗 View Card</button>
-  <button onclick="copyLink()">📋 Copy Link</button>
-
-  <br><br>
-
-  <button onclick="toggleStatus()" id="statusBtn">Disable User</button>
-
-  <br><br>
-
-  <button onclick="updatePlan('basic')">Set Basic</button>
-  <button onclick="updatePlan('pro')">Set Pro</button>
-  <button onclick="updatePlan('elite')">Set Elite</button>
-
-  <br><br>
-
-  <h3>Manual Payment</h3>
-  <button onclick="approvePayment('pro')">Approve Pro</button>
-  <button onclick="approvePayment('elite')">Approve Elite</button>
-</div>
+<!-- SVG ICONS -->
+<svg style="display:none">
+<symbol id="eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="x" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+</svg>
 
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-
 <script src="/firebase-init.js"></script>
+
 <script src="admin.js"></script>
 
 </body>
