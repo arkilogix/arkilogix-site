@@ -1,169 +1,141 @@
-// ================= GLOBAL STATE =================
 let users = [];
-let selectedUser = null;
+let filter = "pending_verification";
+let selected = null;
 
-// ================= FIREBASE =================
 const db = firebase.firestore();
 
-// ================= FETCH USERS =================
-db.collection("clients").orderBy("createdAt", "desc")
-.onSnapshot(snapshot => {
-
-  users = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
-
-  renderTable(users);
-  updateStats(users);
+/* FETCH */
+db.collection("clients").orderBy("createdAt","desc")
+.onSnapshot(snap=>{
+  users = snap.docs.map(d=>({id:d.id,...d.data()}));
+  render();
+  stats();
 });
 
-// ================= RENDER TABLE =================
-function renderTable(data){
+/* FILTER */
+window.setFilter = function(f,el){
+  filter = f;
+  document.querySelectorAll(".tabs div").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+  render();
+}
+
+/* RENDER */
+function render(){
 
   const table = document.getElementById("table");
   table.innerHTML = "";
 
-  data.forEach(user => {
+  let data = users;
+  if(filter !== "all") data = users.filter(u=>u.status===filter);
+
+  data.forEach(u=>{
 
     const tr = document.createElement("tr");
 
+    tr.onclick = ()=>openPanel(u);
+
     tr.innerHTML = `
-      <td>${user.name || "-"}</td>
-      <td>${user.email || "-"}</td>
-      <td>${user.plan || "-"}</td>
-      <td><button onclick="openPanel('${user.id}')">View</button></td>
-    `;
+<td>
+  ${u.paymentProof ? `<img src="${u.paymentProof}" class="thumb">` : `<div class="thumb"></div>`}
+</td>
+
+<td>
+  ${u.name || "-"} ${u.hasAccount ? "✓" : "○"}
+</td>
+
+<td>${u.plan || "-"}</td>
+
+<td>₱${(u.price||0).toLocaleString()}</td>
+
+<td class="status">
+  <div class="dot ${u.status}"></div>
+  ${u.status}
+</td>
+
+<td>${formatDate(u.createdAt)}</td>
+
+<td class="actions" onclick="event.stopPropagation()">
+  ${actionIcons(u)}
+</td>
+`;
 
     table.appendChild(tr);
   });
 }
 
-// ================= SEARCH =================
-document.getElementById("search").addEventListener("input", e => {
+/* ICONS */
+function actionIcons(u){
 
-  const value = e.target.value.toLowerCase();
+  if(u.status==="pending_verification"){
+    return `
+<svg onclick="approve('${u.id}')"><use href="#check"/></svg>
+<svg onclick="reject('${u.id}')"><use href="#x"/></svg>
+`;
+  }
 
-  const filtered = users.filter(u =>
-    (u.name || "").toLowerCase().includes(value) ||
-    (u.email || "").toLowerCase().includes(value)
-  );
-
-  renderTable(filtered);
-});
-
-// ================= STATS =================
-function updateStats(data){
-
-  const total = data.length;
-
-  const paid = data.filter(u => u.status === "paid" || u.status === "completed").length;
-
-  const revenue = data
-    .filter(u => u.status === "paid" || u.status === "completed")
-    .reduce((sum, u) => sum + (u.price || 0), 0);
-
-  const conversion = total ? ((paid / total) * 100).toFixed(1) : 0;
-
-  document.getElementById("total").innerText = total;
-  document.getElementById("paid").innerText = paid;
-  document.getElementById("conversion").innerText = conversion + "%";
-  document.getElementById("revenue").innerText = "₱" + revenue.toLocaleString();
+  return "";
 }
 
-// ================= PANEL =================
-window.openPanel = function(id){
+/* PANEL */
+function openPanel(u){
 
-  selectedUser = users.find(u => u.id === id);
+  selected = u;
 
-  if(!selectedUser) return;
+  const panel = document.getElementById("panel");
+  panel.classList.add("open");
 
-  document.getElementById("panel").classList.add("open");
+  panel.innerHTML = `
+<h2>${u.name}</h2>
 
-  document.getElementById("pName").innerText = selectedUser.name || "-";
-  document.getElementById("pEmail").innerText = selectedUser.email || "-";
-  document.getElementById("pPhone").innerText = selectedUser.phone || "-";
-  document.getElementById("pPlan").innerText = "Plan: " + (selectedUser.plan || "-");
-  document.getElementById("pStatus").innerText = "Status: " + (selectedUser.status || "-");
+<div class="section">
+<h3>Contact</h3>
+<p>${u.email}</p>
+<p>${u.phone}</p>
+</div>
 
-  document.getElementById("pPayment").innerHTML = selectedUser.paymentProof
-    ? `<a href="${selectedUser.paymentProof}" target="_blank">View Proof</a>`
-    : "No payment proof";
+<div class="section">
+<h3>Order</h3>
+<p>${u.plan} • ${u.card}</p>
+<p>₱${u.price}</p>
+</div>
 
-  // Button text
-  document.getElementById("statusBtn").innerText =
-    selectedUser.disabled ? "Enable User" : "Disable User";
+<div class="section">
+<h3>Payment</h3>
+${u.paymentProof ? `<img src="${u.paymentProof}" class="proof">` : "No proof"}
+</div>
+`;
 }
 
-window.closePanel = function(){
-  document.getElementById("panel").classList.remove("open");
+/* ACTIONS */
+window.approve = id => update(id,"paid");
+window.reject = id => update(id,"pending_payment");
+
+function update(id,status){
+  db.collection("clients").doc(id).update({status});
 }
 
-// ================= UPDATE STATUS =================
-window.toggleStatus = async function(){
+/* STATS */
+function stats(){
 
-  if(!selectedUser) return;
+  document.getElementById("total").innerText = users.length;
 
-  await db.collection("clients").doc(selectedUser.id).update({
-    disabled: !selectedUser.disabled
-  });
+  document.getElementById("verify").innerText =
+    users.filter(u=>u.status==="pending_verification").length;
+
+  document.getElementById("paid").innerText =
+    users.filter(u=>u.status==="paid").length;
+
+  const revenue = users
+    .filter(u=>u.status==="paid")
+    .reduce((s,u)=>s+(u.price||0),0);
+
+  document.getElementById("revenue").innerText =
+    "₱"+revenue.toLocaleString();
 }
 
-// ================= UPDATE PLAN =================
-window.updatePlan = async function(plan){
-
-  if(!selectedUser) return;
-
-  await db.collection("clients").doc(selectedUser.id).update({
-    plan: plan
-  });
-
-  alert("Plan updated to " + plan);
-}
-
-// ================= APPROVE PAYMENT =================
-window.approvePayment = async function(plan){
-
-  if(!selectedUser) return;
-
-  await db.collection("clients").doc(selectedUser.id).update({
-    status: "paid",
-    plan: plan,
-    paidAt: new Date()
-  });
-
-  alert("Payment approved");
-}
-
-// ================= VIEW CARD =================
-window.viewCard = function(){
-
-  if(!selectedUser) return;
-
-  let page = selectedUser.plan === "elite"
-    ? "elite.html"
-    : selectedUser.plan === "pro"
-    ? "pro.html"
-    : "basic.html";
-
-  const link = `${window.location.origin}/arkilogix-site/view/${page}?id=${selectedUser.id}`;
-
-  window.open(link, "_blank");
-}
-
-// ================= COPY LINK =================
-window.copyLink = function(){
-
-  if(!selectedUser) return;
-
-  let page = selectedUser.plan === "elite"
-    ? "elite.html"
-    : selectedUser.plan === "pro"
-    ? "pro.html"
-    : "basic.html";
-
-  const link = `${window.location.origin}/arkilogix-site/view/${page}?id=${selectedUser.id}`;
-
-  navigator.clipboard.writeText(link);
-  alert("Link copied!");
+/* DATE */
+function formatDate(d){
+  if(!d) return "-";
+  return new Date(d.seconds*1000).toLocaleDateString();
 }
