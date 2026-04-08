@@ -406,7 +406,11 @@ toggles.forEach(toggle => {
     togglePassword(input.id);
   });
 });
-
+  
+window.togglePassword = togglePassword;
+window.validatePasswords = validatePasswords;
+window.signup = signup;
+  
 </script>
 
 </body>
