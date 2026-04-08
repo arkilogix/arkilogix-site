@@ -248,7 +248,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* FIREBASE */
+/* ================= FIREBASE ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -259,20 +259,51 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* SIGNUP */
-async function signup(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const confirm = document.getElementById("confirmPassword").value;
-  const btn = document.getElementById("signupBtn");
+/* ================= ELEMENTS ================= */
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const confirmInput = document.getElementById("confirmPassword");
+const signupBtn = document.getElementById("signupBtn");
+const feedback = document.getElementById("passwordFeedback");
 
-  if(password !== confirm){
-    alert("Passwords do not match");
+const toggles = document.querySelectorAll(".toggle");
+
+/* ================= PASSWORD VALIDATION ================= */
+function validatePasswords(){
+  const password = passwordInput.value;
+  const confirm = confirmInput.value;
+
+  if(!password && !confirm){
+    feedback.className = "feedback";
+    feedback.innerText = "";
+    signupBtn.disabled = true;
     return;
   }
 
-  btn.disabled = true;
-  btn.innerText = "Creating...";
+  if(password === confirm && password.length >= 6){
+    feedback.className = "feedback success show";
+    feedback.innerText = "Passwords match";
+    signupBtn.disabled = false;
+  } else {
+    feedback.className = "feedback error show";
+    feedback.innerText = "Passwords do not match";
+    signupBtn.disabled = true;
+  }
+}
+
+/* ================= TOGGLE PASSWORD ================= */
+function togglePassword(input){
+  input.type = input.type === "password" ? "text" : "password";
+}
+
+/* ================= SIGNUP ================= */
+async function signup(){
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  signupBtn.disabled = true;
+  signupBtn.innerText = "Creating...";
 
   try{
     const userCred = await createUserWithEmailAndPassword(auth, email, password);
@@ -283,39 +314,31 @@ async function signup(){
 
     let linked = false;
 
-    // 🔥 CASE 1: WITH clientId (normal flow)
+    // 🔥 LINK VIA clientId
     if(clientId){
       const ref = doc(db, "clients", clientId);
       const snap = await getDoc(ref);
 
       if(snap.exists()){
-        await setDoc(ref, {
-          uid: user.uid
-        }, { merge: true });
-
+        await setDoc(ref, { uid: user.uid }, { merge: true });
         linked = true;
       }
     }
 
-    // 🔥 CASE 2: NO clientId → AUTO LINK OR CREATE
+    // 🔥 FALLBACK LINK BY EMAIL
     if(!linked){
       const q = query(collection(db,"clients"), where("email","==",email));
       const snap = await getDocs(q);
 
       if(!snap.empty){
-        const docRef = snap.docs[0].ref;
-
-        await setDoc(docRef, {
-          uid: user.uid
-        }, { merge: true });
-
+        await setDoc(snap.docs[0].ref, { uid: user.uid }, { merge:true });
       } else {
-        // 🔥 CREATE NEW CLIENT DOC (fallback)
+        // 🔥 CREATE NEW CLIENT
         await setDoc(doc(db,"clients", user.uid), {
-          email: email,
+          email,
           uid: user.uid,
-          status: "processing",
           plan: "basic",
+          status: "processing",
           createdAt: new Date()
         });
       }
@@ -325,31 +348,45 @@ async function signup(){
 
   }catch(err){
     alert(err.message);
-    btn.disabled = false;
-    btn.innerText = "Create Account";
+    signupBtn.disabled = false;
+    signupBtn.innerText = "Create Account";
   }
 }
 
-/* ACTIVATION */
+/* ================= ACTIVATION ================= */
 function runActivation(){
-  document.getElementById("activationScreen").style.display="flex";
+  document.getElementById("activationScreen").style.display = "flex";
 
-  setTimeout(()=>step("step1"),300);
-  setTimeout(()=>step("step2"),900);
-  setTimeout(()=>step("step3"),1500);
-  setTimeout(()=>step("step4"),2100);
+  const steps = ["step1","step2","step3","step4"];
+
+  steps.forEach((id, i)=>{
+    setTimeout(()=>{
+      document.getElementById(id).classList.add("show");
+    }, 300 + i*600);
+  });
 
   setTimeout(()=>{
-    window.location.href="/client/index.html";
-  },3000);
+    window.location.href = "/client/index.html";
+  }, 3000);
 }
 
-function step(id){
-  document.getElementById(id).classList.add("show");
-}
+/* ================= EVENT LISTENERS ================= */
 
-/* GLOBAL */
-window.signup = signup;
+// password typing
+passwordInput.addEventListener("input", validatePasswords);
+confirmInput.addEventListener("input", validatePasswords);
+
+// signup click
+signupBtn.addEventListener("click", signup);
+
+// toggle buttons
+toggles.forEach(toggle => {
+  toggle.addEventListener("click", () => {
+    const input = toggle.parentElement.querySelector("input");
+    togglePassword(input);
+  });
+});
+
 </script>
 
 </body>
