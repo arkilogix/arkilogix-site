@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Client Dashboard</title>
 
-<link rel="icon" type="image/png" href="../logo.png">
+<link rel="icon" href="../logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="client.css">
 </head>
@@ -30,10 +30,10 @@
     </div>
   </header>
 
-  <!-- HERO (CARD-FIRST) -->
+  <!-- HERO -->
   <section class="hero">
-
     <div class="card-preview">
+
       <img id="heroProfile" src="/logo.png">
 
       <h2 id="cardName">Name</h2>
@@ -48,27 +48,31 @@
         <button class="btn" onclick="openModal()">Edit Profile</button>
 
         <div class="sub-actions">
-          <span>Share</span>
-          <span>vCard</span>
+          <span onclick="copyLink()">Share</span>
+          <span onclick="downloadVCard()">vCard</span>
         </div>
       </div>
-    </div>
 
+    </div>
   </section>
 
   <!-- ANALYTICS -->
   <section class="analytics">
-    <div class="stat">
-      <p>Views</p>
-      <h3 id="views">0</h3>
+    <div class="stat"><p>Views</p><h3 id="views">0</h3></div>
+    <div class="stat"><p>Taps</p><h3 id="taps">0</h3></div>
+    <div class="stat"><p>Clicks</p><h3 id="clicks">0</h3></div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta-box" onclick="explorePremium()">
+      <h3>Explore Premium Plans</h3>
+      <p>Unlock more features →</p>
     </div>
-    <div class="stat">
-      <p>Taps</p>
-      <h3 id="taps">0</h3>
-    </div>
-    <div class="stat">
-      <p>Clicks</p>
-      <h3 id="clicks">0</h3>
+
+    <div class="cta-box subtle" onclick="exploreProducts()">
+      <h3>Explore Other Products</h3>
+      <p>Discover NFC for pets and more →</p>
     </div>
   </section>
 
@@ -80,6 +84,51 @@
 </div>
 
 <script type="module" src="client.js"></script>
+
+<!-- MODAL -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+
+    <h3 id="stepTitle">Identity</h3>
+
+    <div class="step active" data-step="1">
+      <img id="modalImage" src="/logo.png" class="avatar">
+      <button onclick="triggerImage()">Change Photo</button>
+      <input id="editName" placeholder="Full Name">
+      <input id="editPosition" placeholder="Profession">
+    </div>
+
+    <div class="step" data-step="2">
+      <input id="contactPhone" placeholder="Phone">
+      <input id="contactEmail" placeholder="Email">
+      <input id="contactFacebook" placeholder="Facebook">
+      <input id="contactInstagram" placeholder="Instagram">
+    </div>
+
+    <div class="step" data-step="3">
+      <div id="servicesEdit"></div>
+      <button onclick="addServiceField()">+ Add Service</button>
+    </div>
+
+    <div class="step" data-step="4">
+      <input id="website" placeholder="Website (Pro only)">
+    </div>
+
+    <div class="step" data-step="5">
+      <input type="file" id="bannerInput">
+      <div id="projects"></div>
+      <button onclick="addProject()">+ Add Project</button>
+    </div>
+
+    <div class="modal-actions">
+      <button onclick="prevStep()">Back</button>
+      <button onclick="nextStep()">Next</button>
+    </div>
+
+  </div>
+</div>
+
+<input type="file" id="imageInput" hidden>
 
 </body>
 </html>
