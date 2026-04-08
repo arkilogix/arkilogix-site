@@ -147,15 +147,14 @@ button {
 </div>
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import { getFirestore, collection, query, where, getDocs, doc, getDoc } 
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// FIREBASE CONFIG
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -166,42 +165,67 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// LOGIN FUNCTION
+/* LOGIN */
 window.login = async function(){
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   try{
-
     const userCred = await signInWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
 
-    // 🔥 CHECK ADMIN
+    console.log("LOGIN UID:", user.uid);
+
+    // 🔥 ADMIN CHECK
     const adminDoc = await getDoc(doc(db, "admins", user.uid));
     if(adminDoc.exists()){
       window.location.href = "/dashboard/index.html";
       return;
     }
 
-    // 🔥 CHECK CLIENT USING QUERY
+    // 🔥 CLIENT CHECK (PRIMARY)
     const q = query(collection(db, "clients"), where("uid", "==", user.uid));
     const snapshot = await getDocs(q);
+
+    console.log("CLIENT FOUND:", snapshot.size);
 
     if(!snapshot.empty){
       window.location.href = "/client/index.html";
       return;
     }
 
-    // 🔥 FALLBACK → SIGNUP
-    window.location.href = `/auth/signup.html`;
+    // 🔥 FALLBACK: TRY LINKING BY EMAIL
+    const emailQuery = query(collection(db,"clients"), where("email","==",email));
+    const emailSnap = await getDocs(emailQuery);
+
+    if(!emailSnap.empty){
+      const ref = emailSnap.docs[0].ref;
+
+      await setDoc(ref, {
+        uid: user.uid
+      }, { merge: true });
+
+      window.location.href = "/client/index.html";
+      return;
+    }
+
+    // 🔥 LAST RESORT → CREATE CLIENT
+    await setDoc(doc(db,"clients", user.uid), {
+      email: email,
+      uid: user.uid,
+      status: "processing",
+      plan: "basic",
+      createdAt: new Date()
+    });
+
+    window.location.href = "/client/index.html";
 
   }catch(err){
     alert(err.message);
   }
 
-}
-
+};
 </script>
 
 </body>
