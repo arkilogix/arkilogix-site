@@ -248,6 +248,9 @@ window.submitPayment = async function(){
     // SUCCESS UI
     document.getElementById("paymentBox").style.display="none";
     document.getElementById("successBox").style.display="block";
+    setTimeout(() => {
+      window.location.href = `/auth/signup.html?clientId=${clientId}`;
+    }, 1500);
 
   }catch(e){
     alert("Something went wrong");
