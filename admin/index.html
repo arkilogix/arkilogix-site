@@ -6,237 +6,82 @@
 <title>Admin Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
 <style>
 :root {
-  --bg: #0b0b0c;
-  --card: rgba(255,255,255,0.05);
-  --border: rgba(255,255,255,0.08);
-  --text: #ffffff;
-  --muted: #a1a1aa;
+  --bg:#0b0b0c;
+  --border:rgba(255,255,255,0.08);
+  --muted:#a1a1aa;
 }
 
-* {
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Inter',sans-serif;
-}
-
-body {
-  background:var(--bg);
-  color:var(--text);
-  display:flex;
-}
+body{margin:0;font-family:Inter;background:var(--bg);color:#fff;display:flex}
 
 /* SIDEBAR */
-.sidebar {
-  width:220px;
-  height:100vh;
-  border-right:1px solid var(--border);
-  padding:20px;
-}
-
-.logo {
-  width:130px;
-  margin-bottom:30px;
-}
-
-.nav a {
-  display:block;
-  margin-bottom:10px;
-  color:var(--muted);
-  text-decoration:none;
-  font-size:14px;
-}
-
-.nav a.active {
-  color:#fff;
-}
+.sidebar{width:220px;padding:20px;border-right:1px solid var(--border)}
+.logo{width:120px;margin-bottom:20px}
+.nav a{display:block;color:var(--muted);margin-bottom:10px;text-decoration:none}
+.nav a.active{color:#fff}
 
 /* MAIN */
-.main {
-  flex:1;
-  padding:30px;
-}
+.main{flex:1;padding:30px}
 
 /* TABS */
-.tabs {
-  display:flex;
-  gap:8px;
-  margin-bottom:20px;
-}
-
-.tabs div {
-  padding:8px 14px;
-  font-size:12px;
-  color:var(--muted);
-  border:1px solid var(--border);
-  border-radius:999px;
-  cursor:pointer;
-}
-
-.tabs .active {
-  background:#fff;
-  color:#000;
-}
-
-/* STATS */
-.stats {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
-  margin-bottom:20px;
-}
-
-.card {
-  padding:15px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:var(--card);
-}
-
-.card h3 {
-  font-size:11px;
-  color:var(--muted);
-}
-
-.card h1 {
-  font-size:22px;
-}
+.tabs{display:flex;gap:8px;margin-bottom:20px}
+.tabs div{padding:8px 14px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted);cursor:pointer}
+.tabs .active{background:#fff;color:#000}
 
 /* TABLE */
-table {
-  width:100%;
-  border-collapse:collapse;
-}
+table{width:100%;border-collapse:collapse}
+td,th{padding:12px;border-bottom:1px solid var(--border);font-size:13px}
+tr:hover{background:rgba(255,255,255,0.03);cursor:pointer}
 
-td, th {
-  padding:12px;
-  border-bottom:1px solid var(--border);
-  font-size:13px;
-}
+/* THUMB */
+.thumb{width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222}
 
-th {
-  color:var(--muted);
-  text-align:left;
-}
-
-tr:hover {
-  background:rgba(255,255,255,0.03);
-  cursor:pointer;
-}
-
-/* IMAGE */
-.thumb {
-  width:40px;
-  height:40px;
-  border-radius:8px;
-  object-fit:cover;
-  background:#222;
-}
-
-/* STATUS DOT */
-.status {
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-.dot {
-  width:8px;
-  height:8px;
-  border-radius:50%;
-}
-
-.pending_payment { background:#facc15; }
-.pending_verification { background:#60a5fa; }
-.paid { background:#4ade80; }
-.processing { background:#a78bfa; }
-.completed { background:#9ca3af; }
+/* STATUS */
+.status{display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%}
+.pending_payment{background:#facc15}
+.pending_verification{background:#60a5fa}
+.paid{background:#4ade80}
+.processing{background:#a78bfa}
+.completed{background:#9ca3af}
 
 /* ICONS */
-.actions {
-  display:flex;
-  gap:10px;
-}
-
-.actions svg {
-  width:16px;
-  height:16px;
-  stroke:var(--muted);
-  cursor:pointer;
-}
-
-.actions svg:hover {
-  stroke:#fff;
-}
+.actions{display:flex;gap:10px}
+.actions svg{width:16px;height:16px;stroke:#888;cursor:pointer}
+.actions svg:hover{stroke:#fff}
 
 /* PANEL */
-.panel {
-  position:fixed;
-  right:-400px;
-  top:0;
-  width:400px;
-  height:100%;
-  background:#111;
-  border-left:1px solid var(--border);
-  padding:20px;
-  transition:.3s;
-}
+.panel{position:fixed;right:-400px;top:0;width:400px;height:100%;background:#111;padding:20px;transition:.3s;border-left:1px solid var(--border)}
+.panel.open{right:0}
 
-.panel.open {
-  right:0;
-}
-
-.section {
-  margin-bottom:20px;
-}
-
-.section h3 {
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:6px;
-}
-
-.proof {
-  width:100%;
-  border-radius:10px;
-  margin-top:10px;
-}
+/* IMAGE MODAL */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center}
+.modal img{max-width:90%;max-height:90%}
+.modal.show{display:flex}
 </style>
 </head>
 
 <body>
 
 <div class="sidebar">
-  <img src="/logo.png" class="logo">
-  <div class="nav">
-    <a class="active">Orders</a>
-  </div>
+<img src="/logo.png" class="logo">
+<div class="nav"><a class="active">Orders</a></div>
 </div>
 
 <div class="main">
 
-<!-- TABS -->
 <div class="tabs">
-  <div class="active" onclick="setFilter('pending_verification', this)">For Verification</div>
-  <div onclick="setFilter('all', this)">All</div>
-  <div onclick="setFilter('pending_payment', this)">Pending</div>
-  <div onclick="setFilter('paid', this)">Paid</div>
-  <div onclick="setFilter('processing', this)">Processing</div>
-  <div onclick="setFilter('completed', this)">Completed</div>
+<div class="active" onclick="setFilter('pending_verification',this)">For Verification</div>
+<div onclick="setFilter('all',this)">All</div>
+<div onclick="setFilter('pending_payment',this)">Pending</div>
+<div onclick="setFilter('paid',this)">Paid</div>
+<div onclick="setFilter('processing',this)">Processing</div>
+<div onclick="setFilter('completed',this)">Completed</div>
 </div>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="card"><h3>Total</h3><h1 id="total">0</h1></div>
-  <div class="card"><h3>For Verification</h3><h1 id="verify">0</h1></div>
-  <div class="card"><h3>Paid</h3><h1 id="paid">0</h1></div>
-  <div class="card"><h3>Revenue</h3><h1 id="revenue">₱0</h1></div>
-</div>
-
-<!-- TABLE -->
 <table>
 <thead>
 <tr>
@@ -254,21 +99,23 @@ tr:hover {
 
 </div>
 
-<!-- PANEL -->
 <div class="panel" id="panel"></div>
 
-<!-- SVG ICONS -->
+<div class="modal" id="imgModal" onclick="closeModal()">
+<img id="modalImg">
+</div>
+
+<!-- SVG -->
 <svg style="display:none">
-<symbol id="eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
-<symbol id="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
-<symbol id="x" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+<symbol id="eye"><circle cx="12" cy="12" r="3"/><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></symbol>
+<symbol id="check"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="x"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+<symbol id="gear"><circle cx="12" cy="12" r="3"/></symbol>
 </svg>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 <script src="/firebase-init.js"></script>
-
 <script src="admin.js"></script>
 
 </body>
