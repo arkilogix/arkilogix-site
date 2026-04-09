@@ -166,6 +166,24 @@ window.prevStep = ()=>{
   }
 };
 
+/* ================= CLOUDINARY UPLOAD ================= */
+
+async function uploadImage(file){
+  if(!file) return null;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "arkilogix_profile");
+
+  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+  return data.secure_url;
+}
+
 /* ================= SAVE ================= */
 
 async function saveProfile(){
