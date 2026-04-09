@@ -20,36 +20,17 @@ body{margin:0;font-family:Inter;background:var(--bg);color:#fff;display:flex}
 
 /* SIDEBAR */
 .sidebar{
-width:220px;
-height:100vh;
-border-right:1px solid var(--border);
-padding:20px;
-display:flex;
-flex-direction:column;
-justify-content:space-between;
+width:220px;height:100vh;border-right:1px solid var(--border);
+padding:20px;display:flex;flex-direction:column;justify-content:space-between;
 }
 
 .logo{width:120px}
 
-.nav a{
-display:block;
-margin:10px 0;
-color:var(--muted);
-text-decoration:none;
-}
-
+.nav a{display:block;margin:10px 0;color:var(--muted);text-decoration:none}
 .nav a.active{color:#fff}
 
 /* LOGOUT */
-.logout{
-color:var(--muted);
-font-size:13px;
-cursor:pointer;
-display:flex;
-align-items:center;
-gap:8px;
-}
-
+.logout{color:var(--muted);cursor:pointer;font-size:13px}
 .logout:hover{color:#fff}
 
 /* MAIN */
@@ -58,12 +39,8 @@ gap:8px;
 /* TABS */
 .tabs{display:flex;gap:8px;margin-bottom:20px}
 .tabs div{
-padding:8px 14px;
-border:1px solid var(--border);
-border-radius:999px;
-font-size:12px;
-color:var(--muted);
-cursor:pointer;
+padding:8px 14px;border:1px solid var(--border);
+border-radius:999px;font-size:12px;color:var(--muted);cursor:pointer;
 }
 .tabs .active{background:#fff;color:#000}
 
@@ -79,39 +56,42 @@ tr:hover{background:rgba(255,255,255,0.03);cursor:pointer}
 .status{display:flex;gap:6px;align-items:center}
 .dot{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.5}
 
-/* ICONS */
-.actions{display:flex;gap:10px}
-.actions svg{
-width:16px;
-height:16px;
-stroke:#666;
-cursor:pointer;
-}
-.actions svg:hover{stroke:#fff}
-
 /* PANEL */
 .panel{
-position:fixed;
-right:-400px;
-top:0;
-width:400px;
-height:100%;
-background:var(--panel);
-border-left:1px solid var(--border);
-padding:20px;
-transition:.3s;
-overflow-y:auto;
+position:fixed;right:-420px;top:0;width:420px;height:100%;
+background:var(--panel);border-left:1px solid var(--border);
+padding:20px;transition:.3s;overflow-y:auto;
 }
 .panel.open{right:0}
 
+/* CLOSE BTN */
+.close-btn{
+position:absolute;top:15px;right:15px;
+cursor:pointer;color:var(--muted);
+}
+.close-btn:hover{color:#fff}
+
+/* BUTTONS */
+.btn{
+margin-top:10px;
+padding:10px;
+border:1px solid var(--border);
+border-radius:8px;
+background:none;
+color:#fff;
+cursor:pointer;
+font-size:13px;
+}
+
+.btn:hover{
+background:#fff;
+color:#000;
+}
+
 /* MODAL */
 .modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.9);
-display:none;
-align-items:center;
-justify-content:center;
+position:fixed;inset:0;background:rgba(0,0,0,.9);
+display:none;align-items:center;justify-content:center;
 }
 .modal.show{display:flex}
 .modal img{max-width:90%;max-height:90%}
@@ -120,28 +100,15 @@ justify-content:center;
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
-
 <div>
 <img src="/logo.png" class="logo">
-<div class="nav">
-<a class="active">Orders</a>
-</div>
+<div class="nav"><a class="active">Orders</a></div>
 </div>
 
-<div class="logout" onclick="logout()">
-<svg width="16" height="16" stroke="currentColor" fill="none" stroke-width="2">
-<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-<polyline points="16 17 21 12 16 7"/>
-<line x1="21" y1="12" x2="9" y2="12"/>
-</svg>
-Logout
+<div class="logout" onclick="logout()">Logout</div>
 </div>
 
-</div>
-
-<!-- MAIN -->
 <div class="main">
 
 <div class="tabs">
@@ -162,7 +129,6 @@ Logout
 <th>Price</th>
 <th>Status</th>
 <th>Date</th>
-<th></th>
 </tr>
 </thead>
 <tbody id="table"></tbody>
@@ -170,22 +136,12 @@ Logout
 
 </div>
 
-<!-- PANEL -->
 <div class="panel" id="panel"></div>
 
-<!-- IMAGE MODAL -->
 <div class="modal" id="modal" onclick="closeModal()">
 <img id="modalImg">
 </div>
 
-<!-- SVG ICONS -->
-<svg style="display:none">
-<symbol id="check"><polyline points="20 6 9 17 4 12"/></symbol>
-<symbol id="x"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
-<symbol id="gear"><circle cx="12" cy="12" r="3"/></symbol>
-</svg>
-
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
