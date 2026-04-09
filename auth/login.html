@@ -185,7 +185,7 @@ window.login = async function(){
     // ✅ ADMIN CHECK
     const adminDoc = await getDoc(doc(db, "admins", user.uid));
     if(adminDoc.exists()){
-      window.location.href = "/dashboard/index.html";
+      window.location.href = "/admin/index.html";
       return;
     }
 
