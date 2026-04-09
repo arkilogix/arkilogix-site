@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* FIREBASE */
 const firebaseConfig = {
@@ -23,23 +23,19 @@ let authChecked = false;
 
 onAuthStateChanged(auth, async (user)=>{
 
-  // 🔥 FIRST CALL (can be null temporarily)
   if(!authChecked){
     authChecked = true;
 
     if(!user){
-      // wait a bit before deciding
-      setTimeout(() => {
+      setTimeout(()=>{
         if(!auth.currentUser){
           window.location.replace("/auth/login.html");
         }
-      }, 500);
-
+      },500);
       return;
     }
   }
 
-  // ✅ USER CONFIRMED
   if(!user){
     window.location.replace("/auth/login.html");
     return;
@@ -47,27 +43,11 @@ onAuthStateChanged(auth, async (user)=>{
 
   console.log("USER OK:", user.uid);
 
-  // ✅ FETCH CLIENT DATA
   const ref = doc(db, "clients", user.uid);
   const snap = await getDoc(ref);
 
   if(!snap.exists()){
     console.log("No client doc");
-    return;
-  }
-
-  currentDocId = user.uid;
-  currentData = snap.data();
-
-  render();
-});
-
-  // ✅ DIRECT CLIENT FETCH (FIXED)
-  const ref = doc(db, "clients", user.uid);
-  const snap = await getDoc(ref);
-
-  if(!snap.exists()){
-    console.log("No client doc found");
     return;
   }
 
@@ -114,7 +94,6 @@ window.viewCard = ()=>{
 window.openModal = ()=>{
   document.getElementById("editModal").style.display = "flex";
 
-  // 🔥 PREFILL INPUTS
   document.getElementById("editName").value = currentData.name || "";
   document.getElementById("editPosition").value = currentData.position || "";
 
@@ -125,19 +104,17 @@ window.openModal = ()=>{
 
   document.getElementById("website").value = currentData.website || "";
 
-  // 🔥 SERVICES
   const servicesBox = document.getElementById("servicesEdit");
   servicesBox.innerHTML = "";
 
-  if(currentData.services && currentData.services.length){
+  if(currentData.services?.length){
     currentData.services.forEach(s=>{
       const input = document.createElement("input");
       input.value = s;
       servicesBox.appendChild(input);
     });
   } else {
-    const input = document.createElement("input");
-    servicesBox.appendChild(input);
+    servicesBox.appendChild(document.createElement("input"));
   }
 
   step = 1;
@@ -155,7 +132,7 @@ window.nextStep = async ()=>{
     step++;
     updateSteps();
   } else {
-    await saveProfile(); // 🔥 SAVE ON LAST STEP
+    await saveProfile();
   }
 };
 
@@ -166,7 +143,7 @@ window.prevStep = ()=>{
   }
 };
 
-/* ================= CLOUDINARY UPLOAD ================= */
+/* ================= CLOUDINARY ================= */
 
 async function uploadImage(file){
   if(!file) return null;
@@ -188,7 +165,6 @@ async function uploadImage(file){
 
 async function saveProfile(){
 
-  // 🔥 COLLECT VALUES
   currentData.name = document.getElementById("editName").value;
   currentData.position = document.getElementById("editPosition").value;
 
@@ -199,7 +175,7 @@ async function saveProfile(){
 
   currentData.website = document.getElementById("website").value;
 
-  // 🔥 SERVICES ARRAY
+  // SERVICES
   const serviceInputs = document.querySelectorAll("#servicesEdit input");
   currentData.services = [];
 
@@ -210,37 +186,58 @@ async function saveProfile(){
   });
 
   try{
+
+    // PROFILE IMAGE
+    const profileFile = document.getElementById("imageInput").files[0];
+    if(profileFile){
+      const url = await uploadImage(profileFile);
+      if(url) currentData.profile = url;
+    }
+
+    // PROJECTS
+    const projectInputs = document.querySelectorAll("#projects input[type='file']");
+    let projectUrls = [];
+
+    for(const input of projectInputs){
+      if(input.files[0]){
+        const url = await uploadImage(input.files[0]);
+        if(url) projectUrls.push(url);
+      }
+    }
+
+    if(projectUrls.length){
+      currentData.projects = projectUrls;
+    }
+
     await updateDoc(doc(db,"clients",currentDocId), currentData);
 
-    console.log("Profile updated");
-
-    render(); // 🔥 refresh UI
+    render();
 
     document.getElementById("editModal").style.display = "none";
 
   }catch(err){
     console.error(err);
-    alert("Failed to save");
+    alert("Upload failed");
   }
 }
 
-/* SERVICES ADD */
+/* SERVICES */
 window.addServiceField = ()=>{
   const input = document.createElement("input");
   document.getElementById("servicesEdit").appendChild(input);
 };
 
-/* SERVICES */
-window.addServiceField = ()=>{
+/* PROJECTS */
+window.addProject = ()=>{
   const div = document.createElement("div");
-  div.innerHTML = `<input>`;
-  document.getElementById("servicesEdit").appendChild(div);
+  div.innerHTML = `<input type="file" accept="image/*">`;
+  document.getElementById("projects").appendChild(div);
 };
 
-/* SAVE */
-async function save(){
-  await updateDoc(doc(db,"clients",currentDocId), currentData);
-}
+/* PROFILE IMAGE */
+window.triggerImage = ()=>{
+  document.getElementById("imageInput").click();
+};
 
 /* SHARE */
 window.copyLink = ()=>{
