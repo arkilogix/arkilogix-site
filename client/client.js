@@ -18,6 +18,7 @@ let currentData = {};
 let currentDocId = "";
 let step = 1;
 let isSaving = false;
+let isLocked = true;
 
 /* AUTH */
 let authChecked = false;
@@ -47,16 +48,61 @@ onAuthStateChanged(auth, async (user)=>{
 
   if(!snap.exists()){
     console.log("No client doc");
+    activateLockScreen(); // 🔥 NO DOC = LOCKED
     return;
   }
 
   currentDocId = user.uid;
   currentData = snap.data();
 
+  checkAccess();
   render();
 });
 
-/* RENDER */
+/* ================= ACCESS CONTROL ================= */
+
+function checkAccess(){
+  const status = currentData.status || "processing";
+
+  if(status === "paid" || status === "completed"){
+    isLocked = false;
+    deactivateLockScreen();
+  } else {
+    isLocked = true;
+    activateLockScreen();
+  }
+}
+
+function activateLockScreen(){
+  const lock = document.getElementById("lockScreen");
+  if(lock) lock.style.display = "flex";
+
+  disableDashboard();
+}
+
+function deactivateLockScreen(){
+  const lock = document.getElementById("lockScreen");
+  if(lock) lock.style.display = "none";
+
+  enableDashboard();
+}
+
+function disableDashboard(){
+  document.querySelectorAll("button, .btn, .sub-actions span").forEach(el=>{
+    el.style.pointerEvents = "none";
+    el.style.opacity = "0.5";
+  });
+}
+
+function enableDashboard(){
+  document.querySelectorAll("button, .btn, .sub-actions span").forEach(el=>{
+    el.style.pointerEvents = "auto";
+    el.style.opacity = "1";
+  });
+}
+
+/* ================= RENDER ================= */
+
 function render(){
   document.getElementById("userName").innerText = currentData.name || "User";
   document.getElementById("planBadge").innerText = (currentData.plan || "basic").toUpperCase();
@@ -80,8 +126,20 @@ function render(){
   document.getElementById("statusText").innerText = "Status: " + (currentData.status || "processing");
 }
 
+/* ================= SAFE ACTION GUARD ================= */
+
+function guard(){
+  if(isLocked){
+    alert("Your account is still under review.");
+    return true;
+  }
+  return false;
+}
+
 /* VIEW CARD */
 window.viewCard = ()=>{
+  if(guard()) return;
+
   let page = "basic.html";
   if(currentData.plan === "pro") page = "pro.html";
   if(currentData.plan === "elite") page = "elite.html";
@@ -91,6 +149,8 @@ window.viewCard = ()=>{
 /* ================= MODAL ================= */
 
 window.openModal = ()=>{
+  if(guard()) return;
+
   document.getElementById("editModal").style.display = "flex";
 
   document.getElementById("editName").value = currentData.name || "";
@@ -160,16 +220,17 @@ async function uploadImage(file){
   return data.secure_url;
 }
 
-/* ================= HARDENED SAVE ================= */
+/* ================= SAVE ================= */
 
 async function saveProfile(){
 
+  if(guard()) return;
   if(isSaving) return;
+
   isSaving = true;
 
   try{
 
-    // 🔥 SAFE TEXT UPDATE (only overwrite if not empty)
     const name = document.getElementById("editName").value.trim();
     if(name) currentData.name = name;
 
@@ -191,7 +252,6 @@ async function saveProfile(){
     const website = document.getElementById("website").value.trim();
     if(website) currentData.website = website;
 
-    // 🔥 SERVICES
     const serviceInputs = document.querySelectorAll("#servicesEdit input");
     const newServices = [];
 
@@ -205,38 +265,15 @@ async function saveProfile(){
       currentData.services = newServices;
     }
 
-    // 🔥 PROFILE IMAGE
     const profileFile = document.getElementById("imageInput").files[0];
     if(profileFile){
       const url = await uploadImage(profileFile);
       if(url) currentData.profile = url;
     }
 
-    // 🔥 PROJECTS (APPEND, NOT REPLACE)
-    const projectInputs = document.querySelectorAll("#projects input[type='file']");
-    let newProjects = [];
-
-    for(const input of projectInputs){
-      if(input.files[0]){
-        const url = await uploadImage(input.files[0]);
-        if(url) newProjects.push(url);
-      }
-    }
-
-    if(newProjects.length){
-      currentData.projects = [
-        ...(currentData.projects || []),
-        ...newProjects
-      ];
-    }
-
-    // 🔥 SAVE
     await updateDoc(doc(db,"clients",currentDocId), currentData);
 
-    console.log("Saved safely");
-
     render();
-
     document.getElementById("editModal").style.display = "none";
 
   }catch(err){
@@ -267,10 +304,12 @@ window.triggerImage = ()=>{
 
 /* SHARE */
 window.copyLink = ()=>{
+  if(guard()) return;
   navigator.clipboard.writeText(window.location.href);
 };
 
 window.downloadVCard = ()=>{
+  if(guard()) return;
   alert("vCard soon");
 };
 
