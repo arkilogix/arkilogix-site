@@ -3,132 +3,195 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Client Dashboard</title>
+<title>Admin</title>
 
-<link rel="icon" href="../logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="client.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<style>
+:root{
+--bg:#0b0b0c;
+--panel:#0f0f10;
+--border:rgba(255,255,255,0.08);
+--muted:#888;
+}
+
+body{margin:0;font-family:Inter;background:var(--bg);color:#fff;display:flex}
+
+/* SIDEBAR */
+.sidebar{
+width:220px;
+height:100vh;
+border-right:1px solid var(--border);
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{width:120px}
+
+.nav a{
+display:block;
+margin:10px 0;
+color:var(--muted);
+text-decoration:none;
+}
+
+.nav a.active{color:#fff}
+
+/* LOGOUT */
+.logout{
+color:var(--muted);
+font-size:13px;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.logout:hover{color:#fff}
+
+/* MAIN */
+.main{flex:1;padding:30px}
+
+/* TABS */
+.tabs{display:flex;gap:8px;margin-bottom:20px}
+.tabs div{
+padding:8px 14px;
+border:1px solid var(--border);
+border-radius:999px;
+font-size:12px;
+color:var(--muted);
+cursor:pointer;
+}
+.tabs .active{background:#fff;color:#000}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+td,th{padding:12px;border-bottom:1px solid var(--border);font-size:13px}
+tr:hover{background:rgba(255,255,255,0.03);cursor:pointer}
+
+/* THUMB */
+.thumb{width:40px;height:40px;border-radius:8px;background:#222;object-fit:cover}
+
+/* STATUS */
+.status{display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.5}
+
+/* ICONS */
+.actions{display:flex;gap:10px}
+.actions svg{
+width:16px;
+height:16px;
+stroke:#666;
+cursor:pointer;
+}
+.actions svg:hover{stroke:#fff}
+
+/* PANEL */
+.panel{
+position:fixed;
+right:-400px;
+top:0;
+width:400px;
+height:100%;
+background:var(--panel);
+border-left:1px solid var(--border);
+padding:20px;
+transition:.3s;
+overflow-y:auto;
+}
+.panel.open{right:0}
+
+/* MODAL */
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.9);
+display:none;
+align-items:center;
+justify-content:center;
+}
+.modal.show{display:flex}
+.modal img{max-width:90%;max-height:90%}
+</style>
 </head>
 
 <body>
 
-<div class="dashboard">
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="logo">ArkiLogix</div>
+<div>
+<img src="/logo.png" class="logo">
+<div class="nav">
+<a class="active">Orders</a>
+</div>
+</div>
 
-    <div class="user-area">
-      <div class="user-profile">
-        <img id="headerProfile" src="/logo.png">
-      </div>
-
-      <div class="user-info">
-        <span id="userName">...</span>
-        <span id="planBadge" class="badge">BASIC</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="card-preview">
-
-      <img id="heroProfile" src="/logo.png">
-
-      <h2 id="cardName">Name</h2>
-      <p id="cardPosition">Position</p>
-
-      <div id="cardServices"></div>
-
-      <p id="statusText" class="status">Status: Processing</p>
-
-      <div class="actions">
-        <button class="btn primary" onclick="viewCard()">View My Card</button>
-        <button class="btn" onclick="openModal()">Edit Profile</button>
-
-        <div class="sub-actions">
-          <span onclick="copyLink()">Share</span>
-          <span onclick="downloadVCard()">vCard</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ANALYTICS -->
-  <section class="analytics">
-    <div class="stat"><p>Views</p><h3 id="views">0</h3></div>
-    <div class="stat"><p>Taps</p><h3 id="taps">0</h3></div>
-    <div class="stat"><p>Clicks</p><h3 id="clicks">0</h3></div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta">
-    <div class="cta-box" onclick="explorePremium()">
-      <h3>Explore Premium Plans</h3>
-      <p>Unlock more features →</p>
-    </div>
-
-    <div class="cta-box subtle" onclick="exploreProducts()">
-      <h3>Explore Other Products</h3>
-      <p>Discover NFC for pets and more →</p>
-    </div>
-  </section>
-
-  <!-- SETTINGS -->
-  <section class="section">
-    <button class="btn logout">Logout</button>
-  </section>
+<div class="logout" onclick="logout()">
+<svg width="16" height="16" stroke="currentColor" fill="none" stroke-width="2">
+<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+<polyline points="16 17 21 12 16 7"/>
+<line x1="21" y1="12" x2="9" y2="12"/>
+</svg>
+Logout
+</div>
 
 </div>
 
-<script type="module" src="client.js"></script>
+<!-- MAIN -->
+<div class="main">
 
-<!-- MODAL -->
-<div id="editModal" class="modal">
-  <div class="modal-content">
-
-    <h3 id="stepTitle">Identity</h3>
-
-    <div class="step active" data-step="1">
-      <img id="modalImage" src="/logo.png" class="avatar">
-      <button onclick="triggerImage()">Change Photo</button>
-      <input id="editName" placeholder="Full Name">
-      <input id="editPosition" placeholder="Profession">
-    </div>
-
-    <div class="step" data-step="2">
-      <input id="contactPhone" placeholder="Phone">
-      <input id="contactEmail" placeholder="Email">
-      <input id="contactFacebook" placeholder="Facebook">
-      <input id="contactInstagram" placeholder="Instagram">
-    </div>
-
-    <div class="step" data-step="3">
-      <div id="servicesEdit"></div>
-      <button onclick="addServiceField()">+ Add Service</button>
-    </div>
-
-    <div class="step" data-step="4">
-      <input id="website" placeholder="Website (Pro only)">
-    </div>
-
-    <div class="step" data-step="5">
-      <input type="file" id="bannerInput">
-      <div id="projects"></div>
-      <button onclick="addProject()">+ Add Project</button>
-    </div>
-
-    <div class="modal-actions">
-      <button onclick="prevStep()">Back</button>
-      <button onclick="nextStep()">Next</button>
-    </div>
-
-  </div>
+<div class="tabs">
+<div class="active" onclick="setFilter('pending_verification',this)">For Verification</div>
+<div onclick="setFilter('all',this)">All</div>
+<div onclick="setFilter('pending_payment',this)">Pending</div>
+<div onclick="setFilter('paid',this)">Paid</div>
+<div onclick="setFilter('processing',this)">Processing</div>
+<div onclick="setFilter('completed',this)">Completed</div>
 </div>
 
-<input type="file" id="imageInput" hidden>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Name</th>
+<th>Plan</th>
+<th>Price</th>
+<th>Status</th>
+<th>Date</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+
+</div>
+
+<!-- PANEL -->
+<div class="panel" id="panel"></div>
+
+<!-- IMAGE MODAL -->
+<div class="modal" id="modal" onclick="closeModal()">
+<img id="modalImg">
+</div>
+
+<!-- SVG ICONS -->
+<svg style="display:none">
+<symbol id="check"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="x"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+<symbol id="gear"><circle cx="12" cy="12" r="3"/></symbol>
+</svg>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+<script src="/firebase-init.js"></script>
+
+<script src="admin.js"></script>
 
 </body>
 </html>
