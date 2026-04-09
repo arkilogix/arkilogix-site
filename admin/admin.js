@@ -6,7 +6,7 @@ let users = [];
 let filter = "pending_verification";
 let selected = null;
 
-/* AUTH GUARD */
+/* AUTH */
 firebase.auth().onAuthStateChanged(user=>{
 if(!user) window.location.href="/auth/login.html";
 });
@@ -41,7 +41,7 @@ table.innerHTML = "";
 let data = filter==="all" ? users : users.filter(u=>u.status===filter);
 
 if(data.length===0){
-table.innerHTML="<tr><td colspan='7'>No orders</td></tr>";
+table.innerHTML="<tr><td colspan='6'>No orders</td></tr>";
 return;
 }
 
@@ -53,13 +53,12 @@ const tr = document.createElement("tr");
 tr.onclick = ()=>openPanel(u);
 
 tr.innerHTML = `
-<td>${u.paymentProof ? `<img src="${u.paymentProof}" class="thumb" onclick="event.stopPropagation();preview('${u.paymentProof}')">` : `<div class="thumb"></div>`}</td>
-<td>${u.name} ${u.hasAccount ? "✓" : "○"}</td>
-<td>${u.plan}</td>
+<td>${u.paymentProof ? `<img src="${u.paymentProof}" class="thumb">` : `<div class="thumb"></div>`}</td>
+<td>${u.name || "-"} ${u.hasAccount ? "✓" : "○"}</td>
+<td>${u.plan || "-"}</td>
 <td>₱${(u.price||0).toLocaleString()}</td>
-<td class="status"><div class="dot"></div>${u.status}</td>
+<td class="status"><div class="dot"></div>${formatStatus(u.status)}</td>
 <td>${format(u.createdAt)}</td>
-<td class="actions" onclick="event.stopPropagation()">${icons(u)}</td>
 `;
 
 table.appendChild(tr);
@@ -67,27 +66,71 @@ table.appendChild(tr);
 });
 }
 
-/* ICONS */
-function icons(u){
+/* PANEL */
+function openPanel(u){
+
+selected = u;
+
+const p = document.getElementById("panel");
+p.classList.add("open");
+
+p.innerHTML = `
+<div class="close-btn" onclick="closePanel()">✕</div>
+
+<h2>${u.name || "-"}</h2>
+
+<p>${u.email || "-"}</p>
+<p>${u.phone || "-"}</p>
+
+<hr>
+
+<p><strong>${u.plan || "-"}</strong> • ${u.card || "-"}</p>
+<p>₱${(u.price||0).toLocaleString()}</p>
+
+<hr>
+
+<p>Status: ${formatStatus(u.status)}</p>
+<p>Account: ${u.hasAccount ? "Active" : "None"}</p>
+
+<h3 style="margin-top:20px;">Payment</h3>
+
+${u.paymentProof 
+? `<img src="${u.paymentProof}" style="width:100%;border-radius:8px;margin-top:10px;cursor:pointer" onclick="preview('${u.paymentProof}')">`
+: `<p style="color:#888;">No payment proof uploaded</p>`
+}
+
+<br>
+
+${actions(u)}
+
+<br>
+
+<div onclick="archive()" style="color:#888;cursor:pointer;font-size:13px;margin-top:20px">Archive</div>
+`;
+}
+
+/* ACTIONS */
+function actions(u){
 
 if(u.status==="pending_verification"){
 return `
-<svg onclick="approve('${u.id}')"><use href="#check"/></svg>
-<svg onclick="reject('${u.id}')"><use href="#x"/></svg>`;
+<button class="btn" onclick="approve('${u.id}')">Approve</button>
+<button class="btn" onclick="reject('${u.id}')">Reject</button>
+`;
 }
 
 if(u.status==="paid"){
-return `<svg onclick="processing('${u.id}')"><use href="#gear"/></svg>`;
+return `<button class="btn" onclick="processing('${u.id}')">Mark Processing</button>`;
 }
 
 if(u.status==="processing"){
-return `<svg onclick="complete('${u.id}')"><use href="#check"/></svg>`;
+return `<button class="btn" onclick="complete('${u.id}')">Mark Completed</button>`;
 }
 
 return "";
 }
 
-/* ACTIONS */
+/* ACTION FUNCTIONS */
 window.approve = async(id)=>{
 await update(id,"paid");
 sendEmail(id);
@@ -119,41 +162,25 @@ price:"₱"+u.price
 });
 }
 
-/* PANEL */
-function openPanel(u){
-
-selected = u;
-
-const p = document.getElementById("panel");
-p.classList.add("open");
-
-p.innerHTML = `
-<h2>${u.name}</h2>
-
-<p>${u.email}</p>
-<p>${u.phone}</p>
-
-<hr>
-
-<p>${u.plan} • ${u.card}</p>
-<p>₱${u.price}</p>
-
-<hr>
-
-<p>Status: ${u.status}</p>
-<p>Account: ${u.hasAccount ? "Active" : "None"}</p>
-
-${u.paymentProof ? `<img src="${u.paymentProof}" style="width:100%;margin-top:10px;border-radius:8px" onclick="preview('${u.paymentProof}')">` : ""}
-
-<br><br>
-
-${icons(u)}
-
-<br><br>
-
-<div onclick="archive()" style="color:#888;cursor:pointer;font-size:13px">Archive</div>
-`;
+/* PANEL CONTROLS */
+window.closePanel = function(){
+document.getElementById("panel").classList.remove("open");
 }
+
+/* OUTSIDE CLICK */
+document.addEventListener("click", function(e){
+const panel = document.getElementById("panel");
+if(!panel.contains(e.target) && panel.classList.contains("open")){
+closePanel();
+}
+});
+
+/* ESC CLOSE */
+document.addEventListener("keydown", function(e){
+if(e.key === "Escape"){
+closePanel();
+}
+});
 
 /* MODAL */
 window.preview = src=>{
@@ -165,8 +192,13 @@ window.closeModal = ()=>{
 document.getElementById("modal").classList.remove("show");
 }
 
-/* DATE */
+/* HELPERS */
 function format(d){
 if(!d) return "-";
 return new Date(d.seconds*1000).toLocaleDateString();
+}
+
+function formatStatus(s){
+if(!s) return "-";
+return s.replace("_"," ").replace(/\b\w/g,l=>l.toUpperCase());
 }
