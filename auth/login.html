@@ -190,11 +190,11 @@ window.login = async function(){
     }
 
     // ✅ DIRECT CLIENT CHECK (FIXED)
-    const clientRef = doc(db, "clients", user.uid);
-    const clientSnap = await getDoc(clientRef);
-
-    if(clientSnap.exists()){
-      window.location.href = "/client/index.html";
+    const q = query(collection(db,"clients"), where("authUid","==",user.uid));
+    const snapshot = await getDocs(q);
+    
+    if(!snapshot.empty){
+      window.location.replace("/client/index.html");
       return;
     }
 
@@ -205,7 +205,7 @@ window.login = async function(){
     if(!snapshot.empty){
       const ref = snapshot.docs[0].ref;
 
-      await setDoc(ref, { uid: user.uid }, { merge: true });
+      await setDoc(ref, { authUid: user.uid, hasAccount: true }, { merge: true });
 
       window.location.href = "/client/index.html";
       return;
