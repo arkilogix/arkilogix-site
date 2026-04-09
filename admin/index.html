@@ -3,32 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
+<title>Admin</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
 <style>
-:root {
-  --bg:#0b0b0c;
-  --border:rgba(255,255,255,0.08);
-  --muted:#a1a1aa;
+:root{
+--bg:#0b0b0c;
+--panel:#0f0f10;
+--border:rgba(255,255,255,0.08);
+--muted:#888;
 }
 
 body{margin:0;font-family:Inter;background:var(--bg);color:#fff;display:flex}
 
 /* SIDEBAR */
-.sidebar{width:220px;padding:20px;border-right:1px solid var(--border)}
-.logo{width:120px;margin-bottom:20px}
-.nav a{display:block;color:var(--muted);margin-bottom:10px;text-decoration:none}
+.sidebar{
+width:220px;
+height:100vh;
+border-right:1px solid var(--border);
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{width:120px}
+
+.nav a{
+display:block;
+margin:10px 0;
+color:var(--muted);
+text-decoration:none;
+}
+
 .nav a.active{color:#fff}
+
+/* LOGOUT */
+.logout{
+color:var(--muted);
+font-size:13px;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.logout:hover{color:#fff}
 
 /* MAIN */
 .main{flex:1;padding:30px}
 
 /* TABS */
 .tabs{display:flex;gap:8px;margin-bottom:20px}
-.tabs div{padding:8px 14px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted);cursor:pointer}
+.tabs div{
+padding:8px 14px;
+border:1px solid var(--border);
+border-radius:999px;
+font-size:12px;
+color:var(--muted);
+cursor:pointer;
+}
 .tabs .active{background:#fff;color:#000}
 
 /* TABLE */
@@ -37,40 +73,75 @@ td,th{padding:12px;border-bottom:1px solid var(--border);font-size:13px}
 tr:hover{background:rgba(255,255,255,0.03);cursor:pointer}
 
 /* THUMB */
-.thumb{width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222}
+.thumb{width:40px;height:40px;border-radius:8px;background:#222;object-fit:cover}
 
 /* STATUS */
 .status{display:flex;gap:6px;align-items:center}
-.dot{width:8px;height:8px;border-radius:50%}
-.pending_payment{background:#facc15}
-.pending_verification{background:#60a5fa}
-.paid{background:#4ade80}
-.processing{background:#a78bfa}
-.completed{background:#9ca3af}
+.dot{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.5}
 
 /* ICONS */
 .actions{display:flex;gap:10px}
-.actions svg{width:16px;height:16px;stroke:#888;cursor:pointer}
+.actions svg{
+width:16px;
+height:16px;
+stroke:#666;
+cursor:pointer;
+}
 .actions svg:hover{stroke:#fff}
 
 /* PANEL */
-.panel{position:fixed;right:-400px;top:0;width:400px;height:100%;background:#111;padding:20px;transition:.3s;border-left:1px solid var(--border)}
+.panel{
+position:fixed;
+right:-400px;
+top:0;
+width:400px;
+height:100%;
+background:var(--panel);
+border-left:1px solid var(--border);
+padding:20px;
+transition:.3s;
+overflow-y:auto;
+}
 .panel.open{right:0}
 
-/* IMAGE MODAL */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center}
-.modal img{max-width:90%;max-height:90%}
+/* MODAL */
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.9);
+display:none;
+align-items:center;
+justify-content:center;
+}
 .modal.show{display:flex}
+.modal img{max-width:90%;max-height:90%}
 </style>
 </head>
 
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
+
+<div>
 <img src="/logo.png" class="logo">
-<div class="nav"><a class="active">Orders</a></div>
+<div class="nav">
+<a class="active">Orders</a>
+</div>
 </div>
 
+<div class="logout" onclick="logout()">
+<svg width="16" height="16" stroke="currentColor" fill="none" stroke-width="2">
+<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+<polyline points="16 17 21 12 16 7"/>
+<line x1="21" y1="12" x2="9" y2="12"/>
+</svg>
+Logout
+</div>
+
+</div>
+
+<!-- MAIN -->
 <div class="main">
 
 <div class="tabs">
@@ -99,23 +170,27 @@ tr:hover{background:rgba(255,255,255,0.03);cursor:pointer}
 
 </div>
 
+<!-- PANEL -->
 <div class="panel" id="panel"></div>
 
-<div class="modal" id="imgModal" onclick="closeModal()">
+<!-- IMAGE MODAL -->
+<div class="modal" id="modal" onclick="closeModal()">
 <img id="modalImg">
 </div>
 
-<!-- SVG -->
+<!-- SVG ICONS -->
 <svg style="display:none">
-<symbol id="eye"><circle cx="12" cy="12" r="3"/><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></symbol>
 <symbol id="check"><polyline points="20 6 9 17 4 12"/></symbol>
 <symbol id="x"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
 <symbol id="gear"><circle cx="12" cy="12" r="3"/></symbol>
 </svg>
 
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 <script src="/firebase-init.js"></script>
+
 <script src="admin.js"></script>
 
 </body>
