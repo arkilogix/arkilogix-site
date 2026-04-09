@@ -1,6 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getFirestore,
+  updateDoc,
+  doc,
+  collection,
+  query,
+  where,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* FIREBASE */
 const firebaseConfig = {
@@ -23,7 +31,7 @@ let isLocked = true;
 /* AUTH */
 let authChecked = false;
 
-onAuthStateChanged(auth, async (user)=>{
+onAuthStateChanged(auth, (user)=>{
 
   if(!authChecked){
     authChecked = true;
@@ -43,20 +51,30 @@ onAuthStateChanged(auth, async (user)=>{
     return;
   }
 
-  const ref = doc(db, "clients", user.uid);
-  const snap = await getDoc(ref);
+  /* 🔥 REAL-TIME LISTENER */
+  const q = query(
+    collection(db, "clients"),
+    where("authUid", "==", user.uid)
+  );
 
-  if(!snap.exists()){
-    console.log("No client doc");
-    activateLockScreen(); // 🔥 NO DOC = LOCKED
-    return;
-  }
+  onSnapshot(q, (snapshot)=>{
 
-  currentDocId = user.uid;
-  currentData = snap.data();
+    if(snapshot.empty){
+      console.log("No client doc");
+      activateLockScreen();
+      return;
+    }
 
-  checkAccess();
-  render();
+    const docSnap = snapshot.docs[0];
+
+    currentDocId = docSnap.id;
+    currentData = docSnap.data();
+
+    checkAccess();   // 🔥 LIVE LOCK/UNLOCK
+    render();
+
+  });
+
 });
 
 /* ================= ACCESS CONTROL ================= */
@@ -76,14 +94,12 @@ function checkAccess(){
 function activateLockScreen(){
   const lock = document.getElementById("lockScreen");
   if(lock) lock.style.display = "flex";
-
   disableDashboard();
 }
 
 function deactivateLockScreen(){
   const lock = document.getElementById("lockScreen");
   if(lock) lock.style.display = "none";
-
   enableDashboard();
 }
 
@@ -123,7 +139,8 @@ function render(){
     servicesContainer.appendChild(span);
   });
 
-  document.getElementById("statusText").innerText = "Status: " + (currentData.status || "processing");
+  document.getElementById("statusText").innerText =
+    "Status: " + (currentData.status || "processing");
 }
 
 /* ================= SAFE ACTION GUARD ================= */
@@ -143,6 +160,7 @@ window.viewCard = ()=>{
   let page = "basic.html";
   if(currentData.plan === "pro") page = "pro.html";
   if(currentData.plan === "elite") page = "elite.html";
+
   window.open(`/view/${page}?id=${currentDocId}`);
 };
 
