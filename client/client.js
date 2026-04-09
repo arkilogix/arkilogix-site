@@ -17,6 +17,7 @@ const db = getFirestore(app);
 let currentData = {};
 let currentDocId = "";
 let step = 1;
+let isSaving = false;
 
 /* AUTH */
 let authChecked = false;
@@ -40,8 +41,6 @@ onAuthStateChanged(auth, async (user)=>{
     window.location.replace("/auth/login.html");
     return;
   }
-
-  console.log("USER OK:", user.uid);
 
   const ref = doc(db, "clients", user.uid);
   const snap = await getDoc(ref);
@@ -161,55 +160,80 @@ async function uploadImage(file){
   return data.secure_url;
 }
 
-/* ================= SAVE ================= */
+/* ================= HARDENED SAVE ================= */
 
 async function saveProfile(){
 
-  currentData.name = document.getElementById("editName").value;
-  currentData.position = document.getElementById("editPosition").value;
-
-  currentData.phone = document.getElementById("contactPhone").value;
-  currentData.email = document.getElementById("contactEmail").value;
-  currentData.facebook = document.getElementById("contactFacebook").value;
-  currentData.instagram = document.getElementById("contactInstagram").value;
-
-  currentData.website = document.getElementById("website").value;
-
-  // SERVICES
-  const serviceInputs = document.querySelectorAll("#servicesEdit input");
-  currentData.services = [];
-
-  serviceInputs.forEach(input=>{
-    if(input.value.trim()){
-      currentData.services.push(input.value.trim());
-    }
-  });
+  if(isSaving) return;
+  isSaving = true;
 
   try{
 
-    // PROFILE IMAGE
+    // 🔥 SAFE TEXT UPDATE (only overwrite if not empty)
+    const name = document.getElementById("editName").value.trim();
+    if(name) currentData.name = name;
+
+    const position = document.getElementById("editPosition").value.trim();
+    if(position) currentData.position = position;
+
+    const phone = document.getElementById("contactPhone").value.trim();
+    if(phone) currentData.phone = phone;
+
+    const email = document.getElementById("contactEmail").value.trim();
+    if(email) currentData.email = email;
+
+    const fb = document.getElementById("contactFacebook").value.trim();
+    if(fb) currentData.facebook = fb;
+
+    const ig = document.getElementById("contactInstagram").value.trim();
+    if(ig) currentData.instagram = ig;
+
+    const website = document.getElementById("website").value.trim();
+    if(website) currentData.website = website;
+
+    // 🔥 SERVICES
+    const serviceInputs = document.querySelectorAll("#servicesEdit input");
+    const newServices = [];
+
+    serviceInputs.forEach(input=>{
+      if(input.value.trim()){
+        newServices.push(input.value.trim());
+      }
+    });
+
+    if(newServices.length){
+      currentData.services = newServices;
+    }
+
+    // 🔥 PROFILE IMAGE
     const profileFile = document.getElementById("imageInput").files[0];
     if(profileFile){
       const url = await uploadImage(profileFile);
       if(url) currentData.profile = url;
     }
 
-    // PROJECTS
+    // 🔥 PROJECTS (APPEND, NOT REPLACE)
     const projectInputs = document.querySelectorAll("#projects input[type='file']");
-    let projectUrls = [];
+    let newProjects = [];
 
     for(const input of projectInputs){
       if(input.files[0]){
         const url = await uploadImage(input.files[0]);
-        if(url) projectUrls.push(url);
+        if(url) newProjects.push(url);
       }
     }
 
-    if(projectUrls.length){
-      currentData.projects = projectUrls;
+    if(newProjects.length){
+      currentData.projects = [
+        ...(currentData.projects || []),
+        ...newProjects
+      ];
     }
 
+    // 🔥 SAVE
     await updateDoc(doc(db,"clients",currentDocId), currentData);
+
+    console.log("Saved safely");
 
     render();
 
@@ -217,8 +241,10 @@ async function saveProfile(){
 
   }catch(err){
     console.error(err);
-    alert("Upload failed");
+    alert("Save failed");
   }
+
+  isSaving = false;
 }
 
 /* SERVICES */
