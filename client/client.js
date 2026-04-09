@@ -27,6 +27,8 @@ let currentDocId = "";
 let step = 1;
 let isSaving = false;
 let isLocked = true;
+let wasLocked = null;
+let unsubscribe = null;
 
 /* AUTH */
 let authChecked = false;
@@ -51,13 +53,14 @@ onAuthStateChanged(auth, (user)=>{
     return;
   }
 
-  /* 🔥 REAL-TIME LISTENER */
+  if(unsubscribe) unsubscribe();
+
   const q = query(
     collection(db, "clients"),
     where("authUid", "==", user.uid)
   );
 
-  onSnapshot(q, (snapshot)=>{
+  unsubscribe = onSnapshot(q, (snapshot)=>{
 
     if(snapshot.empty){
       console.log("No client doc");
@@ -70,11 +73,14 @@ onAuthStateChanged(auth, (user)=>{
     currentDocId = docSnap.id;
     currentData = docSnap.data();
 
-    checkAccess();   // 🔥 LIVE LOCK/UNLOCK
+    checkAccess();
     render();
 
   });
+
 });
+
+/* ================= UNLOCK ANIMATION ================= */
 
 function showUnlockAnimation(){
 
@@ -95,21 +101,52 @@ function showUnlockAnimation(){
       unlock.style.display = "none";
     },400);
 
-  },1800);
+  },1600);
 }
-/* ================= ACCESS CONTROL ================= */
 
-let wasLocked = true;
+/* ================= ELITE WELCOME ================= */
+
+function showWelcomeScreen(){
+
+  const screen = document.getElementById("welcomeScreen");
+  if(!screen) return;
+
+  screen.style.display = "flex";
+
+  setTimeout(()=>{
+    screen.style.opacity = "1";
+  },50);
+
+  setTimeout(()=>{
+    screen.style.opacity = "0";
+
+    setTimeout(()=>{
+      screen.style.display = "none";
+    },500);
+
+  },2200);
+}
+
+/* ================= ACCESS CONTROL ================= */
 
 function checkAccess(){
   const status = currentData.status || "processing";
-
   const nowUnlocked = (status === "paid" || status === "completed");
+
+  if(wasLocked === null){
+    wasLocked = !nowUnlocked;
+  }
 
   if(nowUnlocked){
 
-    if(wasLocked){
-      showUnlockAnimation(); // 🔥 ONLY trigger once
+    if(wasLocked === true){
+
+      showUnlockAnimation();
+
+      setTimeout(()=>{
+        showWelcomeScreen();
+      },600);
+
     }
 
     isLocked = false;
