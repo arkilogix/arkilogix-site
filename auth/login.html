@@ -185,7 +185,7 @@ window.login = async function(){
     // ✅ ADMIN CHECK
     const adminDoc = await getDoc(doc(db, "admins", user.uid));
     if(adminDoc.exists()){
-      window.location.href = "/admin/index.html";
+      window.location.replace("/admin/index.html");
       return;
     }
 
@@ -193,21 +193,25 @@ window.login = async function(){
     const q = query(collection(db,"clients"), where("authUid","==",user.uid));
     const snapshot = await getDocs(q);
     
-    if(!snapshot.empty){
-      window.location.replace("/client/index.html");
-      return;
-    }
+      if(!snapshot2.empty){
+        const ref = snapshot2.docs[0].ref;
+      
+        await setDoc(ref, { authUid: user.uid, hasAccount: true }, { merge: true });
+      
+        window.location.replace("/client/index.html");
+        return;
+      }
 
     // 🔥 FALLBACK: LINK BY EMAIL
-    const q = query(collection(db,"clients"), where("email","==",email));
-    const snapshot = await getDocs(q);
+    const q2 = query(collection(db,"clients"), where("email","==",email));
+    const snapshot2 = await getDocs(q2);
 
     if(!snapshot.empty){
       const ref = snapshot.docs[0].ref;
 
       await setDoc(ref, { authUid: user.uid, hasAccount: true }, { merge: true });
 
-      window.location.href = "/client/index.html";
+      window.location.replace("/client/index.html");
       return;
     }
 
@@ -237,7 +241,7 @@ window.login = async function(){
 function showUserNotFoundModal(){
   const confirmSignup = confirm("User not found.\n\nCreate an account?");
   if(confirmSignup){
-    window.location.href = "signup.html";
+    window.location.replace("signup.html");
   }
 }
   
