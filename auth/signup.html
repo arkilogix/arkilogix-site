@@ -357,7 +357,7 @@ async function signup(){
         }, { merge:true });
       } else {
         /* 🔥 CREATE NEW CLIENT */
-        await setDoc(doc(db,"clients", user.uid), {
+        await setDoc(doc(collection(db,"clients")), {
             email,
             authUid: user.uid,
             hasAccount: true,
