@@ -74,20 +74,52 @@ onAuthStateChanged(auth, (user)=>{
     render();
 
   });
-
 });
 
+function showUnlockAnimation(){
+
+  const unlock = document.getElementById("unlockScreen");
+  if(!unlock) return;
+
+  unlock.style.display = "flex";
+  unlock.style.opacity = "0";
+
+  setTimeout(()=>{
+    unlock.style.opacity = "1";
+  },50);
+
+  setTimeout(()=>{
+    unlock.style.opacity = "0";
+
+    setTimeout(()=>{
+      unlock.style.display = "none";
+    },400);
+
+  },1800);
+}
 /* ================= ACCESS CONTROL ================= */
+
+let wasLocked = true;
 
 function checkAccess(){
   const status = currentData.status || "processing";
 
-  if(status === "paid" || status === "completed"){
+  const nowUnlocked = (status === "paid" || status === "completed");
+
+  if(nowUnlocked){
+
+    if(wasLocked){
+      showUnlockAnimation(); // 🔥 ONLY trigger once
+    }
+
     isLocked = false;
     deactivateLockScreen();
+    wasLocked = false;
+
   } else {
     isLocked = true;
     activateLockScreen();
+    wasLocked = true;
   }
 }
 
