@@ -31,19 +31,20 @@ let wasLocked = null;
 let unsubscribe = null;
 
 /* AUTH */
-let authChecked = false;
+let authReady = false;
 
-onAuthStateChanged(auth, (user)=>{
+onAuthStateChanged(auth, async (user)=>{
 
-  if(!authChecked){
-    authChecked = true;
+  // 🔥 FIRST TIME: wait for Firebase to settle
+  if(!authReady){
+    authReady = true;
 
     if(!user){
       setTimeout(()=>{
         if(!auth.currentUser){
           window.location.replace("/auth/login.html");
         }
-      },500);
+      }, 500); // small delay fixes race condition
       return;
     }
   }
@@ -53,31 +54,21 @@ onAuthStateChanged(auth, (user)=>{
     return;
   }
 
-  if(unsubscribe) unsubscribe();
+  console.log("AUTH READY:", user.uid);
 
-  const q = query(
-    collection(db, "clients"),
-    where("authUid", "==", user.uid)
-  );
+  const q = query(collection(db,"clients"), where("authUid","==",user.uid));
+  const snap = await getDocs(q);
 
-  unsubscribe = onSnapshot(q, (snapshot)=>{
+  if(snap.empty){
+    console.log("No client found");
+    return;
+  }
 
-    if(snapshot.empty){
-      console.log("No client doc");
-      activateLockScreen();
-      return;
-    }
+  const docSnap = snap.docs[0];
+  currentDocId = docSnap.id;
+  currentData = docSnap.data();
 
-    const docSnap = snapshot.docs[0];
-
-    currentDocId = docSnap.id;
-    currentData = docSnap.data();
-
-    checkAccess();
-    render();
-
-  });
-
+  render();
 });
 
 /* ================= UNLOCK ANIMATION ================= */
