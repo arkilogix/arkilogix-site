@@ -1,31 +1,6 @@
-/* ================= FIREBASE ================= */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-import {
-  getFirestore,
-  updateDoc,
-  doc,
-  collection,
-  query,
-  where,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-/* ================= CONFIG ================= */
-const firebaseConfig = {
-  apiKey: "AIzaSy...",
-  authDomain: "arkilogix-clients.firebaseapp.com",
-  projectId: "arkilogix-clients"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+/* ================= FIREBASE (COMPAT MODE) ================= */
+const db = firebase.firestore();
+const auth = firebase.auth();
 
 /* ================= STATE ================= */
 let currentData = {};
@@ -35,17 +10,17 @@ let isSaving = false;
 let isLocked = true;
 let wasLocked = null;
 
-/* ================= AUTH (FIXED NO LOOP) ================= */
-let authReady = false;
+/* ================= AUTH (NO LOOP FIX) ================= */
+let authChecked = false;
 
-onAuthStateChanged(auth, async (user) => {
+auth.onAuthStateChanged(async (user) => {
 
-  if (!authReady) {
-    authReady = true;
+  if (!authChecked) {
+    authChecked = true;
 
     if (!user) {
-      console.log("No user after check → login");
-      window.location.replace("/auth/login.html");
+      console.log("No user → redirect login");
+      window.location.href = "/auth/login.html";
       return;
     }
 
@@ -53,12 +28,9 @@ onAuthStateChanged(auth, async (user) => {
 
     try {
 
-      const q = query(
-        collection(db, "clients"),
-        where("authUid", "==", user.uid)
-      );
-
-      const snap = await getDocs(q);
+      const snap = await db.collection("clients")
+        .where("authUid", "==", user.uid)
+        .get();
 
       if (!snap.empty) {
         const docSnap = snap.docs[0];
@@ -66,9 +38,9 @@ onAuthStateChanged(auth, async (user) => {
         currentDocId = docSnap.id;
       } else {
 
-        console.warn("No Firestore record → creating one");
+        console.warn("No Firestore record → creating");
 
-        const newRef = doc(collection(db, "clients"));
+        const ref = db.collection("clients").doc();
 
         const newData = {
           authUid: user.uid,
@@ -79,10 +51,10 @@ onAuthStateChanged(auth, async (user) => {
           createdAt: new Date()
         };
 
-        await setDoc(newRef, newData);
+        await ref.set(newData);
 
         currentData = newData;
-        currentDocId = newRef.id;
+        currentDocId = ref.id;
       }
 
       render();
@@ -94,7 +66,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 
 });
-
 
 /* ================= ACCESS CONTROL ================= */
 
@@ -184,48 +155,6 @@ window.openModal = ()=>{
 
   document.getElementById("editName").value = currentData.name || "";
   document.getElementById("editPosition").value = currentData.position || "";
-
-  document.getElementById("contactPhone").value = currentData.phone || "";
-  document.getElementById("contactEmail").value = currentData.email || "";
-  document.getElementById("contactFacebook").value = currentData.facebook || "";
-  document.getElementById("contactInstagram").value = currentData.instagram || "";
-
-  document.getElementById("website").value = currentData.website || "";
-
-  const servicesBox = document.getElementById("servicesEdit");
-  servicesBox.innerHTML = "";
-
-  (currentData.services || []).forEach(s=>{
-    const input = document.createElement("input");
-    input.value = s;
-    servicesBox.appendChild(input);
-  });
-
-  step = 1;
-  updateSteps();
-};
-
-/* ================= STEP ================= */
-
-function updateSteps(){
-  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
-  document.querySelector(`[data-step="${step}"]`).classList.add("active");
-}
-
-window.nextStep = async ()=>{
-  if(step < 5){
-    step++;
-    updateSteps();
-  } else {
-    await saveProfile();
-  }
-};
-
-window.prevStep = ()=>{
-  if(step > 1){
-    step--;
-    updateSteps();
-  }
 };
 
 /* ================= SAVE ================= */
@@ -245,13 +174,13 @@ async function saveProfile(){
     const position = document.getElementById("editPosition").value.trim();
     if(position) currentData.position = position;
 
-    const phone = document.getElementById("contactPhone").value.trim();
+    const phone = document.getElementById("contactPhone")?.value.trim();
     if(phone) currentData.phone = phone;
 
-    const email = document.getElementById("contactEmail").value.trim();
+    const email = document.getElementById("contactEmail")?.value.trim();
     if(email) currentData.email = email;
 
-    await updateDoc(doc(db,"clients",currentDocId), currentData);
+    await db.collection("clients").doc(currentDocId).update(currentData);
 
     render();
     document.getElementById("editModal").style.display = "none";
@@ -267,7 +196,7 @@ async function saveProfile(){
 /* ================= LOGOUT ================= */
 
 document.querySelector(".logout").onclick = ()=>{
-  signOut(auth).then(()=>{
-    window.location.replace("/auth/login.html");
+  auth.signOut().then(()=>{
+    window.location.href = "/auth/login.html";
   });
 };
