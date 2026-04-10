@@ -317,12 +317,18 @@ async function signup(){
     return;
   }
 
+  // 🔒 LOCK BUTTON
   signupBtn.disabled = true;
   signupBtn.innerText = "Creating...";
+
+  // 🚀 SHOW ACTIVATION SCREEN IMMEDIATELY
+  startActivation();
 
   try{
     const userCred = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
+
+    showStep("step1"); // Linking order
 
     const params = new URLSearchParams(window.location.search);
     const clientId = params.get("clientId");
@@ -334,13 +340,13 @@ async function signup(){
       const ref = doc(db, "clients", clientId);
       const snap = await getDoc(ref);
 
-            if(snap.exists()){
+      if(snap.exists()){
         await setDoc(ref, {
           authUid: user.uid,
           hasAccount: true,
           email: email
         }, { merge: true });
-      
+
         linked = true;
       }
     }
@@ -356,24 +362,39 @@ async function signup(){
           hasAccount: true
         }, { merge:true });
       } else {
-        /* 🔥 CREATE NEW CLIENT */
         await setDoc(doc(collection(db,"clients")), {
-            email,
-            authUid: user.uid,
-            hasAccount: true,
-            plan: "basic",
-            status: "processing",
-            createdAt: new Date()
-          });
+          email,
+          authUid: user.uid,
+          hasAccount: true,
+          plan: "basic",
+          status: "processing",
+          createdAt: new Date()
+        });
       }
     }
 
-    runActivation();
+    showStep("step2"); // Preparing card
+
+    await new Promise(r=>setTimeout(r,400)); // smooth UX
+
+    showStep("step3"); // Dashboard setup
+
+    await new Promise(r=>setTimeout(r,400));
+
+    showStep("step4"); // Redirecting
+
+    await new Promise(r=>setTimeout(r,300));
+
+    // ✅ FINAL REDIRECT (NO LOOP)
+    window.location.replace("/client/index.html");
 
   }catch(err){
     alert(err.message);
+
     signupBtn.disabled = false;
     signupBtn.innerText = "Create Account";
+
+    document.getElementById("activationScreen").style.display = "none";
   }
 }
 
@@ -396,7 +417,23 @@ function runActivation(){
     window.location.href = "/client/index.html";
   }, 3000);
 }
+  
+function startActivation(){
+  document.getElementById("activationScreen").style.display = "flex";
 
+  // reset steps
+  ["step1","step2","step3","step4"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.classList.remove("show");
+  });
+}
+
+function showStep(id){
+  const el = document.getElementById(id);
+  if(el){
+    el.classList.add("show");
+  }
+}
 /* ================= EVENT LISTENERS ================= */
 
 // validation
