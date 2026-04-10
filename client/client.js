@@ -33,28 +33,38 @@ auth.onAuthStateChanged(async (user) => {
         .get();
 
       if (!snap.empty) {
+
         const docSnap = snap.docs[0];
         currentData = docSnap.data();
         currentDocId = docSnap.id;
+      
       } else {
-
-        console.warn("No Firestore record → creating");
-
-        const ref = db.collection("clients").doc();
-
-        const newData = {
-          authUid: user.uid,
-          email: user.email || "",
-          name: "New User",
-          plan: "basic",
-          status: "processing",
-          createdAt: new Date()
-        };
-
-        await ref.set(newData);
-
-        currentData = newData;
-        currentDocId = ref.id;
+      
+        console.warn("No authUid match → trying email match");
+      
+        const emailSnap = await db.collection("clients")
+          .where("email","==",user.email)
+          .get();
+      
+        if (!emailSnap.empty) {
+      
+          const docSnap = emailSnap.docs[0];
+          currentData = docSnap.data();
+          currentDocId = docSnap.id;
+      
+          // 🔥 LINK ACCOUNT (CRITICAL)
+          await db.collection("clients").doc(currentDocId).update({
+            authUid: user.uid,
+            hasAccount: true
+          });
+      
+        } else {
+      
+          console.error("No matching record found");
+          alert("No order found. Please contact admin.");
+          return;
+      
+        }
       }
 
       render();
