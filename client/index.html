@@ -83,8 +83,6 @@
 
 </div>
 
-<script type="module" src="client.js"></script>
-
 <!-- MODAL -->
 <div id="editModal" class="modal">
   <div class="modal-content">
@@ -198,5 +196,15 @@ transition:opacity .5s ease;
 
 </div>
 </div>
+  <!-- Firebase (MUST BE BEFORE client.js) -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+<!-- Your Firebase config -->
+<script src="/firebase-init.js"></script>
+
+<!-- Your dashboard logic -->
+<script src="client.js"></script>
 </body>
 </html>
