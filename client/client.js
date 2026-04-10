@@ -7,7 +7,7 @@ import {
   collection,
   query,
   where,
-  onSnapshot
+  getDocs // ✅ FIXED
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* FIREBASE */
@@ -28,23 +28,23 @@ let step = 1;
 let isSaving = false;
 let isLocked = true;
 let wasLocked = null;
-let unsubscribe = null;
 
-/* AUTH */
-let authReady = false;
+/* ================= AUTH (FIXED) ================= */
+
+let authInitialized = false;
 
 onAuthStateChanged(auth, async (user)=>{
 
-  // 🔥 FIRST TIME: wait for Firebase to settle
-  if(!authReady){
-    authReady = true;
+  // 🔥 Prevent early redirect (main fix)
+  if(!authInitialized){
+    authInitialized = true;
 
     if(!user){
       setTimeout(()=>{
         if(!auth.currentUser){
           window.location.replace("/auth/login.html");
         }
-      }, 500); // small delay fixes race condition
+      }, 500);
       return;
     }
   }
@@ -54,69 +54,28 @@ onAuthStateChanged(auth, async (user)=>{
     return;
   }
 
-  console.log("AUTH READY:", user.uid);
+  console.log("AUTH OK:", user.uid);
 
-  const q = query(collection(db,"clients"), where("authUid","==",user.uid));
-  const snap = await getDocs(q);
+  try{
+    const q = query(collection(db,"clients"), where("authUid","==",user.uid));
+    const snap = await getDocs(q);
 
-  if(snap.empty){
-    console.log("No client found");
-    return;
+    if(snap.empty){
+      console.log("No client record");
+      return;
+    }
+
+    const docSnap = snap.docs[0];
+    currentDocId = docSnap.id;
+    currentData = docSnap.data();
+
+    render();
+    checkAccess();
+
+  }catch(err){
+    console.error("CLIENT LOAD ERROR:", err);
   }
-
-  const docSnap = snap.docs[0];
-  currentDocId = docSnap.id;
-  currentData = docSnap.data();
-
-  render();
 });
-
-/* ================= UNLOCK ANIMATION ================= */
-
-function showUnlockAnimation(){
-
-  const unlock = document.getElementById("unlockScreen");
-  if(!unlock) return;
-
-  unlock.style.display = "flex";
-  unlock.style.opacity = "0";
-
-  setTimeout(()=>{
-    unlock.style.opacity = "1";
-  },50);
-
-  setTimeout(()=>{
-    unlock.style.opacity = "0";
-
-    setTimeout(()=>{
-      unlock.style.display = "none";
-    },400);
-
-  },1600);
-}
-
-/* ================= ELITE WELCOME ================= */
-
-function showWelcomeScreen(){
-
-  const screen = document.getElementById("welcomeScreen");
-  if(!screen) return;
-
-  screen.style.display = "flex";
-
-  setTimeout(()=>{
-    screen.style.opacity = "1";
-  },50);
-
-  setTimeout(()=>{
-    screen.style.opacity = "0";
-
-    setTimeout(()=>{
-      screen.style.display = "none";
-    },500);
-
-  },2200);
-}
 
 /* ================= ACCESS CONTROL ================= */
 
@@ -129,21 +88,9 @@ function checkAccess(){
   }
 
   if(nowUnlocked){
-
-    if(wasLocked === true){
-
-      showUnlockAnimation();
-
-      setTimeout(()=>{
-        showWelcomeScreen();
-      },600);
-
-    }
-
     isLocked = false;
     deactivateLockScreen();
     wasLocked = false;
-
   } else {
     isLocked = true;
     activateLockScreen();
@@ -154,27 +101,11 @@ function checkAccess(){
 function activateLockScreen(){
   const lock = document.getElementById("lockScreen");
   if(lock) lock.style.display = "flex";
-  disableDashboard();
 }
 
 function deactivateLockScreen(){
   const lock = document.getElementById("lockScreen");
   if(lock) lock.style.display = "none";
-  enableDashboard();
-}
-
-function disableDashboard(){
-  document.querySelectorAll("button, .btn, .sub-actions span").forEach(el=>{
-    el.style.pointerEvents = "none";
-    el.style.opacity = "0.5";
-  });
-}
-
-function enableDashboard(){
-  document.querySelectorAll("button, .btn, .sub-actions span").forEach(el=>{
-    el.style.pointerEvents = "auto";
-    el.style.opacity = "1";
-  });
 }
 
 /* ================= RENDER ================= */
@@ -203,7 +134,7 @@ function render(){
     "Status: " + (currentData.status || "processing");
 }
 
-/* ================= SAFE ACTION GUARD ================= */
+/* ================= GUARD ================= */
 
 function guard(){
   if(isLocked){
@@ -213,7 +144,8 @@ function guard(){
   return false;
 }
 
-/* VIEW CARD */
+/* ================= VIEW ================= */
+
 window.viewCard = ()=>{
   if(guard()) return;
 
@@ -244,21 +176,17 @@ window.openModal = ()=>{
   const servicesBox = document.getElementById("servicesEdit");
   servicesBox.innerHTML = "";
 
-  if(currentData.services?.length){
-    currentData.services.forEach(s=>{
-      const input = document.createElement("input");
-      input.value = s;
-      servicesBox.appendChild(input);
-    });
-  } else {
-    servicesBox.appendChild(document.createElement("input"));
-  }
+  (currentData.services || []).forEach(s=>{
+    const input = document.createElement("input");
+    input.value = s;
+    servicesBox.appendChild(input);
+  });
 
   step = 1;
   updateSteps();
 };
 
-/* STEP CONTROL */
+/* STEP */
 function updateSteps(){
   document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
   document.querySelector(`[data-step="${step}"]`).classList.add("active");
@@ -279,24 +207,6 @@ window.prevStep = ()=>{
     updateSteps();
   }
 };
-
-/* ================= CLOUDINARY ================= */
-
-async function uploadImage(file){
-  if(!file) return null;
-
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "arkilogix_profile");
-
-  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
-    method: "POST",
-    body: formData
-  });
-
-  const data = await res.json();
-  return data.secure_url;
-}
 
 /* ================= SAVE ================= */
 
@@ -321,34 +231,6 @@ async function saveProfile(){
     const email = document.getElementById("contactEmail").value.trim();
     if(email) currentData.email = email;
 
-    const fb = document.getElementById("contactFacebook").value.trim();
-    if(fb) currentData.facebook = fb;
-
-    const ig = document.getElementById("contactInstagram").value.trim();
-    if(ig) currentData.instagram = ig;
-
-    const website = document.getElementById("website").value.trim();
-    if(website) currentData.website = website;
-
-    const serviceInputs = document.querySelectorAll("#servicesEdit input");
-    const newServices = [];
-
-    serviceInputs.forEach(input=>{
-      if(input.value.trim()){
-        newServices.push(input.value.trim());
-      }
-    });
-
-    if(newServices.length){
-      currentData.services = newServices;
-    }
-
-    const profileFile = document.getElementById("imageInput").files[0];
-    if(profileFile){
-      const url = await uploadImage(profileFile);
-      if(url) currentData.profile = url;
-    }
-
     await updateDoc(doc(db,"clients",currentDocId), currentData);
 
     render();
@@ -362,45 +244,8 @@ async function saveProfile(){
   isSaving = false;
 }
 
-/* SERVICES */
-window.addServiceField = ()=>{
-  const input = document.createElement("input");
-  document.getElementById("servicesEdit").appendChild(input);
-};
+/* ================= LOGOUT ================= */
 
-/* PROJECTS */
-window.addProject = ()=>{
-  const div = document.createElement("div");
-  div.innerHTML = `<input type="file" accept="image/*">`;
-  document.getElementById("projects").appendChild(div);
-};
-
-/* PROFILE IMAGE */
-window.triggerImage = ()=>{
-  document.getElementById("imageInput").click();
-};
-
-/* SHARE */
-window.copyLink = ()=>{
-  if(guard()) return;
-  navigator.clipboard.writeText(window.location.href);
-};
-
-window.downloadVCard = ()=>{
-  if(guard()) return;
-  alert("vCard soon");
-};
-
-/* CTA */
-window.explorePremium = ()=>{
-  alert("Premium page soon");
-};
-
-window.exploreProducts = ()=>{
-  alert("Pet NFC coming soon");
-};
-
-/* LOGOUT */
 document.querySelector(".logout").onclick = ()=>{
   signOut(auth).then(()=>window.location.replace("/auth/login.html"));
 };
