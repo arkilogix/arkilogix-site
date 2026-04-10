@@ -33,48 +33,25 @@ let wasLocked = null;
 
 let authInitialized = false;
 
-onAuthStateChanged(auth, async (user)=>{
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-  // 🔥 Prevent early redirect (main fix)
-  if(!authInitialized){
-    authInitialized = true;
+const auth = getAuth();
 
-    if(!user){
-      setTimeout(()=>{
-        if(!auth.currentUser){
-          window.location.replace("/auth/login.html");
-        }
-      }, 500);
-      return;
+let authChecked = false;
+
+onAuthStateChanged(auth, (user) => {
+
+  if (!authChecked) {
+    authChecked = true;
+
+    if (!user) {
+      window.location.href = "/auth/login.html";
+    } else {
+      console.log("User logged in:", user.uid);
+      // continue loading dashboard
     }
   }
 
-  if(!user){
-    window.location.replace("/auth/login.html");
-    return;
-  }
-
-  console.log("AUTH OK:", user.uid);
-
-  try{
-    const q = query(collection(db,"clients"), where("authUid","==",user.uid));
-    const snap = await getDocs(q);
-
-    if(snap.empty){
-      console.log("No client record");
-      return;
-    }
-
-    const docSnap = snap.docs[0];
-    currentDocId = docSnap.id;
-    currentData = docSnap.data();
-
-    render();
-    checkAccess();
-
-  }catch(err){
-    console.error("CLIENT LOAD ERROR:", err);
-  }
 });
 
 /* ================= ACCESS CONTROL ================= */
