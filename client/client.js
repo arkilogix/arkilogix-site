@@ -36,7 +36,6 @@ let isLocked = true;
 let wasLocked = null;
 
 /* ================= AUTH (FIXED NO LOOP) ================= */
-
 let authReady = false;
 
 onAuthStateChanged(auth, async (user) => {
@@ -45,15 +44,15 @@ onAuthStateChanged(auth, async (user) => {
     authReady = true;
 
     if (!user) {
-      console.log("No user → redirecting to login");
+      console.log("No user after check → login");
       window.location.replace("/auth/login.html");
       return;
     }
 
-    console.log("User logged in:", user.uid);
+    console.log("User OK:", user.uid);
 
-    /* 🔥 LOAD USER DATA AFTER AUTH */
     try {
+
       const q = query(
         collection(db, "clients"),
         where("authUid", "==", user.uid)
@@ -65,19 +64,37 @@ onAuthStateChanged(auth, async (user) => {
         const docSnap = snap.docs[0];
         currentData = docSnap.data();
         currentDocId = docSnap.id;
-
-        render();
-        checkAccess();
       } else {
-        console.warn("No client record found");
+
+        console.warn("No Firestore record → creating one");
+
+        const newRef = doc(collection(db, "clients"));
+
+        const newData = {
+          authUid: user.uid,
+          email: user.email || "",
+          name: "New User",
+          plan: "basic",
+          status: "processing",
+          createdAt: new Date()
+        };
+
+        await setDoc(newRef, newData);
+
+        currentData = newData;
+        currentDocId = newRef.id;
       }
 
+      render();
+      checkAccess();
+
     } catch (err) {
-      console.error("Data load error:", err);
+      console.error("LOAD ERROR:", err);
     }
   }
 
 });
+
 
 /* ================= ACCESS CONTROL ================= */
 
