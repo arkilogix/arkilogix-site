@@ -399,24 +399,6 @@ async function signup(){
 }
 
 /* ================= ACTIVATION ================= */
-function runActivation(){
-  document.getElementById("activationScreen").style.display = "flex";
-
-  const steps = ["step1","step2","step3","step4"];
-
-  steps.forEach((id, i)=>{
-    const el = document.getElementById(id);
-    if(!el) return;
-
-    setTimeout(()=>{
-      el.classList.add("show");
-    }, 300 + i*600);
-  });
-
-  setTimeout(()=>{
-    window.location.href = "/client/index.html";
-  }, 3000);
-}
   
 function startActivation(){
   document.getElementById("activationScreen").style.display = "flex";
