@@ -196,13 +196,25 @@ window.login = async function(){
     }
 
     // ✅ CLIENT CHECK (authUid)
-    const q1 = query(collection(db,"clients"), where("authUid","==",user.uid));
-    const snap1 = await getDocs(q1);
+    let found = false;
 
-    if(!snap1.empty){
-      window.location.replace("/client/index.html");
-      return;
-    }
+for(let i=0; i<6; i++){ // ~3 seconds total
+
+  const q1 = query(collection(db,"clients"), where("authUid","==",user.uid));
+  const snap1 = await getDocs(q1);
+
+  if(!snap1.empty){
+    found = true;
+    break;
+  }
+
+  await new Promise(r=>setTimeout(r,500));
+}
+
+if(found){
+  window.location.replace("/client/index.html");
+  return;
+}
 
     // 🔥 LINK BY EMAIL
     const q2 = query(collection(db,"clients"), where("email","==",email));
