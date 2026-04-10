@@ -1,5 +1,11 @@
+/* ================= FIREBASE ================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
 import {
   getFirestore,
   updateDoc,
@@ -7,10 +13,10 @@ import {
   collection,
   query,
   where,
-  getDocs // ✅ FIXED
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-/* FIREBASE */
+/* ================= CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSy...",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -21,7 +27,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* STATE */
+/* ================= STATE ================= */
 let currentData = {};
 let currentDocId = "";
 let step = 1;
@@ -29,26 +35,45 @@ let isSaving = false;
 let isLocked = true;
 let wasLocked = null;
 
-/* ================= AUTH (FIXED) ================= */
+/* ================= AUTH (FIXED NO LOOP) ================= */
 
-let authInitialized = false;
+let authReady = false;
 
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+onAuthStateChanged(auth, async (user) => {
 
-const auth = getAuth();
-
-let authChecked = false;
-
-onAuthStateChanged(auth, (user) => {
-
-  if (!authChecked) {
-    authChecked = true;
+  if (!authReady) {
+    authReady = true;
 
     if (!user) {
-      window.location.href = "/auth/login.html";
-    } else {
-      console.log("User logged in:", user.uid);
-      // continue loading dashboard
+      console.log("No user → redirecting to login");
+      window.location.replace("/auth/login.html");
+      return;
+    }
+
+    console.log("User logged in:", user.uid);
+
+    /* 🔥 LOAD USER DATA AFTER AUTH */
+    try {
+      const q = query(
+        collection(db, "clients"),
+        where("authUid", "==", user.uid)
+      );
+
+      const snap = await getDocs(q);
+
+      if (!snap.empty) {
+        const docSnap = snap.docs[0];
+        currentData = docSnap.data();
+        currentDocId = docSnap.id;
+
+        render();
+        checkAccess();
+      } else {
+        console.warn("No client record found");
+      }
+
+    } catch (err) {
+      console.error("Data load error:", err);
     }
   }
 
@@ -163,7 +188,8 @@ window.openModal = ()=>{
   updateSteps();
 };
 
-/* STEP */
+/* ================= STEP ================= */
+
 function updateSteps(){
   document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
   document.querySelector(`[data-step="${step}"]`).classList.add("active");
@@ -224,5 +250,7 @@ async function saveProfile(){
 /* ================= LOGOUT ================= */
 
 document.querySelector(".logout").onclick = ()=>{
-  signOut(auth).then(()=>window.location.replace("/auth/login.html"));
+  signOut(auth).then(()=>{
+    window.location.replace("/auth/login.html");
+  });
 };
