@@ -151,3 +151,25 @@ body{
   border:1px solid #ddd;
   border-radius:10px;
 }
+.dashboard-grid{
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:20px;
+  padding:30px;
+  max-width:1100px;
+  margin:auto;
+}
+
+.side-panel{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.stat-box{
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.05);
+  text-align:center;
+}
