@@ -1185,7 +1185,7 @@ function buildFullAddress(){
 
   form.addEventListener("submit", async function(e){
     e.preventDefault();
-
+  document.getElementById("loadingScreen").style.display = "flex";
     const clientId = "client-" + Date.now();
 
 const params = {
@@ -1218,9 +1218,19 @@ const params = {
   }
 
     const cleanParams = cleanObject(params);
-    await setDoc(doc(db, "clients", clientId), cleanParams);
-
-    window.location.href = "payment.html?clientId=" + clientId;
+        try {
+      console.log("Saving order...", cleanParams);
+    
+      await setDoc(doc(db, "clients", clientId), cleanParams);
+    
+      console.log("✅ Saved successfully:", clientId);
+    
+      window.location.href = "payment.html?clientId=" + clientId;
+    
+    } catch (err) {
+      console.error("❌ Firestore error:", err);
+      alert("Error saving order. Check console.");
+    }
   });
 
 
@@ -1324,7 +1334,44 @@ document.addEventListener("keydown", e => {
 
   </div>
 </div>
+<!-- LOADING SCREEN -->
+<div id="loadingScreen" style="
+position:fixed;
+inset:0;
+background:#fff;
+display:none;
+justify-content:center;
+align-items:center;
+z-index:99999;
+font-family:'Montserrat',sans-serif;
+">
 
+  <div style="text-align:center;">
+    
+    <div style="
+      width:50px;
+      height:50px;
+      border:3px solid #ddd;
+      border-top:3px solid #000;
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+      margin:0 auto 20px;
+    "></div>
+
+    <h3 style="margin-bottom:8px;">Activating Your Card</h3>
+    <p style="font-size:13px;color:#666;">
+      Setting up your digital profile...
+    </p>
+
+  </div>
+</div>
+
+<style>
+@keyframes spin{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+</style>
 
 </body>
 </html>
