@@ -361,16 +361,7 @@ async function signup(){
           authUid: user.uid,
           hasAccount: true
         }, { merge:true });
-      } else {
-        await setDoc(doc(collection(db,"clients")), {
-          email,
-          authUid: user.uid,
-          hasAccount: true,
-          plan: "basic",
-          status: "processing",
-          createdAt: new Date()
-        });
-      }
+      } 
     }
 
     showStep("step2"); // Preparing card
