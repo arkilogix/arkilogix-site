@@ -1,102 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArkiLogix Dashboard</title>
+
 <link rel="stylesheet" href="client.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<div class="header">
+<!-- ================= HEADER ================= -->
+<header class="header">
   <div class="logo">ArkiLogix</div>
 
   <div class="user-area">
     <img id="headerProfile" src="/logo.png">
-    <div>
+    <div class="user-info">
       <div id="userName">User</div>
       <div id="planBadge" class="badge">BASIC</div>
     </div>
   </div>
-</div>
+</header>
 
-<div class="dashboard-grid">
+<!-- ================= MAIN ================= -->
+<main class="main">
 
-  <!-- LEFT: PROFILE CARD -->
-  <div class="card-preview">
+  <div class="dashboard-grid">
 
-    <div class="status-chip" id="statusChip">Processing</div>
+    <!-- ===== LEFT: PROFILE CARD ===== -->
+    <section class="card-preview">
 
-    <img id="heroProfile" src="/logo.png">
+      <div class="status-chip" id="statusChip">Processing</div>
 
-    <h2 id="cardName">Name</h2>
-    <p id="cardPosition">Position</p>
+      <img id="heroProfile" src="/logo.png">
 
-    <div id="cardServices"></div>
+      <h2 id="cardName">Name</h2>
+      <p id="cardPosition">Position</p>
 
-    <p class="edit-meta">
-      Edits used: <span id="editCount">0</span>/2
-    </p>
+      <div id="cardServices"></div>
 
-    <button class="btn primary" onclick="openModal()">Edit Profile</button>
-    <button class="btn upgrade" onclick="openUpgradeModal()">Unlock Unlimited Edits</button>
+      <p class="edit-meta">
+        Edits used: <span id="editCount">0</span>/2
+      </p>
+
+      <div class="card-actions">
+        <button class="btn primary" onclick="openModal()">Edit Profile</button>
+        <button class="btn upgrade" onclick="openUpgradeModal()">Unlock Unlimited Edits</button>
+      </div>
+
+    </section>
+
+    <!-- ===== RIGHT: ANALYTICS ===== -->
+    <aside class="side-panel">
+
+      <div class="stat-box">
+        <p>Views</p>
+        <h2 id="views">0</h2>
+      </div>
+
+      <div class="stat-box">
+        <p>Taps</p>
+        <h2 id="taps">0</h2>
+      </div>
+
+      <div class="stat-box">
+        <p>Clicks</p>
+        <h2 id="clicks">0</h2>
+      </div>
+
+      <!-- LOGOUT INSIDE PANEL -->
+      <button class="btn logout">Logout</button>
+
+    </aside>
 
   </div>
 
-  <!-- RIGHT: STATS -->
-  <div class="side-panel">
+</main>
 
-    <div class="stat-box">
-      <p>Views</p>
-      <h2 id="views">0</h2>
-    </div>
-
-    <div class="stat-box">
-      <p>Taps</p>
-      <h2 id="taps">0</h2>
-    </div>
-
-    <div class="stat-box">
-      <p>Clicks</p>
-      <h2 id="clicks">0</h2>
-    </div>
-
-  </div>
-
-</div>
-
-<section class="analytics">
-  <div class="stat"><p>Views</p><h3>0</h3></div>
-  <div class="stat"><p>Taps</p><h3>0</h3></div>
-  <div class="stat"><p>Clicks</p><h3>0</h3></div>
-</section>
-
-<button class="btn logout">Logout</button>
-
-<!-- EDIT MODAL -->
+<!-- ================= EDIT MODAL ================= -->
 <div id="editModal" class="modal">
   <div class="modal-content">
-    <h3>Edit Profile</h3>
-    <input id="editName" placeholder="Name">
-    <input id="editPosition" placeholder="Position">
 
-    <button class="btn primary" onclick="saveProfile()">Save</button>
-    <button class="btn" onclick="closeModal()">Cancel</button>
+    <h3>Edit Profile</h3>
+
+    <input id="editName" placeholder="Full Name">
+    <input id="editPosition" placeholder="Profession">
+
+    <div class="modal-actions">
+      <button class="btn primary" onclick="saveProfile()">Save</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>
+
   </div>
 </div>
 
-<!-- UPGRADE MODAL -->
+<!-- ================= UPGRADE MODAL ================= -->
 <div id="upgradeModal" class="modal">
   <div class="modal-content">
-    <h3>Unlock Unlimited Edits</h3>
-    <p>₱99 one-time payment</p>
 
-    <button class="btn primary" onclick="processUnlock()">Unlock</button>
-    <button class="btn" onclick="closeUpgradeModal()">Cancel</button>
+    <h3>Unlock Unlimited Edits</h3>
+
+    <p class="modal-desc">
+      You’ve used your free edits.<br>
+      Upgrade to continue editing anytime.
+    </p>
+
+    <div class="price-box">
+      <h2>₱99</h2>
+      <p>One-time unlock</p>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn primary" onclick="processUnlock()">Unlock Now</button>
+      <button class="btn" onclick="closeUpgradeModal()">Cancel</button>
+    </div>
+
   </div>
 </div>
 
-<!-- FIREBASE -->
+<!-- ================= FIREBASE ================= -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
