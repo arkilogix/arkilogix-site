@@ -1,17 +1,25 @@
+/* ===== GLOBAL ===== */
 body{
   margin:0;
   font-family:'Inter',sans-serif;
-  background:#f5f6f8;
+  background:#f6f7f9;
+  color:#111;
 }
 
 /* ===== HEADER ===== */
 .header{
+  position:sticky;
+  top:0;
+  z-index:100;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:20px 30px;
-  background:#fff;
-  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+  padding:18px 28px;
+
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(12px);
+
+  border-bottom:1px solid rgba(0,0,0,0.05);
 }
 
 .logo{
@@ -25,141 +33,134 @@ body{
   gap:10px;
 }
 
-.user-profile img{
-  width:40px;
-  height:40px;
+.user-area img{
+  width:38px;
+  height:38px;
   border-radius:50%;
 }
 
-.badge{
-  background:#000;
-  color:#fff;
-  font-size:10px;
-  padding:4px 8px;
-  border-radius:10px;
-}
-
-/* ===== HERO CARD ===== */
-.hero{
+.user-info{
   display:flex;
-  justify-content:center;
-  padding:40px 20px;
+  flex-direction:column;
+  font-size:12px;
 }
 
+.badge{
+  background:#111;
+  color:#fff;
+  padding:3px 8px;
+  border-radius:10px;
+  font-size:10px;
+  width:fit-content;
+}
+
+/* ===== MAIN ===== */
+.main{
+  padding:30px;
+}
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:24px;
+  max-width:1100px;
+  margin:auto;
+}
+
+/* ===== CARD ===== */
 .card-preview{
   background:linear-gradient(145deg,#ffffff,#f3f3f3);
   border-radius:24px;
-  padding:30px;
-  width:360px;
+  padding:28px;
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+
   text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,0.08);
   position:relative;
+
+  transition:.25s ease;
 }
 
-.status-chip{
-  position:absolute;
-  top:15px;
-  right:15px;
-  background:#eee;
-  padding:5px 10px;
-  border-radius:20px;
-  font-size:11px;
+.card-preview:hover{
+  transform:translateY(-4px);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.12);
 }
 
 .card-preview img{
   width:80px;
   height:80px;
   border-radius:50%;
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 
+/* ===== STATUS ===== */
+.status-chip{
+  position:absolute;
+  top:16px;
+  right:16px;
+  font-size:11px;
+  padding:6px 10px;
+  border-radius:20px;
+  background:#f1f1f1;
+}
+
+/* ===== SERVICES ===== */
 #cardServices span{
   display:inline-block;
   font-size:11px;
-  background:#f0f0f0;
+  background:#f1f1f1;
   padding:5px 8px;
   margin:3px;
   border-radius:10px;
 }
 
+/* ===== EDIT META ===== */
 .edit-meta{
   font-size:12px;
-  color:#888;
-  margin-top:10px;
+  color:#777;
+  margin-top:12px;
 }
 
 /* ===== BUTTONS ===== */
+.card-actions{
+  margin-top:15px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
 .btn{
-  padding:10px 16px;
-  border:none;
+  padding:11px;
   border-radius:30px;
+  border:none;
   cursor:pointer;
-  margin-top:10px;
+  font-size:13px;
+  transition:.2s ease;
 }
 
 .btn.primary{
-  background:#000;
+  background:#111;
   color:#fff;
+}
+
+.btn.primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px rgba(0,0,0,0.2);
 }
 
 .btn.upgrade{
-  background:#111;
-  color:#fff;
-  font-size:12px;
-}
-
-/* ===== ANALYTICS ===== */
-.analytics{
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  padding:20px;
-}
-
-.stat{
   background:#fff;
-  padding:15px;
-  border-radius:12px;
-  width:100px;
-  text-align:center;
-  box-shadow:0 5px 20px rgba(0,0,0,0.05);
-}
-
-/* ===== MODAL ===== */
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-  justify-content:center;
-  align-items:center;
-  z-index:1000;
-}
-
-.modal-content{
-  background:#fff;
-  padding:25px;
-  border-radius:16px;
-  width:90%;
-  max-width:400px;
-}
-
-.modal-content input{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
   border:1px solid #ddd;
-  border-radius:10px;
-}
-.dashboard-grid{
-  display:grid;
-  grid-template-columns: 1fr 320px;
-  gap:20px;
-  padding:30px;
-  max-width:1100px;
-  margin:auto;
 }
 
+.btn.upgrade:hover{
+  border-color:#000;
+  transform:translateY(-2px);
+}
+
+/* ===== SIDE PANEL ===== */
 .side-panel{
   display:flex;
   flex-direction:column;
@@ -170,6 +171,81 @@ body{
   background:#fff;
   padding:20px;
   border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.05);
   text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.05);
+}
+
+.stat-box h2{
+  margin:5px 0 0;
+}
+
+/* ===== LOGOUT ===== */
+.logout{
+  margin-top:10px;
+  background:#fff;
+  border:1px solid #ddd;
+}
+
+.logout:hover{
+  border-color:#000;
+}
+
+/* ===== MODAL ===== */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(6px);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+
+.modal-content{
+  background:#fff;
+  padding:26px;
+  border-radius:18px;
+  width:90%;
+  max-width:420px;
+  text-align:center;
+
+  animation:fadeUp .3s ease;
+}
+
+.modal-content input{
+  width:100%;
+  padding:11px;
+  margin-bottom:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+
+.modal-actions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:10px;
+}
+
+.modal-desc{
+  font-size:13px;
+  color:#666;
+  margin-bottom:10px;
+}
+
+.price-box{
+  margin:10px 0;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(15px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .dashboard-grid{
+    grid-template-columns:1fr;
+  }
 }
