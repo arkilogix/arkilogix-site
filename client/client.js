@@ -55,6 +55,12 @@ function render(){
   });
 
   document.getElementById("editCount").innerText = currentData.editCount || 0;
+  const upgradeBtn = document.querySelector(".btn.upgrade");
+  
+  if(currentData.editUnlocked){
+    upgradeBtn.innerText = "Unlocked ✓";
+    upgradeBtn.disabled = true;
+  }
 }
 
 /* GUARD */
@@ -134,6 +140,24 @@ async function processUnlock(){
 
   closeUpgradeModal();
   alert("Unlocked!");
+}
+
+function checkAccess(){
+
+  const status = currentData.status || "processing";
+  const chip = document.getElementById("statusChip");
+
+  chip.innerText = status.toUpperCase();
+
+  if(status === "paid" || status === "completed"){
+    chip.style.background = "#e6f7ec";
+    chip.style.color = "#1a7f37";
+    isLocked = false;
+  } else {
+    chip.style.background = "#f3f3f3";
+    chip.style.color = "#555";
+    isLocked = true;
+  }
 }
 
 /* LOGOUT */
