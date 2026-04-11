@@ -83,14 +83,32 @@
 <div id="editModal" class="modal">
   <div class="modal-content">
 
-    <h3>Edit Profile</h3>
+    <h3 id="stepTitle">Identity</h3>
 
-    <input id="editName" placeholder="Full Name">
-    <input id="editPosition" placeholder="Profession">
+    <!-- STEP 1 -->
+    <div class="step active" data-step="1">
+      <input id="editName" placeholder="Full Name">
+      <input id="editPosition" placeholder="Profession">
+    </div>
 
+    <!-- STEP 2 -->
+    <div class="step" data-step="2">
+      <input id="contactPhone" placeholder="Phone / SMS">
+      <input id="contactEmail" placeholder="Email">
+      <input id="contactFacebook" placeholder="Facebook">
+      <input id="contactInstagram" placeholder="Instagram">
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" data-step="3">
+      <div id="servicesContainer"></div>
+      <button class="btn" onclick="addService()">+ Add Service</button>
+    </div>
+
+    <!-- NAV -->
     <div class="modal-actions">
-      <button class="btn primary" onclick="saveProfile()">Save</button>
-      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn" onclick="prevStep()">Back</button>
+      <button class="btn primary" onclick="nextStep()">Next</button>
     </div>
 
   </div>
