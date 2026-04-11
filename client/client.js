@@ -83,18 +83,32 @@ window.openModal=()=>{
 
 /* SAVE */
 async function saveProfile(){
+
   if(isSaving) return;
-  isSaving=true;
+  isSaving = true;
 
-  currentData.name=editName.value;
-  currentData.position=editPosition.value;
-  currentData.editCount=(currentData.editCount||0)+1;
+  const btn = document.querySelector("#editModal .primary");
+  btn.innerText = "Saving...";
+  btn.disabled = true;
 
-  await db.collection("clients").doc(currentDocId).update(currentData);
+  try{
 
-  render();
-  closeModal();
-  isSaving=false;
+    currentData.name = editName.value;
+    currentData.position = editPosition.value;
+    currentData.editCount = (currentData.editCount || 0) + 1;
+
+    await db.collection("clients").doc(currentDocId).update(currentData);
+
+    render();
+    closeModal();
+
+  }catch(err){
+    alert("Save failed");
+  }
+
+  btn.innerText = "Save";
+  btn.disabled = false;
+  isSaving = false;
 }
 
 /* MODALS */
