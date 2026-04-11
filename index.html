@@ -1206,6 +1206,9 @@ const params = {
   plan: selectedPlan,
   card: selectedCard,
   price: basePrices[selectedPlan] + cardPrice
+   
+  status: "pending_verification",
+  createdAt: new Date()
 };
 
   const profile = document.getElementById("profilePhoto").files[0];
