@@ -991,8 +991,9 @@ async function uploadToCloudinary(file, clientId, type){
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "nfc_upload");
-    formData.append("folder", `nfc-clients/${clientId}`);
-    formData.append("public_id", type);
+    formData.append("folder", "nfc-clients");
+    formData.append("public_id", `${clientId}/${type}-${Date.now()}`);
+    formData.append("tags", clientId);
 
     const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
       method: "POST",
