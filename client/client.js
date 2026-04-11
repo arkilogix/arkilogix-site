@@ -167,33 +167,51 @@ window.openModal = ()=>{
   document.getElementById("editPosition").value = currentData.position || "";
 };
 
+function closeModal(){
+  document.getElementById("editModal").style.display = "none";
+}
 /* ================= SAVE ================= */
-
 async function saveProfile(){
 
   if(guard()) return;
   if(isSaving) return;
+
+  // 🔥 CHECK EDIT LIMIT
+  const editCount = currentData.editCount || 0;
+
+  if(editCount >= 2 && !currentData.editUnlocked){
+    alert("Edit limit reached. Please upgrade to continue editing.");
+    return;
+  }
 
   isSaving = true;
 
   try{
 
     const name = document.getElementById("editName").value.trim();
-    if(name) currentData.name = name;
-
     const position = document.getElementById("editPosition").value.trim();
-    if(position) currentData.position = position;
-
     const phone = document.getElementById("contactPhone")?.value.trim();
-    if(phone) currentData.phone = phone;
-
     const email = document.getElementById("contactEmail")?.value.trim();
+
+    if(name) currentData.name = name;
+    if(position) currentData.position = position;
+    if(phone) currentData.phone = phone;
     if(email) currentData.email = email;
+
+    // 🔥 INCREMENT EDIT COUNT
+    currentData.editCount = (currentData.editCount || 0) + 1;
 
     await db.collection("clients").doc(currentDocId).update(currentData);
 
     render();
-    document.getElementById("editModal").style.display = "none";
+    closeModal();
+
+    // 🔥 UX FEEDBACK
+    if(currentData.editCount >= 2){
+      setTimeout(()=>{
+        alert("You've used your free edits. Next edits will require upgrade.");
+      },300);
+    }
 
   }catch(err){
     console.error(err);
@@ -202,6 +220,7 @@ async function saveProfile(){
 
   isSaving = false;
 }
+
 
 /* ================= LOGOUT ================= */
 
