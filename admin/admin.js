@@ -165,9 +165,12 @@ function shippingActions(u){
 /* SHIPPING UPDATE */
 window.updateShipping = function(status){
   if(!selected) return;
+
   db.collection("clients").doc(selected.id).update({
     shippingStatus: status
   });
+
+  alert("Shipping status updated");
 }
 
 /* EMAIL CLIENT */
@@ -229,6 +232,7 @@ function actions(u){
 /* ACTION FUNCTIONS */
 window.approve = async(id)=>{
   await update(id,"paid");
+  alert("Approved successfully");
 }
 
 window.reject = id=>update(id,"pending_payment");
@@ -250,6 +254,24 @@ window.archive = function(){
 window.closePanel = function(){
   document.getElementById("panel").classList.remove("open");
 }
+
+/* FIXED OUTSIDE CLICK */
+document.addEventListener("click", function(e){
+  const panel = document.getElementById("panel");
+
+  if(e.target.closest("tr")) return;
+
+  if(!panel.contains(e.target) && panel.classList.contains("open")){
+    closePanel();
+  }
+});
+
+/* ESC CLOSE */
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    closePanel();
+  }
+});
 
 /* MODAL */
 window.preview = src=>{
