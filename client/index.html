@@ -11,9 +11,7 @@
 
 <body>
 
-<!-- ================= HEADER ================= -->
 <header class="header">
-
   <a href="https://arkilogix.com" class="logo-link">
     <img src="/logo.png" class="logo-img">
     <span>ArkiLogix</span>
@@ -26,15 +24,12 @@
       <div id="planBadge" class="badge">BASIC</div>
     </div>
   </div>
-
 </header>
 
-<!-- ================= MAIN ================= -->
 <main class="main">
 
   <div class="dashboard-grid">
 
-    <!-- ===== LEFT: PROFILE CARD ===== -->
     <section class="card-preview">
 
       <div class="status-chip" id="statusChip">Processing</div>
@@ -51,32 +46,33 @@
       </p>
 
       <div class="card-actions">
-        <button class="btn primary" onclick="openModal()">Edit Profile</button>
-        <button class="btn upgrade" onclick="openUpgradeModal()">Unlock Unlimited Edits</button>
+        <button class="btn primary" onclick="viewCard()">View My Card</button>
+        <button class="btn" onclick="openModal()">Edit Profile</button>
+        <button class="btn upgrade" onclick="upgradeToPro()">Upgrade to Pro</button>
+        <button class="btn" onclick="shareCard()">Share</button>
       </div>
 
     </section>
 
-    <!-- ===== RIGHT: ANALYTICS ===== -->
     <aside class="side-panel">
 
       <div class="stat-box">
         <p>Views</p>
-        <h2 id="views">0</h2>
+        <h2>0</h2>
       </div>
 
       <div class="stat-box">
         <p>Taps</p>
-        <h2 id="taps">0</h2>
+        <h2>0</h2>
       </div>
 
       <div class="stat-box">
         <p>Clicks</p>
-        <h2 id="clicks">0</h2>
+        <h2>0</h2>
       </div>
 
-      <!-- LOGOUT INSIDE PANEL -->
       <button class="btn logout">Logout</button>
+      <button class="btn" onclick="viewOffers()">View More Offers</button>
 
     </aside>
 
@@ -84,33 +80,40 @@
 
 </main>
 
-<!-- ================= EDIT MODAL ================= -->
+<!-- LOCK SCREEN -->
+<div id="lockScreen" class="lock-screen">
+  <div>
+    <h2>Verification in Progress</h2>
+    <p>
+      We’re verifying your activation.<br>
+      Your dashboard will unlock shortly.
+    </p>
+  </div>
+</div>
+
+<!-- MODAL -->
 <div id="editModal" class="modal">
   <div class="modal-content">
 
     <h3 id="stepTitle">Identity</h3>
 
-    <!-- STEP 1 -->
     <div class="step active" data-step="1">
       <input id="editName" placeholder="Full Name">
       <input id="editPosition" placeholder="Profession">
     </div>
 
-    <!-- STEP 2 -->
     <div class="step" data-step="2">
-      <input id="contactPhone" placeholder="Phone / SMS">
+      <input id="contactPhone" placeholder="Phone">
       <input id="contactEmail" placeholder="Email">
       <input id="contactFacebook" placeholder="Facebook">
       <input id="contactInstagram" placeholder="Instagram">
     </div>
 
-    <!-- STEP 3 -->
     <div class="step" data-step="3">
       <div id="servicesContainer"></div>
       <button class="btn" onclick="addService()">+ Add Service</button>
     </div>
 
-    <!-- NAV -->
     <div class="modal-actions">
       <button class="btn" onclick="prevStep()">Back</button>
       <button class="btn primary" onclick="nextStep()">Next</button>
@@ -119,31 +122,6 @@
   </div>
 </div>
 
-<!-- ================= UPGRADE MODAL ================= -->
-<div id="upgradeModal" class="modal">
-  <div class="modal-content">
-
-    <h3>Unlock Unlimited Edits</h3>
-
-    <p class="modal-desc">
-      You’ve used your free edits.<br>
-      Upgrade to continue editing anytime.
-    </p>
-
-    <div class="price-box">
-      <h2>₱99</h2>
-      <p>One-time unlock</p>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn primary" onclick="processUnlock()">Unlock Now</button>
-      <button class="btn" onclick="closeUpgradeModal()">Cancel</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- ================= FIREBASE ================= -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
