@@ -13,114 +13,72 @@
 
 <header class="header">
   <a href="https://arkilogix.com" class="logo-link">
-    <img src="/logo.png" class="logo-img">
+    <img src="/logo.png">
     <span>ArkiLogix</span>
   </a>
 
-  <div class="user-area">
+  <div class="user-mini">
     <img id="headerProfile" src="/logo.png">
-    <div class="user-info">
-      <div id="userName">User</div>
-      <div id="planBadge" class="badge">BASIC</div>
-    </div>
   </div>
 </header>
 
 <main class="main">
 
-  <div class="dashboard-grid">
+  <!-- PROFILE CARD -->
+  <section class="profile-card">
 
-    <section class="card-preview">
+    <div class="status" id="statusChip">Processing</div>
 
-      <div class="status-chip" id="statusChip">Processing</div>
+    <img id="heroProfile" class="avatar" src="/logo.png">
 
-      <img id="heroProfile" src="/logo.png">
+    <h2 id="cardName">Name</h2>
+    <p id="cardPosition">Position</p>
 
-      <h2 id="cardName">Name</h2>
-      <p id="cardPosition">Position</p>
+    <div id="cardServices" class="services"></div>
 
-      <div id="cardServices"></div>
+  </section>
 
-      <p class="edit-meta">
-        Edits used: <span id="editCount">0</span>/2
-      </p>
+  <!-- PRIMARY ACTION -->
+  <button class="btn primary full" onclick="viewCard()">
+    View My Card
+  </button>
 
-      <div class="card-actions">
-        <button class="btn primary" onclick="viewCard()">View My Card</button>
-        <button class="btn" onclick="openModal()">Edit Profile</button>
-        <button class="btn upgrade" onclick="upgradeToPro()">Upgrade to Pro</button>
-        <button class="btn" onclick="shareCard()">Share</button>
-      </div>
-
-    </section>
-
-    <aside class="side-panel">
-
-      <div class="stat-box">
-        <p>Views</p>
-        <h2>0</h2>
-      </div>
-
-      <div class="stat-box">
-        <p>Taps</p>
-        <h2>0</h2>
-      </div>
-
-      <div class="stat-box">
-        <p>Clicks</p>
-        <h2>0</h2>
-      </div>
-
-      <button class="btn logout">Logout</button>
-      <button class="btn" onclick="viewOffers()">View More Offers</button>
-
-    </aside>
-
+  <!-- SECONDARY ACTIONS -->
+  <div class="action-row">
+    <button class="btn" onclick="shareCard()">Share</button>
+    <button class="btn" onclick="openModal()">Edit</button>
   </div>
+
+  <!-- UPGRADE -->
+  <button class="btn upgrade full" onclick="upgradeToPro()">
+    Upgrade to Pro
+  </button>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div><small>Views</small><b>0</b></div>
+    <div><small>Taps</small><b>0</b></div>
+    <div><small>Clicks</small><b>0</b></div>
+  </div>
+
+  <!-- CTA -->
+  <button class="btn subtle full" onclick="viewOffers()">
+    View More Offers
+  </button>
+
+  <button class="btn logout full">Logout</button>
 
 </main>
 
-<!-- LOCK SCREEN -->
-<div id="lockScreen" class="lock-screen">
+<!-- LOCK -->
+<div id="lockScreen" class="lock">
   <div>
-    <h2>Verification in Progress</h2>
-    <p>
-      We’re verifying your activation.<br>
-      Your dashboard will unlock shortly.
-    </p>
+    <h3>Verification in Progress</h3>
+    <p>We’re verifying your activation.<br>Your dashboard will unlock shortly.</p>
   </div>
 </div>
 
-<!-- MODAL -->
-<div id="editModal" class="modal">
-  <div class="modal-content">
-
-    <h3 id="stepTitle">Identity</h3>
-
-    <div class="step active" data-step="1">
-      <input id="editName" placeholder="Full Name">
-      <input id="editPosition" placeholder="Profession">
-    </div>
-
-    <div class="step" data-step="2">
-      <input id="contactPhone" placeholder="Phone">
-      <input id="contactEmail" placeholder="Email">
-      <input id="contactFacebook" placeholder="Facebook">
-      <input id="contactInstagram" placeholder="Instagram">
-    </div>
-
-    <div class="step" data-step="3">
-      <div id="servicesContainer"></div>
-      <button class="btn" onclick="addService()">+ Add Service</button>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn" onclick="prevStep()">Back</button>
-      <button class="btn primary" onclick="nextStep()">Next</button>
-    </div>
-
-  </div>
-</div>
+<!-- MODAL (same as before, keep your steps) -->
 
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
