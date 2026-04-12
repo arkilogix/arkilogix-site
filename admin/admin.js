@@ -23,7 +23,8 @@ db.collection("clients").orderBy("createdAt","desc")
   users = s.docs.map(d=>({
     id:d.id,
     ...d.data(),
-    status: d.data().status || "pending_verification" // 🔥 FIX HERE
+    status: d.data().status || "pending_verification",
+    shippingStatus: d.data().shippingStatus || "pending"
   }));
   render();
 });
@@ -47,7 +48,7 @@ function render(){
     : users.filter(u => (u.status || "pending_verification") === filter);
 
   if(data.length===0){
-    table.innerHTML="<tr><td colspan='6'>No orders</td></tr>";
+    table.innerHTML="<tr><td colspan='7'>No orders</td></tr>";
     return;
   }
 
@@ -63,7 +64,8 @@ function render(){
     <td>${u.name || "-"} ${u.hasAccount ? "✓" : "○"}</td>
     <td>${u.plan || "-"}</td>
     <td>₱${(u.price||0).toLocaleString()}</td>
-    <td class="status"><div class="dot"></div>${formatStatus(u.status)}</td>
+    <td>${formatStatus(u.status)}</td>
+    <td>${formatShipping(u.shippingStatus)}</td>
     <td>${format(u.createdAt)}</td>
     `;
 
@@ -80,6 +82,20 @@ function openPanel(u){
   const p = document.getElementById("panel");
   p.classList.add("open");
 
+  const addressBlock = `
+  <div style="line-height:1.5;font-size:13px;">
+    ${u.name || ""}<br>
+    ${u.phone || ""}<br><br>
+
+    ${u.addressLine1 || ""}<br>
+    ${u.addressLine2 || ""}<br>
+    ${u.barangay || ""}<br>
+    ${u.city || ""}, ${u.province || ""}<br>
+
+    ${u.notes ? `<br><span style="color:#888">Notes: ${u.notes}</span>` : ""}
+  </div>
+  `;
+
   p.innerHTML = `
   <div class="close-btn" onclick="closePanel()">✕</div>
 
@@ -87,6 +103,8 @@ function openPanel(u){
 
   <p>${u.email || "-"}</p>
   <p>${u.phone || "-"}</p>
+
+  <button class="btn" onclick="emailClient()">Email Client</button>
 
   <hr>
 
@@ -96,7 +114,6 @@ function openPanel(u){
   <hr>
 
   <p>Status: ${formatStatus(u.status)}</p>
-  <p>Account: ${u.hasAccount ? "Active" : "None"}</p>
 
   <h3 style="margin-top:20px;">Payment</h3>
 
@@ -105,7 +122,19 @@ function openPanel(u){
   : `<p style="color:#888;">No payment proof uploaded</p>`
   }
 
-  <br>
+  <hr>
+
+  <h3>📦 Shipping</h3>
+
+  ${addressBlock}
+
+  <button class="btn" onclick="copyAddress()">Copy Address</button>
+
+  <p style="margin-top:10px;">Status: <strong>${formatShipping(u.shippingStatus)}</strong></p>
+
+  ${shippingActions(u)}
+
+  <hr>
 
   ${actions(u)}
 
@@ -113,6 +142,67 @@ function openPanel(u){
 
   <div onclick="archive()" style="color:#888;cursor:pointer;font-size:13px;margin-top:20px">Archive</div>
   `;
+}
+
+/* SHIPPING ACTIONS */
+function shippingActions(u){
+
+  if(u.shippingStatus==="pending"){
+    return `<button class="btn" onclick="updateShipping('in_production')">Start Production</button>`;
+  }
+
+  if(u.shippingStatus==="in_production"){
+    return `<button class="btn" onclick="updateShipping('shipped')">Mark as Shipped</button>`;
+  }
+
+  if(u.shippingStatus==="shipped"){
+    return `<button class="btn" onclick="updateShipping('completed')">Mark Completed</button>`;
+  }
+
+  return "";
+}
+
+/* SHIPPING UPDATE */
+window.updateShipping = function(status){
+  if(!selected) return;
+  db.collection("clients").doc(selected.id).update({
+    shippingStatus: status
+  });
+}
+
+/* EMAIL CLIENT */
+window.emailClient = function(){
+  if(!selected || !selected.email) return;
+
+  const subject = encodeURIComponent("Your NFC Card Update");
+  const body = encodeURIComponent(`Hi ${selected.name || ""},
+
+We are updating you regarding your NFC card order.
+
+Thank you,
+ArkiLogix`);
+
+  window.location.href = `mailto:${selected.email}?subject=${subject}&body=${body}`;
+}
+
+/* COPY ADDRESS */
+window.copyAddress = function(){
+  if(!selected) return;
+
+  const text = `
+${selected.name || ""}
+${selected.phone || ""}
+
+${selected.addressLine1 || ""}
+${selected.addressLine2 || ""}
+${selected.barangay || ""}
+${selected.city || ""}, ${selected.province || ""}
+
+${selected.notes || ""}
+`;
+
+  navigator.clipboard.writeText(text);
+  alert("Address copied!");
 }
 
 /* ACTIONS */
@@ -139,7 +229,6 @@ function actions(u){
 /* ACTION FUNCTIONS */
 window.approve = async(id)=>{
   await update(id,"paid");
-  sendEmail(id);
 }
 
 window.reject = id=>update(id,"pending_payment");
@@ -157,38 +246,10 @@ window.archive = function(){
   closePanel();
 }
 
-/* EMAIL */
-async function sendEmail(id){
-  const u = users.find(x=>x.id===id);
-  if(!u) return;
-
-  await emailjs.send("service_gxckvp8","template_07td6mf",{
-    name:u.name,
-    email:u.email,
-    plan:u.plan,
-    price:"₱"+u.price
-  });
-}
-
 /* PANEL CONTROLS */
 window.closePanel = function(){
   document.getElementById("panel").classList.remove("open");
 }
-
-/* OUTSIDE CLICK */
-document.addEventListener("click", function(e){
-  const panel = document.getElementById("panel");
-  if(!panel.contains(e.target) && panel.classList.contains("open")){
-    closePanel();
-  }
-});
-
-/* ESC CLOSE */
-document.addEventListener("keydown", function(e){
-  if(e.key === "Escape"){
-    closePanel();
-  }
-});
 
 /* MODAL */
 window.preview = src=>{
@@ -209,5 +270,10 @@ function format(d){
 
 function formatStatus(s){
   if(!s) return "Pending Verification";
+  return s.replace("_"," ").replace(/\b\w/g,l=>l.toUpperCase());
+}
+
+function formatShipping(s){
+  if(!s) return "Pending";
   return s.replace("_"," ").replace(/\b\w/g,l=>l.toUpperCase());
 }
