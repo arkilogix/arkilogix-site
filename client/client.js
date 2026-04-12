@@ -1,15 +1,12 @@
-/* ================= FIREBASE ================= */
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-/* ================= STATE ================= */
 let currentData = {};
 let currentDocId = "";
-let isSaving = false;
-let isLocked = true;
 let step = 1;
+let isLocked = true;
 
-/* ================= AUTH ================= */
+/* AUTH */
 auth.onAuthStateChanged(async (user)=>{
   if(!user){
     window.location.href="/auth/login.html";
@@ -28,232 +25,105 @@ auth.onAuthStateChanged(async (user)=>{
   checkAccess();
 });
 
-/* ================= ACCESS ================= */
+/* ACCESS */
 function checkAccess(){
   const status = currentData.status || "processing";
-  const chip = document.getElementById("statusChip");
 
-  chip.innerText = status.toUpperCase();
-
-  if(status === "paid" || status === "completed"){
-    chip.style.background = "#e6f7ec";
-    chip.style.color = "#1a7f37";
-    isLocked = false;
-  } else {
-    chip.style.background = "#f1f1f1";
-    chip.style.color = "#555";
+  if(status !== "paid" && status !== "completed"){
+    document.getElementById("lockScreen").style.display="flex";
     isLocked = true;
+  } else {
+    document.getElementById("lockScreen").style.display="none";
+    isLocked = false;
   }
 }
 
-/* ================= RENDER ================= */
+/* RENDER */
 function render(){
-
-  document.getElementById("userName").innerText = currentData.name || "User";
-  document.getElementById("planBadge").innerText = (currentData.plan||"basic").toUpperCase();
+  userName.innerText = currentData.name || "User";
+  planBadge.innerText = (currentData.plan||"basic").toUpperCase();
 
   const img = currentData.profile || "/logo.png";
-  document.getElementById("heroProfile").src = img;
-  document.getElementById("headerProfile").src = img;
+  heroProfile.src = img;
+  headerProfile.src = img;
 
-  document.getElementById("cardName").innerText = currentData.name || "Name";
-  document.getElementById("cardPosition").innerText = currentData.position || "Position";
+  cardName.innerText = currentData.name || "Name";
+  cardPosition.innerText = currentData.position || "Position";
 
-  const services = document.getElementById("cardServices");
-  services.innerHTML = "";
+  editCount.innerText = currentData.editCount || 0;
+}
 
-  (currentData.services||[]).forEach(s=>{
-    const span=document.createElement("span");
-    span.innerText=s;
-    services.appendChild(span);
-  });
+/* VIEW */
+function viewCard(){
+  let page = "basic.html";
+  if(currentData.plan==="pro") page="pro.html";
+  if(currentData.plan==="elite") page="elite.html";
 
-  document.getElementById("editCount").innerText = currentData.editCount || 0;
+  window.open(`/view/${page}?id=${currentDocId}`);
+}
 
-  const upgradeBtn = document.querySelector(".btn.upgrade");
-  if(currentData.editUnlocked){
-    upgradeBtn.innerText = "Unlocked ✓";
-    upgradeBtn.disabled = true;
+/* SHARE */
+function shareCard(){
+  const url = `${window.location.origin}/view/basic.html?id=${currentDocId}`;
+
+  if(navigator.share){
+    navigator.share({title:"My Card",url});
+  }else{
+    navigator.clipboard.writeText(url);
+    alert("Link copied!");
   }
 }
 
-/* ================= GUARD ================= */
-function guard(){
-  if(isLocked){
-    alert("Account under review.");
-    return true;
-  }
-  return false;
+/* UPGRADE */
+function upgradeToPro(){
+  const subject = "Upgrade to Pro Request";
+  const body = `Hello, I want to upgrade.\n\nName: ${currentData.name}\nCurrent Plan: ${currentData.plan}`;
+
+  window.location.href = `mailto:info@arkilogix.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-/* ================= MODAL OPEN ================= */
-window.openModal = ()=>{
+/* OFFERS */
+function viewOffers(){
+  alert("Coming soon.");
+}
 
-  if(guard()) return;
-
-  if((currentData.editCount||0)>=2 && !currentData.editUnlocked){
-    openUpgradeModal();
-    return;
-  }
-
-  step = 1;
-  updateStepUI();
-
-  document.getElementById("editModal").style.display="flex";
-
-  editName.value = currentData.name || "";
-  editPosition.value = currentData.position || "";
-
-  contactPhone.value = currentData.phone || "";
-  contactEmail.value = currentData.email || "";
-  contactFacebook.value = currentData.facebook || "";
-  contactInstagram.value = currentData.instagram || "";
-
-  renderServices();
-};
-
-/* ================= STEP SYSTEM ================= */
+/* STEP SYSTEM */
 function updateStepUI(){
+  const titles = {1:"Identity",2:"Contacts",3:"Services"};
+  stepTitle.innerText = titles[step];
 
-  const titles = {
-    1: "Identity",
-    2: "Contacts",
-    3: "Services"
-  };
-
-  document.getElementById("stepTitle").innerText = titles[step];
-
-  document.querySelectorAll(".step").forEach(s=>{
-    s.classList.remove("active");
-  });
-
-  document.querySelector(`.step[data-step="${step}"]`).classList.add("active");
+  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+  document.querySelector(`[data-step="${step}"]`).classList.add("active");
 }
 
 function nextStep(){
-  if(step < 3){
-    step++;
-    updateStepUI();
-  } else {
-    saveProfile();
-  }
+  if(step<3){step++;updateStepUI();}
+  else saveProfile();
 }
 
 function prevStep(){
-  if(step > 1){
-    step--;
-    updateStepUI();
-  }
+  if(step>1){step--;updateStepUI();}
 }
 
-/* ================= SERVICES ================= */
-function getServiceLimit(){
-  const plan = currentData.plan || "basic";
-  if(plan === "basic") return 4;
-  if(plan === "pro") return 6;
-  return 999;
-}
-
-function renderServices(){
-
-  const container = document.getElementById("servicesContainer");
-  container.innerHTML = "";
-
-  const services = currentData.services || [];
-
-  services.forEach((s, i)=>{
-    const input = document.createElement("input");
-    input.value = s;
-    input.placeholder = "Service";
-
-    input.oninput = (e)=>{
-      currentData.services[i] = e.target.value;
-    };
-
-    container.appendChild(input);
-  });
-}
-
-function addService(){
-
-  if(!currentData.services) currentData.services = [];
-
-  const limit = getServiceLimit();
-
-  if(currentData.services.length >= limit){
-    alert("Service limit reached for your plan.");
-    return;
-  }
-
-  currentData.services.push("");
-  renderServices();
-}
-
-/* ================= SAVE ================= */
+/* SAVE */
 async function saveProfile(){
+  currentData.name = editName.value;
+  currentData.position = editPosition.value;
 
-  if(isSaving) return;
-  isSaving = true;
-
-  const btn = document.querySelector("#editModal .primary");
-  btn.innerText = "Saving...";
-  btn.disabled = true;
-
-  try{
-
-    currentData.name = editName.value;
-    currentData.position = editPosition.value;
-
-    currentData.phone = contactPhone.value;
-    currentData.email = contactEmail.value;
-    currentData.facebook = contactFacebook.value;
-    currentData.instagram = contactInstagram.value;
-
-    currentData.editCount = (currentData.editCount || 0) + 1;
-
-    await db.collection("clients").doc(currentDocId).update(currentData);
-
-    render();
-    closeModal();
-
-  }catch(err){
-    alert("Save failed");
-  }
-
-  btn.innerText = "Save";
-  btn.disabled = false;
-  isSaving = false;
-}
-
-/* ================= MODALS ================= */
-function closeModal(){
-  document.getElementById("editModal").style.display="none";
-}
-
-function openUpgradeModal(){
-  document.getElementById("upgradeModal").style.display="flex";
-}
-
-function closeUpgradeModal(){
-  document.getElementById("upgradeModal").style.display="none";
-}
-
-/* ================= UNLOCK ================= */
-async function processUnlock(){
-
-  await db.collection("clients").doc(currentDocId).update({
-    editUnlocked:true
-  });
-
-  currentData.editUnlocked = true;
-
-  closeUpgradeModal();
+  await db.collection("clients").doc(currentDocId).update(currentData);
   render();
-
-  alert("Unlocked! You can now edit anytime.");
+  editModal.style.display="none";
 }
 
-/* ================= LOGOUT ================= */
+/* SERVICES */
+function addService(){
+  const container = servicesContainer;
+  const input = document.createElement("input");
+  input.placeholder="Service";
+  container.appendChild(input);
+}
+
+/* LOGOUT */
 document.querySelector(".logout").onclick=()=>{
   auth.signOut().then(()=>{
     window.location.href="/auth/login.html";
