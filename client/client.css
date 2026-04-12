@@ -5,30 +5,66 @@ body{
 }
 
 .main{
-  padding:15px;
-}
-
-.dashboard-grid{
-  max-width:400px;
+  max-width:380px;
   margin:auto;
+  padding:20px;
   display:flex;
   flex-direction:column;
-  gap:15px;
+  gap:14px;
 }
 
-.card-preview{
+/* HEADER */
+.header{
+  display:flex;
+  justify-content:space-between;
+  padding:14px 16px;
   background:#fff;
-  border-radius:18px;
-  padding:20px;
-  text-align:center;
-  box-shadow:0 10px 30px rgba(0,0,0,0.05);
+  border-bottom:1px solid #eee;
 }
 
+.logo-link{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  text-decoration:none;
+  color:#111;
+  font-weight:600;
+}
+
+.logo-link img{
+  height:20px;
+}
+
+/* CARD */
+.profile-card{
+  background:#fff;
+  padding:22px;
+  border-radius:18px;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
+
+.avatar{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  margin-bottom:10px;
+}
+
+.services span{
+  font-size:11px;
+  background:#eee;
+  padding:4px 8px;
+  margin:2px;
+  border-radius:8px;
+}
+
+/* BUTTONS */
 .btn{
-  padding:10px;
-  border:none;
+  padding:12px;
   border-radius:30px;
-  margin-top:6px;
+  border:none;
+  background:#fff;
 }
 
 .btn.primary{
@@ -36,7 +72,32 @@ body{
   color:#fff;
 }
 
-.lock-screen{
+.btn.upgrade{
+  border:1px solid #ddd;
+}
+
+.btn.subtle{
+  background:#f3f3f3;
+}
+
+.full{width:100%;}
+
+.action-row{
+  display:flex;
+  gap:10px;
+}
+
+/* STATS */
+.stats-row{
+  display:flex;
+  justify-content:space-between;
+  background:#fff;
+  padding:14px;
+  border-radius:14px;
+}
+
+/* LOCK */
+.lock{
   position:fixed;
   inset:0;
   background:#fff;
