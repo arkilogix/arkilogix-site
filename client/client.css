@@ -1,308 +1,47 @@
-/* ===== GLOBAL ===== */
 body{
   margin:0;
   font-family:'Inter',sans-serif;
   background:#f6f7f9;
-  color:#111;
 }
 
-/* ===== HEADER ===== */
-.header{
-  position:sticky;
-  top:0;
-  z-index:100;
-
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-
-  padding:14px 16px;
-
-  background:rgba(255,255,255,0.75);
-  backdrop-filter:blur(12px);
-
-  border-bottom:1px solid rgba(0,0,0,0.05);
-}
-
-.logo-link{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  text-decoration:none;
-  color:#111;
-  font-weight:600;
-  font-size:14px;
-}
-
-.logo-img{
-  height:22px;
-}
-
-/* ===== USER ===== */
-.user-area{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.user-area img{
-  width:34px;
-  height:34px;
-  border-radius:50%;
-}
-
-.user-info{
-  display:flex;
-  flex-direction:column;
-  font-size:11px;
-  line-height:1.2;
-}
-
-.badge{
-  background:#111;
-  color:#fff;
-  padding:2px 6px;
-  border-radius:8px;
-  font-size:9px;
-  width:fit-content;
-}
-
-/* ===== MAIN ===== */
 .main{
-  padding:14px;
+  padding:15px;
 }
 
-/* MOBILE FIRST */
 .dashboard-grid{
+  max-width:400px;
+  margin:auto;
   display:flex;
   flex-direction:column;
-  gap:14px;
-  max-width:420px;
-  margin:auto;
+  gap:15px;
 }
 
-/* ===== CARD ===== */
 .card-preview{
-  background:linear-gradient(145deg,#ffffff,#f3f3f3);
+  background:#fff;
   border-radius:18px;
   padding:20px;
-
-  box-shadow:
-    0 15px 40px rgba(0,0,0,0.06),
-    inset 0 1px 0 rgba(255,255,255,0.6);
-
   text-align:center;
-  position:relative;
-
-  transition:.25s ease;
-}
-
-.card-preview:active{
-  transform:scale(0.98);
-}
-
-.card-preview img{
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  margin-bottom:10px;
-}
-
-/* ===== STATUS ===== */
-.status-chip{
-  position:absolute;
-  top:12px;
-  right:12px;
-
-  font-size:10px;
-  padding:5px 8px;
-  border-radius:20px;
-
-  background:#f1f1f1;
-}
-
-/* ===== SERVICES ===== */
-#cardServices{
-  margin-top:6px;
-}
-
-#cardServices span{
-  display:inline-block;
-  font-size:10px;
-  background:#f1f1f1;
-  padding:4px 7px;
-  margin:2px;
-  border-radius:8px;
-}
-
-/* ===== META ===== */
-.edit-meta{
-  font-size:11px;
-  color:#777;
-  margin-top:10px;
-}
-
-/* ===== BUTTONS ===== */
-.card-actions{
-  margin-top:12px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.05);
 }
 
 .btn{
   padding:10px;
-  border-radius:30px;
   border:none;
-  cursor:pointer;
-  font-size:12px;
-  transition:.2s ease;
+  border-radius:30px;
+  margin-top:6px;
 }
 
 .btn.primary{
-  background:#111;
+  background:#000;
   color:#fff;
 }
 
-.btn.primary:active{
-  transform:scale(0.96);
-}
-
-.btn.upgrade{
-  background:#fff;
-  border:1px solid #ddd;
-}
-
-.btn.upgrade:active{
-  transform:scale(0.96);
-}
-
-/* ===== STATS ===== */
-.side-panel{
-  display:flex;
-  gap:8px;
-}
-
-.stat-box{
-  flex:1;
-  background:#fff;
-  padding:12px;
-  border-radius:12px;
-  text-align:center;
-  box-shadow:0 8px 20px rgba(0,0,0,0.05);
-}
-
-.stat-box p{
-  font-size:10px;
-  color:#777;
-  margin:0;
-}
-
-.stat-box h2{
-  margin:4px 0 0;
-  font-size:16px;
-}
-
-/* ===== LOGOUT ===== */
-.logout{
-  margin-top:10px;
-  background:#fff;
-  border:1px solid #ddd;
-  width:100%;
-}
-
-/* ===== MODAL ===== */
-.modal{
-  display:none;
+.lock-screen{
   position:fixed;
   inset:0;
-
-  background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(6px);
-
+  background:#fff;
+  display:none;
   justify-content:center;
   align-items:center;
-  z-index:1000;
-}
-
-.modal-content{
-  background:#fff;
-  padding:20px;
-  border-radius:16px;
-
-  width:90%;
-  max-width:380px;
-
   text-align:center;
-
-  animation:fadeUp .25s ease;
-}
-
-.modal-content input{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-
-  border-radius:10px;
-  border:1px solid #ddd;
-
-  font-size:12px;
-}
-
-.modal-actions{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin-top:10px;
-}
-
-.modal-desc{
-  font-size:12px;
-  color:#666;
-  margin-bottom:10px;
-}
-
-.price-box{
-  margin:10px 0;
-}
-
-/* ===== STEPS ===== */
-.step{
-  display:none;
-}
-
-.step.active{
-  display:block;
-}
-
-/* ===== ANIMATION ===== */
-@keyframes fadeUp{
-  from{
-    opacity:0;
-    transform:translateY(10px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-
-/* ===== DESKTOP ENHANCEMENT ===== */
-@media(min-width:768px){
-
-  .dashboard-grid{
-    max-width:900px;
-  }
-
-  .side-panel{
-    flex-direction:column;
-  }
-
-  .stat-box{
-    padding:18px;
-  }
-
-  .card-preview{
-    padding:26px;
-  }
 }
