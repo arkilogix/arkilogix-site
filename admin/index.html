@@ -52,15 +52,21 @@ tr:hover{background:rgba(255,255,255,0.03);cursor:pointer}
 /* THUMB */
 .thumb{width:40px;height:40px;border-radius:8px;background:#222;object-fit:cover}
 
-/* STATUS */
-.status{display:flex;gap:6px;align-items:center}
-.dot{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.5}
-
 /* PANEL */
 .panel{
-position:fixed;right:-420px;top:0;width:420px;height:100%;
-background:var(--panel);border-left:1px solid var(--border);
-padding:20px;transition:.3s;overflow-y:auto;
+position:fixed;
+right:-420px;
+top:0;
+width:420px;
+height:100%;
+background:var(--panel);
+border-left:1px solid var(--border);
+padding:20px;
+transition:.3s;
+overflow-y:auto;
+
+/* 🔥 FIX: ensure visibility */
+z-index:9999;
 }
 .panel.open{right:0}
 
@@ -128,6 +134,7 @@ display:none;align-items:center;justify-content:center;
 <th>Plan</th>
 <th>Price</th>
 <th>Status</th>
+<th>Shipping</th> <!-- 🔥 ADDED -->
 <th>Date</th>
 </tr>
 </thead>
