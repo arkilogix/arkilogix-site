@@ -12,10 +12,10 @@
 <body>
 
 <header class="header">
-  <a href="https://arkilogix.com" class="logo-link">
+  <div class="logo">
     <img src="/logo.png">
     <span>ArkiLogix</span>
-  </a>
+  </div>
 
   <div class="user-mini">
     <img id="headerProfile" src="/logo.png">
@@ -25,9 +25,9 @@
 <main class="main">
 
   <!-- PROFILE CARD -->
-  <section class="profile-card">
+  <section class="card">
 
-    <div class="status" id="statusChip">Processing</div>
+    <div id="statusChip" class="status">Processing</div>
 
     <img id="heroProfile" class="avatar" src="/logo.png">
 
@@ -38,48 +38,39 @@
 
   </section>
 
-  <!-- PRIMARY ACTION -->
-  <button class="btn primary full" onclick="viewCard()">
-    View My Card
-  </button>
+  <!-- PRIMARY -->
+  <button class="btn primary" onclick="viewCard()">View My Card</button>
 
-  <!-- SECONDARY ACTIONS -->
-  <div class="action-row">
-    <button class="btn" onclick="shareCard()">Share</button>
-    <button class="btn" onclick="openModal()">Edit</button>
+  <!-- ACTIONS -->
+  <div class="row">
+    <button class="btn glass" onclick="shareCard()">Share</button>
+    <button class="btn glass" onclick="resetPassword()">Reset Password</button>
   </div>
 
   <!-- UPGRADE -->
-  <button class="btn upgrade full" onclick="upgradeToPro()">
-    Upgrade to Pro
-  </button>
+  <button class="btn glass" onclick="upgradeToPro()">Upgrade to Pro</button>
 
   <!-- STATS -->
-  <div class="stats-row">
-    <div><small>Views</small><b>0</b></div>
-    <div><small>Taps</small><b>0</b></div>
-    <div><small>Clicks</small><b>0</b></div>
+  <div class="stats">
+    <div><small>Views</small><br><b>0</b></div>
+    <div><small>Taps</small><br><b>0</b></div>
+    <div><small>Clicks</small><br><b>0</b></div>
   </div>
 
-  <!-- CTA -->
-  <button class="btn subtle full" onclick="viewOffers()">
-    View More Offers
-  </button>
-
-  <button class="btn logout full">Logout</button>
+  <!-- LOGOUT -->
+  <button class="btn glass" onclick="logout()">Logout</button>
 
 </main>
 
-<!-- LOCK -->
+<!-- LOCK SCREEN -->
 <div id="lockScreen" class="lock">
-  <div>
+  <div class="lock-box">
     <h3>⏳ Setting up your card</h3>
-    <p>This usually takes a few minutes.<br>We’ll unlock your dashboard automatically.</p>
+    <p>We’re verifying your activation.<br>Dashboard will unlock shortly.</p>
   </div>
 </div>
 
-<!-- MODAL (same as before, keep your steps) -->
-
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
