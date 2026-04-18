@@ -231,8 +231,20 @@ function actions(u){
 
 /* ACTION FUNCTIONS */
 window.approve = async(id)=>{
-  await update(id,"paid");
-  alert("Approved successfully");
+  try{
+    console.log("Approving:", id);
+
+    await db.collection("clients").doc(id).update({
+      status: "paid",
+      approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    closePanel();
+
+  }catch(err){
+    console.error("APPROVE ERROR:", err);
+    alert("Approval failed ❌");
+  }
 }
 
 window.reject = id=>update(id,"pending_payment");
