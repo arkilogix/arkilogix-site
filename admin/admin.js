@@ -211,22 +211,27 @@ ${selected.notes || ""}
 /* ACTIONS */
 function actions(u){
 
-  if(u.status==="pending_verification"){
-    return `
-    <button class="btn" onclick="approve('${u.id}')">Approve</button>
-    <button class="btn" onclick="reject('${u.id}')">Reject</button>
-    `;
+  return `
+  
+  ${u.status !== "paid" ? `
+    <button class="btn" onclick="markPaid('${u.id}')">Mark as Paid</button>
+  ` : ""}
+
+  ${u.isLocked 
+    ? `<button class="btn" onclick="unlock('${u.id}')">Unlock Dashboard</button>`
+    : `<button class="btn" onclick="lock('${u.id}')">Lock Dashboard</button>`
   }
 
-  if(u.status==="paid"){
-    return `<button class="btn" onclick="processing('${u.id}')">Mark Processing</button>`;
-  }
+  <button class="btn" onclick="processing('${u.id}')">Mark Processing</button>
+  <button class="btn" onclick="complete('${u.id}')">Mark Completed</button>
 
-  if(u.status==="processing"){
-    return `<button class="btn" onclick="complete('${u.id}')">Mark Completed</button>`;
-  }
+  <hr>
 
-  return "";
+  <button class="btn" style="border-color:red;color:red"
+    onclick="deleteClient('${u.id}')">
+    Delete Client
+  </button>
+  `;
 }
 
 /* ACTION FUNCTIONS */
@@ -310,4 +315,75 @@ function formatStatus(s){
 function formatShipping(s){
   if(!s) return "Pending";
   return s.replace("_"," ").replace(/\b\w/g,l=>l.toUpperCase());
+}
+
+/* MARK AS PAID */
+window.markPaid = async(id)=>{
+  if(!confirm("Mark this client as PAID?")) return;
+
+  await db.collection("clients").doc(id).update({
+    status: "paid",
+    paidAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  alert("Marked as PAID ✅");
+};
+
+
+/* LOCK DASHBOARD */
+window.lock = async(id)=>{
+  if(!confirm("Lock this client's dashboard?")) return;
+
+  await db.collection("clients").doc(id).update({
+    isLocked: true
+  });
+
+  alert("Dashboard locked 🔒");
+};
+
+
+/* UNLOCK DASHBOARD */
+window.unlock = async(id)=>{
+  if(!confirm("Unlock this client's dashboard?")) return;
+
+  await db.collection("clients").doc(id).update({
+    isLocked: false
+  });
+
+  alert("Dashboard unlocked 🔓");
+};
+
+window.deleteClient = async(id)=>{
+  if(!confirm("⚠️ DELETE this client permanently?\nThis will erase ALL data.")) return;
+
+  if(!confirm("FINAL CONFIRMATION: This cannot be undone.")) return;
+
+  try{
+
+    // 🔥 DELETE FIRESTORE
+    await db.collection("clients").doc(id).delete();
+
+    // 🔥 DELETE CLOUDINARY (folder)
+    await deleteCloudinaryFolder(id);
+
+    alert("Client deleted permanently 🗑");
+
+    closePanel();
+
+  }catch(err){
+    console.error(err);
+    alert("Delete failed ❌");
+  }
+};
+
+async function deleteCloudinaryFolder(clientId){
+
+  // ⚠️ This should be done via backend (Node / Firebase Function)
+  // For now we log it
+
+  console.log("DELETE CLOUDINARY FOLDER:", "nfc-clients/" + clientId);
+
+  // OPTIONAL: call your backend endpoint
+  // await fetch("/delete-cloudinary", { method:"POST", body: JSON.stringify({clientId}) });
+
 }
