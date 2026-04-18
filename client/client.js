@@ -123,6 +123,18 @@ function resetPassword(){
     });
 }
 
+if(userData.isLocked){
+  document.body.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#fff;text-align:center;">
+      <div>
+        <h2>🔒 Account Locked</h2>
+        <p>Please contact support to unlock your dashboard.</p>
+      </div>
+    </div>
+  `;
+  return;
+}
+
 /* UPGRADE */
 function upgradeToPro(){
   const subject = "Upgrade to Pro Request";
