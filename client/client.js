@@ -40,17 +40,34 @@ function checkAccess(){
 
 /* RENDER */
 function render(){
-  userName.innerText = currentData.name || "User";
-  planBadge.innerText = (currentData.plan||"basic").toUpperCase();
 
   const img = currentData.profile || "/logo.png";
-  heroProfile.src = img;
-  headerProfile.src = img;
 
-  cardName.innerText = currentData.name || "Name";
-  cardPosition.innerText = currentData.position || "Position";
+  document.getElementById("heroProfile").src = img;
+  document.getElementById("headerProfile").src = img;
 
-  editCount.innerText = currentData.editCount || 0;
+  document.getElementById("cardName").innerText = currentData.name || "Your Name";
+  document.getElementById("cardPosition").innerText = currentData.position || "Your Position";
+
+  // STATUS
+  const status = currentData.status || "processing";
+  const chip = document.getElementById("statusChip");
+
+  chip.innerText = status.toUpperCase();
+
+  chip.className = "status " + status;
+
+  // SERVICES
+  const container = document.getElementById("cardServices");
+  container.innerHTML = "";
+
+  if(currentData.services && currentData.services.length){
+    currentData.services.slice(0,3).forEach(s=>{
+      const span = document.createElement("span");
+      span.innerText = s;
+      container.appendChild(span);
+    });
+  }
 }
 
 /* VIEW */
