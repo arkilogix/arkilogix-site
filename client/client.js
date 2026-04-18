@@ -36,6 +36,17 @@ function checkAccess(){
     document.getElementById("lockScreen").style.display="none";
     isLocked = false;
   }
+
+document.querySelectorAll(".btn").forEach(btn=>{
+  if(isLocked){
+    btn.style.opacity = "0.5";
+    btn.style.pointerEvents = "none";
+  } else {
+    btn.style.opacity = "1";
+    btn.style.pointerEvents = "auto";
+  }
+});
+
 }
 
 /* RENDER */
