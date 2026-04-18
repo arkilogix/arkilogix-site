@@ -3,7 +3,6 @@ const auth = firebase.auth();
 
 let currentData = {};
 let currentDocId = "";
-let step = 1;
 let isLocked = true;
 
 /* AUTH */
@@ -12,6 +11,9 @@ auth.onAuthStateChanged(async (user)=>{
     window.location.href="/auth/login.html";
     return;
   }
+
+  // RESET PASSWORD NEEDS EMAIL
+  window.currentUserEmail = user.email;
 
   const snap = await db.collection("clients")
     .where("authUid","==",user.uid).get();
@@ -25,28 +27,25 @@ auth.onAuthStateChanged(async (user)=>{
   checkAccess();
 });
 
-/* ACCESS */
+/* ACCESS CONTROL */
 function checkAccess(){
   const status = currentData.status || "processing";
 
+  const lock = document.getElementById("lockScreen");
+
   if(status !== "paid" && status !== "completed"){
-    document.getElementById("lockScreen").style.display="flex";
+    lock.style.display="flex";
     isLocked = true;
   } else {
-    document.getElementById("lockScreen").style.display="none";
+    lock.style.display="none";
     isLocked = false;
   }
 
-document.querySelectorAll(".btn").forEach(btn=>{
-  if(isLocked){
-    btn.style.opacity = "0.5";
-    btn.style.pointerEvents = "none";
-  } else {
-    btn.style.opacity = "1";
-    btn.style.pointerEvents = "auto";
-  }
-});
-
+  // disable buttons if locked
+  document.querySelectorAll(".btn").forEach(btn=>{
+    btn.style.pointerEvents = isLocked ? "none" : "auto";
+    btn.style.opacity = isLocked ? "0.5" : "1";
+  });
 }
 
 /* RENDER */
@@ -65,14 +64,13 @@ function render(){
   const chip = document.getElementById("statusChip");
 
   chip.innerText = status.toUpperCase();
-
   chip.className = "status " + status;
 
   // SERVICES
   const container = document.getElementById("cardServices");
   container.innerHTML = "";
 
-  if(currentData.services && currentData.services.length){
+  if(currentData.services){
     currentData.services.slice(0,3).forEach(s=>{
       const span = document.createElement("span");
       span.innerText = s;
@@ -81,7 +79,7 @@ function render(){
   }
 }
 
-/* VIEW */
+/* VIEW CARD */
 function viewCard(){
   let page = "basic.html";
   if(currentData.plan==="pro") page="pro.html";
@@ -92,7 +90,11 @@ function viewCard(){
 
 /* SHARE */
 function shareCard(){
-  const url = `${window.location.origin}/view/basic.html?id=${currentDocId}`;
+  let page = "basic.html";
+  if(currentData.plan==="pro") page="pro.html";
+  if(currentData.plan==="elite") page="elite.html";
+
+  const url = `${window.location.origin}/view/${page}?id=${currentDocId}`;
 
   if(navigator.share){
     navigator.share({title:"My Card",url});
@@ -102,58 +104,33 @@ function shareCard(){
   }
 }
 
+/* PASSWORD RESET */
+function resetPassword(){
+  if(!window.currentUserEmail){
+    alert("No email found.");
+    return;
+  }
+
+  auth.sendPasswordResetEmail(window.currentUserEmail)
+    .then(()=>{
+      alert("Password reset email sent.");
+    })
+    .catch(()=>{
+      alert("Error sending email.");
+    });
+}
+
 /* UPGRADE */
 function upgradeToPro(){
   const subject = "Upgrade to Pro Request";
-  const body = `Hello, I want to upgrade.\n\nName: ${currentData.name}\nCurrent Plan: ${currentData.plan}`;
+  const body = `Name: ${currentData.name}\nPlan: ${currentData.plan}`;
 
   window.location.href = `mailto:info@arkilogix.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-/* OFFERS */
-function viewOffers(){
-  alert("Coming soon.");
-}
-
-/* STEP SYSTEM */
-function updateStepUI(){
-  const titles = {1:"Identity",2:"Contacts",3:"Services"};
-  stepTitle.innerText = titles[step];
-
-  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
-  document.querySelector(`[data-step="${step}"]`).classList.add("active");
-}
-
-function nextStep(){
-  if(step<3){step++;updateStepUI();}
-  else saveProfile();
-}
-
-function prevStep(){
-  if(step>1){step--;updateStepUI();}
-}
-
-/* SAVE */
-async function saveProfile(){
-  currentData.name = editName.value;
-  currentData.position = editPosition.value;
-
-  await db.collection("clients").doc(currentDocId).update(currentData);
-  render();
-  editModal.style.display="none";
-}
-
-/* SERVICES */
-function addService(){
-  const container = servicesContainer;
-  const input = document.createElement("input");
-  input.placeholder="Service";
-  container.appendChild(input);
-}
-
 /* LOGOUT */
-document.querySelector(".logout").onclick=()=>{
+function logout(){
   auth.signOut().then(()=>{
     window.location.href="/auth/login.html";
   });
-};
+}
