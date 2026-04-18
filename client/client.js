@@ -13,23 +13,27 @@ auth.onAuthStateChanged(async (user)=>{
   }
 
   // RESET PASSWORD NEEDS EMAIL
-  window.currentUserEmail = user.email;
+ db.collection("clients")
+  .where("authUid","==",user.uid)
+  .onSnapshot(snap => {
 
-  const snap = await db.collection("clients")
-    .where("authUid","==",user.uid).get();
+    if(!snap.empty){
+      currentData = snap.docs[0].data();
+      currentDocId = snap.docs[0].id;
 
-  if(!snap.empty){
-    currentData = snap.docs[0].data();
-    currentDocId = snap.docs[0].id;
-  }
+      console.log("STATUS:", currentData.status); // debug
 
-  render();
-  checkAccess();
+      render();
+      checkAccess();
+    }
+
+  });
 });
 
 /* ACCESS CONTROL */
 function checkAccess(){
-  const status = currentData.status || "processing";
+
+  const status = (currentData.status || "").toLowerCase();
 
   const lock = document.getElementById("lockScreen");
 
@@ -41,7 +45,6 @@ function checkAccess(){
     isLocked = false;
   }
 
-  // disable buttons if locked
   document.querySelectorAll(".btn").forEach(btn=>{
     btn.style.pointerEvents = isLocked ? "none" : "auto";
     btn.style.opacity = isLocked ? "0.5" : "1";
