@@ -1206,23 +1206,25 @@ const badge = document.getElementById("discountBadge");
 }
 
 // ================= MODAL =================
-window.openOrderModal = function(){
-  prefillModal();
-  discount = 0; 
-  updateTotalWithDiscount(); 
-  document.getElementById("orderModal").classList.add("show");
-  document.body.style.overflow = "hidden";
-
-  document.getElementById("summaryPlan").innerText = selectedPlan;
-  document.getElementById("summaryCard").innerText = selectedCard;
-  document.getElementById("summaryPrice").innerText =
-    formatPeso(basePrices[selectedPlan] + cardPrice);
-
-  const isPro = selectedPlan==="pro" || selectedPlan==="elite";
-  document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
-
-  showStep(0);
-}
+  window.openOrderModal = function(){
+  
+    prefillModal();
+  
+    discount = 0;
+  
+    document.getElementById("orderModal").classList.add("show");
+    document.body.style.overflow = "hidden";
+  
+    document.getElementById("summaryPlan").innerText = selectedPlan;
+    document.getElementById("summaryCard").innerText = selectedCard;
+  
+    const isPro = selectedPlan==="pro" || selectedPlan==="elite";
+    document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
+  
+    showStep(0);
+  
+    updateTotalWithDiscount();
+  }
 
 window.closeOrderModal = function(){
   document.getElementById("orderModal").classList.remove("show");
@@ -1384,16 +1386,19 @@ const highlights = [
 let projectUrls = [];
 let projectIds = [];
 
-for(let i = 0; i < highlights.length; i++){
-  if(highlights[i]){
-    const upload = await uploadToCloudinary(highlights[i], clientId, "project");
+const uploadPromises = highlights.map(file => {
+  if(!file) return null;
+  return uploadToCloudinary(file, clientId, "project");
+});
 
-    if(upload){
-      projectUrls.push(upload.url);
-      projectIds.push(upload.public_id);
-    }
+const uploads = await Promise.all(uploadPromises);
+
+uploads.forEach(upload => {
+  if(upload){
+    projectUrls.push(upload.url);
+    projectIds.push(upload.public_id);
   }
-}
+});
 
 if(projectUrls.length){
   params.projectImages = projectUrls;
