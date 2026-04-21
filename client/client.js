@@ -14,7 +14,7 @@ auth.onAuthStateChanged(async (user)=>{
 
   // RESET PASSWORD NEEDS EMAIL
  db.collection("clients")
-  .where("authUid","==",user.uid)
+  .where("email","==",user.email)
   .onSnapshot(snap => {
 
     if(!snap.empty){
