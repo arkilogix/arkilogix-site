@@ -767,6 +767,34 @@ form#orderForm::-webkit-scrollbar-thumb{
 .basic .text-stack .company{
   font-size:9px;
 }
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge-animate {
+  animation: popIn 0.4s ease;
+}
+  #discountBadge{
+  transition: all 0.25s ease;
+  font-size:12px;
+  color:#16a34a;
+  letter-spacing:0.3px;
+}
+
+.badge-animate{
+  animation: popIn 0.4s ease;
+  color: #16a34a;
+}
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
@@ -1078,6 +1106,72 @@ document.getElementById("inputAbout").oninput = e =>
 // ================= FAQ =================
 window.toggleFAQ = el => el.classList.toggle("active");
 
+        // ================= PROMO =================
+    let discount = 0;
+
+function applyPromo(){
+
+  const code = document.getElementById("promoCode").value.trim().toUpperCase();
+  const msg = document.getElementById("promoMessage");
+
+  // 🔥 YOUR PROMO RULES
+  if(code === "ARKI10"){
+    discount = 0.10;
+    msg.innerText = "✅ 10% discount applied!";
+    msg.style.color = "green";
+
+  } else if(code === "VIP20"){
+    discount = 0.20;
+    msg.innerText = "🔥 20% VIP discount applied!";
+    msg.style.color = "green";
+
+  } else {
+    discount = 0;
+    msg.innerText = "❌ Invalid promo code";
+    msg.style.color = "red";
+  }
+}
+  function updateTotalWithDiscount(){
+  
+    const baseTotal = basePrices[selectedPlan] + cardPrice;
+    const finalTotal = baseTotal - (baseTotal * discount);
+  
+    const el = document.getElementById("priceDisplay");
+  
+    if(discount > 0){
+  
+      el.innerHTML = `
+        <span style="text-decoration:line-through;color:#999;font-size:14px;margin-right:6px;">
+          ₱${baseTotal.toLocaleString()}
+        </span>
+        <span style="color:#111;">
+          ₱${finalTotal.toLocaleString()}
+        </span>
+      `;
+  
+    } else {
+  
+      el.innerHTML = `
+        <span>₱${baseTotal.toLocaleString()}</span>
+      `;
+    }
+const badge = document.getElementById("discountBadge");
+
+    if(discount > 0){
+    
+      badge.innerText = `You saved ${Math.round(discount*100)}% ✓`;
+    
+      // 🔥 trigger animation
+      badge.classList.remove("badge-animate");
+      void badge.offsetWidth; // force reflow
+      badge.classList.add("badge-animate");
+    
+    } else {
+      badge.innerText = "";
+    }
+  }
+
+   // ================= PREFILL ================= 
     function prefillModal(){
 
   // STEP 1 fields
@@ -1095,11 +1189,12 @@ window.toggleFAQ = el => el.classList.toggle("active");
   }
 
 }
-    
-    
+
 // ================= MODAL =================
 window.openOrderModal = function(){
   prefillModal();
+  discount = 0; 
+  updateTotalWithDiscount(); 
   document.getElementById("orderModal").classList.add("show");
   document.body.style.overflow = "hidden";
 
@@ -1137,31 +1232,33 @@ function showStep(index){
   steps.forEach(s => s.classList.remove("active"));
   steps[index].classList.add("active");
 
-  document.getElementById("stepSub").innerText = `Step ${index+1} of 6`;
+  document.getElementById("stepSub").innerText = `Step ${index+1} of 7`;
 
-  const titles = [
-    "Your Identity",
-    "Contact Details",
-    "Services",
-    "Uploads",
-    "Shipping Details",
-    "Review"
-  ];
+    const titles = [
+      "Your Identity",
+      "Contact Details",
+      "Services",
+      "Uploads",
+      "Shipping Details",
+      "Promo Code",
+      "Review"
+    ];
 
-  const descriptions = [
-    "Enter your basic personal details",
-    "Provide your contact and social links",
-    "List the services you offer",
-    "Upload your profile and highlights",
-    "Where should we deliver your NFC card?",
-    "Review your order before submission"
-  ];
+    const descriptions = [
+      "Enter your basic personal details",
+      "Provide your contact and social links",
+      "List the services you offer",
+      "Upload your profile and highlights",
+      "Where should we deliver your NFC card?",
+      "Enter your promo code (optional)",
+      "Review your order before submission"
+    ];
 
   document.getElementById("stepTitle").innerText = titles[index];
   document.getElementById("stepDesc").innerText = descriptions[index];
 
   document.getElementById("progressFill").style.width =
-    ((index+1)/6)*100 + "%";
+    ((index+1)/7)*100 + "%";
 
   document.getElementById("backBtn").style.display =
     index === 0 ? "none" : "block";
@@ -1241,8 +1338,11 @@ const params = {
 
   plan: selectedPlan,
   card: selectedCard,
-  price: basePrices[selectedPlan] + cardPrice,
-  
+
+  price: finalTotal,
+  originalPrice: baseTotal,
+  discount: discount,
+
   status: "pending_verification",
   createdAt: new Date()
 };
@@ -1386,15 +1486,35 @@ document.addEventListener("keydown", e => {
 
 </div>
 
-      <!-- STEP 6 -->
+          <!-- STEP 6: PROMO -->
+    <div class="step">
+      <input type="text" id="promoCode" placeholder="Enter Promo Code">
+    
+      <button type="button" onclick="applyPromo()" style="
+        width:100%;
+        padding:12px;
+        border:none;
+        border-radius:30px;
+        background:#000;
+        color:#fff;
+        margin-top:10px;
+      ">
+        Apply Code
+      </button>
+    
+      <p id="promoMessage" style="font-size:12px;margin-top:8px;"></p>
+    </div>
+      
+      <!-- STEP 7 -->
       <div class="step">
         <div class="summary">
           <div><strong>Plan:</strong> <span id="summaryPlan"></span></div>
           <div><strong>Card:</strong> <span id="summaryCard"></span></div>
-          <div><strong>Total:</strong> <span id="summaryPrice"></span></div>
+          <div><strong>Total:</strong> <div id="priceDisplay" style="font-size:18px;font-weight:600;"></div> </div>
+          <div id="discountBadge" style="font-size:12px;color:green;margin-top:4px;"></div>
         </div>
       </div>
-
+    
       <!-- NAV -->
       <div class="nav">
         <button type="button" onclick="prevStep()" id="backBtn">Back</button>
@@ -1441,6 +1561,23 @@ font-family:'Montserrat',sans-serif;
 @keyframes spin{
   0%{transform:rotate(0deg);}
   100%{transform:rotate(360deg);}
+}
+  @keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge-animate {
+  animation: popIn 0.4s ease;
 }
 </style>
 
