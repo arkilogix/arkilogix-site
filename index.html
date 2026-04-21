@@ -956,6 +956,7 @@ No problem. You can still share your card using a direct link.
 // ================= FIREBASE =================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
@@ -964,7 +965,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const auth = getAuth(app);
 
 // ================= INIT =================
 (function(){
@@ -1229,6 +1230,8 @@ const params = {
         try {
       console.log("Saving order...", cleanParams);
     
+      cleanParams.authUid = auth.currentUser ? auth.currentUser.uid : "";
+
       await setDoc(doc(db, "clients", clientId), cleanParams);
     
       console.log("✅ Saved successfully:", clientId);
