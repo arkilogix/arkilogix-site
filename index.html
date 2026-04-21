@@ -1040,6 +1040,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // ================= INIT =================
 (function(){
@@ -1418,7 +1419,7 @@ function buildFullAddress(){
   form.addEventListener("submit", async function(e){
     e.preventDefault();
     isSubmitting = true;
-    const clientId = "client-" + Date.now();
+  const clientId = "client-" + Date.now();
   const loading = document.getElementById("loadingScreen");
       loading.style.display = "flex";
       document.body.style.overflow = "hidden";
@@ -1469,6 +1470,7 @@ const params = {
 };
   
 // ================= PROFILE =================
+updateLoading(1);
 const profile = document.getElementById("profilePhoto").files[0];
 
 if(profile){
@@ -1480,7 +1482,7 @@ if(profile){
     params.profile_id = upload.public_id;
   }
 }
-
+updateLoading(2);
 // ================= PROJECT HIGHLIGHTS =================
 const highlights = [
   document.getElementById("highlightPhoto1").files[0],
@@ -1512,28 +1514,29 @@ if(projectUrls.length){
   params.projectImages = projectUrls;
   params.projectImages_ids = projectIds;
 }
-
+    
     const cleanParams = cleanObject(params);
+          updateLoading(3);
         try {
-      console.log("Saving order...", cleanParams);
+          
+          console.log("Saving order...", cleanParams);
     
       cleanParams.authUid = auth.currentUser ? auth.currentUser.uid : "";
-
+      console.log("CLIENT ID:", clientId);
       await setDoc(doc(db, "clients", clientId), cleanParams);
     
       console.log("Saved successfully:", clientId);
+      updateLoading(4);
       finishFakeProgress();
       setTimeout(()=>{
         window.location.href = "payment.html?clientId=" + clientId;
       }, 500);
-      window.location.href = "payment.html?clientId=" + clientId;
     
     } catch (err) {
       console.error("Firestore error:", err);
       alert("Error saving order. Check console.");
     }
   });
-
 
 // ================= ESC CLOSE =================
 document.addEventListener("keydown", e => {
@@ -1585,7 +1588,7 @@ function finishFakeProgress(){
 
     <!-- HEADER -->
 <h2 id="stepTitle">Your Identity</h2>
-<p class="modal-sub" id="stepSub">Step 1 of 6</p>
+<p class="modal-sub" id="stepSub">Step 1 of 7</p>
 <p class="modal-desc" id="stepDesc">Enter your basic personal details</p>
 
     <!-- PROGRESS -->
