@@ -34,31 +34,46 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:15px 20px;
+  padding:14px 20px;
 }
 
 .logo{
   display:flex;
-  align-items:center;
-  gap:8px;
+  align-items:center; 
+  gap:10px;
   color:#fff;
   font-weight:600;
   letter-spacing:2px;
-  font-size:12px;
+  font-size:13px; 
 }
 
-.logo img{height:24px;}
+.logo img{
+  height:22px; 
+}
 
-.nav{display:flex;gap:20px;}
-.nav a{color:#ccc;text-decoration:none;font-size:13px;}
+.nav{
+  display:flex;
+  align-items:center; /* ✅ THIS IS IMPORTANT */
+  gap:22px;
+}
+.nav a{
+  color:#ccc;
+  text-decoration:none;
+  font-size:13px;
+  display:flex;
+  align-items:center; /* ✅ keeps baseline consistent */
+}
+
 .nav a:hover{color:#fff;}
 
 .cta{
   border:1px solid #fff;
-  padding:6px 14px;
-  border-radius:20px;
+  padding:8px 18px;
+  border-radius:30px;
   color:#fff;
-  transition:.25s;
+  display:flex;
+  align-items:center;
+  height:34px;
 }
 .cta:hover{background:#fff;color:#000;transform:translateY(-2px);}
 
