@@ -1056,7 +1056,42 @@ let currentStep = 0;
 
 // ================= HELPERS =================
 const formatPeso = val => "₱" + val.toLocaleString();
+    
+// ================= RESIZE IMAGE =================
+    async function compressImage(file){
 
+  return new Promise((resolve) => {
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = e => img.src = e.target.result;
+
+    img.onload = () => {
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // 🔥 MAX SIZE (adjust if needed)
+      const maxWidth = 800;
+      const scale = maxWidth / img.width;
+
+      canvas.width = maxWidth;
+      canvas.height = img.height * scale;
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(
+        blob => resolve(blob),
+        "image/jpeg",
+        0.7 // 🔥 QUALITY (0.6–0.8 sweet spot)
+      );
+    };
+
+    reader.readAsDataURL(file);
+
+  });
+}
 // ================= CLOUDINARY =================
 async function uploadToCloudinary(file, clientId, type){
 
@@ -1437,7 +1472,8 @@ const params = {
 const profile = document.getElementById("profilePhoto").files[0];
 
 if(profile){
-  const upload = await uploadToCloudinary(profile, clientId, "profile");
+  const compressed = await compressImage(profile);
+  const upload = await uploadToCloudinary(compressed, clientId, "profile");
 
   if(upload){
     params.profile = upload.url;
@@ -1457,7 +1493,10 @@ let projectIds = [];
 
 const uploadPromises = highlights.map(file => {
   if(!file) return null;
-  return uploadToCloudinary(file, clientId, "project");
+  return (async () => {
+  const compressed = await compressImage(file);
+  return uploadToCloudinary(compressed, clientId, "project");
+})();
 });
 
 const uploads = await Promise.all(uploadPromises);
