@@ -18,7 +18,7 @@ window.logout = function(){
 }
 
 /* FETCH */
-db.collection("clients").orderBy("createdAt","desc")
+db.collection("clients")
 .onSnapshot(s=>{
   users = s.docs.map(d=>({
     id:d.id,
