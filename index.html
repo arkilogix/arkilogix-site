@@ -1066,10 +1066,9 @@ async function uploadToCloudinary(file, clientId, type){
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "nfc_upload");
+
+    // ✅ SAFE FOLDER ONLY
     formData.append("folder", `nfc-clients/${clientId}/${type}`);
-    formData.append("public_id", `${type}`);
-    formData.append("overwrite", "true");
-    formData.append("tags", clientId);
 
     const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
       method: "POST",
@@ -1077,15 +1076,17 @@ async function uploadToCloudinary(file, clientId, type){
     });
 
     if(!res.ok){
-      console.log("Cloudinary upload failed");
-      return null;
+      const errText = await res.text();
+      console.log("Cloudinary error:", errText); // 🔥 IMPORTANT
+      throw new Error("Upload failed");
     }
 
     const data = await res.json();
+
     return {
-        url: data.secure_url,
-        public_id: data.public_id
-      };
+      url: data.secure_url,
+      public_id: data.public_id
+    };
 
   }catch(err){
     console.log("Upload error:", err);
