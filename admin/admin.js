@@ -3,7 +3,7 @@ emailjs.init("Wp1sOcLJH-dg_dkLs");
 const db = firebase.firestore();
 
 let users = [];
-let filter = "pending_verification";
+let filter = "pending";
 let selected = null;
 
 /* AUTH */
@@ -217,9 +217,9 @@ function actions(u){
     <button class="btn" onclick="markPaid('${u.id}')">Mark as Paid</button>
   ` : ""}
 
-  ${u.isLocked 
-    ? `<button class="btn" onclick="unlock('${u.id}')">Unlock Dashboard</button>`
-    : `<button class="btn" onclick="lock('${u.id}')">Lock Dashboard</button>`
+  ${u.status === "paid"
+    ? `<button class="btn" onclick="lock('${u.id}')">Lock Dashboard</button>`
+    : `<button class="btn" onclick="unlock('${u.id}')">Unlock Dashboard</button>`
   }
 
   <button class="btn" onclick="processing('${u.id}')">Mark Processing</button>
@@ -335,7 +335,7 @@ window.lock = async(id)=>{
   if(!confirm("Lock this client's dashboard?")) return;
 
   await db.collection("clients").doc(id).update({
-    isLocked: true
+    status: "pending" // 🔥 LOCK
   });
 
   alert("Dashboard locked 🔒");
@@ -347,7 +347,7 @@ window.unlock = async(id)=>{
   if(!confirm("Unlock this client's dashboard?")) return;
 
   await db.collection("clients").doc(id).update({
-    isLocked: false
+    status: "paid" // 🔥 UNLOCK
   });
 
   alert("Dashboard unlocked 🔓");
