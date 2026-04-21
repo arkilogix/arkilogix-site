@@ -1,3 +1,14 @@
+firebase.auth().onAuthStateChanged(user=>{
+  console.log("ADMIN USER:", user);
+
+  if(!user){
+    alert("NOT LOGGED IN ❌");
+    window.location.href="/auth/login.html";
+  } else {
+    console.log("LOGGED IN AS:", user.email);
+  }
+});
+
 emailjs.init("Wp1sOcLJH-dg_dkLs");
 
 const db = firebase.firestore();
