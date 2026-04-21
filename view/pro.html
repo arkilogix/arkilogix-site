@@ -272,8 +272,13 @@ async function loadUser(){
   document.getElementById("profileImage").src = data.profile || "";
 
   /* HERO */
-  document.getElementById("highlightImage").src =
-    data.projectImages?.[0] || data.profile || "";
+  const heroImg = data.projectImages?.[0] || data.profile || "";
+
+document.getElementById("highlightImage").src = heroImg;
+
+  // slight zoom effect
+  document.getElementById("highlightImage").style.transform = "scale(1.05)";
+  document.getElementById("highlightImage").style.transition = "0.5s";
 
   document.getElementById("highlightTitle").innerText = data.position || "";
   document.getElementById("company").innerText = data.company || "";
@@ -300,16 +305,34 @@ async function loadUser(){
 
   /* PROJECTS */
   const container = document.getElementById("projects");
-  container.innerHTML = "";
+container.innerHTML = "";
 
-  (data.projectImages || []).forEach(img => {
+if(data.projectImages && data.projectImages.length){
+
+  data.projectImages.forEach(img => {
     const div = document.createElement("div");
     div.className = "project-card";
 
-    div.innerHTML = `<img src="${img}" onclick="window.open('${img}')">`;
+    const image = document.createElement("img");
+    image.src = img;
 
+    // ✅ smooth hover effect
+    image.style.boxShadow = "0 10px 25px rgba(0,0,0,0.15)";
+    image.style.transition = "0.25s";
+
+    image.onmouseenter = () => image.style.transform = "scale(1.03)";
+    image.onmouseleave = () => image.style.transform = "scale(1)";
+
+    // ✅ click to view
+    image.onclick = () => window.open(img, "_blank");
+
+    div.appendChild(image);
     container.appendChild(div);
   });
+
+} else {
+  container.innerHTML = "<p style='color:#777;font-size:13px;'>No projects yet</p>";
+}
 
 }
 
