@@ -1218,6 +1218,28 @@ updateTotalWithDiscount();
     }
   }
 
+    function updateLoading(step){
+
+  const text = document.getElementById("loadingText");
+  const bar = document.getElementById("loadingBar");
+  const icon = document.getElementById("loadingIcon");
+
+  const steps = [
+    {msg:"Preparing your profile...", progress:20, icon:"●"},
+    {msg:"Uploading profile photo...", progress:40, icon:"●"},
+    {msg:"Uploading projects...", progress:60, icon:"●"},
+    {msg:"Finalizing your card...", progress:80, icon:"●"},
+    {msg:"Almost done...", progress:95, icon:"●"}
+  ];
+
+  const current = steps[step];
+  if(!current) return;
+
+  text.innerText = current.msg;
+  bar.style.width = current.progress + "%";
+  icon.innerText = current.icon;
+}
+    
    // ================= PREFILL ================= 
     function prefillModal(){
 
