@@ -35,20 +35,29 @@ function checkAccess(){
 
   const status = (currentData.status || "").toLowerCase();
 
-  const lock = document.getElementById("lockScreen");
+  const lockStates = [
+    "pending",
+    "pending_verification",
+    "processing",
+    "unpaid"
+  ];
 
-  if(status !== "paid" && status !== "completed"){
-    lock.style.display="flex";
-    isLocked = true;
-  } else {
-    lock.style.display="none";
-    isLocked = false;
+  const isLockedNow = lockStates.includes(status);
+
+  console.log("STATUS:", status, "| LOCKED:", isLockedNow);
+
+  if(isLockedNow){
+    document.body.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#fff;text-align:center;">
+        <div>
+          <h2>Verifying your Account</h2>
+          <p>Your card will activate after payment confirmation.</p>
+        </div>
+      </div>
+    `;
+    return;
   }
 
-  document.querySelectorAll(".btn").forEach(btn=>{
-    btn.style.pointerEvents = isLocked ? "none" : "auto";
-    btn.style.opacity = isLocked ? "0.5" : "1";
-  });
 }
 
 /* RENDER */
