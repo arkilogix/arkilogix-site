@@ -1382,6 +1382,7 @@ function buildFullAddress(){
   form.addEventListener("submit", async function(e){
     e.preventDefault();
     isSubmitting = true;
+    const clientId = "client-" + Date.now();
   const loading = document.getElementById("loadingScreen");
       loading.style.display = "flex";
       document.body.style.overflow = "hidden";
@@ -1390,12 +1391,9 @@ function buildFullAddress(){
       setTimeout(()=>{
         loading.classList.add("show");
         },10);
-      finishFakeProgress();
-      setTimeout(()=>{
-        window.location.href = "payment.html?clientId=" + clientId;
-      }, 500);
+
     
-    const clientId = "client-" + Date.now();
+
 
 const baseTotal = basePrices[selectedPlan] + cardPrice;
 const finalTotal = baseTotal - (baseTotal * discount);
@@ -1484,7 +1482,10 @@ if(projectUrls.length){
       await setDoc(doc(db, "clients", clientId), cleanParams);
     
       console.log("Saved successfully:", clientId);
-    
+      finishFakeProgress();
+      setTimeout(()=>{
+        window.location.href = "payment.html?clientId=" + clientId;
+      }, 500);
       window.location.href = "payment.html?clientId=" + clientId;
     
     } catch (err) {
