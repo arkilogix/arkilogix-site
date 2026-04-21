@@ -992,8 +992,9 @@ async function uploadToCloudinary(file, clientId, type){
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "nfc_upload");
-    formData.append("folder", `nfc-clients/${clientId}`);
-    formData.append("public_id", `${type}-${Date.now()}`);
+    formData.append("folder", `nfc-clients/${clientId}/${type}`);
+    formData.append("public_id", `${type}`);
+    formData.append("overwrite", "true");
     formData.append("tags", clientId);
 
     const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
@@ -1007,7 +1008,10 @@ async function uploadToCloudinary(file, clientId, type){
     }
 
     const data = await res.json();
-    return data.secure_url || null;
+    return {
+        url: data.secure_url,
+        public_id: data.public_id
+      };
 
   }catch(err){
     console.log("Upload error:", err);
@@ -1199,7 +1203,7 @@ const params = {
     document.getElementById("service2").value,
     document.getElementById("service3").value,
     document.getElementById("service4").value
-  ],
+  ].filter(s => s),
   addressLine1: document.getElementById("addressLine1").value,
   addressLine2: document.getElementById("addressLine2").value,
   barangay: document.getElementById("barangay").value,
@@ -1216,15 +1220,44 @@ const params = {
   status: "pending_verification",
   createdAt: new Date()
 };
-
-  const profile = document.getElementById("profilePhoto").files[0];
   
-  if(profile){
-    const profileUrl = await uploadToCloudinary(profile, clientId, "profile");
-    if(profileUrl){
-      params.profile = profileUrl;
+// ================= PROFILE =================
+const profile = document.getElementById("profilePhoto").files[0];
+
+if(profile){
+  const upload = await uploadToCloudinary(profile, clientId, "profile");
+
+  if(upload){
+    params.profile = upload.url;
+    params.profile_id = upload.public_id;
+  }
+}
+
+// ================= PROJECT HIGHLIGHTS =================
+const highlights = [
+  document.getElementById("highlightPhoto1").files[0],
+  document.getElementById("highlightPhoto2").files[0],
+  document.getElementById("highlightPhoto3").files[0]
+];
+
+let projectUrls = [];
+let projectIds = [];
+
+for(let i = 0; i < highlights.length; i++){
+  if(highlights[i]){
+    const upload = await uploadToCloudinary(highlights[i], clientId, "project");
+
+    if(upload){
+      projectUrls.push(upload.url);
+      projectIds.push(upload.public_id);
     }
   }
+}
+
+if(projectUrls.length){
+  params.projectImages = projectUrls;
+  params.projectImages_ids = projectIds;
+}
 
     const cleanParams = cleanObject(params);
         try {
