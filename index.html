@@ -1078,8 +1078,28 @@ document.getElementById("inputAbout").oninput = e =>
 // ================= FAQ =================
 window.toggleFAQ = el => el.classList.toggle("active");
 
+    function prefillModal(){
+
+  // STEP 1 fields
+  document.getElementById("name").value =
+    document.getElementById("inputName").value || "";
+
+  document.getElementById("position").value =
+    document.getElementById("inputProfession").value || "";
+
+  // OPTIONAL: company (if you added it)
+  const companyInput = document.getElementById("company");
+  if(companyInput){
+    companyInput.value =
+      document.getElementById("inputCompany").value || "";
+  }
+
+}
+    
+    
 // ================= MODAL =================
 window.openOrderModal = function(){
+  prefillModal();
   document.getElementById("orderModal").classList.add("show");
   document.body.style.overflow = "hidden";
 
@@ -1099,9 +1119,13 @@ window.closeOrderModal = function(){
   document.body.style.overflow = "auto";
 }
 
+let isSubmitting = false;
 window.handleOutsideClick = function(e){
+  // ❌ do nothing if submitting
+  if(isSubmitting) return;
   const modal = document.querySelector("#orderModal .modal-box");
-  if(modal && !modal.contains(e.target)){
+  // only close if you CLICK BACKGROUND (not drag)
+  if(e.target.id === "orderModal"){
     closeOrderModal();
   }
 }
@@ -1190,15 +1214,17 @@ function buildFullAddress(){
 
   form.addEventListener("submit", async function(e){
     e.preventDefault();
+    isSubmitting = true;
   document.getElementById("loadingScreen").style.display = "flex";
     const clientId = "client-" + Date.now();
 
 const params = {
   name: document.getElementById("name").value,
   position: document.getElementById("position").value,
+  company: document.getElementById("company").value,
   email: document.getElementById("email").value,
   phone: document.getElementById("phone").value,
-  services: [
+    services: [
     document.getElementById("service1").value,
     document.getElementById("service2").value,
     document.getElementById("service3").value,
@@ -1311,6 +1337,7 @@ document.addEventListener("keydown", e => {
       <div class="step active">
         <input type="text" id="name" placeholder="Full Name" required>
         <input type="text" id="position" placeholder="Profession / Position" required>
+        <input type="text" id="company" placeholder="Company / Firm Name">
       </div>
 
       <!-- STEP 2 -->
