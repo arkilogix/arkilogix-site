@@ -810,6 +810,15 @@ form#orderForm::-webkit-scrollbar-thumb{
   animation: popIn 0.4s ease;
   color: #16a34a;
 }
+  #loadingScreen{
+  opacity:0;
+  transition:opacity .3s ease;
+}
+
+#loadingScreen.show{
+  display:flex;
+  opacity:1;
+}
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
@@ -1124,7 +1133,7 @@ window.toggleFAQ = el => el.classList.toggle("active");
         // ================= PROMO =================
     let discount = 0;
 
-function applyPromo(){
+window.applyPromo = function(){
 
   const code = document.getElementById("promoCode").value.trim().toUpperCase();
   const msg = document.getElementById("promoMessage");
@@ -1145,8 +1154,9 @@ function applyPromo(){
     msg.innerText = "❌ Invalid promo code";
     msg.style.color = "red";
   }
+updateTotalWithDiscount();
 }
-  function updateTotalWithDiscount(){
+    function updateTotalWithDiscount(){
   
     const baseTotal = basePrices[selectedPlan] + cardPrice;
     const finalTotal = baseTotal - (baseTotal * discount);
@@ -1170,17 +1180,17 @@ function applyPromo(){
         <span>₱${baseTotal.toLocaleString()}</span>
       `;
     }
-const badge = document.getElementById("discountBadge");
-
+  
+    const badge = document.getElementById("discountBadge");
+  
     if(discount > 0){
-    
+  
       badge.innerText = `You saved ${Math.round(discount*100)}% ✓`;
-    
-      // 🔥 trigger animation
+  
       badge.classList.remove("badge-animate");
-      void badge.offsetWidth; // force reflow
+      void badge.offsetWidth;
       badge.classList.add("badge-animate");
-    
+  
     } else {
       badge.innerText = "";
     }
@@ -1222,7 +1232,6 @@ const badge = document.getElementById("discountBadge");
     document.getElementById("highlightUpload").style.display = isPro ? "block" : "none";
   
     showStep(0);
-  
     updateTotalWithDiscount();
   }
 
@@ -1329,10 +1338,19 @@ function buildFullAddress(){
   form.addEventListener("submit", async function(e){
     e.preventDefault();
     isSubmitting = true;
-  document.getElementById("loadingScreen").style.display = "flex";
+  const loading = document.getElementById("loadingScreen");
+      loading.style.display = "flex";
+      
+      setTimeout(()=>{
+        loading.classList.add("show");
+      },10);
     const clientId = "client-" + Date.now();
 
+const baseTotal = basePrices[selectedPlan] + cardPrice;
+const finalTotal = baseTotal - (baseTotal * discount);
+    
 const params = {
+
   name: document.getElementById("name").value,
   position: document.getElementById("position").value,
   company: document.getElementById("company").value,
@@ -1362,6 +1380,7 @@ const params = {
 
   status: "pending_verification",
   createdAt: new Date()
+
 };
   
 // ================= PROFILE =================
@@ -1413,12 +1432,12 @@ if(projectUrls.length){
 
       await setDoc(doc(db, "clients", clientId), cleanParams);
     
-      console.log("✅ Saved successfully:", clientId);
+      console.log("Saved successfully:", clientId);
     
       window.location.href = "payment.html?clientId=" + clientId;
     
     } catch (err) {
-      console.error("❌ Firestore error:", err);
+      console.error("Firestore error:", err);
       alert("Error saving order. Check console.");
     }
   });
@@ -1557,24 +1576,38 @@ z-index:99999;
 font-family:'Montserrat',sans-serif;
 ">
 
-  <div style="text-align:center;">
-    
-    <div style="
-      width:50px;
-      height:50px;
-      border:3px solid #ddd;
-      border-top:3px solid #000;
-      border-radius:50%;
-      animation:spin 1s linear infinite;
-      margin:0 auto 20px;
+ <div style="text-align:center;max-width:280px;">
+
+  <div id="loadingIcon" style="
+    font-size:28px;
+    margin-bottom:15px;
+    transition:.3s;
+  ">●</div>
+
+  <h3 id="loadingTitle" style="margin-bottom:8px;">
+    Activating Your Card
+  </h3>
+
+  <p id="loadingText" style="font-size:13px;color:#666;margin-bottom:20px;">
+    Preparing your profile...
+  </p>
+
+  <div style="
+    width:100%;
+    height:6px;
+    background:#eee;
+    border-radius:10px;
+    overflow:hidden;
+  ">
+    <div id="loadingBar" style="
+      width:0%;
+      height:100%;
+      background:#000;
+      transition:width .4s ease;
     "></div>
-
-    <h3 style="margin-bottom:8px;">Activating Your Card</h3>
-    <p style="font-size:13px;color:#666;">
-      Setting up your digital profile...
-    </p>
-
   </div>
+
+</div>
 </div>
 
 <style>
@@ -1599,6 +1632,7 @@ font-family:'Montserrat',sans-serif;
 .badge-animate {
   animation: popIn 0.4s ease;
 }
+  
 </style>
 
 </body>
