@@ -810,14 +810,35 @@ form#orderForm::-webkit-scrollbar-thumb{
   animation: popIn 0.4s ease;
   color: #16a34a;
 }
-  #loadingScreen{
+#loadingScreen{
   opacity:0;
   transition:opacity .3s ease;
 }
 
 #loadingScreen.show{
-  display:flex;
   opacity:1;
+}
+
+#loadingScreen > div{
+  transform:scale(0.95);
+  transition:transform .3s ease;
+}
+
+#loadingScreen.show > div{
+  transform:scale(1);
+  box-shadow:0 20px 50px rgba(0,0,0,0.1);
+  border-radius:16px;
+  padding:25px;
+  background:rgba(255,255,255,0.9);
+}
+  #loadingIcon{
+  animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:.3;}
+  50%{opacity:1;}
+  100%{opacity:.3;}
 }
 </style>
  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -1005,6 +1026,7 @@ No problem. You can still share your card using a direct link.
 </div>
 
   <script type="module">
+    
 // ================= FIREBASE =================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -1340,10 +1362,17 @@ function buildFullAddress(){
     isSubmitting = true;
   const loading = document.getElementById("loadingScreen");
       loading.style.display = "flex";
-      
+      document.body.style.overflow = "hidden";
+      startFakeProgress();
+      updateLoading(0);
       setTimeout(()=>{
         loading.classList.add("show");
-      },10);
+        },10);
+      finishFakeProgress();
+      setTimeout(()=>{
+        window.location.href = "payment.html?clientId=" + clientId;
+      }, 500);
+    
     const clientId = "client-" + Date.now();
 
 const baseTotal = basePrices[selectedPlan] + cardPrice;
@@ -1449,7 +1478,39 @@ document.addEventListener("keydown", e => {
     closeOrderModal();
   }
 });
+let fakeProgress = 0;
+let fakeInterval = null;
 
+function startFakeProgress(){
+
+  const bar = document.getElementById("loadingBar");
+
+  fakeProgress = 0;
+
+  fakeInterval = setInterval(() => {
+
+    // fast at start, slower later
+    if(fakeProgress < 60){
+      fakeProgress += 8;
+    } else if(fakeProgress < 85){
+      fakeProgress += 3;
+    } else if(fakeProgress < 95){
+      fakeProgress += 1;
+    }
+
+    bar.style.width = fakeProgress + "%";
+
+  }, 200);
+}
+
+function finishFakeProgress(){
+
+  clearInterval(fakeInterval);
+
+  const bar = document.getElementById("loadingBar");
+  bar.style.width = "100%";
+}
+    
 </script>
 
 <!-- MODAL -->
@@ -1564,11 +1625,15 @@ document.addEventListener("keydown", e => {
 
   </div>
 </div>
+
+  
 <!-- LOADING SCREEN -->
 <div id="loadingScreen" style="
 position:fixed;
 inset:0;
-background:#fff;
+background:rgba(255,255,255,0.75);
+backdrop-filter:blur(8px);
+-webkit-backdrop-filter:blur(8px);
 display:none;
 justify-content:center;
 align-items:center;
