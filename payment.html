@@ -130,15 +130,23 @@ const db = getFirestore(app);
 // GET CLIENT ID
 const params = new URLSearchParams(window.location.search);
 const clientId = params.get("clientId");
+  if(!clientId){
+  alert("Invalid access. No client ID.");
+  window.location.href = "/";
+}
 
 // LOAD ORDER DATA
 async function loadData(){
   const snap = await getDoc(doc(db,"clients",clientId));
+  if(!snap.exists()){
+    alert("Order not found.");
+    return;
+  }
   const data = snap.data();
-
   document.getElementById("plan").innerText = data.plan || "-";
   document.getElementById("card").innerText = data.card || "-";
-  document.getElementById("price").innerText = "₱" + (data.price || 0).toLocaleString();
+  document.getElementById("price").innerText =
+    "₱" + (data.price || 0).toLocaleString();
 }
 loadData();
 
@@ -153,6 +161,7 @@ window.switchMethod = function(method,el){
 
 // CLOUDINARY UPLOAD
 async function uploadProof(file){
+
   const fd = new FormData();
   fd.append("file", file);
   fd.append("upload_preset","nfc_upload");
@@ -163,7 +172,16 @@ async function uploadProof(file){
     body:fd
   });
 
+  if(!res.ok){
+    throw new Error("Upload failed");
+  }
+
   const data = await res.json();
+
+  if(!data.secure_url){
+    throw new Error("Invalid upload response");
+  }
+
   return data.secure_url;
 }
 
@@ -213,13 +231,14 @@ window.submitPayment = async function(){
 
   const status = document.getElementById("status");
   const btn = document.querySelector(".btn");
-
+  if(btn.disabled) return;
+  
   btn.innerText = "Processing...";
   btn.disabled = true;
 
   try{
 
-    status.innerText = "Uploading...";
+    status.innerText = "Uploading proof...";
     const proofUrl = await uploadProof(file);
 
     status.innerText = "Saving...";
@@ -244,6 +263,8 @@ window.submitPayment = async function(){
       proof: proofUrl,
       clientId: clientId
     });
+    
+    status.innerText = "Payment submitted successfully!";
 
     // SUCCESS UI
     document.getElementById("paymentBox").style.display="none";
