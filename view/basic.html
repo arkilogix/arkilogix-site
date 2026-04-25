@@ -20,6 +20,9 @@ background:linear-gradient(135deg,#e5e7eb,#f9fafb);
 
 /* CARD */
 .card{
+opacity:0;
+transform:translateY(10px);
+transition:all .5s ease;
 width:92%;
 max-width:420px;
 padding:40px 24px;
@@ -65,15 +68,16 @@ stroke-width:2;
 }
 
 .icon-btn{
-width:42px;height:42px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#fff;
-box-shadow:0 3px 6px rgba(0,0,0,0.08);
-cursor:pointer;
-transition:.2s;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  box-shadow:0 3px 6px rgba(0,0,0,0.08);
+  cursor:pointer;
+  transition:.2s;
+  display:none; /* ✅ ONLY this */
 }
 .icon-btn:hover{
 background:#111;
@@ -206,11 +210,54 @@ width:75px; /* controls length */
 background:rgba(0,0,0,0.15);
 flex-shrink:0;
 }
+  
+/* LOADER */
+#loader{
+  position:fixed;
+  inset:0;
+  background:#0f1115;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  transition:opacity .5s ease;
+}
 
+.loader-content{
+  text-align:center;
+  color:#fff;
+  animation:fadeIn .6s ease;
+}
+
+.loader-content img{
+  width:60px;
+  margin-bottom:10px;
+  opacity:0.9;
+}
+
+.loader-content p{
+  font-size:12px;
+  letter-spacing:1px;
+  color:#aaa;
+}
+
+/* FADE */
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
 </style>
 
 </head>
-
+  
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-content">
+    <img src="../logo.png" alt="Arkilogix">
+    <p>Powered by <strong>Arkilogix</strong></p>
+  </div>
+</div>
+  
 <body>
 
 <div class="card">
@@ -225,7 +272,7 @@ flex-shrink:0;
 <!-- ACTION ICONS -->
 <div class="actions">
 
-<div class="icon-btn" onclick="handlePhone()">
+<div class="icon-btn" id="phoneBtn" onclick="handlePhone()">
 <svg class="icon" viewBox="0 0 24 24">
 <path d="M22 16.92V21a2 2 0 0 1-2.18 2
 19.79 19.79 0 0 1-8.63-3.07
@@ -242,14 +289,14 @@ A2 2 0 0 1 22 16.92z"/>
 </svg>
 </div>
 
-<div class="icon-btn" onclick="handleSMS()">
+<div class="icon-btn" id="smsBtn" onclick="handleSMS()">
 <svg class="icon" viewBox="0 0 24 24">
 <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V5
 a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
 </svg>
 </div>
 
-<div class="icon-btn" onclick="handleEmail()">
+<div class="icon-btn" id="emailBtn" onclick="handleEmail()">
 <svg class="icon" viewBox="0 0 24 24">
 <rect x="4" y="4" width="16" height="16"/>
 <path d="M22 6l-10 7L2 6"/>
@@ -261,14 +308,14 @@ a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
 <!-- SOCIAL -->
 <div class="socials">
 
-<div class="icon-btn" onclick="handleInstagram()">
+<div class="icon-btn" id="instagramBtn" onclick="handleInstagram()">
 <svg class="icon" viewBox="0 0 24 24">
 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7
 a1 1 0 0 1 1-1h3z"/>
 </svg>
 </div>
 
-<div class="icon-btn" onclick="handleEmail()">
+<div class="icon-btn" id="facebookBtn" onclick="handleEmail()">
 <svg class="icon" viewBox="0 0 24 24">
 <rect x="2" y="2" width="20" height="20" rx="5"/>
 <circle cx="12" cy="12" r="4"/>
@@ -346,9 +393,32 @@ const id = params.get("id");
 
 let currentPlan = "basic";
 
+  function toggleIcon(id, value){
+  const el = document.getElementById(id);
+  if(!el) return;
+
+  if(value && value.trim() !== ""){
+    el.style.display = "flex";
+  } else {
+    el.style.display = "none";
+  }
+}
+  
 /* LOAD USER DATA */
 async function loadUser(){
-
+// SHOW UI AFTER LOAD
+  setTimeout(() => {
+    document.getElementById("loader").style.opacity = "0";
+  
+    setTimeout(() => {
+      document.getElementById("loader").style.display = "none";
+  
+      const card = document.querySelector(".card");
+      card.style.opacity = "1";
+      card.style.transform = "translateY(0)";
+    }, 500);
+  
+  }, 800); // adjust delay (branding feel)
   if(!id) return;
 
   const snap = await getDoc(doc(db, "clients", id));
@@ -360,6 +430,12 @@ async function loadUser(){
         email: data.email || "",
         facebook: data.facebook || "",
         instagram: data.instagram || ""
+       
+          toggleIcon("phoneBtn", data.phone);
+          toggleIcon("smsBtn", data.phone);
+          toggleIcon("emailBtn", data.email);
+          toggleIcon("instagramBtn", data.instagram);
+          toggleIcon("facebookBtn", data.facebook);
       };
     // 🚨 BLOCK DISABLED USERS
     if (data.status === "disabled") {
