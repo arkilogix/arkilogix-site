@@ -301,3 +301,36 @@ p{
   color:#94a3b8;
   font-size:13px;
 }
+
+.plan-badge{
+  margin-top:12px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:11px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  color:#cbd5f5;
+  letter-spacing:0.3px;
+}
+
+/* PLAN COLORS */
+.plan-basic{
+  color:#94a3b8;
+}
+
+.plan-pro{
+  color:#C9A96E;
+}
+
+.plan-elite{
+  color:#22c55e;
+}
+
+.upgrade-hint{
+  font-size:11px;
+  color:#64748b;
+  margin-top:6px;
+}
