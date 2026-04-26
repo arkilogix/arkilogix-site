@@ -374,6 +374,11 @@ import {
   increment 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+import { 
+  getAuth, 
+  signInAnonymously 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
 /* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
@@ -386,6 +391,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+await signInAnonymously(auth);
 
 /* GET USER */
 const params = new URLSearchParams(window.location.search);
