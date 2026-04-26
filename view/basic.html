@@ -315,7 +315,7 @@ a1 1 0 0 1 1-1h3z"/>
 </svg>
 </div>
 
-<div class="icon-btn" id="facebookBtn" onclick="handleEmail()">
+<div class="icon-btn" id="facebookBtn" onclick="handleFacebook()">
 <svg class="icon" viewBox="0 0 24 24">
 <rect x="2" y="2" width="20" height="20" rx="5"/>
 <circle cx="12" cy="12" r="4"/>
@@ -540,7 +540,35 @@ window.trackClick = function(){
 
 /* INIT */
 loadUser();
+window.handlePhone = function(){
+  if(!window.userData?.phone) return;
+  trackClick();
+  window.location.href = "tel:" + window.userData.phone;
+};
 
+window.handleSMS = function(){
+  if(!window.userData?.phone) return;
+  trackClick();
+  window.location.href = "sms:" + window.userData.phone;
+};
+
+window.handleEmail = function(){
+  if(!window.userData?.email) return;
+  trackClick();
+  window.location.href = "mailto:" + window.userData.email;
+};
+
+window.handleInstagram = function(){
+  if(!window.userData?.instagram) return;
+  trackClick();
+  window.open(window.userData.instagram, "_blank");
+};
+
+window.handleFacebook = function(){
+  if(!window.userData?.facebook) return;
+  trackClick();
+  window.open(window.userData.facebook, "_blank");
+};
 </script>
 
 </body>
