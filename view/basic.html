@@ -406,37 +406,24 @@ let currentPlan = "basic";
   
 /* LOAD USER DATA */
 async function loadUser(){
-// SHOW UI AFTER LOAD
-  setTimeout(() => {
-    document.getElementById("loader").style.opacity = "0";
-  
-    setTimeout(() => {
-      document.getElementById("loader").style.display = "none";
-  
-      const card = document.querySelector(".card");
-      card.style.opacity = "1";
-      card.style.transform = "translateY(0)";
-    }, 500);
-  
-  }, 800); // adjust delay (branding feel)
   if(!id) return;
 
   const snap = await getDoc(doc(db, "clients", id));
 
   if(snap.exists()){
     const data = snap.data();
-      window.userData = {
-        phone: data.phone || "",
-        email: data.email || "",
-        facebook: data.facebook || "",
-        instagram: data.instagram || ""
-       
-      toggleIcon("phoneBtn", data.phone);
-      toggleIcon("smsBtn", data.phone);
-      toggleIcon("emailBtn", data.email);
-      toggleIcon("instagramBtn", data.instagram);
-      toggleIcon("facebookBtn", data.facebook);
-      };
+    window.userData = {
+      phone: data.phone || "",
+      email: data.email || "",
+      facebook: data.facebook || "",
+      instagram: data.instagram || ""
+    };
+    
+    toggleIcon("phoneBtn", data.phone);
+    toggleIcon("smsBtn", data.phone);
+    toggleIcon("emailBtn", data.email);
+    toggleIcon("instagramBtn", data.instagram);
+    toggleIcon("facebookBtn", data.facebook);
 
     document.getElementById("loader").style.opacity = "0";
     
@@ -477,6 +464,15 @@ updateDoc(doc(db, "clients", id), {
     if(data.profile){
   document.getElementById("profile").src = data.profile;
 }
+setTimeout(() => {
+  setTimeout(() => {
+    document.getElementById("loader").style.display = "none";
+
+    const card = document.querySelector(".card");
+    card.style.opacity = "1";
+    card.style.transform = "translateY(0)";
+  }, 500);
+}, 300);
     }
   }
 
