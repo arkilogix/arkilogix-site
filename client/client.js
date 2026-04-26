@@ -202,7 +202,7 @@ if(currentData.status === "paid"){
 planEl.innerText = statusText + label;
 planEl.className = "plan-badge " + planClass;
 // ✅ ===== END =====
-
+}
   // SERVICES
   const container = document.getElementById("cardServices");
   container.innerHTML = "";
