@@ -1029,7 +1029,7 @@ No problem. You can still share your card using a direct link.
     
 // ================= FIREBASE =================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -1465,7 +1465,7 @@ const params = {
   discount: discount,
 
   status: "pending",
-  createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  createdAt: serverTimestamp()
 
 };
   
