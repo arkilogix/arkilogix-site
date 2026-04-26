@@ -36,8 +36,8 @@ onAuthStateChanged(auth, async (user)=>{
 
     const snap = await getDocs(q);
 
+    console.log("EMAIL:", user.email);
     console.log("UID:", user.uid);
-    console.log("DOC FOUND:", !snap.empty);
 
     if(!snap.empty){
       currentData = snap.docs[0].data();
@@ -54,7 +54,6 @@ onAuthStateChanged(auth, async (user)=>{
   } catch(err){
     console.error("🔥 FIRESTORE ERROR:", err);
   }
-
 });
 
 /* ACCESS CONTROL */
@@ -136,95 +135,103 @@ function hideLock(){
 
 /* RENDER */
 function render(){
-    if(!document.getElementById("heroProfile")) return;
+  if(!document.getElementById("heroProfile")) return;
+
   const img = currentData.profile || "/logo.png";
 
-  document.getElementById("heroProfile").src = img;
+  const hero = document.getElementById("heroProfile");
+  if(hero) hero.src = img;
+
   const headerImg = document.getElementById("headerProfile");
-if(headerImg){
-  headerImg.src = img;
-}
+  if(headerImg) headerImg.src = img;
 
-  document.getElementById("cardName").innerText = currentData.name || "Your Name";
-  document.getElementById("cardPosition").innerText = currentData.position || "Your Position";
+  const nameEl = document.getElementById("cardName");
+  if(nameEl) nameEl.innerText = currentData.name || "Your Name";
 
+  const posEl = document.getElementById("cardPosition");
+  if(posEl) posEl.innerText = currentData.position || "Your Position";
+
+  // STATS SAFE
   const viewsEl = document.getElementById("views");
   const tapsEl = document.getElementById("taps");
   const clicksEl = document.getElementById("clicks");
-  
-    animateNumber(viewsEl, currentData?.stats?.views || 0);
-    animateNumber(tapsEl, currentData?.stats?.taps || 0);
-    animateNumber(clicksEl, currentData?.stats?.clicks || 0);
+
+  animateNumberSafe(viewsEl, currentData?.stats?.views || 0);
+  animateNumberSafe(tapsEl, currentData?.stats?.taps || 0);
+  animateNumberSafe(clicksEl, currentData?.stats?.clicks || 0);
 
   // STATUS
-    const status = (currentData.status || "").toLowerCase();
-    const chip = document.getElementById("statusChip");
-    
-    // RESET CLASS
-    chip.className = "status floating";
-    
-    // DEFAULT
+  const status = (currentData.status || "").toLowerCase();
+  const chip = document.getElementById("statusChip");
+
+  if(chip){
+    chip.className = "status";
     chip.innerText = "";
-    
-    // 👉 SHOW VERIFIED ONLY
+
     if(status === "paid"){
       chip.innerText = "Verified";
       chip.classList.add("verified");
     }
-    
-    // 👉 OPTIONAL: show processing
+
     if(status === "processing" || status === "pending"){
       chip.innerText = "Processing";
       chip.classList.add("processing");
     }
-  // ✅ ===== ADD HERE (PLAN DISPLAY) =====
-const planEl = document.getElementById("planBadge");
+  }
 
-if(planEl){  // ✅ PREVENT CRASH
-const plan = (currentData.plan || "basic").toLowerCase();
+  // PLAN
+  const planEl = document.getElementById("planBadge");
 
-let label = "Basic Plan";
-let planClass = "plan-basic";
+  if(planEl){
+    const plan = (currentData.plan || "basic").toLowerCase();
 
-if(plan === "pro"){
-  label = "Pro Plan";
-  planClass = "plan-pro";
-}
+    let label = "Basic Plan";
+    let planClass = "plan-basic";
 
-if(plan === "elite"){
-  label = "Elite Plan";
-  planClass = "plan-elite";
-}
+    if(plan === "pro"){
+      label = "Pro Plan";
+      planClass = "plan-pro";
+    }
 
-// STATUS + PLAN COMBINED
-let statusText = "";
+    if(plan === "elite"){
+      label = "Elite Plan";
+      planClass = "plan-elite";
+    }
 
-if(currentData.status === "paid"){
-  statusText = "Verified · ";
-}
+    let statusText = "";
+    if(currentData.status === "paid"){
+      statusText = "Verified · ";
+    }
 
-planEl.innerText = statusText + label;
-planEl.className = "plan-badge " + planClass;
-// ✅ ===== END =====
-}
+    planEl.innerText = statusText + label;
+    planEl.className = "plan-badge " + planClass;
+  }
+
   // SERVICES
   const container = document.getElementById("cardServices");
-  container.innerHTML = "";
+  if(container){
+    container.innerHTML = "";
 
-  if(currentData.services){
-    currentData.services.slice(0,3).forEach(s=>{
-      const span = document.createElement("span");
-      span.innerText = s;
-      container.appendChild(span);
-    });
+    if(currentData.services){
+      currentData.services.slice(0,3).forEach(s=>{
+        const span = document.createElement("span");
+        span.innerText = s;
+        container.appendChild(span);
+      });
+    }
   }
-function animateNumber(el, value){
+}
+
+function animateNumberSafe(el, value){
+  if(!el) return;
+
   let start = 0;
-  const duration = 500;
+  const duration = 400;
   const step = value / (duration / 16);
 
   const interval = setInterval(()=>{
     start += step;
+
     if(start >= value){
       el.innerText = value;
       clearInterval(interval);
@@ -233,9 +240,6 @@ function animateNumber(el, value){
     }
   },16);
 }
-
-}
-
 /* VIEW CARD */
 window.viewCard = function(){
   let page = "basic.html";
