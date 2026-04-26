@@ -300,11 +300,19 @@ function validatePasswords(){
 }
 
 /* ================= TOGGLE PASSWORD (FIXED) ================= */
-function togglePassword(inputId){
-  const input = document.getElementById(inputId);
-  if(!input) return;
-  input.type = input.type === "password" ? "text" : "password";
-}
+    function togglePassword(inputId){
+      const input = document.getElementById(inputId);
+      if(!input) return;
+      input.type = input.type === "password" ? "text" : "password";
+    }
+    
+    toggles.forEach(toggle => {
+      toggle.addEventListener("click", () => {
+        const input = toggle.parentElement.querySelector("input");
+        if(!input) return;
+        togglePassword(input.id);
+      });
+    });
 
 /* ================= SIGNUP ================= */
 async function signup(){
@@ -317,25 +325,22 @@ async function signup(){
     return;
   }
 
-  // 🔒 LOCK BUTTON
   signupBtn.disabled = true;
   signupBtn.innerText = "Creating...";
-
-  // 🚀 SHOW ACTIVATION SCREEN IMMEDIATELY
   startActivation();
 
   try{
     const userCred = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
 
-    showStep("step1"); // Linking order
+    showStep("step1");
 
     const params = new URLSearchParams(window.location.search);
     const clientId = params.get("clientId");
 
     let linked = false;
 
-    /* 🔥 LINK VIA clientId */
+    // ✅ 1. LINK VIA clientId (PRIMARY)
     if(clientId){
       const ref = doc(db, "clients", clientId);
       const snap = await getDoc(ref);
@@ -348,35 +353,58 @@ async function signup(){
         }, { merge: true });
 
         linked = true;
+        console.log("✅ Linked via clientId");
       }
     }
 
-    /* 🔥 FALLBACK LINK BY EMAIL */
+    // ✅ 2. LINK VIA EMAIL (FALLBACK)
     if(!linked){
       const q = query(collection(db,"clients"), where("email","==",email));
       const snap = await getDocs(q);
 
       if(!snap.empty){
-        await setDoc(snap.docs[0].ref, {
+        const ref = snap.docs[0].ref;
+
+        await setDoc(ref, {
           authUid: user.uid,
           hasAccount: true
         }, { merge:true });
-      } 
+
+        linked = true;
+        console.log("✅ Linked via email");
+      }
     }
 
-    showStep("step2"); // Preparing card
+    // 🚨 3. IF STILL NOT LINKED → CREATE NEW CLIENT
+    if(!linked){
+      const newRef = doc(collection(db, "clients"));
 
-    await new Promise(r=>setTimeout(r,400)); // smooth UX
+      await setDoc(newRef, {
+        authUid: user.uid,
+        email: email,
+        name: "",
+        position: "",
+        status: "processing",
+        plan: "basic",
+        stats: {
+          views: 0,
+          taps: 0,
+          clicks: 0
+        }
+      });
 
-    showStep("step3"); // Dashboard setup
+      console.log("⚠️ New client created (no existing record)");
+    }
 
+    showStep("step2");
     await new Promise(r=>setTimeout(r,400));
 
-    showStep("step4"); // Redirecting
+    showStep("step3");
+    await new Promise(r=>setTimeout(r,400));
 
+    showStep("step4");
     await new Promise(r=>setTimeout(r,300));
 
-    // ✅ FINAL REDIRECT (NO LOOP)
     window.location.replace("/client/index.html");
 
   }catch(err){
