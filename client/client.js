@@ -3,12 +3,6 @@ import { getFirestore, collection, query, where, getDocs }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-onAuthStateChanged(auth, (user)=>{
-  console.log("🔥 AUTH STATE CHANGE");
-  console.log("EMAIL:", user?.email);
-  console.log("UID:", user?.uid);
-});
-
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
@@ -21,32 +15,39 @@ const auth = getAuth(app);
 
 let currentData = {};
 let currentDocId = "";
-let isLocked = true;
 let currentUserEmail = "";
-let unsubscribe = null;
 
 /* AUTH */
 onAuthStateChanged(auth, async (user)=>{
   if(!user){
-    console.log("❌ NO USER");
     window.location.href="/auth/login.html";
     return;
   }
 
-  console.log("✅ USER LOGGED IN");
-  console.log("EMAIL:", user.email);
-  console.log("UID:", user.uid);
-
   currentUserEmail = user.email;
 
-  // 🔥 TEMP: just load first client (ignore UID)
-  const snap = await getDocs(collection(db, "clients"));
+  try{
+    const q = query(
+      collection(db, "clients"),
+      where("authUid", "==", user.uid)
+    );
 
-  if(!snap.empty){
-    currentData = snap.docs[0].data();
-    currentDocId = snap.docs[0].id;
+    const snap = await getDocs(q);
 
-    render();
+    if(!snap.empty){
+      currentData = snap.docs[0].data();
+      currentDocId = snap.docs[0].id;
+
+      const locked = checkAccess();
+      if(!locked){
+        render();
+      }
+    } else {
+      console.error("No client linked to UID:", user.uid);
+    }
+
+  } catch(err){
+    console.error("Firestore error:", err);
   }
 });
 
@@ -68,15 +69,16 @@ function checkAccess(){
     "unpaid"
   ];
 
- if(lockStates.includes(status)){
-  showLocked(
-    "Verifying Your Payment",
-    "Please wait while we activate your NFC card."
-  );
-  return true; 
-}
-  hideLock(); 
-  return false; 
+  if(lockStates.includes(status)){
+    showLocked(
+      "Verifying Your Payment",
+      "Please wait while we activate your NFC card."
+    );
+    return true;
+  }
+
+  hideLock();
+  return false;
 }
 
 function showLocked(title, message){
@@ -91,40 +93,32 @@ function showLocked(title, message){
 
   overlay.innerHTML = `
     <div class="lock-screen">
-      
       <div class="lock-card">
-
         <div class="lock-logo">ARKILOGIX</div>
-
         <div class="lock-title">${title}</div>
         <div class="lock-message">${message}</div>
-
         <div class="lock-loader">
           <span></span>
           <span></span>
           <span></span>
         </div>
-
       </div>
-
     </div>
   `;
 
-  overlay.style.display = "block"; // ✅ ensure visible
+  overlay.style.display = "block";
   overlay.classList.remove("unlocking");
 }
 
 function hideLock(){
-
   const overlay = document.getElementById("lockOverlay");
   if(!overlay) return;
 
-  // add fade-out class
   overlay.classList.add("unlocking");
 
   setTimeout(()=>{
     overlay.remove();
-  }, 400); // matches CSS animation
+  }, 400);
 }
 
 /* RENDER */
@@ -145,7 +139,6 @@ function render(){
   const posEl = document.getElementById("cardPosition");
   if(posEl) posEl.innerText = currentData.position || "Your Position";
 
-  // STATS SAFE
   const viewsEl = document.getElementById("views");
   const tapsEl = document.getElementById("taps");
   const clicksEl = document.getElementById("clicks");
@@ -154,7 +147,6 @@ function render(){
   animateNumberSafe(tapsEl, currentData?.stats?.taps || 0);
   animateNumberSafe(clicksEl, currentData?.stats?.clicks || 0);
 
-  // STATUS
   const status = (currentData.status || "").toLowerCase();
   const chip = document.getElementById("statusChip");
 
@@ -173,7 +165,6 @@ function render(){
     }
   }
 
-  // PLAN
   const planEl = document.getElementById("planBadge");
 
   if(planEl){
@@ -201,7 +192,6 @@ function render(){
     planEl.className = "plan-badge " + planClass;
   }
 
-  // SERVICES
   const container = document.getElementById("cardServices");
   if(container){
     container.innerHTML = "";
@@ -234,6 +224,7 @@ function animateNumberSafe(el, value){
     }
   },16);
 }
+
 /* VIEW CARD */
 window.viewCard = function(){
   let page = "basic.html";
@@ -267,14 +258,9 @@ window.resetPassword = function(){
   }
 
   sendPasswordResetEmail(auth, currentUserEmail)
-    .then(()=>{
-      alert("Password reset email sent.");
-    })
-    .catch(()=>{
-      alert("Error sending email.");
-    });
+    .then(()=> alert("Password reset email sent."))
+    .catch(()=> alert("Error sending email."));
 }
-
 
 /* UPGRADE */
 window.upgradeToPro = function(){
