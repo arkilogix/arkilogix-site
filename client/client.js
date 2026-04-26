@@ -141,13 +141,58 @@ function render(){
 
   document.getElementById("cardName").innerText = currentData.name || "Your Name";
   document.getElementById("cardPosition").innerText = currentData.position || "Your Position";
-
+  
+  document.getElementById("views").innerText = currentData?.stats?.views || 0;
+  document.getElementById("taps").innerText = currentData?.stats?.taps || 0;
+  document.getElementById("clicks").innerText = currentData?.stats?.clicks || 0;
   // STATUS
-  const status = currentData.status || "processing";
-  const chip = document.getElementById("statusChip");
+    const status = (currentData.status || "").toLowerCase();
+    const chip = document.getElementById("statusChip");
+    
+    // RESET CLASS
+    chip.className = "status floating";
+    
+    // DEFAULT
+    chip.innerText = "";
+    
+    // 👉 SHOW VERIFIED ONLY
+    if(status === "paid"){
+      chip.innerText = "Verified";
+      chip.classList.add("verified");
+    }
+    
+    // 👉 OPTIONAL: show processing
+    if(status === "processing" || status === "pending"){
+      chip.innerText = "Processing";
+      chip.classList.add("processing");
+    }
+  // ✅ ===== ADD HERE (PLAN DISPLAY) =====
+const planEl = document.getElementById("planBadge");
+const plan = (currentData.plan || "basic").toLowerCase();
 
-  chip.innerText = status.toUpperCase();
-  chip.className = "status " + status;
+let label = "Basic Plan";
+let planClass = "plan-basic";
+
+if(plan === "pro"){
+  label = "Pro Plan";
+  planClass = "plan-pro";
+}
+
+if(plan === "elite"){
+  label = "Elite Plan";
+  planClass = "plan-elite";
+}
+
+// STATUS + PLAN COMBINED
+let statusText = "";
+
+if(currentData.status === "paid"){
+  statusText = "Verified · ";
+}
+
+planEl.innerText = statusText + label;
+planEl.className = "plan-badge " + planClass;
+// ✅ ===== END =====
 
   // SERVICES
   const container = document.getElementById("cardServices");
