@@ -29,7 +29,20 @@ onAuthStateChanged(auth, async (user)=>{
 
   const q = query(
     collection(db, "clients"),
-    where("authUid", "==", user.uid)
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const docRef = doc(db, "clients", user.uid);
+    const docSnap = await getDoc(docRef);
+    
+    if(docSnap.exists()){
+      currentData = docSnap.data();
+      currentDocId = docSnap.id;
+    
+      const locked = checkAccess();
+      if(!locked){
+        render();
+      }
+    }
   );
 
   // ✅ PREVENT MULTIPLE LISTENERS
