@@ -1,39 +1,69 @@
-const db = firebase.firestore();
-const auth = firebase.auth();
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
+  authDomain: "arkilogix-clients.firebaseapp.com",
+  projectId: "arkilogix-clients"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 let currentData = {};
 let currentDocId = "";
 let isLocked = true;
+let currentUserEmail = "";
+let unsubscribe = null;
 
 /* AUTH */
-auth.onAuthStateChanged(async (user)=>{
+onAuthStateChanged(auth, async (user)=>{
   if(!user){
     window.location.href="/auth/login.html";
     return;
   }
 
-  // RESET PASSWORD NEEDS EMAIL
- db.collection("clients")
-  .where("email","==",user.email)
-  .onSnapshot(snap => {
+  currentUserEmail = user.email;
+
+  const q = query(
+    collection(db, "clients"),
+    where("email", "==", user.email)
+  );
+
+  // ✅ PREVENT MULTIPLE LISTENERS
+  if(unsubscribe) unsubscribe();
+
+  unsubscribe = onSnapshot(q, (snap) => {
+    console.log("SNAP:", snap.docs.map(d=>d.data()));
 
     if(!snap.empty){
       currentData = snap.docs[0].data();
       currentDocId = snap.docs[0].id;
 
-      console.log("STATUS:", currentData.status); // debug
+      console.log("DATA:", currentData);
+      console.log("STATUS:", currentData.status);
 
-      render();
-      checkAccess();
+      const locked = checkAccess();
+      if(!locked){
+        render();
+      }
     }
-
   });
+
 });
 
 /* ACCESS CONTROL */
 function checkAccess(){
 
   const status = (currentData.status || "").toLowerCase();
+  const adminLock = currentData.isLocked === true;
+
+  if(adminLock){
+    showLocked("🔒 Account Locked", "Please contact support.");
+    return true;
+  }
 
   const lockStates = [
     "pending",
@@ -42,27 +72,68 @@ function checkAccess(){
     "unpaid"
   ];
 
-  const isLockedNow = lockStates.includes(status);
+ if(lockStates.includes(status)){
+  showLocked(
+    "Verifying Your Payment",
+    "Please wait while we activate your NFC card."
+  );
+  return true; 
+}
+  hideLock(); 
+  return false; 
+}
 
-  console.log("STATUS:", status, "| LOCKED:", isLockedNow);
+function showLocked(title, message){
 
-  if(isLockedNow){
-    document.body.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#fff;text-align:center;">
-        <div>
-          <h2>Verifying your Account</h2>
-          <p>Your card will activate after payment confirmation.</p>
-        </div>
-      </div>
-    `;
-    return;
+  let overlay = document.getElementById("lockOverlay");
+
+  if(!overlay){
+    overlay = document.createElement("div");
+    overlay.id = "lockOverlay";
+    document.body.appendChild(overlay);
   }
 
+  overlay.innerHTML = `
+    <div class="lock-screen">
+      
+      <div class="lock-card">
+
+        <div class="lock-logo">ARKILOGIX</div>
+
+        <div class="lock-title">${title}</div>
+        <div class="lock-message">${message}</div>
+
+        <div class="lock-loader">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+  overlay.style.display = "block"; // ✅ ensure visible
+  overlay.classList.remove("unlocking");
+}
+
+function hideLock(){
+
+  const overlay = document.getElementById("lockOverlay");
+  if(!overlay) return;
+
+  // add fade-out class
+  overlay.classList.add("unlocking");
+
+  setTimeout(()=>{
+    overlay.remove();
+  }, 400); // matches CSS animation
 }
 
 /* RENDER */
 function render(){
-
+    if(!document.getElementById("heroProfile")) return;
   const img = currentData.profile || "/logo.png";
 
   document.getElementById("heroProfile").src = img;
@@ -118,12 +189,12 @@ function shareCard(){
 
 /* PASSWORD RESET */
 function resetPassword(){
-  if(!window.currentUserEmail){
+  if(!currentUserEmail){
     alert("No email found.");
     return;
   }
 
-  auth.sendPasswordResetEmail(window.currentUserEmail)
+  sendPasswordResetEmail(auth, currentUserEmail)
     .then(()=>{
       alert("Password reset email sent.");
     })
@@ -132,17 +203,6 @@ function resetPassword(){
     });
 }
 
-if(userData.isLocked){
-  document.body.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#fff;text-align:center;">
-      <div>
-        <h2>🔒 Account Locked</h2>
-        <p>Please contact support to unlock your dashboard.</p>
-      </div>
-    </div>
-  `;
-  return;
-}
 
 /* UPGRADE */
 function upgradeToPro(){
@@ -154,7 +214,7 @@ function upgradeToPro(){
 
 /* LOGOUT */
 function logout(){
-  auth.signOut().then(()=>{
+  signOut(auth).then(()=>{
     window.location.href="/auth/login.html";
   });
 }
