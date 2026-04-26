@@ -6,7 +6,7 @@
 <title>ArkiLogix Dashboard</title>
 
 <link rel="stylesheet" href="client.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -17,9 +17,6 @@
     <span>ArkiLogix</span>
   </div>
 
-  <div class="user-mini">
-    <img id="headerProfile" src="/logo.png">
-  </div>
 </header>
 
 <main class="main">
@@ -27,9 +24,16 @@
   <!-- PROFILE CARD -->
   <section class="card">
 
-    <div id="statusChip" class="status">Processing</div>
+<div class="avatar-wrap">
+  <img id="heroProfile" class="avatar" src="/logo.png">
+  <div id="statusChip" class="status floating"></div>
+</div>
 
-    <img id="heroProfile" class="avatar" src="/logo.png">
+<!-- PLAN BADGE -->
+<div id="planBadge" class="plan-badge"></div>
+
+<!-- UPGRADE HINT -->
+<div id="upgradeHint" class="upgrade-hint"></div>
 
     <h2 id="cardName">Name</h2>
     <p id="cardPosition">Position</p>
@@ -40,7 +44,9 @@
 
   <!-- PRIMARY -->
   <button class="btn primary" onclick="viewCard()">View My Card</button>
-
+   <!-- EDIT PROFILE -->
+  <button class="btn glass" onclick="editProfile()">Edit Profile</button>
+  
   <!-- ACTIONS -->
   <div class="row">
     <button class="btn glass" onclick="shareCard()">Share</button>
@@ -52,9 +58,9 @@
 
   <!-- STATS -->
   <div class="stats">
-    <div><small>Views</small><br><b>0</b></div>
-    <div><small>Taps</small><br><b>0</b></div>
-    <div><small>Clicks</small><br><b>0</b></div>
+    <div><small>Views</small><br><b id="views">0</b>/div>
+    <div><small>Taps</small><br><b id="taps">0</b></div>
+    <div><small>Clicks</small><br><b id="clicks">0</b></div>
   </div>
 
   <!-- LOGOUT -->
@@ -78,5 +84,6 @@
 <script src="/firebase-init.js"></script>
 <script type="module" src="client.js"></script>
 
+  
 </body>
 </html>
