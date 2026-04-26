@@ -198,25 +198,28 @@ window.login = async function(){
     }
 
     // ✅ CLIENT CHECK (authUid)
-    let found = false;
+    const docRef = doc(db, "clients", user.uid);
+    const docSnap = await getDoc(docRef);
+    
+    if(docSnap.exists()){
+      window.location.replace("/client/index.html");
+      return;
+    }
 
-for(let i=0; i<6; i++){ // ~3 seconds total
-
-  const q1 = query(collection(db,"clients"), where("authUid","==",user.uid));
-  const snap1 = await getDocs(q1);
-
-  if(!snap1.empty){
-    found = true;
-    break;
-  }
-
-  await new Promise(r=>setTimeout(r,500));
-}
-
-if(found){
-  window.location.replace("/client/index.html");
-  return;
-}
+    const q2 = query(collection(db,"clients"), where("email","==",email));
+    const snap2 = await getDocs(q2);
+    
+    if(!snap2.empty){
+      const ref = snap2.docs[0].ref;
+    
+      await setDoc(ref, { authUid: user.uid }, { merge: true });
+    
+      // OPTIONAL: migrate to UID doc
+      await setDoc(doc(db,"clients",user.uid), snap2.docs[0].data());
+    
+      window.location.replace("/client/index.html");
+      return;
+    }
 
     // 🔥 LINK BY EMAIL
     let emailFound = false;
