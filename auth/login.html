@@ -189,6 +189,7 @@ window.login = async function(){
   try{
     const userCred = await signInWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
+    console.log("USER UID:", user.uid);
 
     // ✅ ADMIN CHECK
     const adminDoc = await getDoc(doc(db, "admins", user.uid));
