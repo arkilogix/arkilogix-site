@@ -28,37 +28,25 @@ let unsubscribe = null;
 /* AUTH */
 onAuthStateChanged(auth, async (user)=>{
   if(!user){
+    console.log("❌ NO USER");
     window.location.href="/auth/login.html";
     return;
   }
 
+  console.log("✅ USER LOGGED IN");
+  console.log("EMAIL:", user.email);
+  console.log("UID:", user.uid);
+
   currentUserEmail = user.email;
 
-  try{
-    const q = query(
-      collection(db, "clients"),
-      where("authUid", "==", user.uid)
-    );
+  // 🔥 TEMP: just load first client (ignore UID)
+  const snap = await getDocs(collection(db, "clients"));
 
-    const snap = await getDocs(q);
+  if(!snap.empty){
+    currentData = snap.docs[0].data();
+    currentDocId = snap.docs[0].id;
 
-    console.log("EMAIL:", user.email);
-    console.log("UID:", user.uid);
-
-    if(!snap.empty){
-      currentData = snap.docs[0].data();
-      currentDocId = snap.docs[0].id;
-
-      const locked = checkAccess();
-      if(!locked){
-        render();
-      }
-    } else {
-      console.error("❌ No client linked to UID:", user.uid);
-    }
-
-  } catch(err){
-    console.error("🔥 FIRESTORE ERROR:", err);
+    render();
   }
 });
 
