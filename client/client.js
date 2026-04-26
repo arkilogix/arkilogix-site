@@ -28,19 +28,27 @@ onAuthStateChanged(auth, async (user)=>{
 
   currentUserEmail = user.email;
 
-  const docRef = doc(db, "clients", user.uid);
-  const docSnap = await getDoc(docRef);
+  try{
+    const docRef = doc(db, "clients", user.uid);
+    const docSnap = await getDoc(docRef);
 
-  if(docSnap.exists()){
-    currentData = docSnap.data();
-    currentDocId = docSnap.id;
+    console.log("UID:", user.uid);
+    console.log("DOC EXISTS:", docSnap.exists());
 
-    const locked = checkAccess();
-    if(!locked){
-      render();
+    if(docSnap.exists()){
+      currentData = docSnap.data();
+      currentDocId = docSnap.id;
+
+      const locked = checkAccess();
+      if(!locked){
+        render();
+      }
+    } else {
+      console.error("❌ No document found for UID:", user.uid);
     }
-  } else {
-    console.log("No client document found for UID:", user.uid);
+
+  } catch(err){
+    console.error("🔥 FIRESTORE ERROR:", err);
   }
 
 });
