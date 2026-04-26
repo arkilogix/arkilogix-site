@@ -27,44 +27,20 @@ onAuthStateChanged(auth, async (user)=>{
 
   currentUserEmail = user.email;
 
-  const q = query(
-    collection(db, "clients"),
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  const docRef = doc(db, "clients", user.uid);
+  const docSnap = await getDoc(docRef);
 
-    const docRef = doc(db, "clients", user.uid);
-    const docSnap = await getDoc(docRef);
-    
-    if(docSnap.exists()){
-      currentData = docSnap.data();
-      currentDocId = docSnap.id;
-    
-      const locked = checkAccess();
-      if(!locked){
-        render();
-      }
+  if(docSnap.exists()){
+    currentData = docSnap.data();
+    currentDocId = docSnap.id;
+
+    const locked = checkAccess();
+    if(!locked){
+      render();
     }
-  );
-
-  // ✅ PREVENT MULTIPLE LISTENERS
-  if(unsubscribe) unsubscribe();
-
-  unsubscribe = onSnapshot(q, (snap) => {
-    console.log("SNAP:", snap.docs.map(d=>d.data()));
-
-    if(!snap.empty){
-      currentData = snap.docs[0].data();
-      currentDocId = snap.docs[0].id;
-
-      console.log("DATA:", currentData);
-      console.log("STATUS:", currentData.status);
-
-      const locked = checkAccess();
-      if(!locked){
-        render();
-      }
-    }
-  });
-
+  } else {
+    console.log("No client document found for UID:", user.uid);
+  }
 });
 
 /* ACCESS CONTROL */
