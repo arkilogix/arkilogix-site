@@ -431,12 +431,16 @@ async function loadUser(){
         facebook: data.facebook || "",
         instagram: data.instagram || ""
        
-          toggleIcon("phoneBtn", data.phone);
-          toggleIcon("smsBtn", data.phone);
-          toggleIcon("emailBtn", data.email);
-          toggleIcon("instagramBtn", data.instagram);
-          toggleIcon("facebookBtn", data.facebook);
+      toggleIcon("phoneBtn", data.phone);
+      toggleIcon("smsBtn", data.phone);
+      toggleIcon("emailBtn", data.email);
+      toggleIcon("instagramBtn", data.instagram);
+      toggleIcon("facebookBtn", data.facebook);
       };
+
+    document.getElementById("loader").style.opacity = "0";
+    
+  
     // 🚨 BLOCK DISABLED USERS
     if (data.status === "disabled") {
       document.body.innerHTML = `
