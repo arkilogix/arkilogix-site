@@ -144,10 +144,15 @@ if(headerImg){
 
   document.getElementById("cardName").innerText = currentData.name || "Your Name";
   document.getElementById("cardPosition").innerText = currentData.position || "Your Position";
+
+  const viewsEl = document.getElementById("views");
+  const tapsEl = document.getElementById("taps");
+  const clicksEl = document.getElementById("clicks");
   
-  document.getElementById("views").innerText = currentData?.stats?.views || 0;
-  document.getElementById("taps").innerText = currentData?.stats?.taps || 0;
-  document.getElementById("clicks").innerText = currentData?.stats?.clicks || 0;
+  if(viewsEl) viewsEl.innerText = currentData?.stats?.views || 0;
+  if(tapsEl) tapsEl.innerText = currentData?.stats?.taps || 0;
+  if(clicksEl) clicksEl.innerText = currentData?.stats?.clicks || 0;
+
   // STATUS
     const status = (currentData.status || "").toLowerCase();
     const chip = document.getElementById("statusChip");
@@ -173,31 +178,6 @@ if(headerImg){
 const planEl = document.getElementById("planBadge");
 
 if(planEl){  // ✅ PREVENT CRASH
-
-  const plan = (currentData.plan || "basic").toLowerCase();
-
-  let label = "Basic Plan";
-  let planClass = "plan-basic";
-
-  if(plan === "pro"){
-    label = "Pro Plan";
-    planClass = "plan-pro";
-  }
-
-  if(plan === "elite"){
-    label = "Elite Plan";
-    planClass = "plan-elite";
-  }
-
-  let statusText = "";
-
-  if(currentData.status === "paid"){
-    statusText = "Verified · ";
-  }
-
-  planEl.innerText = statusText + label;
-  planEl.className = "plan-badge " + planClass;
-}
 const plan = (currentData.plan || "basic").toLowerCase();
 
 let label = "Basic Plan";
