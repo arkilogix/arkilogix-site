@@ -3,6 +3,12 @@ import { getFirestore, collection, query, where, getDocs }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+onAuthStateChanged(auth, (user)=>{
+  console.log("🔥 AUTH STATE CHANGE");
+  console.log("EMAIL:", user?.email);
+  console.log("UID:", user?.uid);
+});
+
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
