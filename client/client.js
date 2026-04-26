@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -42,22 +43,6 @@ onAuthStateChanged(auth, async (user)=>{
     console.log("No client document found for UID:", user.uid);
   }
 
-});
-
-  const docRef = doc(db, "clients", user.uid);
-  const docSnap = await getDoc(docRef);
-
-  if(docSnap.exists()){
-    currentData = docSnap.data();
-    currentDocId = docSnap.id;
-
-    const locked = checkAccess();
-    if(!locked){
-      render();
-    }
-  } else {
-    console.log("No client document found for UID:", user.uid);
-  }
 });
 
 /* ACCESS CONTROL */
