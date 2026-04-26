@@ -366,18 +366,8 @@ Save Contact
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { 
-  getFirestore, 
-  doc, 
-  getDoc, 
-  updateDoc, 
-  increment 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-import { 
-  getAuth, 
-  signInAnonymously 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 /* FIREBASE CONFIG */
 const firebaseConfig = {
@@ -392,102 +382,99 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-await signInAnonymously(auth);
 
-/* GET USER */
+/* GET ID */
 const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+const id = params.get("id"); // ✅ IMPORTANT
 
 let currentPlan = "basic";
 
-  function toggleIcon(id, value){
+function toggleIcon(id, value){
   const el = document.getElementById(id);
   if(!el) return;
-
-  if(value && value.trim() !== ""){
-    el.style.display = "flex";
-  } else {
-    el.style.display = "none";
-  }
+  el.style.display = value ? "flex" : "none";
 }
-  
-/* LOAD USER DATA */
-async function loadUser(){
-  if(!id) return;
 
-  const snap = await getDoc(doc(db, "clients", id));
+/* MAIN INIT */
+async function init(){
 
-  if(snap.exists()){
-    const data = snap.data();
-    window.userData = {
-      phone: data.phone || "",
-      email: data.email || "",
-      facebook: data.facebook || "",
-      instagram: data.instagram || ""
-    };
-    
-    toggleIcon("phoneBtn", data.phone);
-    toggleIcon("smsBtn", data.phone);
-    toggleIcon("emailBtn", data.email);
-    toggleIcon("instagramBtn", data.instagram);
-    toggleIcon("facebookBtn", data.facebook);
+  await signInAnonymously(auth); // ✅ ensure auth BEFORE firestore
 
-    document.getElementById("loader").style.opacity = "0";
-    
-  
-    // 🚨 BLOCK DISABLED USERS
-    if (data.status === "disabled") {
-      document.body.innerHTML = `
-        <div style="
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          height:100vh;
-          font-family:sans-serif;
-          background:#0f1115;
-          color:white;
-          text-align:center;
-        ">
-          <div>
-            <h2>Account Disabled</h2>
-            <p>This digital card is no longer available.</p>
-          </div>
+  if(!id){
+    console.log("NO ID");
+    return;
+  }
+
+  const ref = doc(db, "clients", id);
+  const snap = await getDoc(ref);
+
+  if(!snap.exists()){
+    console.log("NO DATA FOUND FOR:", id);
+    return;
+  }
+
+  const data = snap.data();
+
+  window.userData = {
+    phone: data.phone || "",
+    email: data.email || "",
+    facebook: data.facebook || "",
+    instagram: data.instagram || ""
+  };
+
+  toggleIcon("phoneBtn", data.phone);
+  toggleIcon("smsBtn", data.phone);
+  toggleIcon("emailBtn", data.email);
+  toggleIcon("instagramBtn", data.instagram);
+  toggleIcon("facebookBtn", data.facebook);
+
+  if (data.status === "disabled") {
+    document.body.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0f1115;color:white;">
+        <div>
+          <h2>Account Disabled</h2>
+          <p>This digital card is no longer available.</p>
         </div>
-      `;
-      return;
-    }
+      </div>
+    `;
+    return;
+  }
 
-/* TRACK VIEW */
-updateDoc(doc(db, "clients", id), {
-  "stats.views": increment(1)
-});
-  // CONTINUE NORMAL UI
-  currentPlan = data.plan || "basic";
-
+  /* TEXT */
   document.querySelector(".name").innerText = data.name || "Your Name";
   document.querySelector(".position").innerText = data.position || "Your Position";
 
-  renderServices(data.services || []);
-    if(data.profile){
-  document.getElementById("profile").src = data.profile;
-}
-setTimeout(() => {
-  setTimeout(() => {
-    document.getElementById("loader").style.display = "none";
-
-    const card = document.querySelector(".card");
-    card.style.opacity = "1";
-    card.style.transform = "translateY(0)";
-  }, 500);
-}, 300);
-    }
+  /* PROFILE */
+  if(data.profile){
+    document.getElementById("profile").src = data.profile;
   }
+
+  /* SERVICES */
+  renderServices(data.services || []);
+
+  /* TRACK VIEW */
+  await updateDoc(ref, {
+    "stats.views": increment(1)
+  });
+
+  /* SHOW UI */
+  setTimeout(() => {
+    document.getElementById("loader").style.opacity = "0";
+
+    setTimeout(() => {
+      document.getElementById("loader").style.display = "none";
+
+      const card = document.querySelector(".card");
+      card.style.opacity = "1";
+      card.style.transform = "translateY(0)";
+    }, 500);
+  }, 300);
+}
 
 /* SERVICES */
 function renderServices(list){
   const el = document.getElementById("services");
   el.innerHTML="";
-
   list.slice(0,3).forEach(s=>{
     const d=document.createElement("div");
     d.className="service";
@@ -496,50 +483,14 @@ function renderServices(list){
   });
 }
 
-/* MODAL SYSTEM */
-function showModal(msg){
-  document.getElementById("modal").classList.add("active");
-  document.querySelector("#modal p").innerText = msg;
-}
-
-window.closeModal = function(){
-  document.getElementById("modal").classList.remove("active");
-};
-window.downloadVCard = function(){
-
-  const name = document.querySelector(".name").innerText;
-  const phone = "+639000000000";
-  const email = "email@example.com";
-
-  const vCardData = `BEGIN:VCARD
-VERSION:3.0
-FN:${name}
-TEL:${phone}
-EMAIL:${email}
-END:VCARD`;
-
-  const blob = new Blob([vCardData], { type: "text/vcard" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "contact.vcf";
-  a.click();
-
-  URL.revokeObjectURL(url);
-}
-
-/* TRACK CLICKS */
-window.trackClick = function(){
+/* ACTIONS */
+window.trackClick = async function(){
   if(!id) return;
-
-  updateDoc(doc(db, "clients", id), {
+  await updateDoc(doc(db, "clients", id), {
     "stats.clicks": increment(1)
   });
-}
+};
 
-/* INIT */
-loadUser();
 window.handlePhone = function(){
   if(!window.userData?.phone) return;
   trackClick();
@@ -569,6 +520,10 @@ window.handleFacebook = function(){
   trackClick();
   window.open(window.userData.facebook, "_blank");
 };
+
+/* INIT CALL */
+init();
+
 </script>
 
 </body>
