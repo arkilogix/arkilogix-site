@@ -123,6 +123,9 @@ function hideLock(){
 
 /* RENDER */
 function render(){
+  console.log("NAME:", currentData.name);
+  console.log("POSITION:", currentData.position);
+ 
   if(!document.getElementById("heroProfile")) return;
 
   const img = currentData.profile || "/logo.png";
@@ -134,10 +137,15 @@ function render(){
   if(headerImg) headerImg.src = img;
 
   const nameEl = document.getElementById("cardName");
-  if(nameEl) nameEl.innerText = currentData.name || "Your Name";
-
   const posEl = document.getElementById("cardPosition");
-  if(posEl) posEl.innerText = currentData.position || "Your Position";
+  
+  if(nameEl){
+    nameEl.innerText = currentData.name || "Your Name";
+  }
+  
+  if(posEl){
+    posEl.innerText = currentData.position || "Your Position";
+  }
 
   const viewsEl = document.getElementById("views");
   const tapsEl = document.getElementById("taps");
