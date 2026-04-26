@@ -163,7 +163,7 @@ function render(){
 }
 
 /* VIEW CARD */
-function viewCard(){
+window.viewCard = function(){
   let page = "basic.html";
   if(currentData.plan==="pro") page="pro.html";
   if(currentData.plan==="elite") page="elite.html";
@@ -172,7 +172,7 @@ function viewCard(){
 }
 
 /* SHARE */
-function shareCard(){
+window.shareCard = function(){
   let page = "basic.html";
   if(currentData.plan==="pro") page="pro.html";
   if(currentData.plan==="elite") page="elite.html";
@@ -188,7 +188,7 @@ function shareCard(){
 }
 
 /* PASSWORD RESET */
-function resetPassword(){
+window.resetPassword = function(){
   if(!currentUserEmail){
     alert("No email found.");
     return;
@@ -205,7 +205,7 @@ function resetPassword(){
 
 
 /* UPGRADE */
-function upgradeToPro(){
+window.upgradeToPro = function(){
   const subject = "Upgrade to Pro Request";
   const body = `Name: ${currentData.name}\nPlan: ${currentData.plan}`;
 
@@ -213,7 +213,7 @@ function upgradeToPro(){
 }
 
 /* LOGOUT */
-function logout(){
+window.logout = function(){
   signOut(auth).then(()=>{
     window.location.href="/auth/login.html";
   });
