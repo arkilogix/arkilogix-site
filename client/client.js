@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc }
-  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -29,22 +29,26 @@ onAuthStateChanged(auth, async (user)=>{
   currentUserEmail = user.email;
 
   try{
-    const docRef = doc(db, "clients", user.uid);
-    const docSnap = await getDoc(docRef);
+    const q = query(
+      collection(db, "clients"),
+      where("authUid", "==", user.uid)
+    );
+
+    const snap = await getDocs(q);
 
     console.log("UID:", user.uid);
-    console.log("DOC EXISTS:", docSnap.exists());
+    console.log("DOC FOUND:", !snap.empty);
 
-    if(docSnap.exists()){
-      currentData = docSnap.data();
-      currentDocId = docSnap.id;
+    if(!snap.empty){
+      currentData = snap.docs[0].data();
+      currentDocId = snap.docs[0].id;
 
       const locked = checkAccess();
       if(!locked){
         render();
       }
     } else {
-      console.error("❌ No document found for UID:", user.uid);
+      console.error("❌ No client linked to UID:", user.uid);
     }
 
   } catch(err){
