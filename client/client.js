@@ -29,7 +29,7 @@ onAuthStateChanged(auth, async (user)=>{
 
   const q = query(
     collection(db, "clients"),
-    where("email", "==", user.email)
+    where("authUid", "==", user.uid)
   );
 
   // ✅ PREVENT MULTIPLE LISTENERS
