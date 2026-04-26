@@ -41,6 +41,23 @@ onAuthStateChanged(auth, async (user)=>{
   } else {
     console.log("No client document found for UID:", user.uid);
   }
+
+});
+
+  const docRef = doc(db, "clients", user.uid);
+  const docSnap = await getDoc(docRef);
+
+  if(docSnap.exists()){
+    currentData = docSnap.data();
+    currentDocId = docSnap.id;
+
+    const locked = checkAccess();
+    if(!locked){
+      render();
+    }
+  } else {
+    console.log("No client document found for UID:", user.uid);
+  }
 });
 
 /* ACCESS CONTROL */
