@@ -206,44 +206,6 @@ window.login = async function(){
       return;
     }
 
-    const q2 = query(collection(db,"clients"), where("email","==",email));
-    const snap2 = await getDocs(q2);
-    
-    if(!snap2.empty){
-      const ref = snap2.docs[0].ref;
-    
-      await setDoc(ref, { authUid: user.uid }, { merge: true });
-    
-      // OPTIONAL: migrate to UID doc
-      await setDoc(doc(db,"clients",user.uid), snap2.docs[0].data());
-    
-      window.location.replace("/client/index.html");
-      return;
-    }
-
-    // 🔥 LINK BY EMAIL
-    let emailFound = false;
-let ref = null;
-
-for(let i=0; i<6; i++){
-
-  const q2 = query(collection(db,"clients"), where("email","==",email));
-  const snap2 = await getDocs(q2);
-
-  if(!snap2.empty){
-    emailFound = true;
-    ref = snap2.docs[0].ref;
-    break;
-  }
-
-  await new Promise(r=>setTimeout(r,500));
-}
-
-if(emailFound){
-  await setDoc(ref, { authUid: user.uid, hasAccount: true }, { merge: true });
-  window.location.replace("/client/index.html");
-  return;
-}
 
     // ❌ NO USER
     document.getElementById("loginLoader").style.display = "none";
