@@ -168,7 +168,7 @@ window.viewCard = function(){
   if(currentData.plan==="pro") page="pro.html";
   if(currentData.plan==="elite") page="elite.html";
 
-  window.open(`/view/${page}?id=${currentDocId}`);
+  window.open(`/view/${page}?id=${auth.currentUser.uid}`);
 }
 
 /* SHARE */
