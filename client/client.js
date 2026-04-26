@@ -152,9 +152,9 @@ if(headerImg){
   const tapsEl = document.getElementById("taps");
   const clicksEl = document.getElementById("clicks");
   
-  if(viewsEl) viewsEl.innerText = currentData?.stats?.views || 0;
-  if(tapsEl) tapsEl.innerText = currentData?.stats?.taps || 0;
-  if(clicksEl) clicksEl.innerText = currentData?.stats?.clicks || 0;
+    animateNumber(viewsEl, currentData?.stats?.views || 0);
+    animateNumber(tapsEl, currentData?.stats?.taps || 0);
+    animateNumber(clicksEl, currentData?.stats?.clicks || 0);
 
   // STATUS
     const status = (currentData.status || "").toLowerCase();
@@ -218,6 +218,22 @@ planEl.className = "plan-badge " + planClass;
       container.appendChild(span);
     });
   }
+function animateNumber(el, value){
+  let start = 0;
+  const duration = 500;
+  const step = value / (duration / 16);
+
+  const interval = setInterval(()=>{
+    start += step;
+    if(start >= value){
+      el.innerText = value;
+      clearInterval(interval);
+    } else {
+      el.innerText = Math.floor(start);
+    }
+  },16);
+}
+
 }
 
 /* VIEW CARD */
