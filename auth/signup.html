@@ -315,13 +315,19 @@ function validatePasswords(){
     });
 
 /* ================= SIGNUP ================= */
+let isSigningUp = false;
+
 async function signup(){
+
+  if(isSigningUp) return;
+  isSigningUp = true;
 
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
   if(!email || !password){
     alert("Please fill all fields");
+    isSigningUp = false;
     return;
   }
 
@@ -336,37 +342,30 @@ async function signup(){
     showStep("step1");
 
     const params = new URLSearchParams(window.location.search);
-const clientId = params.get("clientId");
+    const clientId = params.get("clientId");
 
-if(!clientId){
-  alert("Invalid signup link.");
-  return;
-}
-
-// 🔥 WAIT FOR AUTH READY
-await new Promise(resolve => {
-  onAuthStateChanged(auth, user => {
-    if(user){
-      resolve();
+    if(!clientId){
+      alert("Invalid signup link.");
+      isSigningUp = false;
+      return;
     }
-  });
-});
 
-const ref = doc(db, "clients", clientId);
-const snap = await getDoc(ref);
+    const ref = doc(db, "clients", clientId);
+    const snap = await getDoc(ref);
 
-if(!snap.exists()){
-  alert("Order not found.");
-  return;
-}
+    if(!snap.exists()){
+      alert("Order not found.");
+      isSigningUp = false;
+      return;
+    }
 
-await setDoc(ref, {
-  authUid: auth.currentUser.uid,
-  hasAccount: true,
-  email: email
-}, { merge: true });
+    await setDoc(ref, {
+      authUid: user.uid,
+      hasAccount: true,
+      email: email
+    }, { merge: true });
 
-console.log("✅ LINKED:", auth.currentUser.uid);
+    console.log("✅ LINKED:", user.uid);
 
     showStep("step2");
     await new Promise(r=>setTimeout(r,400));
@@ -377,6 +376,8 @@ console.log("✅ LINKED:", auth.currentUser.uid);
     showStep("step4");
     await new Promise(r=>setTimeout(r,300));
 
+    isSigningUp = false;
+
     window.location.replace("/client/index.html?clientId=" + clientId);
 
   }catch(err){
@@ -386,6 +387,8 @@ console.log("✅ LINKED:", auth.currentUser.uid);
     signupBtn.innerText = "Create Account";
 
     document.getElementById("activationScreen").style.display = "none";
+
+    isSigningUp = false;
   }
 }
 
