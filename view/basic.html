@@ -246,6 +246,83 @@ flex-shrink:0;
   from{opacity:0; transform:translateY(10px);}
   to{opacity:1; transform:translateY(0);}
 }
+  /* ===== PREMIUM LOCK SCREEN ===== */
+
+.lock-premium{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  background:
+    radial-gradient(circle at center, #111 0%, #000 100%);
+
+  animation:fadeIn 0.5s ease;
+}
+
+.lock-card{
+  text-align:center;
+  padding:40px 30px;
+  border-radius:20px;
+  max-width:320px;
+  width:90%;
+
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(16px);
+
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+
+  animation:fadeUp 0.6s ease;
+}
+
+.lock-logo{
+  width:50px;
+  margin-bottom:15px;
+  opacity:0.85;
+}
+
+.lock-title{
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:6px;
+  color:#fff;
+}
+
+.lock-sub{
+  font-size:13px;
+  color:#cbd5f5;
+  margin-bottom:20px;
+}
+
+.lock-note{
+  font-size:12px;
+  color:#94a3b8;
+  margin-top:20px;
+}
+
+/* LOADER DOTS */
+.lock-loader{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+}
+
+.lock-loader span{
+  width:6px;
+  height:6px;
+  background:#fff;
+  border-radius:50%;
+  animation:pulse 1.2s infinite;
+}
+
+.lock-loader span:nth-child(2){
+  animation-delay:0.2s;
+}
+
+.lock-loader span:nth-child(3){
+  animation-delay:0.4s;
+}
 </style>
 
 </head>
@@ -435,16 +512,31 @@ async function init(){
   const data = snap.data();
   // 🔒 ONLY SHOW IF PAID
     if(data.status !== "paid"){
-      document.body.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0f1115;color:white;">
-          <div>
-            <h2>Card Not Active</h2>
-            <p>Please complete payment to activate this card.</p>
-          </div>
+  document.body.innerHTML = `
+    <div class="lock-premium">
+
+      <div class="lock-card">
+
+        <img src="../logo.png" class="lock-logo">
+
+        <h2 class="lock-title">Card Not Active</h2>
+        <p class="lock-sub">This digital card is not yet activated.</p>
+
+        <div class="lock-loader">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
-      `;
-      return;
-    }
+
+        <p class="lock-note">Please complete payment to activate.</p>
+
+      </div>
+
+    </div>
+  `;
+  return;
+}
+  
   window.userData = {
     phone: data.phone || "",
     email: data.email || "",
