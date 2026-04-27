@@ -1491,6 +1491,7 @@ if(profile){
 }
 updateLoading(2);
 // ================= PROJECT HIGHLIGHTS =================
+// ================= PROJECT HIGHLIGHTS =================
 const highlights = [
   document.getElementById("highlightPhoto1").files[0],
   document.getElementById("highlightPhoto2").files[0],
@@ -1500,16 +1501,19 @@ const highlights = [
 let projectUrls = [];
 let projectIds = [];
 
+// upload all (skip empty)
 const uploadPromises = highlights.map(file => {
-  if(!file) return null;
+  if(!file) return Promise.resolve(null);
+
   return (async () => {
-  const compressed = await compressImage(file);
-  return uploadToCloudinary(compressed, clientId, "project");
-})();
+    const compressed = await compressImage(file);
+    return await uploadToCloudinary(compressed, clientId, "project");
+  })();
 });
 
 const uploads = await Promise.all(uploadPromises);
 
+// collect results
 uploads.forEach(upload => {
   if(upload){
     projectUrls.push(upload.url);
@@ -1517,38 +1521,48 @@ uploads.forEach(upload => {
   }
 });
 
+// save to params
 if(projectUrls.length){
   params.projectImages = projectUrls;
   params.projectImages_ids = projectIds;
 }
-    
-    const cleanParams = cleanObject(params);
-          updateLoading(3);
-        try {
-          
-          console.log("Saving order...", cleanParams);
-    
-      cleanParams.authUid = auth.currentUser ? auth.currentUser.uid : "";
-      console.log("CLIENT ID:", clientId);
-      await setDoc(doc(db, "clients", clientId), cleanParams);
-    
-      console.log("Saved successfully:", clientId);
-      updateLoading(4);
-      finishFakeProgress();
-      setTimeout(()=>{
-      const savedClientId = localStorage.getItem("clientId");
-      const savedEmail = localStorage.getItem("clientEmail");
-      
-      window.location.href =
-        "/auth/signup.html?clientId=" + savedClientId +
-        "&email=" + encodeURIComponent(savedEmail);
-    
-    } catch (err) {
-      console.error("Firestore error:", err);
-      alert("Error saving order. Check console.");
-    }
-  });
 
+// ================= SAVE TO FIRESTORE =================
+const cleanParams = cleanObject(params);
+updateLoading(3);
+
+try {
+
+  console.log("Saving order...", cleanParams);
+
+  cleanParams.authUid = auth.currentUser ? auth.currentUser.uid : "";
+
+  console.log("CLIENT ID:", clientId);
+
+  await setDoc(doc(db, "clients", clientId), cleanParams);
+
+  console.log("Saved successfully:", clientId);
+
+  updateLoading(4);
+  finishFakeProgress();
+
+  setTimeout(() => {
+
+    const savedClientId = localStorage.getItem("clientId");
+    const savedEmail = localStorage.getItem("clientEmail");
+
+    window.location.href =
+      "/auth/signup.html?clientId=" + savedClientId +
+      "&email=" + encodeURIComponent(savedEmail);
+
+  }, 1000);
+
+} catch (err) {
+
+  console.error("Firestore error:", err);
+  alert("Error saving order. Check console.");
+
+}
 // ================= ESC CLOSE =================
 document.addEventListener("keydown", e => {
   if(e.key === "Escape"){
