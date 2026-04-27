@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc }
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, onSnapshot }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
@@ -14,6 +14,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 let currentData = {};
+let previousStatus = null;
 let currentDocId = "";
 let currentUserEmail = "";
 
@@ -34,22 +35,30 @@ onAuthStateChanged(auth, async (user)=>{
     let data = null;
 
     // 🔥 1. LOAD USING clientId (PRIMARY)
-    if(clientId){
-      const ref = doc(db, "clients", clientId);
-      const snap = await getDoc(ref);
-
-      if(snap.exists()){
-        data = snap.data();
-        currentDocId = clientId;
-
-        // 🔥 AUTO LINK UID IF MISSING
-        if(!data.authUid){
-          await updateDoc(ref, {
-            authUid: user.uid
-          });
-        }
+  if(clientId){
+  
+    const ref = doc(db, "clients", clientId);
+  
+    onSnapshot(ref, async (snap)=>{
+  
+      if(!snap.exists()) return;
+  
+      const data = snap.data();
+      currentDocId = clientId;
+  
+      // 🔥 AUTO LINK UID IF MISSING
+      if(!data.authUid){
+        await updateDoc(ref, {
+          authUid: user.uid
+        });
       }
-    }
+  
+      handleRealtimeUpdate(data);
+  
+    });
+  
+    return;
+  }
 
     // 🔥 2. FALLBACK TO UID (OLD METHOD)
     if(!data){
@@ -96,13 +105,6 @@ if(!data){
   return;
 }
 
-    currentData = data;
-
-    const locked = checkAccess();
-    if(!locked){
-      render();
-    }
-
   } catch(err){
     console.error("Firestore error:", err);
   }
@@ -126,15 +128,28 @@ function checkAccess(){
     "unpaid"
   ];
 
-  if(lockStates.includes(status)){
-    showLocked(
-      "Verifying Your Payment",
-      "Please wait while we activate your NFC card."
-    );
-    return true;
-  }
+if(lockStates.includes(status)){
+  applySoftLock(status);
+  return false;
+}
 
   hideLock();
+  // 🔓 ensure UI fully clean
+["views","taps","clicks"].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el){
+    el.style.filter = "none";
+    el.style.opacity = "1";
+  }
+});
+
+["viewCardBtn","shareCardBtn"].forEach(id=>{
+  const btn = document.getElementById(id);
+  if(btn){
+    btn.style.pointerEvents = "auto";
+    btn.style.opacity = "1";
+  }
+});
   return false;
 }
 
@@ -176,6 +191,89 @@ function hideLock(){
   setTimeout(()=>{
     overlay.remove();
   }, 400);
+}
+
+function applySoftLock(status){
+
+  // remove any fullscreen lock
+  const overlay = document.getElementById("lockOverlay");
+  if(overlay) overlay.remove();
+
+  // 🔒 blur stats
+  ["views","taps","clicks"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){
+      el.style.filter = "blur(6px)";
+      el.style.opacity = "0.6";
+    }
+  });
+
+  // 🔒 disable actions
+  const buttons = [
+    "viewCardBtn",
+    "shareCardBtn"
+  ];
+
+  buttons.forEach(id=>{
+    const btn = document.getElementById(id);
+    if(btn){
+      btn.style.pointerEvents = "none";
+      btn.style.opacity = "0.5";
+    }
+  });
+
+  // 🔥 SHOW PAYMENT BANNER
+  showPaymentBanner(status);
+}
+
+function showPaymentBanner(status){
+
+  let banner = document.getElementById("paymentBanner");
+
+  if(!banner){
+    banner = document.createElement("div");
+    banner.id = "paymentBanner";
+    document.body.prepend(banner);
+  }
+
+  let message = "Activate your card to unlock features";
+
+  if(status === "pending_verification"){
+    message = "Payment submitted. Waiting for approval.";
+  }
+
+  banner.innerHTML = `
+  <div style="
+    background:#111;
+    color:#fff;
+    padding:12px;
+    text-align:center;
+    font-size:14px;
+  ">
+    ${message}
+    ${status === "pending_verification" ? "" : `
+      <br><br>
+      <button id="payNowBtn" style="
+        padding:8px 16px;
+        border:none;
+        border-radius:6px;
+        background:#C9A96E;
+        cursor:pointer;
+      ">
+        Activate Now
+      </button>
+    `}
+  </div>
+`;
+
+if(status !== "pending_verification"){
+  const btn = document.getElementById("payNowBtn");
+  if(btn){
+    btn.onclick = ()=>{
+      window.location.href = "/payment.html?clientId=" + currentDocId;
+    };
+  }
+}
 }
 
 /* RENDER */
@@ -333,6 +431,100 @@ window.upgradeToPro = function(){
   const body = `Name: ${currentData.name}\nPlan: ${currentData.plan}`;
 
   window.location.href = `mailto:info@arkilogix.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+
+
+function handleRealtimeUpdate(data){
+
+  // 🔥 FIRST LOAD
+  if(previousStatus === null){
+    previousStatus = data.status;
+    currentData = data;
+
+    const locked = checkAccess();
+
+    if(!locked){
+      render();
+    }
+
+    return; // ✅ STOP HERE on first load
+  }
+
+  // 🔥 STATUS CHANGE DETECTED
+  if(previousStatus !== data.status){
+
+    if(data.status === "paid"){
+      smoothUnlock();
+    }
+
+  }
+
+  previousStatus = data.status;
+
+  currentData = data;
+
+  const locked = checkAccess();
+
+  if(!locked){
+    render();
+  }
+}
+
+function smoothUnlock(){
+
+  // 🔓 remove blur smoothly
+  ["views","taps","clicks"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){
+      el.style.transition = "0.5s ease";
+      el.style.filter = "blur(0px)";
+      el.style.opacity = "1";
+    }
+  });
+
+  // 🔓 enable buttons smoothly
+  ["viewCardBtn","shareCardBtn"].forEach(id=>{
+    const btn = document.getElementById(id);
+    if(btn){
+      btn.style.transition = "0.3s ease";
+      btn.style.pointerEvents = "auto";
+      btn.style.opacity = "1";
+    }
+  });
+
+  // 🔓 remove banner
+  const banner = document.getElementById("paymentBanner");
+  if(banner){
+    banner.style.transition = "0.4s ease";
+    banner.style.opacity = "0";
+    setTimeout(()=> banner.remove(), 400);
+  }
+
+  // 🔓 subtle message (optional clean)
+  const msg = document.createElement("div");
+  msg.innerText = "Card Activated";
+  msg.style = `
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#111;
+    color:#fff;
+    padding:10px 20px;
+    border-radius:20px;
+    font-size:13px;
+    opacity:0;
+    transition:0.4s;
+  `;
+
+  document.body.appendChild(msg);
+
+  setTimeout(()=> msg.style.opacity = "1", 50);
+  setTimeout(()=>{
+    msg.style.opacity = "0";
+    setTimeout(()=> msg.remove(), 400);
+  }, 2000);
 }
 
 /* LOGOUT */
