@@ -336,65 +336,39 @@ async function signup(){
     showStep("step1");
 
     const params = new URLSearchParams(window.location.search);
-    const clientId = params.get("clientId");
+const clientId = params.get("clientId");
 
-    let linked = false;
+if(!clientId){
+  alert("Invalid signup link.");
+  return;
+}
 
-    // ✅ 1. LINK VIA clientId (PRIMARY)
-    if(clientId){
-      const ref = doc(db, "clients", clientId);
-      const snap = await getDoc(ref);
+// 🔥 WAIT FOR AUTH READY
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-      if(snap.exists()){
-        await setDoc(ref, {
-          authUid: user.uid,
-          hasAccount: true,
-          email: email
-        }, { merge: true });
-
-        linked = true;
-        console.log("✅ Linked via clientId");
-      }
+await new Promise(resolve => {
+  onAuthStateChanged(auth, user => {
+    if(user){
+      resolve();
     }
+  });
+});
 
-    // ✅ 2. LINK VIA EMAIL (FALLBACK)
-    if(!linked){
-      const q = query(collection(db,"clients"), where("email","==",email));
-      const snap = await getDocs(q);
+const ref = doc(db, "clients", clientId);
+const snap = await getDoc(ref);
 
-      if(!snap.empty){
-        const ref = snap.docs[0].ref;
+if(!snap.exists()){
+  alert("Order not found.");
+  return;
+}
 
-        await setDoc(ref, {
-          authUid: user.uid,
-          hasAccount: true
-        }, { merge:true });
+await setDoc(ref, {
+  authUid: auth.currentUser.uid,
+  hasAccount: true,
+  email: email
+}, { merge: true });
 
-        linked = true;
-        console.log("✅ Linked via email");
-      }
-    }
-
-    // 🚨 3. IF STILL NOT LINKED → CREATE NEW CLIENT
-    if(!linked){
-      const newRef = doc(collection(db, "clients"));
-
-      await setDoc(newRef, {
-        authUid: user.uid,
-        email: email,
-        name: "",
-        position: "",
-        status: "processing",
-        plan: "basic",
-        stats: {
-          views: 0,
-          taps: 0,
-          clicks: 0
-        }
-      });
-
-      console.log("⚠️ New client created (no existing record)");
-    }
+console.log("✅ LINKED:", auth.currentUser.uid);
 
     showStep("step2");
     await new Promise(r=>setTimeout(r,400));
