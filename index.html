@@ -1095,7 +1095,12 @@ const formatPeso = val => "₱" + val.toLocaleString();
 }
 // ================= CLOUDINARY =================
 async function uploadToCloudinary(file, clientId, type){
-
+if(!clientId){
+  alert("ERROR: clientId missing. Upload stopped.");
+  throw new Error("clientId missing");
+}
+console.log("📁 Upload folder:", `nfc-clients/${clientId}/${type}`);
+  
   if(!file) return null;
 
   try{
@@ -1429,11 +1434,13 @@ function buildFullAddress(){
   form.addEventListener("submit", async function(e){
     e.preventDefault();
     isSubmitting = true;
+    
   let clientId = localStorage.getItem("clientId");
     if(!clientId){
       clientId = "client-" + Date.now();
       localStorage.setItem("clientId", clientId);
     }
+    console.log("🔥 CLIENT ID BEFORE UPLOAD:", clientId);
   const loading = document.getElementById("loadingScreen");
       loading.style.display = "flex";
       document.body.style.overflow = "hidden";
