@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs }
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
@@ -27,23 +27,56 @@ onAuthStateChanged(auth, async (user)=>{
   currentUserEmail = user.email;
 
   try{
-    const q = query(
-      collection(db, "clients"),
-      where("authUid", "==", user.uid)
-    );
 
-    const snap = await getDocs(q);
+    const params = new URLSearchParams(window.location.search);
+    const clientId = params.get("clientId");
 
-    if(!snap.empty){
-      currentData = snap.docs[0].data();
-      currentDocId = snap.docs[0].id;
+    let data = null;
 
-      const locked = checkAccess();
-      if(!locked){
-        render();
+    // ✅ 1. LOAD DIRECT FROM URL
+    if(clientId){
+      const ref = doc(db, "clients", clientId);
+      const snap = await getDoc(ref);
+
+      if(snap.exists()){
+        data = snap.data();
+        currentDocId = clientId;
+
+        // 🔥 AUTO LINK UID IF MISSING
+        if(!data.authUid){
+          await updateDoc(ref, {
+            authUid: user.uid
+          });
+        }
       }
-    } else {
+    }
+
+    // ✅ 2. FALLBACK TO UID SEARCH
+    if(!data){
+      const q = query(
+        collection(db, "clients"),
+        where("authUid", "==", user.uid)
+      );
+
+      const snap = await getDocs(q);
+
+      if(!snap.empty){
+        data = snap.docs[0].data();
+        currentDocId = snap.docs[0].id;
+      }
+    }
+
+    // ❌ STILL NOTHING
+    if(!data){
       console.error("No client linked to UID:", user.uid);
+      return;
+    }
+
+    currentData = data;
+
+    const locked = checkAccess();
+    if(!locked){
+      render();
     }
 
   } catch(err){
