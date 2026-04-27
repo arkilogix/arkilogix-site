@@ -1335,7 +1335,17 @@ window.handleOutsideClick = function(e){
 // ================= STEPS =================
 function showStep(index){
   const steps = document.querySelectorAll(".step");
+  steps.forEach((step, i) => {
+  const inputs = step.querySelectorAll("input, textarea");
 
+  inputs.forEach(input => {
+    if(i === index){
+      input.disabled = false;
+    } else {
+      input.disabled = true;
+    }
+  });
+});
   steps.forEach(s => s.classList.remove("active"));
   steps[index].classList.add("active");
 
