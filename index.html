@@ -1419,7 +1419,11 @@ function buildFullAddress(){
   form.addEventListener("submit", async function(e){
     e.preventDefault();
     isSubmitting = true;
-  const clientId = "client-" + Date.now();
+  let clientId = localStorage.getItem("clientId");
+    if(!clientId){
+      clientId = "client-" + Date.now();
+      localStorage.setItem("clientId", clientId);
+    }
   const loading = document.getElementById("loadingScreen");
       loading.style.display = "flex";
       document.body.style.overflow = "hidden";
@@ -1434,6 +1438,8 @@ function buildFullAddress(){
 
 const baseTotal = basePrices[selectedPlan] + cardPrice;
 const finalTotal = baseTotal - (baseTotal * discount);
+const email = document.getElementById("email").value;
+localStorage.setItem("clientEmail", email);
     
 const params = {
 
@@ -1464,7 +1470,8 @@ const params = {
   originalPrice: baseTotal,
   discount: discount,
 
-  status: "pending",
+  status: "unpaid",
+  hasAccount: false,
   createdAt: serverTimestamp()
 
 };
@@ -1529,8 +1536,12 @@ if(projectUrls.length){
       updateLoading(4);
       finishFakeProgress();
       setTimeout(()=>{
-        window.location.href = "payment.html?clientId=" + clientId;
-      }, 500);
+      const savedClientId = localStorage.getItem("clientId");
+      const savedEmail = localStorage.getItem("clientEmail");
+      
+      window.location.href =
+        "/auth/signup.html?clientId=" + savedClientId +
+        "&email=" + encodeURIComponent(savedEmail);
     
     } catch (err) {
       console.error("Firestore error:", err);
