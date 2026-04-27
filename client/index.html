@@ -42,7 +42,11 @@
   <div id="cardServices" class="services"></div>
     
   </section>
-
+  <!-- PAYMENT VERIFICATION -->
+  <button id="activateBtn" class="btn primary" style="display:none;">
+  Activate My Card
+</button>
+  
   <!-- PRIMARY -->
   <button class="btn primary" onclick="viewCard()">View My Card</button>
    <!-- EDIT PROFILE -->
@@ -85,31 +89,6 @@
 <script src="/firebase-init.js"></script>
 <script type="module" src="client.js"></script>
 
-  <!-- PAYMENT MODAL -->
-<div id="paymentModal" style="
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-">
-  <div style="
-    background:#fff;
-    padding:20px;
-    border-radius:12px;
-    width:300px;
-    text-align:center;
-  ">
-    <h3>Activate Your Card</h3>
-    <p>Upload your payment proof</p>
-
-    <input type="file" id="paymentProof" accept="image/*"><br><br>
-
-    <button id="submitPaymentBtn">Submit Payment</button><br><br>
-    <button onclick="closePaymentModal()">Cancel</button>
-  </div>
-</div>
+  
 </body>
 </html>
