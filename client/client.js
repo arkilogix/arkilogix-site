@@ -427,11 +427,29 @@ window.resetPassword = function(){
 
 /* UPGRADE */
 window.upgradeToPro = function(){
-  const subject = "Upgrade to Pro Request";
-  const body = `Name: ${currentData.name}\nPlan: ${currentData.plan}`;
 
-  window.location.href = `mailto:info@arkilogix.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
+  if(!confirm("Upgrade to Pro? You will send a request via email.")) return;
+
+  const name = currentData?.name || "Client";
+  const email = currentData?.email || "";
+
+  const subject = encodeURIComponent("Upgrade to Pro Request");
+  const body = encodeURIComponent(
+`Hello ArkiLogix,
+
+I would like to upgrade my card to Pro.
+
+Name: ${name}
+Email: ${email}
+
+Please assist me with the upgrade.
+
+Thank you.`
+  );
+
+  window.location.href =
+    `mailto:info@arkilogix.com?subject=${subject}&body=${body}`;
+};
 
 
 
