@@ -331,7 +331,7 @@ Save Contact
 </div>
 
 <!-- SERVICES HEADER -->
-<div class="services-header">
+<div class="services-header" id="servicesHeader">
   <div class="divider"></div>
   <p>SERVICES OFFERED</p>
   <div class="divider"></div>
@@ -366,7 +366,7 @@ Save Contact
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, increment, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 /* FIREBASE CONFIG */
@@ -385,14 +385,33 @@ const auth = getAuth(app);
 
 /* GET ID */
 const params = new URLSearchParams(window.location.search);
-const id = params.get("id"); // ✅ IMPORTANT
+let id = params.get("id"); // keep this
+
+// 🔥 IF NO ID → USE USERNAME FROM URL
+if(!id){
+  const username = window.location.pathname.replace("/", "").toLowerCase();
+
+  if(username){
+    const q = query(collection(db, "clients"), where("username", "==", username));
+    const snap = await getDocs(q);
+
+    if(!snap.empty){
+      id = snap.docs[0].id;
+    }
+  }
+}
 
 let currentPlan = "basic";
 
 function toggleIcon(id, value){
   const el = document.getElementById(id);
   if(!el) return;
-  el.style.display = value ? "flex" : "none";
+
+  if(value && value.trim() !== ""){
+    el.style.display = "flex";
+  }else{
+    el.style.display = "none";
+  }
 }
 
 /* MAIN INIT */
@@ -414,7 +433,18 @@ async function init(){
   }
 
   const data = snap.data();
-
+  // 🔒 ONLY SHOW IF PAID
+    if(data.status !== "paid"){
+      document.body.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0f1115;color:white;">
+          <div>
+            <h2>Card Not Active</h2>
+            <p>Please complete payment to activate this card.</p>
+          </div>
+        </div>
+      `;
+      return;
+    }
   window.userData = {
     phone: data.phone || "",
     email: data.email || "",
@@ -442,12 +472,20 @@ async function init(){
 
   /* TEXT */
   document.querySelector(".name").innerText = data.name || "Your Name";
-  document.querySelector(".position").innerText = data.position || "Your Position";
+  const positionEl = document.querySelector(".position");
+    
+    if(data.position){
+      positionEl.innerText = data.position;
+    }else{
+      positionEl.style.display = "none";
+    }
 
   /* PROFILE */
-  if(data.profile){
-    document.getElementById("profile").src = data.profile;
-  }
+if(data.profile){
+  document.getElementById("profile").src = data.profile;
+}else{
+  document.querySelector(".profile-wrap").style.display = "none";
+}
 
   /* SERVICES */
   renderServices(data.services || []);
@@ -474,11 +512,21 @@ async function init(){
 /* SERVICES */
 function renderServices(list){
   const el = document.getElementById("services");
-  el.innerHTML="";
+  const header = document.getElementById("servicesHeader");
+
+  el.innerHTML = "";
+
+  if(!list || list.length === 0){
+    if(header) header.style.display = "none";
+    return;
+  }
+
+  header.style.display = "flex";
+
   list.slice(0,3).forEach(s=>{
-    const d=document.createElement("div");
-    d.className="service";
-    d.innerText=s;
+    const d = document.createElement("div");
+    d.className = "service";
+    d.innerText = s;
     el.appendChild(d);
   });
 }
