@@ -33,7 +33,7 @@ onAuthStateChanged(auth, async (user)=>{
 
     let data = null;
 
-    // ✅ 1. LOAD DIRECT FROM URL
+    // 🔥 1. LOAD USING clientId (PRIMARY)
     if(clientId){
       const ref = doc(db, "clients", clientId);
       const snap = await getDoc(ref);
@@ -51,7 +51,7 @@ onAuthStateChanged(auth, async (user)=>{
       }
     }
 
-    // ✅ 2. FALLBACK TO UID SEARCH
+    // 🔥 2. FALLBACK TO UID (OLD METHOD)
     if(!data){
       const q = query(
         collection(db, "clients"),
@@ -67,10 +67,34 @@ onAuthStateChanged(auth, async (user)=>{
     }
 
     // ❌ STILL NOTHING
-    if(!data){
-      console.error("No client linked to UID:", user.uid);
-      return;
+   if(!data){
+  console.warn("No UID match, forcing clientId link...");
+
+  const params = new URLSearchParams(window.location.search);
+  const clientId = params.get("clientId");
+
+  if(clientId){
+    const ref = doc(db, "clients", clientId);
+    const snap = await getDoc(ref);
+
+    if(snap.exists()){
+      data = snap.data();
+      currentDocId = clientId;
+
+      // 🔥 LINK CURRENT USER SAFELY
+      await updateDoc(ref, {
+        authUid: user.uid
+      });
+
+      console.log("✅ UID FIXED AUTOMATICALLY");
     }
+  }
+}
+
+if(!data){
+  console.error("Still no client found.");
+  return;
+}
 
     currentData = data;
 
@@ -272,7 +296,7 @@ window.viewCard = function(){
   if(currentData.plan==="pro") page="pro.html";
   if(currentData.plan==="elite") page="elite.html";
 
-  window.open(`/view/${page}?id=${auth.currentUser.uid}`);
+  window.open(`/view/${page}?id=${currentDocId}`);
 }
 
 /* SHARE */
