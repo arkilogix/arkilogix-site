@@ -244,10 +244,13 @@ button:disabled{
 </div>
 
 <script type="module">
+  
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+
+  
 /* ================= FIREBASE ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
@@ -263,6 +266,13 @@ const db = getFirestore(app);
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const confirmInput = document.getElementById("confirmPassword");
+const params = new URLSearchParams(window.location.search);
+const urlEmail = params.get("email");
+    if(urlEmail){
+      emailInput.value = urlEmail;
+      emailInput.readOnly = true;
+      emailInput.style.opacity = "0.7";
+    }
 const signupBtn = document.getElementById("signupBtn");
 const feedback = document.getElementById("passwordFeedback");
 
@@ -323,6 +333,14 @@ async function signup(){
   isSigningUp = true;
 
   const email = emailInput.value.trim();
+
+  // 🔒 STRICT EMAIL CHECK
+  if(urlEmail && email !== urlEmail){
+    alert("Email mismatch. Please use the original email used in your order.");
+    isSigningUp = false;
+    return;
+  }
+
   const password = passwordInput.value;
 
   if(!email || !password){
@@ -336,12 +354,8 @@ async function signup(){
   startActivation();
 
   try{
-    const userCred = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCred.user;
 
-    showStep("step1");
-
-    const params = new URLSearchParams(window.location.search);
+    // 🔥 GET clientId FIRST
     const clientId = params.get("clientId");
 
     if(!clientId){
@@ -350,8 +364,16 @@ async function signup(){
       return;
     }
 
+    // 🔥 CHECK ORDER FIRST (VERY IMPORTANT)
     const ref = doc(db, "clients", clientId);
     const snap = await getDoc(ref);
+
+    // 🔥 BLOCK DUPLICATE ACCOUNT
+    if(snap.exists() && snap.data().hasAccount){
+      alert("Account already created for this order. Please login.");
+      window.location.href = "/auth/login.html";
+      return;
+    }
 
     if(!snap.exists()){
       alert("Order not found.");
@@ -359,10 +381,44 @@ async function signup(){
       return;
     }
 
-    await setDoc(ref, {
+    // ✅ CREATE USER ONLY AFTER CHECKS
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCred.user;
+
+    showStep("step1");
+
+    // 🔥 LINK UID TO CLIENT
+    // 🔥 USERNAME SETUP
+    let username = "";
+    
+    while(true){
+    
+      username = prompt("Choose your username (no spaces, lowercase):");
+    
+      if(!username) continue;
+    
+      username = username.toLowerCase().trim();
+    
+      if(!/^[a-z0-9_]+$/.test(username)){
+        alert("Invalid username. Use only letters, numbers, underscore.");
+        continue;
+      }
+    
+      const q = query(collection(db, "clients"), where("username", "==", username));
+      const qsnap = await getDocs(q);
+    
+      if(!qsnap.empty){
+        alert("Username already taken.");
+        continue;
+      }
+    
+      break;
+    }
+       await setDoc(ref, {
       authUid: user.uid,
       hasAccount: true,
-      email: email
+      email: email,
+      username: username
     }, { merge: true });
 
     console.log("✅ LINKED:", user.uid);
@@ -378,9 +434,15 @@ async function signup(){
 
     isSigningUp = false;
 
+    // 🔥 CLEAN LOCAL STORAGE
+    localStorage.removeItem("clientId");
+    localStorage.removeItem("clientEmail");
+
+    // 🔥 REDIRECT TO DASHBOARD
     window.location.replace("/client/index.html?clientId=" + clientId);
 
   }catch(err){
+
     alert(err.message);
 
     signupBtn.disabled = false;
@@ -391,7 +453,6 @@ async function signup(){
     isSigningUp = false;
   }
 }
-
 /* ================= ACTIVATION ================= */
   
 function startActivation(){
