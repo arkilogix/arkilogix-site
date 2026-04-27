@@ -228,40 +228,6 @@ function showPaymentBanner(status){
   return; // 🔥 DISABLED (we use floating button instead)
 }
 
-  banner.innerHTML = `
-  <div style="
-    background:#111;
-    color:#fff;
-    padding:12px;
-    text-align:center;
-    font-size:14px;
-  ">
-    ${message}
-    ${status === "pending_verification" ? "" : `
-      <br><br>
-      <button id="payNowBtn" style="
-        padding:8px 16px;
-        border:none;
-        border-radius:6px;
-        background:#C9A96E;
-        cursor:pointer;
-      ">
-        Activate Now
-      </button>
-    `}
-  </div>
-`;
-
-if(status !== "pending_verification"){
-  const btn = document.getElementById("payNowBtn");
-  if(btn){
-    btn.onclick = ()=>{
-      window.location.href = "/payment.html?clientId=" + currentDocId;
-    };
-  }
-}
-}
-
 /* RENDER */
 function render(){
   console.log("NAME:", currentData.name);
