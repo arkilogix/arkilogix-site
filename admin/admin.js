@@ -246,22 +246,7 @@ function actions(u){
 }
 
 /* ACTION FUNCTIONS */
-window.approve = async(id)=>{
-  try{
-    console.log("Approving:", id);
 
-    await db.collection("clients").doc(id).update({
-      status: "paid",
-      approvedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    closePanel();
-
-  }catch(err){
-    console.error("APPROVE ERROR:", err);
-    alert("Approval failed ❌");
-  }
-}
 
 window.reject = id=>update(id,"pending_payment");
 window.processing = id=>update(id,"processing");
@@ -332,21 +317,30 @@ function formatShipping(s){
 window.markPaid = async(id)=>{
   if(!confirm("Mark this client as PAID?")) return;
 
-  await db.collection("clients").doc(id).update({
-    status: "paid",
-    paidAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
+  try{
 
-  alert("Marked as PAID ✅");
+    await db.collection("clients").doc(id).update({
+      status: "paid",
+      paidAt: firebase.firestore.FieldValue.serverTimestamp(),
+      isLocked: false // 🔥 ensure unlock
+    });
+
+    alert("Client activated ✅");
+
+    closePanel();
+
+  }catch(err){
+    console.error(err);
+    alert("Failed to update ❌");
+  }
 };
-
 
 /* LOCK DASHBOARD */
 window.lock = async(id)=>{
   if(!confirm("Lock this client's dashboard?")) return;
 
   await db.collection("clients").doc(id).update({
-    status: "pending" // 🔥 LOCK
+    isLocked: true
   });
 
   alert("Dashboard locked 🔒");
@@ -358,7 +352,8 @@ window.unlock = async(id)=>{
   if(!confirm("Unlock this client's dashboard?")) return;
 
   await db.collection("clients").doc(id).update({
-    status: "paid" // 🔥 UNLOCK
+    isLocked: false,
+    status: "paid"
   });
 
   alert("Dashboard unlocked 🔓");
