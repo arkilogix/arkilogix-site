@@ -520,3 +520,8 @@ p{
   transform:translateX(-50%) translateY(-3px) scale(1.02);
 }
 
+#activateBtn.pending{
+  background:#555 !important;
+  color:#fff !important;
+  box-shadow:none;
+}
