@@ -567,7 +567,7 @@ function setupActivateButton(){
 
     btn.style.display = "block";
     btn.innerText = "Verifying Payment...";
-    btn.style.opacity = "0.6";
+    btn.classList.add("pending");
     btn.style.pointerEvents = "none";
 
   }
