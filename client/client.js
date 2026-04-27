@@ -544,7 +544,39 @@ function smoothUnlock(){
     setTimeout(()=> msg.remove(), 400);
   }, 2000);
 }
+function setupActivateButton(){
 
+  const btn = document.getElementById("activateBtn");
+  if(!btn || !currentData) return;
+
+  // 🔴 UNPAID → show button
+  if(currentData.status === "unpaid"){
+
+    btn.style.display = "block";
+    btn.innerText = "Activate My Card";
+
+    btn.onclick = () => {
+      window.location.href =
+        "/payment.html?clientId=" + currentDocId;
+    };
+
+  }
+
+  // 🟡 PENDING → show disabled state
+  else if(currentData.status === "pending_verification"){
+
+    btn.style.display = "block";
+    btn.innerText = "Verifying Payment...";
+    btn.style.opacity = "0.6";
+    btn.style.pointerEvents = "none";
+
+  }
+
+  // 🟢 PAID → hide button
+  else{
+    btn.style.display = "none";
+  }
+}
 /* LOGOUT */
 window.logout = function(){
   signOut(auth).then(()=>{
