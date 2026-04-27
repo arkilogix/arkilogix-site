@@ -222,25 +222,11 @@ function applySoftLock(status){
     }
   });
 
-  // 🔥 SHOW PAYMENT BANNER
-  showPaymentBanner(status);
 }
 
 function showPaymentBanner(status){
-
-  let banner = document.getElementById("paymentBanner");
-
-  if(!banner){
-    banner = document.createElement("div");
-    banner.id = "paymentBanner";
-    document.body.prepend(banner);
-  }
-
-  let message = "Activate your card to unlock features";
-
-  if(status === "pending_verification"){
-    message = "Payment submitted. Waiting for approval.";
-  }
+  return; // 🔥 DISABLED (we use floating button instead)
+}
 
   banner.innerHTML = `
   <div style="
@@ -459,7 +445,7 @@ function handleRealtimeUpdate(data){
   if(previousStatus === null){
     previousStatus = data.status;
     currentData = data;
-
+    setupActivateButton();
     const locked = checkAccess();
 
     if(!locked){
@@ -481,7 +467,7 @@ function handleRealtimeUpdate(data){
   previousStatus = data.status;
 
   currentData = data;
-
+  setupActivateButton();
   const locked = checkAccess();
 
   if(!locked){
@@ -549,33 +535,34 @@ function setupActivateButton(){
   const btn = document.getElementById("activateBtn");
   if(!btn || !currentData) return;
 
-  // 🔴 UNPAID → show button
+  // 🔴 UNPAID
   if(currentData.status === "unpaid"){
 
-    btn.style.display = "block";
-    btn.style.position = "fixed";
+    btn.classList.add("show");
+    btn.classList.remove("pending");
+
     btn.innerText = "Activate My Card";
+    btn.style.pointerEvents = "auto";
 
     btn.onclick = () => {
       window.location.href =
         "/payment.html?clientId=" + currentDocId;
     };
-
   }
 
-  // 🟡 PENDING → show disabled state
+  // 🟡 PENDING
   else if(currentData.status === "pending_verification"){
 
-    btn.style.display = "block";
-    btn.innerText = "Verifying Payment...";
+    btn.classList.add("show");
     btn.classList.add("pending");
-    btn.style.pointerEvents = "none";
 
+    btn.innerText = "Verifying Payment...";
+    btn.style.pointerEvents = "none";
   }
 
-  // 🟢 PAID → hide button
+  // 🟢 PAID
   else{
-    btn.style.display = "none";
+    btn.classList.remove("show");
   }
 }
 /* LOGOUT */
