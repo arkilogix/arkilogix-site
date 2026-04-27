@@ -485,3 +485,31 @@ p{
 .upgrade-btn:hover::after{
   left:120%;
 }
+
+/* 🔥 FLOATING ACTIVATE BUTTON */
+#activateBtn{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+
+  width:90%;
+  max-width:320px;
+
+  z-index:999;
+
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+
+  transition:0.3s ease;
+}
+
+/* hover effect */
+#activateBtn:hover{
+  transform:translateX(-50%) translateY(-2px);
+}
+
+/* 🔥 PENDING STATE */
+#activateBtn.pending{
+  background:#555;
+  color:#fff;
+}
