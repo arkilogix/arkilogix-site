@@ -377,7 +377,7 @@ console.log("✅ LINKED:", auth.currentUser.uid);
     showStep("step4");
     await new Promise(r=>setTimeout(r,300));
 
-    window.location.replace("/client/index.html");
+    window.location.replace("/client/index.html?clientId=" + clientId);
 
   }catch(err){
     alert(err.message);
