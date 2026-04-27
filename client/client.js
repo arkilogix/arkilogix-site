@@ -553,6 +553,7 @@ function setupActivateButton(){
   if(currentData.status === "unpaid"){
 
     btn.style.display = "block";
+    btn.style.position = "fixed";
     btn.innerText = "Activate My Card";
 
     btn.onclick = () => {
