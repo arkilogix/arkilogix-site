@@ -334,6 +334,57 @@ p{
 .btn.locked:hover::after{
   opacity:1;
 }
+.row{
+  display:flex;
+  justify-content:center; /* ✅ center */
+  gap:10px;
+}
 
+/* ===== PRIMARY GOLD (UPGRADE ONLY) ===== */
+.upgrade-btn{
+  background:linear-gradient(135deg,#C9A96E,#e6c88f);
+  color:#111;
+  box-shadow:0 6px 20px rgba(201,169,110,0.25);
+}
 
+.upgrade-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 25px rgba(201,169,110,0.35);
+}
 
+/* ===== PRIMARY GOLD (UPGRADE ONLY) ===== */
+.upgrade-btn{
+  background:linear-gradient(135deg,#C9A96E,#e6c88f);
+  color:#111;
+  box-shadow:0 6px 20px rgba(201,169,110,0.25);
+}
+
+.upgrade-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 25px rgba(201,169,110,0.35);
+}
+
+/* bluish premium glass */
+.btn.primary{
+  background:linear-gradient(135deg, rgba(59,130,246,0.25), rgba(30,64,175,0.35));
+  border:1px solid rgba(59,130,246,0.4);
+  color:#e5e7eb;
+
+  box-shadow:0 8px 25px rgba(59,130,246,0.15);
+}
+
+.btn.primary:hover{
+  background:linear-gradient(135deg, rgba(59,130,246,0.35), rgba(30,64,175,0.45));
+  box-shadow:0 12px 30px rgba(59,130,246,0.25);
+}
+
+.stats{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  text-align:center;
+}
+
+.stats div{
+  flex:1;
+}
