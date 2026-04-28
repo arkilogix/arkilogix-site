@@ -60,7 +60,6 @@ onAuthStateChanged(auth, async (user)=>{
   
     return;
   }
-
     // 🔥 2. FALLBACK TO UID (OLD METHOD)
     if(!data){
       const q = query(
@@ -551,7 +550,16 @@ window.editProfile = function(){
 
   const container = document.getElementById("servicesContainer");
   container.innerHTML = "";
+  
+  const locked = document.getElementById("lockedSection");
 
+if(currentData.plan === "basic"){
+  locked.style.opacity = "0.5";
+} else {
+  locked.style.opacity = "1";
+  locked.querySelectorAll("input").forEach(i => i.disabled = false);
+}
+  
   // 🔥 PLAN LIMIT
   if(currentData.plan === "basic") serviceLimit = 4;
   else if(currentData.plan === "pro") serviceLimit = 6;
@@ -686,6 +694,50 @@ window.addServiceField = function(){
 
   createServiceField();
 };
+
+let currentStep = 1;
+
+function showStep(step){
+
+  document.querySelectorAll(".edit-step").forEach(s=>{
+    s.classList.remove("active");
+  });
+
+  document.getElementById("step"+step).classList.add("active");
+
+  // hide nav on final
+  if(step === 4){
+    document.querySelector(".edit-nav").style.display = "none";
+    document.getElementById("finalActions").style.display = "flex";
+  } else {
+    document.querySelector(".edit-nav").style.display = "flex";
+    document.getElementById("finalActions").style.display = "none";
+  }
+
+  currentStep = step;
+}
+
+window.nextEditStep = function(){
+  if(currentStep < 4){
+    showStep(currentStep + 1);
+  }
+}
+
+window.prevEditStep = function(){
+  if(currentStep > 1){
+    showStep(currentStep - 1);
+  }
+}
+document.getElementById("editProfilePhoto").addEventListener("change", function(e){
+
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const preview = document.getElementById("profilePreview");
+
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = "block";
+});
 /* LOGOUT */
 window.logout = function(){
   signOut(auth).then(()=>{
