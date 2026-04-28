@@ -23,7 +23,12 @@
 
   <!-- PROFILE CARD -->
   <section class="card">
-
+  <div id="cardLockOverlay" class="card-lock-overlay">
+  <div class="lock-content">
+    🔒 Locked
+    <span>Activate your card to unlock</span>
+  </div>
+</div>
 <div class="profile-center">
 
   <div class="avatar-wrap elite-ring">
@@ -48,13 +53,13 @@
 </button>
   
   <!-- PRIMARY -->
-  <button class="btn primary" onclick="viewCard()">View My Card</button>
+  <button id="viewBtn" class="btn primary" onclick="viewCard()">View My Card</button>
    <!-- EDIT PROFILE -->
-  <button class="btn glass" onclick="editProfile()">Edit Profile</button>
+  <button id="editBtn" class="btn glass" onclick="editProfile()">Edit Profile</button>
   
   <!-- ACTIONS -->
   <div class="row">
-    <button class="btn glass" onclick="shareCard()">Share</button>
+    <button id="shareBtn" class="btn glass" onclick="shareCard()">Share</button>
     <button class="btn glass" onclick="resetPassword()">Reset Password</button>
   </div>
 
