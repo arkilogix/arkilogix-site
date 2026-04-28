@@ -502,6 +502,7 @@ async function init(){
   }
 
   const ref = doc(db, "clients", id);
+  await ref.get({ source: "server" });
   const snap = await getDoc(ref);
 
   if(!snap.exists()){
@@ -511,7 +512,8 @@ async function init(){
 
   const data = snap.data();
   // 🔒 ONLY SHOW IF PAID
-    if(data.status !== "paid"){
+    const isUnlocked = data.status === "paid" || data.status === "completed";
+  if(!isUnlocked){
   document.body.innerHTML = `
     <div class="lock-premium">
 
