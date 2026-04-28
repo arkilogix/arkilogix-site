@@ -766,15 +766,15 @@ function showStep(step){
 
   document.getElementById("step"+step).classList.add("active");
 
-  const nextBtn = document.querySelector(".edit-nav .primary");
-  if(!nextBtn) return;
-
-  // BUTTON TEXT
-  if(step === 4){
-    nextBtn.innerText = "Confirm";
-  } else {
-    nextBtn.innerText = "Next";
-  }
+    const nextBtn = document.querySelector(".edit-nav .primary");
+    
+    if(nextBtn){
+      if(step === 4){
+        nextBtn.innerText = "Confirm";
+      } else {
+        nextBtn.innerText = "Next";
+      }
+    }
 
   // PROGRESS
   const progress = (step / 5) * 100;
