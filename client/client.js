@@ -446,7 +446,6 @@ function handleRealtimeUpdate(data){
   previousStatus = data.status;
 
   currentData = data;
-  currentData = data;
   setupActivateButton();
   setupFeatureLocks(); // 🔥 ADD THIS
   const locked = checkAccess();
@@ -545,7 +544,7 @@ function setupActivateButton(){
 
 
 window.editProfile = function(){
-    if(currentData.status !== "active"){
+    if(currentData.status !== "paid"){
       alert("Please activate your card first.");
       return;
     }
