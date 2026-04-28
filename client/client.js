@@ -230,6 +230,40 @@ function showPaymentBanner(status){
   return; // 🔥 DISABLED (we use floating button instead)
 }
 
+function formatLink(url, type){
+  if(!url) return "";
+
+  url = url.trim();
+
+  // 🔥 INSTAGRAM SPECIAL HANDLING
+  if(type === "instagram"){
+
+    // remove @ if present
+    if(url.startsWith("@")){
+      url = url.substring(1);
+    }
+
+    // if it's just username
+    if(!url.includes("http") && !url.includes("instagram.com")){
+      return "https://instagram.com/" + url;
+    }
+  }
+
+  // 🔥 FACEBOOK OPTIONAL CLEANUP
+  if(type === "facebook"){
+    if(!url.includes("http")){
+      return "https://" + url;
+    }
+  }
+
+  // 🔥 WEBSITE / GENERAL
+  if(!url.startsWith("http://") && !url.startsWith("https://")){
+    return "https://" + url;
+  }
+
+  return url;
+}
+
 /* RENDER */
 function render(){
   console.log("NAME:", currentData.name);
@@ -331,6 +365,49 @@ function render(){
       });
     }
   }
+// 🔥 TOGGLE CONTACT BUTTONS
+function toggleField(id, value){
+  const el = document.getElementById(id);
+  if(!el) return;
+
+  if(value && value.trim() !== ""){
+    el.style.display = "flex";
+  } else {
+    el.style.display = "none";
+  }
+}
+
+// APPLY TO BUTTONS
+toggleField("btnFacebook", currentData.facebook);
+toggleField("btnInstagram", currentData.instagram);
+toggleField("btnWebsite", currentData.website);
+toggleField("btnPhone", currentData.phone);
+toggleField("btnEmail", currentData.email);
+  
+const fbBtn = document.getElementById("btnFacebook");
+if(fbBtn && currentData.facebook){
+  fbBtn.href = formatLink(currentData.facebook, "facebook");
+}
+
+const igBtn = document.getElementById("btnInstagram");
+if(igBtn && currentData.instagram){
+  igBtn.href = formatLink(currentData.instagram, "instagram");
+}
+
+const webBtn = document.getElementById("btnWebsite");
+if(webBtn && currentData.website){
+  webBtn.href = formatLink(currentData.website);
+}
+
+const phoneBtn = document.getElementById("btnPhone");
+if(phoneBtn && currentData.phone){
+  phoneBtn.href = "tel:" + currentData.phone;
+}
+
+const emailBtn = document.getElementById("btnEmail");
+if(emailBtn && currentData.email){
+  emailBtn.href = "mailto:" + currentData.email;
+}
 }
 
 function animateNumberSafe(el, value){
