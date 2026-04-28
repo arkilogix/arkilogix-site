@@ -73,31 +73,6 @@ body{
   box-shadow:0 12px 30px rgba(0,0,0,0.25);
 }
 
-/* ===== TEXT ON HERO ===== */
-.hero-text{
-  position:absolute;
-  bottom:15px;
-  width:100%;
-  text-align:center;
-  color:#fff;
-  padding:0 20px;
-}
-
-.name{
-  font-size:20px;
-  font-weight:600;
-}
-
-.position{
-  font-size:13px;
-  color:#ddd;
-}
-  .company{
-  font-size:12px;
-  color:#cbd5e1;
-  margin-top:4px;
-  letter-spacing:0.3px;
-}
 
 /* ===== ACTIONS ===== */
 .actions{
@@ -145,8 +120,40 @@ body{
 }
 
 .btn.primary{
-  background:#111;
+  background:rgba(17,17,17,0.85);
+  backdrop-filter:blur(10px);
   color:#fff;
+
+  border:none;
+  border-radius:999px;
+
+  font-weight:500;
+  letter-spacing:0.3px;
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.3s ease;
+    -webkit-backdrop-filter:blur(10px);
+}
+
+/* HOVER (desktop) */
+.btn.primary:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* PRESS (mobile feel) */
+.btn.primary:active{
+  transform:scale(0.96);
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.2) inset;
 }
 
 .btn.secondary{
@@ -318,6 +325,30 @@ body{
   50%{opacity:1;}
   100%{opacity:.3;}
 }
+  /* ===== PROFILE INFO (NEW) ===== */
+.profile-info{
+  text-align:center;
+  margin-top:70px; /* space below floating profile */
+  padding:0 20px;
+}
+
+.profile-info .name{
+  font-size:20px;
+  font-weight:600;
+  color:#111; /* 🔥 DARK */
+}
+
+.profile-info .position{
+  font-size:13px;
+  color:#555; /* 🔥 DARKER */
+  margin-top:2px;
+}
+
+.profile-info .company{
+  font-size:12px;
+  color:#777;
+  margin-top:4px;
+}
 </style>
 </head>
 
@@ -339,7 +370,7 @@ body{
   </div>
 
   <!-- TEXT -->
-  <div class="hero-text">
+  <div class="profile-info">
     <div id="name" class="name"></div>
     <div id="position" class="position"></div>
     <div id="company" class="company"></div>
@@ -380,7 +411,16 @@ body{
 
 <!-- BUTTONS -->
 <div class="center">
-  <a id="saveContact" class="btn primary">Save Contact</a>
+  <a id="saveContact" class="btn primary" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+  
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+    <path d="M17 21v-8H7v8"/>
+    <path d="M7 3v5h8"/>
+  </svg>
+
+  Save Contact
+</a>
   <a id="portfolioBtn" class="btn secondary" target="_blank">View Portfolio</a>
 </div>
 
