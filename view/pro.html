@@ -30,43 +30,74 @@ body{
 }
 
 /* ===== HERO ===== */
+/* ===== HERO ===== */
 .hero{
   position:relative;
-  height:260px;
+  height:280px;
+  overflow:hidden;
 }
 
 .hero img{
   width:100%;
   height:100%;
   object-fit:cover;
+  transform:scale(1.05);
 }
 
+/* 🔥 SMOOTH PREMIUM GRADIENT */
 .hero-overlay{
   position:absolute;
-  bottom:0;
-  width:100%;
-  padding:16px;
-  background:linear-gradient(transparent, rgba(0,0,0,0.6));
-  color:#fff;
+  inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 30%,
+    rgba(0,0,0,0.4) 65%,
+    rgba(0,0,0,0.75) 100%
+  );
 }
 
-/* ===== PROFILE ===== */
+/* ===== PROFILE FLOAT ===== */
 .profile{
-  text-align:center;
-  margin-top:-60px;
+  position:absolute;
+  bottom:-55px;
+  left:50%;
+  transform:translateX(-50%);
 }
 
 .profile img{
   width:110px;
   height:110px;
   border-radius:50%;
-  border:5px solid #fff;
+  border:4px solid #fff;
   object-fit:cover;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
 }
 
-.name{font-size:20px;font-weight:600;margin-top:10px;}
-.position{font-size:13px;color:#666;}
+/* ===== TEXT ON HERO ===== */
+.hero-text{
+  position:absolute;
+  bottom:15px;
+  width:100%;
+  text-align:center;
+  color:#fff;
+  padding:0 20px;
+}
+
+.name{
+  font-size:20px;
+  font-weight:600;
+}
+
+.position{
+  font-size:13px;
+  color:#ddd;
+}
+  .company{
+  font-size:12px;
+  color:#cbd5e1;
+  margin-top:4px;
+  letter-spacing:0.3px;
+}
 
 /* ===== ACTIONS ===== */
 .actions{
@@ -74,6 +105,7 @@ body{
   justify-content:center;
   gap:14px;
   margin:20px;
+  margin-top:70px;
 }
 
 .icon-btn{
@@ -123,22 +155,55 @@ body{
   border:1px solid #e5e7eb;
 }
 
-/* ===== PROJECTS ===== */
+/* ===== PROJECTS SCROLL (ELITE) ===== */
 .projects{
   margin-top:25px;
   padding:0 20px;
+
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+
+  scroll-behavior:smooth;
 }
 
+/* hide scrollbar */
+.projects::-webkit-scrollbar{
+  display:none;
+}
+
+/* ===== CARD ===== */
 .project-card{
-  margin-bottom:16px;
+  min-width:80%;
+  flex-shrink:0;
+  scroll-snap-align:center;
+
+  transition:transform .3s ease, opacity .3s ease;
+  opacity:0.6;
+  transform:scale(0.92);
+}
+
+/* ACTIVE CARD */
+.project-card.active{
+  opacity:1;
+  transform:scale(1);
 }
 
 .project-card img{
   width:100%;
-  height:220px;
+  height:210px;
   object-fit:cover;
-  border-radius:16px;
-  cursor:pointer;
+  border-radius:18px;
+
+  box-shadow:0 15px 35px rgba(0,0,0,0.2);
+  transition:.25s;
+}
+
+.project-card img:active{
+  transform:scale(0.97);
 }
 
 /* ===== CTA ===== */
@@ -262,18 +327,24 @@ body{
 
 <!-- HERO -->
 <div class="hero">
-  <img id="highlightImage">
-  <div class="hero-overlay">
-    <div id="highlightTitle"></div>
-    <div id="company"></div>
-  </div>
-</div>
 
-<!-- PROFILE -->
-<div class="profile">
-  <img id="profileImage">
-  <div id="name" class="name"></div>
-  <div id="position" class="position"></div>
+  <img id="highlightImage">
+
+  <!-- GRADIENT OVERLAY -->
+  <div class="hero-overlay"></div>
+
+  <!-- PROFILE FLOAT -->
+  <div class="profile">
+    <img id="profileImage">
+  </div>
+
+  <!-- TEXT -->
+  <div class="hero-text">
+    <div id="name" class="name"></div>
+    <div id="position" class="position"></div>
+    <div id="company" class="company"></div>
+  </div>
+
 </div>
 
 <!-- ACTIONS -->
@@ -404,6 +475,15 @@ if(!isUnlocked){
   document.getElementById("name").innerText = data.name || "";
   document.getElementById("position").innerText = data.position || "";
   document.getElementById("profileImage").src = data.profile || "";
+    
+  /* COMPANY */
+  const companyEl = document.getElementById("company");
+  
+  if(data.company){
+    companyEl.innerText = data.company;
+  }else{
+    companyEl.style.display = "none";
+  }
 
   /* HERO */
   const heroImg = data.projectImages?.[0] || data.profile || "";
@@ -468,6 +548,58 @@ if(data.projectImages && data.projectImages.length){
   container.innerHTML = "<p style='color:#777;font-size:13px;'>No projects yet</p>";
 }
 
+const projectContainer = document.getElementById("projects");
+
+function updateActiveCard(){
+  const cards = document.querySelectorAll(".project-card");
+
+  let closest = null;
+  let closestOffset = Infinity;
+
+  cards.forEach(card => {
+    const rect = card.getBoundingClientRect();
+    const center = window.innerWidth / 2;
+    const offset = Math.abs(rect.left + rect.width/2 - center);
+
+    if(offset < closestOffset){
+      closestOffset = offset;
+      closest = card;
+    }
+  });
+
+  cards.forEach(c => c.classList.remove("active"));
+  if(closest) closest.classList.add("active");
+}
+
+projectContainer.addEventListener("scroll", updateActiveCard);
+
+// run once after render
+setTimeout(updateActiveCard, 300);
+
+  let autoScroll;
+
+function startAutoScroll(){
+  autoScroll = setInterval(()=>{
+    const cardWidth = projectContainer.offsetWidth * 0.8 + 14;
+
+    projectContainer.scrollBy({
+      left: cardWidth,
+      behavior: "smooth"
+    });
+  }, 3500);
+}
+
+function stopAutoScroll(){
+  clearInterval(autoScroll);
+}
+
+// start after load
+setTimeout(startAutoScroll, 2000);
+
+// stop when user interacts
+projectContainer.addEventListener("touchstart", stopAutoScroll);
+projectContainer.addEventListener("mousedown", stopAutoScroll);
+  
   window.downloadVCard = async function(){
 
   if(!window.currentData){
