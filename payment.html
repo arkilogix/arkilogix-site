@@ -476,7 +476,7 @@ window.submitPayment = async function(){
     successBox.style.display="block";
     successBox.classList.add("fade");
     setTimeout(() => {
-      window.location.href = `/auth/signup.html?clientId=${clientId}`;
+      window.location.href = `/client/index.html?clientId=${clientId}`;
     }, 1500);
 
   }catch(e){
