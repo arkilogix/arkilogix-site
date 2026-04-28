@@ -1109,9 +1109,8 @@ console.log("📁 Upload folder:", `nfc-clients/${clientId}/${type}`);
     formData.append("upload_preset", "nfc_upload");
 
     // ✅ SAFE FOLDER ONLY
-    formData.append("folder", `nfc-clients/${clientId}/${type}`);
-    formData.append("public_id", `${type}_${Date.now()}`);
-
+    formData.append("public_id", `${clientId}/${type}_${Date.now()}`);
+    
     const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
       method: "POST",
       body: formData
