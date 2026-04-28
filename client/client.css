@@ -278,3 +278,62 @@ p{
   from{opacity:1;}
   to{opacity:0;}
 }
+
+/* ===== CARD LOCK OVERLAY ===== */
+.card-lock-overlay{
+  position:absolute;
+  inset:0;
+  border-radius:26px;
+
+  background:rgba(2,6,23,0.55);
+  backdrop-filter:blur(6px);
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+
+  z-index:5;
+}
+
+/* content */
+.lock-content{
+  font-size:14px;
+  color:#e5e7eb;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.lock-content span{
+  font-size:11px;
+  color:#94a3b8;
+}
+
+/* blur underlying card slightly */
+.card.locked{
+  filter:blur(1px);
+  opacity:0.9;
+}
+/* LOCKED BUTTON STYLE */
+.btn.locked{
+  position:relative;
+  overflow:hidden;
+}
+
+/* subtle shimmer */
+.btn.locked::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg, transparent, rgba(201,169,110,0.15), transparent);
+  opacity:0;
+  transition:.3s;
+}
+
+.btn.locked:hover::after{
+  opacity:1;
+}
+
+
+
