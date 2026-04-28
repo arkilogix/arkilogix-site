@@ -358,12 +358,15 @@ async function loadUser(){
 
   if(!id) return;
 
-  const snap = await getDoc(doc(db, "clients", id));
+  const ref = doc(db, "clients", id);
+  await ref.get({ source: "server" });
+  const snap = await getDoc(ref);
   if(!snap.exists()) return;
 
   const data = snap.data();
 // 🔒 LOCK IF NOT PAID
-if(data.status !== "paid"){
+const isUnlocked = data.status === "paid" || data.status === "completed";
+if(!isUnlocked){
   document.body.innerHTML = `
     <div class="lock-premium">
 
