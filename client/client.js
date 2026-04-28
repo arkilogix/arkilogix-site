@@ -765,12 +765,14 @@ function showStep(step){
 
   document.querySelectorAll(".edit-step").forEach(s=>{
     s.classList.remove("active");
+    s.style.display = "none";
   });
 
   const targetStep = document.getElementById("step"+step);
 
     if(targetStep){
       targetStep.classList.add("active");
+      targetStep.style.display = "block"; 
     } else {
       console.error("Missing step:", step);
     }
