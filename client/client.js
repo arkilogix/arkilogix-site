@@ -778,7 +778,15 @@ function showStep(step){
     }
 
     const nextBtn = document.querySelector(".edit-nav .primary");
-    
+    if(backBtn){
+      if(step === 1){
+        backBtn.innerText = "Cancel";
+        backBtn.onclick = closeEdit; // 🔥 close modal
+      } else {
+        backBtn.innerText = "Back";
+        backBtn.onclick = prevEditStep; // 🔥 normal behavior
+      }
+    }
     if(nextBtn){
       if(step === 4){
         nextBtn.innerText = "Confirm";
@@ -985,6 +993,30 @@ function hideLoader(){
     }, 500);
 
   }, 300); // small delay for smooth feel
+}
+
+function validateStep(step){
+
+  if(step === 1){
+    const name = document.getElementById("editName")?.value.trim();
+    const position = document.getElementById("editPosition")?.value.trim();
+
+    return name && position;
+  }
+
+  if(step === 2){
+    // optional step — always allow
+    return true;
+  }
+
+  if(step === 3){
+    // at least 1 service
+    const services = document.querySelectorAll("#servicesContainer input");
+    const hasOne = Array.from(services).some(i => i.value.trim());
+    return hasOne;
+  }
+
+  return true;
 }
 
 /* LOGOUT */
