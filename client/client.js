@@ -757,6 +757,9 @@ if(currentCount >= serviceLimit){
 
 let currentStep = 1;
 
+console.log("STEP:", step);
+console.log(document.getElementById("step"+step));
+
 function showStep(step){
 
 
