@@ -511,6 +511,7 @@ async function init(){
   }
 
   const data = snap.data();
+  window.currentData = data;
   // 🔒 ONLY SHOW IF PAID
     const isUnlocked = data.status === "paid" || data.status === "completed";
   if(!isUnlocked){
@@ -665,7 +666,36 @@ window.handleFacebook = function(){
 
 /* INIT CALL */
 init();
+window.downloadVCard = function(){
 
+  if(!window.currentData){
+    alert("No data available");
+    return;
+  }
+
+  const name = window.currentData.name || "";
+  const phone = window.currentData.phone || "";
+  const email = window.currentData.email || "";
+  const company = window.currentData.company || "";
+
+  const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+ORG:${company}
+TEL:${phone}
+EMAIL:${email}
+END:VCARD`;
+
+  const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${name || "contact"}.vcf`;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 </script>
 
 </body>
