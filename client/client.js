@@ -18,6 +18,8 @@ let previousStatus = null;
 let currentDocId = "";
 let currentUserEmail = "";
 let serviceLimit = 4;
+let autoSaveInterval = null;
+let hasUnsavedChanges = false;
 
 /* AUTH */
 onAuthStateChanged(auth, async (user)=>{
@@ -550,17 +552,11 @@ window.editProfile = function(){
 
   const container = document.getElementById("servicesContainer");
   container.innerHTML = "";
-  
-  const locked = document.getElementById("lockedSection");
 
-if(currentData.plan === "basic"){
-  locked.style.opacity = "0.5";
-} else {
-  locked.style.opacity = "1";
-    const locked = document.getElementById("lockedSection");
-  
+  // 🔥 LOCK LOGIC (CLEAN)
+  const locked = document.getElementById("lockedSection");
   const inputs = locked.querySelectorAll("input");
-  
+
   if(currentData.plan === "basic"){
     locked.style.opacity = "0.5";
     inputs.forEach(i => i.disabled = true);
@@ -568,8 +564,7 @@ if(currentData.plan === "basic"){
     locked.style.opacity = "1";
     inputs.forEach(i => i.disabled = false);
   }
-}
-  
+
   // 🔥 PLAN LIMIT
   if(currentData.plan === "basic") serviceLimit = 4;
   else if(currentData.plan === "pro") serviceLimit = 6;
@@ -577,20 +572,52 @@ if(currentData.plan === "basic"){
 
   const services = currentData.services || [];
 
-  // load services
   services.forEach(s => createServiceField(s));
 
-  // 🔥 if empty, add one field
   if(services.length === 0){
     createServiceField();
   }
 
   document.getElementById("editModal").style.display = "flex";
   showStep(1);
+  const photoInput = document.getElementById("editProfilePhoto");
+
+if(photoInput){
+  photoInput.onchange = function(e){
+
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const preview = document.getElementById("profilePreview");
+
+    if(preview){
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    }
+  };
+}
+  clearInterval(autoSaveInterval);
+  autoSaveInterval = setInterval(autoSaveEdit, 30000);
 };
 
 window.closeEdit = function(){
-  document.getElementById("editModal").style.display = "none";
+
+  if(hasUnsavedChanges){
+    const confirmClose = confirm("You have unsaved changes. Exit anyway?");
+    if(!confirmClose) return;
+  }
+
+  const modal = document.getElementById("editModal");
+
+  modal.classList.add("modal-closing");
+
+  setTimeout(()=>{
+    modal.style.display = "none";
+    modal.classList.remove("modal-closing");
+    clearInterval(autoSaveInterval);
+    hasUnsavedChanges = false;
+  }, 200);
+
 };
 
 window.saveEdit = async function(){
@@ -601,13 +628,12 @@ window.saveEdit = async function(){
 
   const file = document.getElementById("editProfilePhoto").files[0];
 
-  // 🔥 upload new image if selected
   if(file){
     profileUrl = await uploadEditImage(file);
   }
 
   const serviceInputs = document.querySelectorAll("#servicesContainer input");
-  
+
   const services = Array.from(serviceInputs)
     .map(i => i.value.trim())
     .filter(v => v);
@@ -621,6 +647,8 @@ window.saveEdit = async function(){
     profile: profileUrl,
     services: services
   });
+
+  hasUnsavedChanges = false;
 
   closeEdit();
 };
@@ -718,12 +746,19 @@ function showStep(step){
 
   const nextBtn = document.querySelector(".edit-nav .primary");
 
-  // 🔥 CHANGE BUTTON LABEL
+  // BUTTON TEXT
   if(step === 3){
     nextBtn.innerText = "Review";
   } else {
     nextBtn.innerText = "Next";
   }
+
+  // PROGRESS BAR
+  const progress = (step / 4) * 100;
+  document.getElementById("stepProgressFill").style.width = progress + "%";
+
+  // LABEL
+  document.getElementById("stepLabel").innerText = `Step ${step} of 4`;
 
   // FINAL STEP
   if(step === 4){
@@ -749,22 +784,76 @@ window.prevEditStep = function(){
   }
 }
 
-const photoInput = document.getElementById("editProfilePhoto");
+async function autoSaveEdit(){
 
-if(photoInput){
-  photoInput.addEventListener("change", function(e){
+  if(!currentDocId) return;
 
-    const file = e.target.files[0];
-    if(!file) return;
+  try{
 
-    const preview = document.getElementById("profilePreview");
+    const ref = doc(db, "clients", currentDocId);
 
-    if(preview){
-      preview.src = URL.createObjectURL(file);
-      preview.style.display = "block";
-    }
-  });
+    const serviceInputs = document.querySelectorAll("#servicesContainer input");
+
+    const services = Array.from(serviceInputs)
+      .map(i => i.value.trim())
+      .filter(v => v);
+
+    await updateDoc(ref, {
+      name: document.getElementById("editName").value,
+      position: document.getElementById("editPosition").value,
+      company: document.getElementById("editCompany").value,
+      phone: document.getElementById("editPhone").value,
+      email: document.getElementById("editEmail").value,
+      services: services
+    });
+
+    console.log("Auto-saved");
+
+    const indicator = document.getElementById("saveIndicator");
+
+    indicator.innerText = "Saving...";
+    setTimeout(()=>{
+      indicator.innerText = "Saved ✓";
+    }, 500);
+  
+  hasUnsavedChanges = false;
+  
+  // fade out after 2 sec
+  setTimeout(()=>{
+    indicator.innerText = "";
+  }, 2000);
+  } catch(err){
+    console.log("Auto-save failed", err);
+  }
 }
+
+document.addEventListener("keydown", function(e){
+  // ESC key
+  if(e.key === "Escape"){
+    const modal = document.getElementById("editModal");
+    // only close if modal is open
+    if(modal && modal.style.display === "flex"){
+      closeEdit();
+    }
+  }
+});
+
+window.handleEditOutsideClick = function(e){
+  const box = document.querySelector(".edit-box");
+  // if click is outside modal box
+  if(!box.contains(e.target)){
+    closeEdit();
+  }
+
+};
+
+document.addEventListener("input", function(e){
+  const modal = document.getElementById("editModal");
+  if(modal.style.display === "flex" && modal.contains(e.target)){
+    hasUnsavedChanges = true;
+  }
+
+});
 
 /* LOGOUT */
 window.logout = function(){
