@@ -17,6 +17,7 @@ let currentData = {};
 let previousStatus = null;
 let currentDocId = "";
 let currentUserEmail = "";
+let serviceLimit = 4;
 
 /* AUTH */
 onAuthStateChanged(auth, async (user)=>{
@@ -312,7 +313,13 @@ function render(){
     container.innerHTML = "";
 
     if(currentData.services){
-      currentData.services.slice(0,3).forEach(s=>{
+      const plan = (currentData.plan || "basic").toLowerCase();
+
+      let limit = 4;
+      if(plan === "pro") limit = 6;
+      if(plan === "elite") limit = 999;
+
+    currentData.services.slice(0, limit).forEach(s=>{
         const span = document.createElement("span");
         span.innerText = s;
         container.appendChild(span);
@@ -542,11 +549,23 @@ window.editProfile = function(){
   document.getElementById("editPhone").value = currentData.phone || "";
   document.getElementById("editEmail").value = currentData.email || "";
 
+  const container = document.getElementById("servicesContainer");
+  container.innerHTML = "";
+
+  // 🔥 PLAN LIMIT
+  if(currentData.plan === "basic") serviceLimit = 4;
+  else if(currentData.plan === "pro") serviceLimit = 6;
+  else serviceLimit = 999;
+
   const services = currentData.services || [];
 
-  document.getElementById("editService1").value = services[0] || "";
-  document.getElementById("editService2").value = services[1] || "";
-  document.getElementById("editService3").value = services[2] || "";
+  // load services
+  services.forEach(s => createServiceField(s));
+
+  // 🔥 if empty, add one field
+  if(services.length === 0){
+    createServiceField();
+  }
 
   document.getElementById("editModal").style.display = "flex";
 };
@@ -568,11 +587,11 @@ window.saveEdit = async function(){
     profileUrl = await uploadEditImage(file);
   }
 
-  const services = [
-    document.getElementById("editService1").value,
-    document.getElementById("editService2").value,
-    document.getElementById("editService3").value
-  ].filter(s => s);
+  const serviceInputs = document.querySelectorAll("#servicesContainer input");
+  
+  const services = Array.from(serviceInputs)
+    .map(i => i.value.trim())
+    .filter(v => v);
 
   await updateDoc(ref, {
     name: document.getElementById("editName").value,
@@ -608,6 +627,69 @@ async function uploadEditImage(file){
   return data.secure_url;
 }
 
+function createServiceField(value = ""){
+
+  const container = document.getElementById("servicesContainer");
+
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex";
+  wrap.style.gap = "6px";
+
+  const input = document.createElement("input");
+  input.value = value;
+  input.placeholder = "Service";
+
+  const remove = document.createElement("button");
+  remove.innerText = "×";
+  remove.style.border = "none";
+  remove.style.background = "#eee";
+  remove.style.borderRadius = "8px";
+  remove.style.cursor = "pointer";
+
+  remove.onclick = () => wrap.remove();
+
+  wrap.appendChild(input);
+  wrap.appendChild(remove);
+
+  container.appendChild(wrap);
+}
+
+window.addServiceField = function(){
+
+  const container = document.getElementById("servicesContainer");
+  const msg = document.getElementById("serviceLimitMsg");
+
+  const currentCount = container.children.length;
+
+  if(currentCount >= serviceLimit){
+
+    // 🔥 MESSAGE
+    if(currentData.plan === "basic"){
+      msg.innerHTML = `Limit reached. <a href="#" onclick="upgradeToPro()">Upgrade to Pro</a>`;
+    } else if(currentData.plan === "pro"){
+      msg.innerHTML = `Limit reached. <a href="#" onclick="upgradeToPro()">Upgrade to Elite</a>`;
+    } else {
+      msg.innerHTML = "";
+    }
+
+    // 🔥 ANIMATION TRIGGER
+    msg.classList.remove("limit-msg");
+    void msg.offsetWidth;
+    msg.classList.add("limit-msg");
+
+    container.classList.remove("limit-hit","limit-glow");
+    void container.offsetWidth;
+    container.classList.add("limit-hit","limit-glow");
+
+    return;
+  }
+
+  // ✅ CLEAR MESSAGE
+  msg.innerHTML = "";
+  container.classList.remove("limit-glow");
+
+  createServiceField();
+};
 /* LOGOUT */
 window.logout = function(){
   signOut(auth).then(()=>{
