@@ -497,8 +497,6 @@ function toggleIcon(id, value){
 /* MAIN INIT */
 async function init(){
 
-  await signInAnonymously(auth); // ✅ ensure auth BEFORE firestore
-
   if(!id){
     console.log("NO ID");
     return;
