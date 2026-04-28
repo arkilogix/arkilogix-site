@@ -430,7 +430,7 @@ function handleRealtimeUpdate(data){
     if(!locked){
       render();
     }
-
+    hideLoader();
     return; // ✅ STOP HERE on first load
   }
 
@@ -928,6 +928,21 @@ function setupFeatureLocks(){
       shareBtn.onclick = shareCard;
     }
   }
+}
+
+function hideLoader(){
+
+  const loader = document.getElementById("appLoader");
+  if(!loader) return;
+
+  setTimeout(()=>{
+    loader.classList.add("hide");
+
+    setTimeout(()=>{
+      loader.remove();
+    }, 500);
+
+  }, 300); // small delay for smooth feel
 }
 
 /* LOGOUT */
