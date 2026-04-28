@@ -362,7 +362,6 @@ async function loadUser(){
   if(!id) return;
 
   const ref = doc(db, "clients", id);
-  await ref.get({ source: "server" });
   const snap = await getDoc(ref);
   if(!snap.exists()) return;
 
