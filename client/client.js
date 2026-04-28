@@ -787,13 +787,16 @@ function showStep(step){
         backBtn.onclick = prevEditStep; // 🔥 normal behavior
       }
     }
-    if(nextBtn){
-      if(step === 4){
-        nextBtn.innerText = "Confirm";
-      } else {
-        nextBtn.innerText = "Next";
-      }
-    }
+
+  if(!nextBtn) return;
+  
+  const isValid = validateStep(step);
+  
+  nextBtn.disabled = !isValid;
+  nextBtn.style.opacity = isValid ? "1" : "0.5";
+  nextBtn.style.pointerEvents = isValid ? "auto" : "none";
+  
+  nextBtn.innerText = (step === 4) ? "Confirm" : "Next";
 
   // PROGRESS
   const progress = (step / 5) * 100;
@@ -811,6 +814,18 @@ function showStep(step){
     document.getElementById("finalActions").style.display = "none";
   }
 
+  const saveBtn = document.getElementById("saveBtn");
+
+  if(currentStep === 5 && saveBtn){
+
+  const isValid = validateAll();
+
+  saveBtn.disabled = !isValid;
+  saveBtn.style.opacity = isValid ? "1" : "0.5";
+  saveBtn.style.pointerEvents = isValid ? "auto" : "none";
+  saveBtn.innerText = isValid ? "Save" : "Complete required fields"; 
+}
+  
   // 🔥 CONFIRM DATA
   if(step === 5){
 
@@ -912,6 +927,18 @@ window.handleEditOutsideClick = function(e){
 };
 
 document.addEventListener("input", function(e){
+  const saveBtn = document.getElementById("saveBtn");
+
+if(currentStep === 5 && saveBtn){
+
+  const isValid = validateAll();
+
+  saveBtn.disabled = !isValid;
+  saveBtn.style.opacity = isValid ? "1" : "0.5";
+  saveBtn.style.pointerEvents = isValid ? "auto" : "none";
+  
+  saveBtn.innerText = isValid ? "Save" : "Complete required fields";
+}
   const modal = document.getElementById("editModal");
   if(modal.style.display === "flex" && modal.contains(e.target)){
     hasUnsavedChanges = true;
@@ -1015,6 +1042,21 @@ function validateStep(step){
     const hasOne = Array.from(services).some(i => i.value.trim());
     return hasOne;
   }
+
+  return true;
+}
+
+function validateAll(){
+
+  const name = document.getElementById("editName")?.value.trim();
+  const position = document.getElementById("editPosition")?.value.trim();
+
+  const services = document.querySelectorAll("#servicesContainer input");
+  const hasService = Array.from(services).some(i => i.value.trim());
+
+  if(!name) return false;
+  if(!position) return false;
+  if(!hasService) return false;
 
   return true;
 }
