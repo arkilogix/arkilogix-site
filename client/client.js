@@ -301,8 +301,10 @@ function render(){
     }
 
     let statusText = "";
-    if(currentData.status === "paid"){
-      statusText = "Verified · ";
+    if(currentData.status === "pending_verification"){
+      lockScreen.style.display = "flex";
+    } else {
+      lockScreen.style.display = "none";
     }
 
     planEl.innerText = statusText + label;
@@ -420,6 +422,7 @@ function handleRealtimeUpdate(data){
     previousStatus = data.status;
     currentData = data;
     setupActivateButton();
+    setupFeatureLocks();
     const locked = checkAccess();
 
     if(!locked){
@@ -509,41 +512,39 @@ function setupActivateButton(){
   const btn = document.getElementById("activateBtn");
   if(!btn || !currentData) return;
 
-  // 🔴 UNPAID
   if(currentData.status === "unpaid"){
 
-    btn.classList.add("show");
-    btn.classList.remove("pending");
-
+    btn.style.display = "block";
     btn.innerText = "Activate My Card";
-    btn.style.pointerEvents = "auto";
 
     btn.onclick = () => {
       window.location.href =
         "/payment.html?clientId=" + currentDocId;
     };
+
   }
 
-  // 🟡 PENDING
   else if(currentData.status === "pending_verification"){
 
-    btn.classList.add("show");
-    btn.classList.add("pending");
-
+    btn.style.display = "block";
     btn.innerText = "Verifying Payment...";
+    btn.style.opacity = "0.6";
     btn.style.pointerEvents = "none";
+
   }
 
-  // 🟢 PAID
   else{
-    btn.classList.remove("show");
+    btn.style.display = "none";
   }
 }
 
 
 
 window.editProfile = function(){
-
+    if(currentData.status !== "active"){
+      alert("Please activate your card first.");
+      return;
+    }
     const nameInput = document.getElementById("editName");
     if(nameInput) nameInput.value = currentData.name || "";
     
@@ -863,6 +864,51 @@ document.addEventListener("input", function(e){
   }
 
 });
+
+function setupFeatureLocks(){
+  
+  if(!currentData) return;
+
+  const isLocked = currentData.status !== "active";
+
+  const viewBtn = document.getElementById("viewBtn");
+  const editBtn = document.getElementById("editBtn");
+  const shareBtn = document.getElementById("shareBtn");
+  const overlay = document.getElementById("cardLockOverlay");
+  const card = document.querySelector(".card");
+  
+  if(isLocked){
+
+    // 🔒 VIEW
+    if(viewBtn){
+      viewBtn.innerText = "Activate to View";
+      viewBtn.onclick = () => {
+        window.location.href = "/payment.html?clientId=" + currentDocId;
+      };
+    }
+
+    // 🔒 EDIT
+    if(isLocked){
+
+  if(overlay) overlay.style.display = "flex";
+  if(card) card.classList.add("locked");
+
+  [viewBtn, editBtn, shareBtn].forEach(btn=>{
+    if(!btn) return;
+    btn.classList.add("locked");
+  });
+
+} else {
+
+  if(overlay) overlay.style.display = "none";
+  if(card) card.classList.remove("locked");
+
+  [viewBtn, editBtn, shareBtn].forEach(btn=>{
+    if(!btn) return;
+    btn.classList.remove("locked");
+  });
+
+}                  
 
 /* LOGOUT */
 window.logout = function(){
