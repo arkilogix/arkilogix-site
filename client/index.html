@@ -93,48 +93,48 @@
 <div id="editModal" class="edit-modal">
 
   <div class="edit-box">
-
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <h3 style="margin:0;">Edit Profile</h3>
-      <span onclick="closeEdit()" style="cursor:pointer;font-size:18px;">×</span>
-    </div>
-
+    <h3 style="margin-bottom:10px;">Edit Profile</h3>
+    
     <!-- PROFILE -->
-    <label style="font-size:12px;color:#777;">Profile Photo</label>
-    <input type="file" id="editProfilePhoto" accept="image/*">
-
-    <!-- BASIC -->
-    <input id="editName" placeholder="Name">
-    <input id="editPosition" placeholder="Position">
-    <input id="editCompany" placeholder="Company">
-
-    <!-- CONTACT -->
-    <input id="editPhone" placeholder="Phone">
-    <input id="editEmail" placeholder="Email">
-
+    <label class="input-label">Profile Photo</label>
+    <input type="file" id="editProfilePhoto" class="input-file">
+    
+    <!-- NAME -->
+    <label class="input-label">Name</label>
+    <input id="editName" class="input-field">
+    
+    <!-- PROFESSION -->
+    <label class="input-label">Profession</label>
+    <input id="editPosition" class="input-field">
+    
+    <!-- COMPANY -->
+    <label class="input-label">Company</label>
+    <input id="editCompany" class="input-field">
+    
+    <!-- PHONE -->
+    <label class="input-label">Phone</label>
+    <input id="editPhone" class="input-field">
+    
+    <!-- EMAIL -->
+    <label class="input-label">Email</label>
+    <input id="editEmail" class="input-field">
+    
     <!-- SERVICES -->
-    <label style="font-size:12px;color:#777;">Services</label>
+    <label class="input-label">Services</label>
     
-        <div id="servicesContainer"></div>
-        
-        <button onclick="addServiceField()" style="
-          padding:10px;
-          border-radius:8px;
-          border:1px dashed #ccc;
-          background:#fff;
-          cursor:pointer;
-        ">
-          + Add Service
-        </button>
+    <div id="servicesContainer" class="services-box"></div>
     
-    <p id="serviceLimitMsg" style="font-size:12px;color:#dc2626;"></p>
-
+    <button onclick="addServiceField()" class="add-service-btn">
+      + Add Service
+    </button>
+    
+    <p id="serviceLimitMsg" class="limit-text"></p>
+    
     <!-- ACTIONS -->
-    <div style="display:flex;gap:10px;margin-top:10px;">
-      <button onclick="saveEdit()" class="btn primary" style="flex:1;">Save</button>
-      <button onclick="closeEdit()" class="btn glass" style="flex:1;">Cancel</button>
+    <div class="edit-actions">
+      <button onclick="saveEdit()" class="btn primary">Save</button>
+      <button onclick="closeEdit()" class="btn glass">Cancel</button>
     </div>
-
   </div>
 </div>
   
