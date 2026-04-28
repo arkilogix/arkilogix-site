@@ -759,6 +759,7 @@ let currentStep = 1;
 
 function showStep(step){
 
+
   document.querySelectorAll(".edit-step").forEach(s=>{
     s.classList.remove("active");
   });
@@ -766,15 +767,16 @@ function showStep(step){
   document.getElementById("step"+step).classList.add("active");
 
   const nextBtn = document.querySelector(".edit-nav .primary");
+  if(!nextBtn) return;
 
   // BUTTON TEXT
   if(step === 4){
-    nextBtn.innerText = "Review";
+    nextBtn.innerText = "Confirm";
   } else {
     nextBtn.innerText = "Next";
   }
 
-  // PROGRESS BAR
+  // PROGRESS
   const progress = (step / 5) * 100;
   document.getElementById("stepProgressFill").style.width = progress + "%";
 
@@ -788,6 +790,22 @@ function showStep(step){
   } else {
     document.querySelector(".edit-nav").style.display = "flex";
     document.getElementById("finalActions").style.display = "none";
+  }
+
+  // 🔥 CONFIRM DATA
+  if(step === 5){
+
+    const name = document.getElementById("editName")?.value || "-";
+    const position = document.getElementById("editPosition")?.value || "-";
+    const company = document.getElementById("editCompany")?.value || "-";
+
+    const services = document.querySelectorAll("#servicesContainer input");
+    const count = Array.from(services).filter(i => i.value.trim()).length;
+
+    document.getElementById("confirmName").innerText = name;
+    document.getElementById("confirmPosition").innerText = position;
+    document.getElementById("confirmCompany").innerText = company;
+    document.getElementById("confirmServices").innerText = count + " items";
   }
 
   currentStep = step;
