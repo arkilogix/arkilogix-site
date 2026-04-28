@@ -557,7 +557,17 @@ if(currentData.plan === "basic"){
   locked.style.opacity = "0.5";
 } else {
   locked.style.opacity = "1";
-  locked.querySelectorAll("input").forEach(i => i.disabled = false);
+    const locked = document.getElementById("lockedSection");
+  
+  const inputs = locked.querySelectorAll("input");
+  
+  if(currentData.plan === "basic"){
+    locked.style.opacity = "0.5";
+    inputs.forEach(i => i.disabled = true);
+  } else {
+    locked.style.opacity = "1";
+    inputs.forEach(i => i.disabled = false);
+  }
 }
   
   // 🔥 PLAN LIMIT
@@ -576,6 +586,7 @@ if(currentData.plan === "basic"){
   }
 
   document.getElementById("editModal").style.display = "flex";
+  showStep(1);
 };
 
 window.closeEdit = function(){
@@ -705,7 +716,16 @@ function showStep(step){
 
   document.getElementById("step"+step).classList.add("active");
 
-  // hide nav on final
+  const nextBtn = document.querySelector(".edit-nav .primary");
+
+  // 🔥 CHANGE BUTTON LABEL
+  if(step === 3){
+    nextBtn.innerText = "Review";
+  } else {
+    nextBtn.innerText = "Next";
+  }
+
+  // FINAL STEP
   if(step === 4){
     document.querySelector(".edit-nav").style.display = "none";
     document.getElementById("finalActions").style.display = "flex";
@@ -728,16 +748,24 @@ window.prevEditStep = function(){
     showStep(currentStep - 1);
   }
 }
-document.getElementById("editProfilePhoto").addEventListener("change", function(e){
 
-  const file = e.target.files[0];
-  if(!file) return;
+const photoInput = document.getElementById("editProfilePhoto");
 
-  const preview = document.getElementById("profilePreview");
+if(photoInput){
+  photoInput.addEventListener("change", function(e){
 
-  preview.src = URL.createObjectURL(file);
-  preview.style.display = "block";
-});
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const preview = document.getElementById("profilePreview");
+
+    if(preview){
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    }
+  });
+}
+
 /* LOGOUT */
 window.logout = function(){
   signOut(auth).then(()=>{
