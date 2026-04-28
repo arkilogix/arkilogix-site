@@ -180,12 +180,25 @@
   <h3>Services</h3>
 
   <div id="servicesContainer" class="services-box"></div>
-
   <button onclick="addServiceField()" class="add-service-btn">
     + Add Service
   </button>
+  
+<div id="serviceLockOverlay" class="service-lock-overlay">
+  <div class="service-lock-box">
+    
+    <div class="lock-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+        <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+      </svg>
+    </div>
 
-  <p id="serviceLimitMsg" class="limit-text"></p>
+    <div class="lock-text">Limit Reached</div>
+    <div class="lock-sub">Upgrade to Pro to add more</div>
+
+  </div>
+</div>
 </div>
 
 <!-- STEP 4 -->
