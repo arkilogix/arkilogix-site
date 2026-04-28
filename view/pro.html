@@ -494,9 +494,6 @@ document.getElementById("highlightImage").src = heroImg;
   document.getElementById("highlightImage").style.transform = "scale(1.05)";
   document.getElementById("highlightImage").style.transition = "0.5s";
 
-  document.getElementById("highlightTitle").innerText = data.position || "";
-  document.getElementById("company").innerText = data.company || "";
-
   /* ACTIONS */
   if(data.phone){
     document.getElementById("phoneBtn").href = "tel:" + data.phone;
