@@ -90,13 +90,22 @@
 <script type="module" src="client.js"></script>
 
   <!-- EDIT MODAL -->
-<div id="editModal" class="edit-modal">
-
+<div id="editModal" class="edit-modal" onclick="handleEditOutsideClick(event)">
+ 
   <div class="edit-box">
-    <div id="editSteps">
-
-  <!-- STEP 1 -->
+        <p id="saveIndicator" style="
+      font-size:11px;
+      color:#94a3b8;
+      text-align:right;
+      margin-top:-5px;
+    "></p>
+      <div class="step-progress">
+  <div id="stepProgressFill"></div>
+</div>
+<p id="stepLabel" class="step-label">Step 1 of 4</p>
   <div class="edit-step active" id="step1">
+        <div id="editSteps">
+  <!-- STEP 1 -->
     <h3>Profile</h3>
 
     <label class="input-label">Profile Photo</label>
