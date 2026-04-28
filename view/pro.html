@@ -366,6 +366,7 @@ async function loadUser(){
   if(!snap.exists()) return;
 
   const data = snap.data();
+  window.currentData = data;
 // 🔒 LOCK IF NOT PAID
 const isUnlocked = data.status === "paid" || data.status === "completed";
 if(!isUnlocked){
@@ -467,6 +468,61 @@ if(data.projectImages && data.projectImages.length){
   container.innerHTML = "<p style='color:#777;font-size:13px;'>No projects yet</p>";
 }
 
+  window.downloadVCard = async function(){
+
+  if(!window.currentData){
+    alert("No data available");
+    return;
+  }
+
+  const name = window.currentData.name || "";
+  const phone = window.currentData.phone || "";
+  const email = window.currentData.email || "";
+  const company = window.currentData.company || "";
+  const photoUrl = window.currentData.profile || "";
+
+  let photoBase64 = "";
+
+  // 🔥 Convert image to base64
+  if(photoUrl){
+    try{
+      const res = await fetch(photoUrl);
+      const blob = await res.blob();
+
+      const reader = new FileReader();
+      photoBase64 = await new Promise(resolve => {
+        reader.onloadend = () => {
+          const base64 = reader.result.split(",")[1];
+          resolve(base64);
+        };
+        reader.readAsDataURL(blob);
+      });
+
+    }catch(e){
+      console.log("Image conversion failed:", e);
+    }
+  }
+
+  const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+ORG:${company}
+TEL;TYPE=CELL:${phone}
+EMAIL:${email}
+${photoBase64 ? `PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}` : ""}
+END:VCARD`;
+
+  const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${name || "contact"}.vcf`;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+  
 }
 
 loadUser().then(()=>{
