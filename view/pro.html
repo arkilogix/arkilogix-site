@@ -633,8 +633,13 @@ projectContainer.addEventListener("mousedown", stopAutoScroll);
     }
   }
 
-  const vcard = `BEGIN:VCARD
+const fullName = name.split(" ");
+const firstName = fullName[0] || "";
+const lastName = fullName.slice(1).join(" ") || "";
+
+const vcard = `BEGIN:VCARD
 VERSION:3.0
+N:${lastName};${firstName};;;
 FN:${name}
 ORG:${company}
 TEL;TYPE=CELL:${phone}
