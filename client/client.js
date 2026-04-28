@@ -855,6 +855,7 @@ function showStep(step){
     }
 
     const nextBtn = document.querySelector(".edit-nav .primary");
+    const backBtn = document.querySelector(".edit-nav .glass");
     if(backBtn){
       if(step === 1){
         backBtn.innerText = "Cancel";
