@@ -631,9 +631,8 @@ function createServiceField(value = ""){
 
   const container = document.getElementById("servicesContainer");
 
-  const wrap = document.createElement("div");
-  wrap.style.display = "flex";
-  wrap.style.gap = "6px";
+  const row = document.createElement("div");
+  row.className = "service-row";
 
   const input = document.createElement("input");
   input.value = value;
@@ -641,17 +640,14 @@ function createServiceField(value = ""){
 
   const remove = document.createElement("button");
   remove.innerText = "×";
-  remove.style.border = "none";
-  remove.style.background = "#eee";
-  remove.style.borderRadius = "8px";
-  remove.style.cursor = "pointer";
+  remove.className = "remove-btn";
 
-  remove.onclick = () => wrap.remove();
+  remove.onclick = () => row.remove();
 
-  wrap.appendChild(input);
-  wrap.appendChild(remove);
+  row.appendChild(input);
+  row.appendChild(remove);
 
-  container.appendChild(wrap);
+  container.appendChild(row);
 }
 
 window.addServiceField = function(){
