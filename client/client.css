@@ -206,22 +206,73 @@ p{
 
 .service-row{
   display:flex;
-  gap:10px;
+  align-items:center;
+  gap:8px;
+
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:8px 10px;
+
+  transition:.2s;
+  animation:fadeSlide .25s ease;
+}
+
+.service-row input{
+  flex:1;
+  border:none;
+  outline:none;
+  background:transparent;
+  color:#fff;
+  font-size:13px;
+}
+
+.service-row:focus-within{
+  border-color:#C9A96E;
+  background:rgba(255,255,255,0.08);
+  box-shadow:0 0 0 1px #C9A96E, 0 0 10px rgba(201,169,110,0.2);
 }
 
 .remove-btn{
-  width:30px;
-  height:30px;
+  width:26px;
+  height:26px;
   border-radius:50%;
+
   background:rgba(255,255,255,0.08);
   border:none;
-  color:#fff;
+  color:#cbd5e1;
+
+  font-size:14px;
   cursor:pointer;
+
   transition:.2s;
 }
 
 .remove-btn:hover{
-  background:#dc2626;
+  background:#ef4444;
+  color:#fff;
+}
+
+.add-service-btn{
+  margin-top:6px;
+
+  padding:10px;
+  border-radius:12px;
+
+  background:rgba(255,255,255,0.05);
+  border:1px dashed rgba(255,255,255,0.2);
+
+  color:#94a3b8;
+  font-size:12px;
+
+  cursor:pointer;
+  transition:.2s;
+}
+
+.add-service-btn:hover{
+  border-color:#C9A96E;
+  color:#C9A96E;
+  background:rgba(201,169,110,0.08);
 }
 
 /* ===== STEP SYSTEM ===== */
@@ -508,3 +559,13 @@ p{
   color:#fff;
 }
 
+@keyframes fadeSlide{
+  from{
+    opacity:0;
+    transform:translateY(6px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
