@@ -145,8 +145,38 @@
     
 </div>
 
+    
 <!-- STEP 2 -->
-<div class="edit-step" id="step2">
+    <div class="edit-step" id="step2">
+  <h3>Contact Information</h3>
+
+  <div class="input-group">
+    <label class="input-label">Email</label>
+    <input id="editEmail" class="input-field">
+  </div>
+
+  <div class="input-group">
+    <label class="input-label">Phone</label>
+    <input id="editPhone" class="input-field">
+  </div>
+
+  <div class="input-group">
+    <label class="input-label">Facebook</label>
+    <input id="editFacebook" class="input-field">
+  </div>
+
+  <div class="input-group">
+    <label class="input-label">Instagram</label>
+    <input id="editInstagram" class="input-field">
+  </div>
+
+  <div class="input-group">
+    <label class="input-label">Website</label>
+    <input id="editWebsite" class="input-field">
+  </div>
+</div>
+<!-- STEP 3 -->
+<div class="edit-step" id="step3">
   <h3>Services</h3>
 
   <div id="servicesContainer" class="services-box"></div>
@@ -158,11 +188,14 @@
   <p id="serviceLimitMsg" class="limit-text"></p>
 </div>
 
-<!-- STEP 3 -->
-<div class="edit-step" id="step3">
+<!-- STEP 4 -->
+<div class="edit-step" id="step4">
   <h3>Advanced Features</h3>
 
-  <div id="lockedSection">
+<div class="locked-wrapper">
+
+  <!-- 🔒 ACTUAL CONTENT -->
+  <div class="locked-content">
 
     <div class="locked-box">
       <p>Banner Photo</p>
@@ -176,13 +209,31 @@
       <input type="file" disabled>
     </div>
 
-    <p class="upgrade-msg">Upgrade to Pro to unlock</p>
-
   </div>
+
+  <!-- 🔥 OVERLAY -->
+  <div class="locked-overlay">
+    <div class="lock-ui">
+      <div class="lock-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+        <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+      </svg>
+    </div>
+      <div class="lock-title">Upgrade to Pro</div>
+      <div class="lock-sub">to unlock this feature</div>
+
+      <button class="upgrade-mini" onclick="upgradeToPro()">
+        Upgrade Now
+      </button>
+    </div>
+  </div>
+
+</div>
 </div>
 
-<!-- STEP 4 -->
-<div class="edit-step" id="step4">
+<!-- STEP 5 -->
+<div class="edit-step" id="step5">
   <h3>Review</h3>
   <p>Ready to save your changes?</p>
 </div>
