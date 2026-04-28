@@ -170,7 +170,7 @@ const db = getFirestore(app);
 /* LOGIN */
 window.login = async function(){
 
-  const email = document.getElementById("email").value.trim();
+  const email = document.getElementById("email").value.trim().toLowerCase();
   const password = document.getElementById("password").value;
 
   if(!email || !password){
@@ -189,7 +189,9 @@ window.login = async function(){
   try{
     const userCred = await signInWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
-    console.log("USER UID:", user.uid);
+   
+    console.log("LOGIN EMAIL:", email);
+    console.log("AUTH UID:", user.uid);
 
     // ✅ ADMIN CHECK
     const adminDoc = await getDoc(doc(db, "admins", user.uid));
@@ -198,12 +200,17 @@ window.login = async function(){
       return;
     }
 
-    // ✅ CLIENT CHECK (authUid)
-    const docRef = doc(db, "clients", user.uid);
-    const docSnap = await getDoc(docRef);
+   // ✅ CLIENT CHECK (FIXED — USE QUERY)
+    const q = query(collection(db, "clients"), where("authUid", "==", user.uid));
+    const snap = await getDocs(q);
     
-    if(docSnap.exists()){
-      window.location.replace("/client/index.html");
+    if(!snap.empty){
+      const clientDoc = snap.docs[0];
+      const clientId = clientDoc.id;
+    
+      console.log("CLIENT FOUND:", clientId);
+    
+      window.location.replace("/client/index.html?clientId=" + clientId);
       return;
     }
 
