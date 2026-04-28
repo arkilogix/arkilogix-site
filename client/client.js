@@ -873,7 +873,7 @@ function setupFeatureLocks(){
 
   if(!currentData) return;
 
-  const isLocked = currentData.status !== "active";
+  const isLocked = currentData.status !== "paid";
 
   const viewBtn = document.getElementById("viewBtn");
   const editBtn = document.getElementById("editBtn");
