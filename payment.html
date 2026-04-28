@@ -185,6 +185,60 @@ input[type="file"]{
   opacity:0;
   pointer-events:none;
 }
+.btn:active{
+  transform:scale(0.97);
+}
+  .btn:hover{
+  filter:brightness(1.05);
+}
+.spinner{
+  width:14px;
+  height:14px;
+  border:2px solid rgba(255,255,255,0.3);
+  border-top:2px solid #fff;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:6px;
+  animation:spin 0.8s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+
+  background:rgba(0,0,0,0.8);
+  color:#fff;
+  padding:12px 18px;
+  border-radius:12px;
+
+  opacity:0;
+  transition:.3s;
+  z-index:99999;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+.fade{
+  animation:fadeIn .3s ease;
+}
+
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
 </style>
 </head>
 
@@ -270,7 +324,7 @@ const db = getFirestore(app);
 const params = new URLSearchParams(window.location.search);
 const clientId = params.get("clientId");
   if(!clientId){
-  alert("Invalid access. No client ID.");
+  showToast("Invalid access. No client ID.");
   window.location.href = "/";
 }
 
@@ -278,7 +332,8 @@ const clientId = params.get("clientId");
 async function loadData(){
   const snap = await getDoc(doc(db,"clients",clientId));
   if(!snap.exists()){
-    alert("Order not found.");
+    showToast("Order not found.");
+    hideLoader();
     return;
   }
   const data = snap.data();
@@ -367,14 +422,14 @@ async function sendEmails(data){
 window.submitPayment = async function(){
 
   const file = document.getElementById("proof").files[0];
-  if(!file) return alert("Upload proof first");
+  if(!file) return showToast("Upload proof first");
 
   const status = document.getElementById("status");
   const btn = document.querySelector(".btn");
   if(btn.disabled) return;
   
-  btn.innerText = "Processing...";
   btn.disabled = true;
+  btn.innerHTML = "<span class='spinner'></span> Processing...";
 
   try{
 
@@ -404,19 +459,24 @@ window.submitPayment = async function(){
       clientId: clientId
     });
     
-    status.innerText = "Payment submitted successfully!";
+    showToast("Payment submitted successfully!");
 
     // SUCCESS UI
-    document.getElementById("paymentBox").style.display="none";
-    document.getElementById("successBox").style.display="block";
+    const paymentBox = document.getElementById("paymentBox");
+    const successBox = document.getElementById("successBox");
+    
+    paymentBox.style.display="none";
+    
+    successBox.style.display="block";
+    successBox.classList.add("fade");
     setTimeout(() => {
       window.location.href = `/auth/signup.html?clientId=${clientId}`;
     }, 1500);
 
   }catch(e){
-    alert("Something went wrong");
-    btn.innerText="I've Paid";
-    btn.disabled=false;
+    showToast("Something went wrong");
+    btn.disabled = false;
+    btn.innerText = "I've Paid";
   }
 
 }
@@ -430,7 +490,20 @@ function hideLoader(){
     setTimeout(()=> loader.remove(), 400);
   },300);
 }
-</script>
+  function showToast(msg){
 
+  const t = document.getElementById("toast");
+  if(!t) return;
+
+  t.innerText = msg;
+  t.classList.add("show");
+
+  setTimeout(()=>{
+    t.classList.remove("show");
+  },2500);
+}
+</script>
+<div id="toast" class="toast"></div>
+  
 </body>
 </html>
