@@ -89,6 +89,43 @@
 <script src="/firebase-init.js"></script>
 <script type="module" src="client.js"></script>
 
+  <!-- EDIT MODAL -->
+<div id="editModal" class="edit-modal">
+
+  <div class="edit-box">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="margin:0;">Edit Profile</h3>
+      <span onclick="closeEdit()" style="cursor:pointer;font-size:18px;">×</span>
+    </div>
+
+    <!-- PROFILE -->
+    <label style="font-size:12px;color:#777;">Profile Photo</label>
+    <input type="file" id="editProfilePhoto" accept="image/*">
+
+    <!-- BASIC -->
+    <input id="editName" placeholder="Name">
+    <input id="editPosition" placeholder="Position">
+    <input id="editCompany" placeholder="Company">
+
+    <!-- CONTACT -->
+    <input id="editPhone" placeholder="Phone">
+    <input id="editEmail" placeholder="Email">
+
+    <!-- SERVICES -->
+    <label style="font-size:12px;color:#777;">Services</label>
+    <input id="editService1" placeholder="Service 1">
+    <input id="editService2" placeholder="Service 2">
+    <input id="editService3" placeholder="Service 3">
+
+    <!-- ACTIONS -->
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button onclick="saveEdit()" class="btn primary" style="flex:1;">Save</button>
+      <button onclick="closeEdit()" class="btn glass" style="flex:1;">Cancel</button>
+    </div>
+
+  </div>
+</div>
   
 </body>
 </html>
