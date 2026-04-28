@@ -116,69 +116,65 @@
   <div id="stepProgressFill"></div>
 </div>
 <p id="stepLabel" class="step-label">Step 1 of 4</p>
-  <div class="edit-step active" id="step1">
-        <div id="editSteps">
   <!-- STEP 1 -->
-    <h3>Profile</h3>
+<div class="edit-step active" id="step1">
+  <h3>Profile</h3>
 
-    <label class="input-label">Profile Photo</label>
-    <input type="file" id="editProfilePhoto">
+  <label class="input-label">Profile Photo</label>
+  <input type="file" id="editProfilePhoto">
 
-    <img id="profilePreview" class="preview-img">
+  <img id="profilePreview" class="preview-img">
 
-    <label class="input-label">Name</label>
-    <input id="editName" class="input-field">
+  <label class="input-label">Name</label>
+  <input id="editName" class="input-field">
 
-    <label class="input-label">Profession</label>
-    <input id="editPosition" class="input-field">
+  <label class="input-label">Profession</label>
+  <input id="editPosition" class="input-field">
 
-    <label class="input-label">Company</label>
-    <input id="editCompany" class="input-field">
-  </div>
+  <label class="input-label">Company</label>
+  <input id="editCompany" class="input-field">
+</div>
 
-  <!-- STEP 2 -->
-  <div class="edit-step" id="step2">
-    <h3>Services</h3>
+<!-- STEP 2 -->
+<div class="edit-step" id="step2">
+  <h3>Services</h3>
 
-    <div id="servicesContainer" class="services-box"></div>
+  <div id="servicesContainer" class="services-box"></div>
 
-    <button onclick="addServiceField()" class="add-service-btn">
-      + Add Service
-    </button>
+  <button onclick="addServiceField()" class="add-service-btn">
+    + Add Service
+  </button>
 
-    <p id="serviceLimitMsg" class="limit-text"></p>
-  </div>
+  <p id="serviceLimitMsg" class="limit-text"></p>
+</div>
 
-  <!-- STEP 3 -->
-  <div class="edit-step" id="step3">
-    <h3>Advanced Features</h3>
+<!-- STEP 3 -->
+<div class="edit-step" id="step3">
+  <h3>Advanced Features</h3>
 
-    <div id="lockedSection">
+  <div id="lockedSection">
 
-      <div class="locked-box">
-        <p>Banner Photo</p>
-        <input type="file" disabled>
-      </div>
-
-      <div class="locked-box">
-        <p>Highlight Photos</p>
-        <input type="file" disabled>
-        <input type="file" disabled>
-        <input type="file" disabled>
-      </div>
-
-      <p class="upgrade-msg">Upgrade to Pro to unlock</p>
-
+    <div class="locked-box">
+      <p>Banner Photo</p>
+      <input type="file" disabled>
     </div>
 
-  </div>
+    <div class="locked-box">
+      <p>Highlight Photos</p>
+      <input type="file" disabled>
+      <input type="file" disabled>
+      <input type="file" disabled>
+    </div>
 
-  <!-- STEP 4 -->
-  <div class="edit-step" id="step4">
-    <h3>Review</h3>
-    <p>Ready to save your changes?</p>
-  </div>
+    <p class="upgrade-msg">Upgrade to Pro to unlock</p>
 
+  </div>
+</div>
+
+<!-- STEP 4 -->
+<div class="edit-step" id="step4">
+  <h3>Review</h3>
+  <p>Ready to save your changes?</p>
 </div>
 
 <!-- NAVIGATION -->
