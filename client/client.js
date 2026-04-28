@@ -544,14 +544,23 @@ function setupActivateButton(){
 
 window.editProfile = function(){
 
-  document.getElementById("editName").value = currentData.name || "";
-  document.getElementById("editPosition").value = currentData.position || "";
-  document.getElementById("editCompany").value = currentData.company || "";
-  document.getElementById("editPhone").value = currentData.phone || "";
-  document.getElementById("editEmail").value = currentData.email || "";
+    const nameInput = document.getElementById("editName");
+    if(nameInput) nameInput.value = currentData.name || "";
+    
+    const positionInput = document.getElementById("editPosition");
+    if(positionInput) positionInput.value = currentData.position || "";
+    
+    const companyInput = document.getElementById("editCompany");
+    if(companyInput) companyInput.value = currentData.company || "";
+  
+    const phoneInput = document.getElementById("editPhone");
+    if(phoneInput) phoneInput.value = currentData.phone || "";
+    
+    const emailInput = document.getElementById("editEmail");
+    if(emailInput) emailInput.value = currentData.email || "";
 
-  const container = document.getElementById("servicesContainer");
-  container.innerHTML = "";
+    const container = document.getElementById("servicesContainer");
+    container.innerHTML = "";
 
   // 🔥 LOCK LOGIC (CLEAN)
   const locked = document.getElementById("lockedSection");
