@@ -666,7 +666,7 @@ window.handleFacebook = function(){
 
 /* INIT CALL */
 init();
-window.downloadVCard = function(){
+window.downloadVCard = async function(){
 
   if(!window.currentData){
     alert("No data available");
@@ -677,13 +677,37 @@ window.downloadVCard = function(){
   const phone = window.currentData.phone || "";
   const email = window.currentData.email || "";
   const company = window.currentData.company || "";
+  const photoUrl = window.currentData.profile || "";
+
+  let photoBase64 = "";
+
+  // 🔥 Convert image to base64
+  if(photoUrl){
+    try{
+      const res = await fetch(photoUrl);
+      const blob = await res.blob();
+
+      const reader = new FileReader();
+      photoBase64 = await new Promise(resolve => {
+        reader.onloadend = () => {
+          const base64 = reader.result.split(",")[1];
+          resolve(base64);
+        };
+        reader.readAsDataURL(blob);
+      });
+
+    }catch(e){
+      console.log("Image conversion failed:", e);
+    }
+  }
 
   const vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:${name}
 ORG:${company}
-TEL:${phone}
+TEL;TYPE=CELL:${phone}
 EMAIL:${email}
+${photoBase64 ? `PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}` : ""}
 END:VCARD`;
 
   const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
