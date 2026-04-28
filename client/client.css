@@ -184,7 +184,8 @@ p{
 /* ===== INPUTS ===== */
 .input-field{
   width:100%;
-  padding:12px;
+  box-sizing:border-box;   /* must match */
+  padding:14px 16px;
   border-radius:12px;
   background:rgba(255,255,255,0.06);
   border:1px solid rgba(255,255,255,0.1);
@@ -518,6 +519,7 @@ p{
   flex-direction:column;
   gap:6px;
   margin-bottom:14px;
+  width:100%;
 }
 
 .input-label{
@@ -746,8 +748,8 @@ p{
 .upload-box{
   position:relative;
   border-radius:16px;
-  padding:18px;
-
+  padding:14px 16px;  
+  box-sizing:border-box;
   border:1px dashed rgba(255,255,255,0.15);
   background:rgba(255,255,255,0.04);
 
