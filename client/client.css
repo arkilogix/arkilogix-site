@@ -286,7 +286,9 @@ p{
 
 .edit-step.active{
   display:block;
+  opacity:1;
   animation:slideIn .3s ease forwards;
+  
 }
 
 @keyframes slideFade{
