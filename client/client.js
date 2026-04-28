@@ -576,8 +576,8 @@ window.editProfile = function(){
     container.innerHTML = "";
 
   // 🔥 LOCK LOGIC (CLEAN)
-  const locked = document.getElementById("lockedSection");
-  const inputs = locked.querySelectorAll("input");
+  const locked = document.querySelector(".locked-wrapper");
+  const inputs = locked ? locked.querySelectorAll("input") : [];
 
   if(currentData.plan === "basic"){
     locked.style.opacity = "0.5";
@@ -730,26 +730,21 @@ window.addServiceField = function(){
 
   const currentCount = container.children.length;
 
-  if(currentCount >= serviceLimit){
-
-    // 🔥 MESSAGE
-    if(currentData.plan === "basic"){
-      msg.innerHTML = `Limit reached. <a href="#" onclick="upgradeToPro()">Upgrade to Pro</a>`;
-    } else if(currentData.plan === "pro"){
-      msg.innerHTML = `Limit reached. <a href="#" onclick="upgradeToPro()">Upgrade to Elite</a>`;
-    } else {
-      msg.innerHTML = "";
+if(currentCount >= serviceLimit){
+  const box = document.getElementById("servicesContainer");
+    if(box){
+      box.classList.add("shake");
+      setTimeout(()=> box.classList.remove("shake"), 300);
     }
-
-    // 🔥 ANIMATION TRIGGER
-    msg.classList.remove("limit-msg");
-    void msg.offsetWidth;
-    msg.classList.add("limit-msg");
-
-    container.classList.remove("limit-hit","limit-glow");
-    void container.offsetWidth;
-    container.classList.add("limit-hit","limit-glow");
-
+  
+    const overlay = document.getElementById("serviceLockOverlay");
+    if(overlay){
+      overlay.classList.add("show");
+      setTimeout(()=>{
+        overlay.classList.remove("show");
+      }, 2000);
+    }
+  
     return;
   }
 
