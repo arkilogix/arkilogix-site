@@ -525,3 +525,36 @@ p{
   color:#fff !important;
   box-shadow:none;
 }
+
+.edit-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(6px);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.edit-box{
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  width:320px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.edit-box input{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ddd;
+}
+
+.edit-actions{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
