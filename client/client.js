@@ -531,6 +531,83 @@ function setupActivateButton(){
     btn.classList.remove("show");
   }
 }
+
+
+
+window.editProfile = function(){
+
+  document.getElementById("editName").value = currentData.name || "";
+  document.getElementById("editPosition").value = currentData.position || "";
+  document.getElementById("editCompany").value = currentData.company || "";
+  document.getElementById("editPhone").value = currentData.phone || "";
+  document.getElementById("editEmail").value = currentData.email || "";
+
+  const services = currentData.services || [];
+
+  document.getElementById("editService1").value = services[0] || "";
+  document.getElementById("editService2").value = services[1] || "";
+  document.getElementById("editService3").value = services[2] || "";
+
+  document.getElementById("editModal").style.display = "flex";
+};
+
+window.closeEdit = function(){
+  document.getElementById("editModal").style.display = "none";
+};
+
+window.saveEdit = async function(){
+
+  const ref = doc(db, "clients", currentDocId);
+
+  let profileUrl = currentData.profile || "";
+
+  const file = document.getElementById("editProfilePhoto").files[0];
+
+  // 🔥 upload new image if selected
+  if(file){
+    profileUrl = await uploadEditImage(file);
+  }
+
+  const services = [
+    document.getElementById("editService1").value,
+    document.getElementById("editService2").value,
+    document.getElementById("editService3").value
+  ].filter(s => s);
+
+  await updateDoc(ref, {
+    name: document.getElementById("editName").value,
+    position: document.getElementById("editPosition").value,
+    company: document.getElementById("editCompany").value,
+    phone: document.getElementById("editPhone").value,
+    email: document.getElementById("editEmail").value,
+    profile: profileUrl,
+    services: services
+  });
+
+  closeEdit();
+};
+
+async function uploadEditImage(file){
+
+  if(!file) return null;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "nfc_upload");
+
+  // 🔥 KEEP SAME STRUCTURE
+  formData.append("folder", `nfc-clients/${currentDocId}/profile`);
+  formData.append("public_id", `profile_${Date.now()}`);
+
+  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+  return data.secure_url;
+}
+
 /* LOGOUT */
 window.logout = function(){
   signOut(auth).then(()=>{
