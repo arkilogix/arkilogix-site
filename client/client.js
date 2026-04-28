@@ -285,6 +285,7 @@ function render(){
   const planEl = document.getElementById("planBadge");
 
   if(planEl){
+    const lockScreen = document.getElementById("lockScreen");
     const plan = (currentData.plan || "basic").toLowerCase();
 
     let label = "Basic Plan";
@@ -311,6 +312,7 @@ function render(){
     planEl.className = "plan-badge " + planClass;
   }
 
+  const lockScreen = document.getElementById("lockScreen");
   const container = document.getElementById("cardServices");
   if(container){
     container.innerHTML = "";
@@ -444,7 +446,9 @@ function handleRealtimeUpdate(data){
   previousStatus = data.status;
 
   currentData = data;
+  currentData = data;
   setupActivateButton();
+  setupFeatureLocks(); // 🔥 ADD THIS
   const locked = checkAccess();
 
   if(!locked){
@@ -465,7 +469,7 @@ function smoothUnlock(){
   });
 
   // 🔓 enable buttons smoothly
-  ["viewCardBtn","shareCardBtn"].forEach(id=>{
+  ["viewBtn","shareBtn"].forEach(id=>{
     const btn = document.getElementById(id);
     if(btn){
       btn.style.transition = "0.3s ease";
@@ -866,7 +870,7 @@ document.addEventListener("input", function(e){
 });
 
 function setupFeatureLocks(){
-  
+
   if(!currentData) return;
 
   const isLocked = currentData.status !== "active";
@@ -874,41 +878,57 @@ function setupFeatureLocks(){
   const viewBtn = document.getElementById("viewBtn");
   const editBtn = document.getElementById("editBtn");
   const shareBtn = document.getElementById("shareBtn");
+
   const overlay = document.getElementById("cardLockOverlay");
   const card = document.querySelector(".card");
-  
+
   if(isLocked){
 
-    // 🔒 VIEW
-    if(viewBtn){
-      viewBtn.innerText = "Activate to View";
-      viewBtn.onclick = () => {
+    // 🔒 overlay + blur
+    if(overlay) overlay.style.display = "flex";
+    if(card) card.classList.add("locked");
+
+    // 🔒 buttons → redirect to payment
+    [viewBtn, editBtn, shareBtn].forEach(btn=>{
+      if(!btn) return;
+
+      btn.classList.add("locked");
+
+      btn.onclick = () => {
         window.location.href = "/payment.html?clientId=" + currentDocId;
       };
+    });
+
+    if(viewBtn) viewBtn.innerText = "Activate to View";
+    if(editBtn) editBtn.innerText = "Activate to Edit";
+    if(shareBtn) shareBtn.innerText = "Activate to Share";
+
+  } else {
+
+    // ✅ remove overlay
+    if(overlay) overlay.style.display = "none";
+    if(card) card.classList.remove("locked");
+
+    // ✅ restore normal buttons
+    if(viewBtn){
+      viewBtn.classList.remove("locked");
+      viewBtn.innerText = "View My Card";
+      viewBtn.onclick = viewCard;
     }
 
-    // 🔒 EDIT
-    if(isLocked){
+    if(editBtn){
+      editBtn.classList.remove("locked");
+      editBtn.innerText = "Edit Profile";
+      editBtn.onclick = editProfile;
+    }
 
-  if(overlay) overlay.style.display = "flex";
-  if(card) card.classList.add("locked");
-
-  [viewBtn, editBtn, shareBtn].forEach(btn=>{
-    if(!btn) return;
-    btn.classList.add("locked");
-  });
-
-} else {
-
-  if(overlay) overlay.style.display = "none";
-  if(card) card.classList.remove("locked");
-
-  [viewBtn, editBtn, shareBtn].forEach(btn=>{
-    if(!btn) return;
-    btn.classList.remove("locked");
-  });
-
-}                  
+    if(shareBtn){
+      shareBtn.classList.remove("locked");
+      shareBtn.innerText = "Share";
+      shareBtn.onclick = shareCard;
+    }
+  }
+}
 
 /* LOGOUT */
 window.logout = function(){
