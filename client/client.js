@@ -767,7 +767,13 @@ function showStep(step){
     s.classList.remove("active");
   });
 
-  document.getElementById("step"+step).classList.add("active");
+  const targetStep = document.getElementById("step"+step);
+
+    if(targetStep){
+      targetStep.classList.add("active");
+    } else {
+      console.error("Missing step:", step);
+    }
 
     const nextBtn = document.querySelector(".edit-nav .primary");
     
