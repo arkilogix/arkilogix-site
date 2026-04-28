@@ -1107,7 +1107,8 @@ console.log("📁 Upload folder:", `nfc-clients/${clientId}/${type}`);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "nfc_upload");
-
+      // 🔥 THIS CREATES REAL FOLDERS
+    formData.append("folder", `nfc-clients/${clientId}/${type}`);
     // ✅ SAFE FOLDER ONLY
     formData.append("public_id", `${clientId}/${type}_${Date.now()}`);
     
