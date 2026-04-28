@@ -202,6 +202,7 @@ p{
   display:flex;
   flex-direction:column;
   gap:10px;
+  position:relative;
 }
 
 .service-row{
@@ -661,4 +662,67 @@ p{
 @keyframes lockFloat{
   0%,100%{transform:translateY(0);}
   50%{transform:translateY(-4px);}
+}
+
+/* OVERLAY */
+.service-lock-overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(6px);
+
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+
+  border-radius:14px;
+}
+
+/* ACTIVE STATE */
+.service-lock-overlay.show{
+  opacity:1;
+}
+
+/* BOX */
+.service-lock-box{
+  text-align:center;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+}
+
+/* ICON */
+.service-lock-box .lock-icon{
+  width:34px;
+  height:34px;
+  color:#C9A96E;
+}
+
+/* TEXT */
+.lock-text{
+  font-size:14px;
+  font-weight:600;
+}
+
+.lock-sub{
+  font-size:12px;
+  color:#94a3b8;
+}
+
+@keyframes shake{
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-4px);}
+  50%{transform:translateX(4px);}
+  75%{transform:translateX(-3px);}
+  100%{transform:translateX(0);}
+}
+
+.services-box.shake{
+  animation:shake .3s;
 }
