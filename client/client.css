@@ -803,3 +803,30 @@ p{
   inset:0;
   opacity:0;
 }
+
+.confirm-box{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:10px;
+}
+
+.confirm-row{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  padding:8px 10px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.04);
+}
+
+.confirm-row span{
+  color:#94a3b8;
+}
+
+.confirm-note{
+  font-size:11px;
+  color:#94a3b8;
+  text-align:center;
+  margin-top:10px;
+}
