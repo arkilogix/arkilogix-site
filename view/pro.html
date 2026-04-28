@@ -161,7 +161,95 @@ body{
   text-decoration:none;
   font-weight:600;
 }
+#loader{
+  position:fixed;
+  inset:0;
+  background:#0f1115;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  transition:opacity .5s ease;
+}
 
+.loader-content{
+  text-align:center;
+  color:#fff;
+}
+
+.loader-content img{
+  width:60px;
+  margin-bottom:10px;
+}
+
+.loader-content p{
+  font-size:12px;
+  letter-spacing:1px;
+  color:#aaa;
+}
+  .lock-premium{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#000;
+}
+
+.lock-card{
+  text-align:center;
+  padding:40px 30px;
+  border-radius:20px;
+  max-width:320px;
+  width:90%;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(16px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+
+.lock-logo{
+  width:50px;
+  margin-bottom:15px;
+}
+
+.lock-title{
+  font-size:20px;
+  color:#fff;
+}
+
+.lock-sub{
+  font-size:13px;
+  color:#aaa;
+}
+
+.lock-note{
+  font-size:12px;
+  color:#777;
+}
+
+.lock-loader{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  margin-top:15px;
+}
+
+.lock-loader span{
+  width:6px;
+  height:6px;
+  background:#fff;
+  border-radius:50%;
+  animation:pulse 1.2s infinite;
+}
+
+.lock-loader span:nth-child(2){animation-delay:.2s;}
+.lock-loader span:nth-child(3){animation-delay:.4s;}
+
+@keyframes pulse{
+  0%{opacity:.3;}
+  50%{opacity:1;}
+  100%{opacity:.3;}
+}
 </style>
 </head>
 
@@ -259,7 +347,32 @@ async function loadUser(){
   if(!snap.exists()) return;
 
   const data = snap.data();
+// 🔒 LOCK IF NOT PAID
+if(data.status !== "paid"){
+  document.body.innerHTML = `
+    <div class="lock-premium">
 
+      <div class="lock-card">
+
+        <img src="../logo.png" class="lock-logo">
+
+        <h2 class="lock-title">Card Not Active</h2>
+        <p class="lock-sub">This digital card is not yet activated.</p>
+
+        <div class="lock-loader">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <p class="lock-note">Please complete payment to activate.</p>
+
+      </div>
+
+    </div>
+  `;
+  return;
+}
   /* BLOCK DISABLED */
   if (data.status === "disabled") {
     document.body.innerHTML = "<h2 style='text-align:center;margin-top:50px;'>Account Disabled</h2>";
@@ -336,9 +449,24 @@ if(data.projectImages && data.projectImages.length){
 
 }
 
-loadUser();
+loadUser().then(()=>{
+  setTimeout(()=>{
+    document.getElementById("loader").style.opacity = "0";
+
+    setTimeout(()=>{
+      document.getElementById("loader").style.display = "none";
+    },500);
+
+  },300);
+});
 
 </script>
-
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-content">
+    <img src="../logo.png" alt="Arkilogix">
+    <p>Powered by <strong>Arkilogix</strong></p>
+  </div>
+</div>
 </body>
 </html>
