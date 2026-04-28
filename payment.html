@@ -13,51 +13,190 @@
 <style>
 body{
   font-family:'Inter', sans-serif;
-  background:#f6f6f6;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(201,169,110,0.15), transparent 40%),
+    radial-gradient(circle at 80% 100%, rgba(59,130,246,0.12), transparent 40%),
+    linear-gradient(135deg,#020617,#000);
   margin:0;
   padding:20px;
+  color:#fff;
 }
+
+/* ===== CONTAINER ===== */
 .container{
   max-width:420px;
   margin:auto;
-  background:#fff;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(20px);
   padding:24px;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.06);
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.06);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.8),
+    inset 0 1px 0 rgba(255,255,255,0.05);
 }
-h1{font-size:20px;margin-bottom:5px;}
-.sub{font-size:13px;color:#777;margin-bottom:20px;}
-.summary{background:#fafafa;padding:14px;border-radius:12px;margin-bottom:20px;}
-.row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
-.total{font-size:16px;font-weight:600;margin-top:10px;}
 
-.tabs{display:flex;border-radius:999px;background:#eee;overflow:hidden;margin-bottom:15px;}
-.tabs div{flex:1;text-align:center;padding:10px;font-size:13px;cursor:pointer;}
-.tabs .active{background:#000;color:#fff;}
+/* TEXT */
+h1{font-size:20px;margin-bottom:5px;color:#fff;}
+.sub{font-size:13px;color:#94a3b8;margin-bottom:20px;}
 
-.qr{width:100%;border-radius:12px;margin:10px 0;}
+/* SUMMARY */
+.summary{
+  background:rgba(255,255,255,0.03);
+  padding:14px;
+  border-radius:12px;
+  margin-bottom:20px;
+  border:1px solid rgba(255,255,255,0.06);
+}
 
+.row{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.total{
+  font-size:16px;
+  font-weight:600;
+  margin-top:10px;
+  color:#C9A96E;
+}
+
+/* ===== TABS ===== */
+.tabs{
+  display:flex;
+  border-radius:999px;
+  background:rgba(255,255,255,0.05);
+  overflow:hidden;
+  margin-bottom:15px;
+}
+
+.tabs div{
+  flex:1;
+  text-align:center;
+  padding:10px;
+  font-size:13px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.tabs .active{
+  background:linear-gradient(135deg,#C9A96E,#e6c88f);
+  color:#111;
+}
+
+/* QR */
+.qr{
+  width:100%;
+  border-radius:12px;
+  margin:10px 0;
+  border:1px solid rgba(255,255,255,0.05);
+}
+
+/* INPUT */
+input[type="file"]{
+  width:100%;
+  margin-bottom:12px;
+  color:#cbd5e1;
+}
+
+/* ===== BUTTON ===== */
 .btn{
   width:100%;
-  padding:13px;
+  padding:14px;
   border:none;
   border-radius:999px;
-  background:#000;
-  color:#fff;
   font-size:14px;
   cursor:pointer;
+
+  background:linear-gradient(135deg,#C9A96E,#e6c88f);
+  color:#111;
+
+  box-shadow:0 6px 20px rgba(201,169,110,0.25);
+  transition:.2s;
 }
 
-.status{font-size:12px;color:#666;margin-top:10px;}
+.btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 25px rgba(201,169,110,0.35);
+}
 
-.success{display:none;text-align:center;}
-.success-box{background:#ecfdf5;padding:15px;border-radius:12px;margin-bottom:10px;}
-.note{font-size:12px;color:#666;}
+/* STATUS */
+.status{
+  font-size:12px;
+  color:#94a3b8;
+  margin-top:10px;
+}
+
+/* SUCCESS */
+.success{
+  display:none;
+  text-align:center;
+}
+
+.success-box{
+  background:rgba(16,185,129,0.1);
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:10px;
+  border:1px solid rgba(16,185,129,0.3);
+}
+
+.note{
+  font-size:12px;
+  color:#94a3b8;
+}
+
+/* ===== LOADER ===== */
+.app-loader{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(201,169,110,0.15), transparent 50%),
+    linear-gradient(135deg,#020617,#000);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+  transition:opacity .4s ease;
+}
+
+.loader-logo{
+  width:70px;
+  animation:pulseGlow 1.8s infinite ease-in-out;
+}
+
+.loader-text{
+  font-size:12px;
+  color:#94a3b8;
+  margin-top:10px;
+}
+
+@keyframes pulseGlow{
+  0%{transform:scale(1);opacity:.7;}
+  50%{transform:scale(1.1);opacity:1;}
+  100%{transform:scale(1);opacity:.7;}
+}
+
+.app-loader.hide{
+  opacity:0;
+  pointer-events:none;
+}
 </style>
 </head>
 
 <body>
-
+  
+<div id="appLoader" class="app-loader">
+  <div class="loader-content">
+    <img src="/logo.png" class="loader-logo">
+    <p class="loader-text">ArkiLogix</p>
+  </div>
+</div>
+  
 <div class="container">
 
 <h1>Complete Your Payment</h1>
@@ -147,6 +286,7 @@ async function loadData(){
   document.getElementById("card").innerText = data.card || "-";
   document.getElementById("price").innerText =
     "₱" + (data.price || 0).toLocaleString();
+hideLoader();
 }
 loadData();
 
@@ -280,7 +420,16 @@ window.submitPayment = async function(){
   }
 
 }
+  
+function hideLoader(){
+  const loader = document.getElementById("appLoader");
+  if(!loader) return;
 
+  setTimeout(()=>{
+    loader.classList.add("hide");
+    setTimeout(()=> loader.remove(), 400);
+  },300);
+}
 </script>
 
 </body>
