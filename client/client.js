@@ -563,6 +563,15 @@ window.editProfile = function(){
     const emailInput = document.getElementById("editEmail");
     if(emailInput) emailInput.value = currentData.email || "";
 
+    const fbInput = document.getElementById("editFacebook");
+    if(fbInput) fbInput.value = currentData.facebook || "";
+    
+    const igInput = document.getElementById("editInstagram");
+    if(igInput) igInput.value = currentData.instagram || "";
+    
+    const webInput = document.getElementById("editWebsite");
+    if(webInput) webInput.value = currentData.website || "";
+  
     const container = document.getElementById("servicesContainer");
     container.innerHTML = "";
 
@@ -651,15 +660,19 @@ window.saveEdit = async function(){
     .map(i => i.value.trim())
     .filter(v => v);
 
-  await updateDoc(ref, {
-    name: document.getElementById("editName").value,
-    position: document.getElementById("editPosition").value,
-    company: document.getElementById("editCompany").value,
-    phone: document.getElementById("editPhone").value,
-    email: document.getElementById("editEmail").value,
-    profile: profileUrl,
-    services: services
-  });
+    await updateDoc(ref, {
+      name: document.getElementById("editName").value,
+      position: document.getElementById("editPosition").value,
+      company: document.getElementById("editCompany").value,
+    
+      phone: document.getElementById("editPhone")?.value || "",
+      email: document.getElementById("editEmail")?.value || "",
+      facebook: document.getElementById("editFacebook")?.value || "",
+      instagram: document.getElementById("editInstagram")?.value || "",
+      website: document.getElementById("editWebsite")?.value || "",
+    
+      services: services
+    });
 
   hasUnsavedChanges = false;
 
@@ -760,21 +773,21 @@ function showStep(step){
   const nextBtn = document.querySelector(".edit-nav .primary");
 
   // BUTTON TEXT
-  if(step === 3){
+  if(step === 4){
     nextBtn.innerText = "Review";
   } else {
     nextBtn.innerText = "Next";
   }
 
   // PROGRESS BAR
-  const progress = (step / 4) * 100;
+  const progress = (step / 5) * 100;
   document.getElementById("stepProgressFill").style.width = progress + "%";
 
   // LABEL
-  document.getElementById("stepLabel").innerText = `Step ${step} of 4`;
+  document.getElementById("stepLabel").innerText = `Step ${step} of 5`;
 
   // FINAL STEP
-  if(step === 4){
+  if(step === 5){
     document.querySelector(".edit-nav").style.display = "none";
     document.getElementById("finalActions").style.display = "flex";
   } else {
@@ -786,7 +799,7 @@ function showStep(step){
 }
 
 window.nextEditStep = function(){
-  if(currentStep < 4){
+  if(currentStep < 5){
     showStep(currentStep + 1);
   }
 }
@@ -815,8 +828,14 @@ async function autoSaveEdit(){
       name: document.getElementById("editName").value,
       position: document.getElementById("editPosition").value,
       company: document.getElementById("editCompany").value,
-      phone: document.getElementById("editPhone").value,
-      email: document.getElementById("editEmail").value,
+    
+      phone: document.getElementById("editPhone")?.value || "",
+      email: document.getElementById("editEmail")?.value || "",
+      facebook: document.getElementById("editFacebook")?.value || "",
+      instagram: document.getElementById("editInstagram")?.value || "",
+      website: document.getElementById("editWebsite")?.value || "",
+    
+      profile: profileUrl,
       services: services
     });
 
