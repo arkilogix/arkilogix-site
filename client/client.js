@@ -757,11 +757,11 @@ if(currentCount >= serviceLimit){
 
 let currentStep = 1;
 
-console.log("STEP:", step);
-console.log(document.getElementById("step"+step));
+
 
 function showStep(step){
-
+  console.log("STEP:", step);
+  console.log(document.getElementById("step"+step));
 
   document.querySelectorAll(".edit-step").forEach(s=>{
     s.classList.remove("active");
