@@ -303,7 +303,7 @@ input, button{
     <span class="toggle-password" onclick="togglePassword()">👁</span>
     </div>
 
-    <button onclick="login()">Sign In</button>
+    <button id="loginBtn" onclick="login()">Sign In</button>
 
     <div class="signup">
       No account yet?
@@ -346,7 +346,7 @@ window.login = async function(){
   }
 
   // 🔒 LOCK BUTTON
-  const btn = document.querySelector("button");
+  const btn = document.getElementById("loginBtn");
     btn.disabled = true;
     btn.classList.add("loading");
     btn.innerText = "Signing in";
@@ -382,7 +382,6 @@ window.login = async function(){
 
 
     // ❌ NO USER
-    document.getElementById("loginLoader").style.display = "none";
   btn.disabled = false;
   btn.classList.remove("loading");
   btn.innerText = "Sign In";
@@ -391,7 +390,6 @@ window.login = async function(){
 
   }catch(err){
 
-    document.getElementById("loginLoader").style.display = "none";
   btn.disabled = false;
   btn.classList.remove("loading");
   btn.innerText = "Sign In";
@@ -425,12 +423,8 @@ function showUserNotFoundModal(){
 </script>
 </div>
 
-</div>
 
 <style>
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
 </style>
 </body>
 </html>
