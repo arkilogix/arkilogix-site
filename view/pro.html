@@ -579,6 +579,13 @@ document.getElementById("highlightImage").src = heroImg;
     document.getElementById("portfolioBtn").style.display = "none";
   }
 
+  /* CTA → EMAIL CLIENT */
+if(data.email && data.email.includes("@")){
+  document.getElementById("ctaBtn").href = "mailto:" + data.email;
+} else {
+  document.getElementById("ctaBtn").style.display = "none";
+}
+  
   /* PROJECTS */
   const container = document.getElementById("projects");
 container.innerHTML = "";
@@ -608,6 +615,8 @@ if(!data.projectImages || data.projectImages.length === 0){
     container.appendChild(div);
   });
 
+  
+  
 } else {
   container.innerHTML = "<p style='color:#777;font-size:13px;'>No projects yet</p>";
 }
