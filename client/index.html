@@ -206,7 +206,7 @@
 <div class="edit-step" id="step4">
   <h3>Advanced Features</h3>
 
-<div class="locked-wrapper">
+<div class="locked-wrapper" id="advancedLock">
 
   <!-- 🔒 ACTUAL CONTENT -->
 <div class="locked-content">
@@ -226,7 +226,7 @@
         <div class="upload-text">Banner Photo</div>
         <div class="upload-sub">1200 x 400 recommended</div>
       </div>
-      <input type="file" disabled>
+      <input type="file">
     </label>
 
     <!-- HIGHLIGHTS -->
@@ -234,17 +234,17 @@
 
       <label class="upload-box small">
         <div class="upload-icon">+</div>
-        <input type="file" disabled>
+        <input type="file" id="editProjects" multiple>
       </label>
 
       <label class="upload-box small">
         <div class="upload-icon">+</div>
-        <input type="file" disabled>
+        <input type="file">
       </label>
 
       <label class="upload-box small">
         <div class="upload-icon">+</div>
-        <input type="file" disabled>
+        <input type="file">
       </label>
 
     </div>
@@ -254,7 +254,7 @@
 </div>
 
   <!-- 🔥 OVERLAY -->
-  <div class="locked-overlay">
+  <div class="locked-overlay" id="advancedOverlay">
     <div class="lock-ui">
       <div class="lock-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
