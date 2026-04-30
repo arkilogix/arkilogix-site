@@ -656,8 +656,9 @@ window.editProfile = function(){
   const advancedLock = document.getElementById("advancedLock");
   const projectInputs = advancedLock ? advancedLock.querySelectorAll("input") : [];
   const overlay = document.getElementById("advancedOverlay");
-  
-  if(currentData.plan === "basic"){
+  const plan = (currentData.plan || "basic").toLowerCase();
+
+  if(plan === "basic"){
     // 🔒 LOCK
     if(advancedLock) advancedLock.style.opacity = "0.5";
     projectInputs.forEach(i => i.disabled = true);
