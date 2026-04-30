@@ -420,3 +420,14 @@ window.copyClientLink = function(){
   navigator.clipboard.writeText(selected.link);
   alert("Client link copied!");
 }
+
+window.downloadQR = function(){
+  if(!selected || !selected.link) return;
+
+  const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(selected.link)}`;
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "qr.png";
+  a.click();
+}
