@@ -841,7 +841,12 @@ form#orderForm::-webkit-scrollbar-thumb{
   100%{opacity:.3;}
 }
 </style>
- <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+ <script>
+window.emailjs = {
+  init: function(){},
+  send: function(){ return Promise.resolve(); }
+};
+</script>
 </head>
 
 <body>
@@ -926,7 +931,6 @@ form#orderForm::-webkit-scrollbar-thumb{
 <input id="inputName" placeholder="Your Name">
 <input id="inputProfession" placeholder="Your Profession">
 <input id="inputCompany" placeholder="Company Name">
-<textarea id="inputAbout"></textarea>
 
 <div class="card-options">
 <button class="active" onclick="selectCard(0,this,'white')">White</button>
@@ -953,7 +957,6 @@ form#orderForm::-webkit-scrollbar-thumb{
   <div class="name" id="previewName">Juan Dela Cruz</div>
   <div class="profession" id="previewProfession">Architect</div>
   <div class="company" id="previewCompany">Your Arch Studio</div>
-  <div class="about" id="previewAbout">About</div>
 </div>
 <div class="overlay services hidden" id="previewServices"></div>
 </div>
@@ -1341,7 +1344,6 @@ let isSubmitting = false;
 window.handleOutsideClick = function(e){
   // ❌ do nothing if submitting
   if(isSubmitting) return;
-  const modal = document.querySelector("#orderModal .modal-box");
   // only close if you CLICK BACKGROUND (not drag)
   if(e.target.id === "orderModal"){
     closeOrderModal();
@@ -1437,12 +1439,15 @@ function buildFullAddress(){
 }
 
 
+window.addEventListener("DOMContentLoaded", () => {
+
   showStep(0);
   updateTotal();
 
   const form = document.getElementById("orderForm");
 
   form.addEventListener("submit", async function(e){
+
     e.preventDefault();
     isSubmitting = true;
     
@@ -1519,7 +1524,6 @@ if(profile){
 }
 updateLoading(2);
 // ================= PROJECT HIGHLIGHTS =================
-// ================= PROJECT HIGHLIGHTS =================
 const highlights = [
   document.getElementById("highlightPhoto1").files[0],
   document.getElementById("highlightPhoto2").files[0],
@@ -1592,6 +1596,7 @@ try {
 
 }
     });
+    });
 // ================= ESC CLOSE =================
 document.addEventListener("keydown", e => {
   if(e.key === "Escape"){
@@ -1630,7 +1635,15 @@ function finishFakeProgress(){
   const bar = document.getElementById("loadingBar");
   bar.style.width = "100%";
 }
-    
+window.setPlan = setPlan;
+window.selectCard = selectCard;
+window.openOrderModal = openOrderModal;
+window.toggleFAQ = toggleFAQ;
+window.applyPromo = applyPromo;
+window.nextStep = nextStep;
+window.prevStep = prevStep;
+window.closeOrderModal = closeOrderModal;
+window.handleOutsideClick = handleOutsideClick;
 </script>
 
 <!-- MODAL -->
