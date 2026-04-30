@@ -756,7 +756,9 @@ window.saveEdit = async function(){
       profile: profileUrl,
       services: services
     });
-
+  
+  currentData.profile = profileUrl;
+  render();
   hasUnsavedChanges = false;
 
   closeEdit();
