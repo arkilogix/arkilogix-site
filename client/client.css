@@ -600,7 +600,7 @@ p{
 .locked-overlay{
   position:absolute;
   inset:0;
-
+  display:none;
   display:flex;
   justify-content:center;
   align-items:center;
