@@ -953,6 +953,7 @@ form#orderForm::-webkit-scrollbar-thumb{
   <div class="name" id="previewName">Juan Dela Cruz</div>
   <div class="profession" id="previewProfession">Architect</div>
   <div class="company" id="previewCompany">Your Arch Studio</div>
+  <div class="about" id="previewAbout">About</div>
 </div>
 <div class="overlay services hidden" id="previewServices"></div>
 </div>
@@ -1035,7 +1036,11 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
   authDomain: "arkilogix-clients.firebaseapp.com",
-  projectId: "arkilogix-clients"
+  projectId: "arkilogix-clients",
+  storageBucket: "arkilogix-clients.firebasestorage.app",
+  messagingSenderId: "1074947351840",
+  appId: "1:1074947351840:web:b077eb79963fff59316345",
+  measurementId: "G-HFPXDVR2BZ"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -1044,16 +1049,18 @@ const db = getFirestore(app);
 
 // ================= INIT =================
 (function(){
-  emailjs.init("Wp1sOcLJH-dg_dkLs");
+  emailjs.init({
+  publicKey: "Wp1sOcLJH-dg_dkLs"
+});
 })();
 
 // ================= STATE =================
 const basePrices = { basic:599, pro:1199, elite:1999 };
 
-let selectedPlan = "pro";
-let selectedCard = "white";
-let cardPrice = 0;
-let currentStep = 0;
+window.selectedPlan = "pro";
+window.selectedCard = "white";
+window.cardPrice = 0;
+window.currentStep = 0;
 
 // ================= HELPERS =================
 const formatPeso = val => "₱" + val.toLocaleString();
@@ -1189,8 +1196,6 @@ document.getElementById("inputProfession").oninput = e =>
 document.getElementById("inputCompany").oninput = e =>
   document.getElementById("previewCompany").innerText = e.target.value || "Your Arch Studio";
 
-document.getElementById("inputAbout").oninput = e =>
-  document.getElementById("previewAbout").innerText = e.target.value || "About";
 
 // ================= FAQ =================
 window.toggleFAQ = el => el.classList.toggle("active");
