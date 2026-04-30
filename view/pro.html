@@ -472,6 +472,23 @@ body{
     transform:translateY(0);
   }
 }
+/* ===== SERVICES HEADER ===== */
+.services-header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+
+  margin-top:15px;
+  margin-bottom:8px;
+}
+
+.services-header p{
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:#777;
+}
+  
 </style>
 </head>
 
@@ -498,7 +515,14 @@ body{
     <div id="company" class="company"></div>
   </div>
   
-  <!-- SERVICES -->
+<!-- SERVICES HEADER -->
+<div class="services-header">
+  <div class="divider"></div>
+  <p>SERVICES</p>
+  <div class="divider"></div>
+</div>
+
+<!-- SERVICES -->
 <div class="services" id="services"></div>
   
 <!-- ACTIONS -->
@@ -676,6 +700,7 @@ if(!isUnlocked){
 
   /* SERVICES */
 const servicesContainer = document.getElementById("services");
+const servicesHeader = document.querySelector(".services-header");
 
 if(data.services && data.services.length){
 
@@ -689,6 +714,7 @@ if(data.services && data.services.length){
 
 } else {
   servicesContainer.style.display = "none";
+  if(servicesHeader) servicesHeader.style.display = "none";
 }
   
   /* HERO */
