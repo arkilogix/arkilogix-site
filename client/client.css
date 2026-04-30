@@ -326,11 +326,17 @@ p{
 
 /* ===== PREVIEW ===== */
 .preview-img{
-  width:80px;
-  height:80px;
+  display:block;             
+  margin:14px auto 18px;      
+  width:90px;
+  height:90px;
   border-radius:50%;
-  display:none;
+  object-fit:cover;
+  border:3px solid rgba(255,255,255,0.8);
+  box-shadow:0 6px 18px rgba(0,0,0,0.25);
 }
+
+
 
 /* ===== CLOSE ANIMATION ===== */
 .modal-closing{
@@ -540,6 +546,7 @@ p{
   color:#94a3b8;
   cursor:pointer;
   transition:.2s;
+  text-align:center;
 }
 
 .file-input:hover{
