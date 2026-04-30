@@ -133,6 +133,8 @@ ${u.link ? `
   style="width:100%;margin-top:12px;border-radius:10px;background:#fff;padding:12px"
 >
 
+<button class="btn" onclick="downloadQR()">Download QR (HD)</button>
+
 ` : ""}
 
   <button class="btn" onclick="emailClient()">Email Client</button>
