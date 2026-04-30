@@ -1206,14 +1206,19 @@ window.applyPromo = function(){
   // 🔥 YOUR PROMO RULES
   if(code === "ARKI10"){
     discount = 0.10;
-    msg.innerText = "✅ 10% discount applied!";
+    msg.innerText = "10% discount applied!";
     msg.style.color = "green";
 
   } else if(code === "VIP20"){
     discount = 0.20;
-    msg.innerText = "🔥 20% VIP discount applied!";
+    msg.innerText = "20% VIP discount applied!";
     msg.style.color = "green";
 
+    } else if(code === "FRIENDS50"){
+    discount = 0.50;
+    msg.innerText = "50% FRIENDS discount applied!";
+    msg.style.color = "green";
+    
   } else {
     discount = 0;
     msg.innerText = "❌ Invalid promo code";
