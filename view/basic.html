@@ -676,9 +676,14 @@ window.handleFacebook = function(){
 };
 
 window.handleWebsite = function(){
-  if(!window.userData?.website) return;
+  let url = window.userData?.website;
+  if(!url) return;
+
+  if(!url.startsWith("http")){
+    url = "https://" + url;
+  }
   trackClick();
-  window.open(window.userData.website, "_blank");
+  window.open(url, "_blank");
 };
   
 /* INIT CALL */
