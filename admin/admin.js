@@ -14,7 +14,7 @@ emailjs.init("Wp1sOcLJH-dg_dkLs");
 const db = firebase.firestore();
 
 let users = [];
-let filter = "pending";
+let filter = "pending_verification";
 let selected = null;
 
 /* AUTH */
@@ -114,6 +114,26 @@ function openPanel(u){
 
   <p>${u.email || "-"}</p>
   <p>${u.phone || "-"}</p>
+
+${u.link ? `
+<hr>
+
+<h3>🔗 Digital Card</h3>
+
+<input 
+  value="${u.link}" 
+  style="width:100%;padding:10px;border-radius:8px;border:none;background:#1a1a1a;color:#fff"
+  readonly
+>
+
+<button class="btn" onclick="copyClientLink()">Copy Link</button>
+
+<img 
+  src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(u.link)}"
+  style="width:100%;margin-top:12px;border-radius:10px;background:#fff;padding:12px"
+>
+
+` : ""}
 
   <button class="btn" onclick="emailClient()">Email Client</button>
 
@@ -392,4 +412,11 @@ async function deleteCloudinaryFolder(clientId){
   // OPTIONAL: call your backend endpoint
   // await fetch("/delete-cloudinary", { method:"POST", body: JSON.stringify({clientId}) });
 
+}
+
+window.copyClientLink = function(){
+  if(!selected || !selected.link) return;
+
+  navigator.clipboard.writeText(selected.link);
+  alert("Client link copied!");
 }
