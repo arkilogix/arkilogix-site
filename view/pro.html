@@ -57,10 +57,10 @@ body{
 
 /* ===== PROFILE FLOAT ===== */
 .profile{
-  position:absolute;
-  bottom:-55px;
-  left:50%;
-  transform:translateX(-50%);
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  overflow:hidden;
 }
 
 .profile img{
@@ -68,9 +68,10 @@ body{
   height:110px;
   border-radius:50%;
   border:4px solid #fff;
-  object-fit:contain;
-  object-position:center top;
-  background:#f9fafb;
+  object-fit:cover;
+  object-position:center;
+  transform:scale(0.9);
+  background:#fff;
 }
 
 
@@ -367,6 +368,50 @@ body{
   width:70px;
   background:rgba(0,0,0,0.15);
 }
+  /* ===== EDGE FADE WRAPPER ===== */
+.projects-wrapper{
+  position:relative;
+}
+
+/* LEFT FADE */
+.projects-wrapper::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:40px;
+
+  background:linear-gradient(
+    to right,
+    #fff 0%,
+    rgba(255,255,255,0.9) 40%,
+    rgba(255,255,255,0) 100%
+  );
+
+  z-index:2;
+  pointer-events:none;
+}
+
+/* RIGHT FADE */
+.projects-wrapper::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:0;
+  bottom:0;
+  width:40px;
+
+  background:linear-gradient(
+    to left,
+    #fff 0%,
+    rgba(255,255,255,0.9) 40%,
+    rgba(255,255,255,0) 100%
+  );
+
+  z-index:2;
+  pointer-events:none;
+}
 </style>
 </head>
 
@@ -467,7 +512,9 @@ body{
 </div>
 
 <!-- PROJECTS -->
-<div class="projects" id="projects"></div>
+<div class="projects-wrapper">
+  <div class="projects" id="projects"></div>
+</div>
 
 <!-- CTA -->
 <div class="cta-wrap">
@@ -595,14 +642,34 @@ document.getElementById("highlightImage").src = heroImg;
 
   /* INSTAGRAM */
 if(data.instagram){
-  document.getElementById("instagramBtn").href = data.instagram;
+  if(data.instagram){
+  let url = data.instagram;
+
+  if(!url.startsWith("http")){
+    url = "https://" + url;
+  }
+
+  document.getElementById("instagramBtn").href = url;
+} else {
+  document.getElementById("instagramBtn").style.display = "none";
+}
 } else {
   document.getElementById("instagramBtn").style.display = "none";
 }
 
 /* FACEBOOK */
 if(data.facebook){
-  document.getElementById("facebookBtn").href = data.facebook;
+  if(data.facebook){
+  let url = data.facebook;
+
+  if(!url.startsWith("http")){
+    url = "https://" + url;
+  }
+
+  document.getElementById("facebookBtn").href = url;
+} else {
+  document.getElementById("facebookBtn").style.display = "none";
+}
 } else {
   document.getElementById("facebookBtn").style.display = "none";
 }
@@ -690,30 +757,7 @@ if(data.projectImages && data.projectImages.length){
 // run once after render
 setTimeout(updateActiveCard, 300);
 
-  let autoScroll;
-
-function startAutoScroll(){
-  autoScroll = setInterval(()=>{
-    const cardWidth = projectContainer.offsetWidth * 0.8 + 14;
-
-    projectContainer.scrollBy({
-      left: cardWidth,
-      behavior: "smooth"
-    });
-  }, 3500);
-}
-
-function stopAutoScroll(){
-  clearInterval(autoScroll);
-}
-
-// start after load
-setTimeout(startAutoScroll, 2000);
-
-// stop when user interacts
-projectContainer.addEventListener("touchstart", stopAutoScroll);
-projectContainer.addEventListener("mousedown", stopAutoScroll);
-  
+    
   window.downloadVCard = async function(){
 
   if(!window.currentData){
