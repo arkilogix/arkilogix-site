@@ -428,6 +428,25 @@ body{
   opacity:1;
   transform:translateY(-2px);
 }
+  /* ===== SERVICES ===== */
+.services{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+
+  margin:12px 20px 5px;
+}
+
+.services span{
+  font-size:11px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:#f3f4f6;
+  color:#374151;
+  border:1px solid #e5e7eb;
+  letter-spacing:0.3px;
+}
 </style>
 </head>
 
@@ -453,6 +472,9 @@ body{
     <div id="position" class="position"></div>
     <div id="company" class="company"></div>
   </div>
+  
+  <!-- SERVICES -->
+<div class="services" id="services"></div>
   
 <!-- ACTIONS -->
 <div class="actions">
@@ -532,7 +554,7 @@ body{
   <!-- FOOTER -->
 <a href="https://www.arkilogix.com" target="_blank" class="footer-brand">
   <img src="../logo.png" alt="Arkilogix">
-  <span>Arkilogix</span>
+  <span>Powered By Arkilogix</span>
 </a>
 
 </div>
@@ -627,6 +649,23 @@ if(!isUnlocked){
     companyEl.style.display = "none";
   }
 
+  /* SERVICES */
+const servicesContainer = document.getElementById("services");
+
+if(data.services && data.services.length){
+
+  servicesContainer.innerHTML = "";
+
+  data.services.slice(0,6).forEach(s => {
+    const span = document.createElement("span");
+    span.innerText = s;
+    servicesContainer.appendChild(span);
+  });
+
+} else {
+  servicesContainer.style.display = "none";
+}
+  
   /* HERO */
   const heroImg = data.projectImages?.[0] || data.profile || "";
 
