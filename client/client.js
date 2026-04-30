@@ -145,7 +145,7 @@ if(lockStates.includes(status)){
   }
 });
 
-["viewCardBtn","shareCardBtn"].forEach(id=>{
+["viewBtn","shareBtn"].forEach(id=>{
   const btn = document.getElementById(id);
   if(btn){
     btn.style.pointerEvents = "auto";
@@ -652,16 +652,22 @@ window.editProfile = function(){
     const container = document.getElementById("servicesContainer");
     container.innerHTML = "";
 
-  // 🔥 LOCK LOGIC (CLEAN)
-  const locked = document.querySelector(".locked-wrapper");
-  const inputs = locked ? locked.querySelectorAll("input") : [];
-
+  // 🔥 STEP 4 LOCK (ADVANCED FEATURES ONLY)
+  const advancedLock = document.getElementById("advancedLock");
+  const projectInputs = advancedLock ? advancedLock.querySelectorAll("input") : [];
+  const overlay = document.getElementById("advancedOverlay");
+  
   if(currentData.plan === "basic"){
-    locked.style.opacity = "0.5";
-    inputs.forEach(i => i.disabled = true);
+    // 🔒 LOCK
+    if(advancedLock) advancedLock.style.opacity = "0.5";
+    projectInputs.forEach(i => i.disabled = true);
+    if(overlay) overlay.style.display = "flex";
+  
   } else {
-    locked.style.opacity = "1";
-    inputs.forEach(i => i.disabled = false);
+    // 🔓 UNLOCK (PRO + ELITE)
+    if(advancedLock) advancedLock.style.opacity = "1";
+    projectInputs.forEach(i => i.disabled = false);
+    if(overlay) overlay.style.display = "none";
   }
 
   // 🔥 PLAN LIMIT
@@ -960,7 +966,7 @@ async function autoSaveEdit(){
       instagram: document.getElementById("editInstagram")?.value || "",
       website: document.getElementById("editWebsite")?.value || "",
     
-      profile: profileUrl,
+      profile: currentData.profile || "",
       services: services
     });
 
