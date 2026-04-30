@@ -403,6 +403,15 @@ a1 1 0 0 1 1-1h3z"/>
 </svg>
 </div>
 
+<div class="icon-btn" id="websiteBtn" onclick="handleWebsite()">
+<svg class="icon" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="10"/>
+  <path d="M2 12h20"/>
+  <path d="M12 2a15 15 0 0 1 0 20"/>
+  <path d="M12 2a15 15 0 0 0 0 20"/>
+</svg>
+</div>
+  
 </div>
 
 <!-- SAVE CONTACT -->
@@ -545,6 +554,7 @@ async function init(){
     email: data.email || "",
     facebook: data.facebook || "",
     instagram: data.instagram || ""
+    website: data.website || ""
   };
 
   toggleIcon("phoneBtn", data.phone);
@@ -552,6 +562,7 @@ async function init(){
   toggleIcon("emailBtn", data.email);
   toggleIcon("instagramBtn", data.instagram);
   toggleIcon("facebookBtn", data.facebook);
+  toggleIcon("websiteBtn", data.website);
 
   if (data.status === "disabled") {
     document.body.innerHTML = `
@@ -618,7 +629,7 @@ function renderServices(list){
 
   header.style.display = "flex";
 
-  list.slice(0,3).forEach(s=>{
+  list.forEach(s=>{
     const d = document.createElement("div");
     d.className = "service";
     d.innerText = s;
@@ -664,6 +675,12 @@ window.handleFacebook = function(){
   window.open(window.userData.facebook, "_blank");
 };
 
+window.handleWebsite = function(){
+  if(!window.userData?.website) return;
+  trackClick();
+  window.open(window.userData.website, "_blank");
+};
+  
 /* INIT CALL */
 init();
 window.downloadVCard = async function(){
