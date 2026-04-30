@@ -1561,7 +1561,14 @@ if(projectUrls.length){
 
 // ================= SAVE TO FIRESTORE =================
 const cleanParams = cleanObject(params);
-updateLoading(3);
+
+    let page = selectedPlan === "elite" ? "elite.html" :
+           selectedPlan === "pro" ? "pro.html" : "basic.html";
+
+const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + clientId;
+
+cleanParams.link = link;
+    updateLoading(3);
 
 try {
 
