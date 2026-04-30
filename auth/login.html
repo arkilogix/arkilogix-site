@@ -215,6 +215,66 @@ button {
   }
 
 }
+  /* ===== INPUT FOCUS GLOW ===== */
+input{
+  transition: all 0.25s ease;
+}
+
+input:focus{
+  border-color: #C9A96E;
+  box-shadow: 0 0 0 2px rgba(201,169,110,0.15);
+  outline: none;
+}
+
+/* ===== PASSWORD FIELD WRAP ===== */
+.input-group{
+  position: relative;
+}
+
+.input-group input{
+  padding-right: 45px;
+}
+
+/* 👁 ICON */
+.toggle-password{
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* ===== BUTTON LOADING ===== */
+button.loading{
+  opacity: 0.7;
+  pointer-events: none;
+  position: relative;
+}
+
+button.loading::after{
+  content: "";
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-top: 2px solid #111;
+  border-radius: 50%;
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin{
+  to{ transform: translateY(-50%) rotate(360deg); }
+}
+
+/* ===== IOS INPUT ZOOM FIX ===== */
+input, button{
+  font-size: 16px;
+}
 </style>
 </head>
 
@@ -238,7 +298,10 @@ button {
     <div class="subtitle">Access your dashboard</div>
 
     <input type="email" id="email" placeholder="Email">
+    <div class="input-group">
     <input type="password" id="password" placeholder="Password">
+    <span class="toggle-password" onclick="togglePassword()">👁</span>
+    </div>
 
     <button onclick="login()">Sign In</button>
 
@@ -284,11 +347,10 @@ window.login = async function(){
 
   // 🔒 LOCK BUTTON
   const btn = document.querySelector("button");
-  btn.disabled = true;
-  btn.innerText = "Signing in...";
+    btn.disabled = true;
+    btn.classList.add("loading");
+    btn.innerText = "Signing in";
 
-  // 🚀 SHOW LOADER
-  document.getElementById("loginLoader").style.display = "flex";
 
   try{
     const userCred = await signInWithEmailAndPassword(auth, email, password);
@@ -321,16 +383,18 @@ window.login = async function(){
 
     // ❌ NO USER
     document.getElementById("loginLoader").style.display = "none";
-    btn.disabled = false;
-    btn.innerText = "Sign In";
+  btn.disabled = false;
+  btn.classList.remove("loading");
+  btn.innerText = "Sign In";
 
     showUserNotFoundModal();
 
   }catch(err){
 
     document.getElementById("loginLoader").style.display = "none";
-    btn.disabled = false;
-    btn.innerText = "Sign In";
+  btn.disabled = false;
+  btn.classList.remove("loading");
+  btn.innerText = "Sign In";
 
     if(err.code === "auth/user-not-found"){
       showUserNotFoundModal();
@@ -353,19 +417,13 @@ function showUserNotFoundModal(){
     window.location.replace("signup.html");
   }
 }
+  window.togglePassword = function(){
+  const input = document.getElementById("password");
+  input.type = input.type === "password" ? "text" : "password";
+};
   
 </script>
 </div>
-  <div id="loginLoader" style="
-  position:fixed;
-  inset:0;
-  background:rgba(15,17,21,0.95);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-  backdrop-filter:blur(10px);
-">
   <div style="text-align:center;">
     
     <div style="
