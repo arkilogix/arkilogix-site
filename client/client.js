@@ -753,7 +753,7 @@ window.saveEdit = async function(){
       facebook: document.getElementById("editFacebook")?.value || "",
       instagram: document.getElementById("editInstagram")?.value || "",
       website: document.getElementById("editWebsite")?.value || "",
-    
+      profile: profileUrl,
       services: services
     });
 
