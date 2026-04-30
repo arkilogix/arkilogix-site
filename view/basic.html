@@ -549,13 +549,13 @@ async function init(){
   return;
 }
   
-  window.userData = {
-    phone: data.phone || "",
-    email: data.email || "",
-    facebook: data.facebook || "",
-    instagram: data.instagram || ""
-    website: data.website || ""
-  };
+window.userData = {
+  phone: data.phone || "",
+  email: data.email || "",
+  facebook: data.facebook || "",
+  instagram: data.instagram || "",
+  website: data.website || ""
+};
 
   toggleIcon("phoneBtn", data.phone);
   toggleIcon("smsBtn", data.phone);
