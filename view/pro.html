@@ -215,52 +215,6 @@ body{
   transform:scale(0.97);
 }
 
-/* ===== CTA ===== */
-.cta-wrap{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  max-width:430px;
-  left:50%;
-  transform:translateX(-50%);
-
-  background:rgba(255,255,255,0.6);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-
-  padding:12px;
-}
-
-.cta a{
-  display:block;
-  background:linear-gradient(135deg, #111, #1f2937);
-  color:#fff;
-  padding:16px;
-  border-radius:999px;
-  text-align:center;
-  text-decoration:none;
-  font-weight:600;
-  letter-spacing:0.3px;
-  box-shadow:
-    0 8px 25px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.05);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.3s ease;
-}
-  .cta a:hover{
-  transform:translateY(-2px);
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.08);
-}
-
-.cta a:active{
-  transform:scale(0.96);
-  box-shadow:
-    0 4px 10px rgba(0,0,0,0.4) inset;
-}
 #loader{
   position:fixed;
   inset:0;
@@ -436,6 +390,38 @@ body{
   z-index:2;
   pointer-events:none;
 }
+  /* ===== FOOTER BRAND ===== */
+.footer-brand{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  margin:40px 0 20px;
+
+  text-decoration:none;
+  opacity:0.7;
+
+  transition:0.25s ease;
+}
+
+.footer-brand img{
+  width:36px;
+  margin-bottom:6px;
+  opacity:0.9;
+}
+
+.footer-brand span{
+  font-size:11px;
+  letter-spacing:1px;
+  color:#6b7280;
+}
+
+/* HOVER */
+.footer-brand:hover{
+  opacity:1;
+  transform:translateY(-2px);
+}
 </style>
 </head>
 
@@ -537,12 +523,11 @@ body{
   <div class="projects" id="projects"></div>
 </div>
 
-<!-- CTA -->
-<div class="cta-wrap">
-  <div class="cta">
-    <a id="ctaBtn">Work With Me</a>
-  </div>
-</div>
+  <!-- FOOTER -->
+<a href="https://www.arkilogix.com" target="_blank" class="footer-brand">
+  <img src="../logo.png" alt="Arkilogix">
+  <span>Arkilogix</span>
+</a>
 
 </div>
 
