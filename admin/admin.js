@@ -50,7 +50,8 @@ window.setFilter = (f,el)=>{
 
 /* RENDER */
 function render(){
-
+  const mobile = document.getElementById("mobileList");
+  mobile.innerHTML = "";
   const table = document.getElementById("table");
   table.innerHTML = "";
 
@@ -81,7 +82,21 @@ function render(){
     `;
 
     table.appendChild(tr);
-
+    
+  // 📱 MOBILE CARD
+  const card = document.createElement("div");
+  card.className = "mobile-card";
+  card.onclick = () => openPanel(u);
+  
+  card.innerHTML = `
+    <div class="mobile-name">${u.name || "-"}</div>
+    <div class="mobile-sub">${u.plan || "-"} • ₱${(u.price||0).toLocaleString()}</div>
+    <div class="mobile-status">
+      ${formatStatus(u.status)} • ${formatShipping(u.shippingStatus)}
+    </div>
+  `;
+  
+  mobile.appendChild(card);
   });
 }
 
