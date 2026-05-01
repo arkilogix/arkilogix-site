@@ -6,90 +6,133 @@
 <title>Admin</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
 <style>
 :root{
 --bg:#0b0b0c;
---panel:#0f0f10;
+--card:#111;
 --border:rgba(255,255,255,0.08);
 --muted:#888;
 }
 
-body{margin:0;font-family:Inter;background:var(--bg);color:#fff;display:flex}
-
-/* SIDEBAR */
-.sidebar{
-width:220px;height:100vh;border-right:1px solid var(--border);
-padding:20px;display:flex;flex-direction:column;justify-content:space-between;
+body{
+margin:0;
+font-family:Inter;
+background:var(--bg);
+color:#fff;
 }
 
-.logo{width:120px}
-
-.nav a{display:block;margin:10px 0;color:var(--muted);text-decoration:none}
-.nav a.active{color:#fff}
-
-/* LOGOUT */
-.logout{color:var(--muted);cursor:pointer;font-size:13px}
-.logout:hover{color:#fff}
-
-/* MAIN */
-.main{flex:1;padding:30px}
+/* HEADER */
+.header{
+padding:20px;
+font-size:18px;
+font-weight:600;
+}
 
 /* TABS */
-.tabs{display:flex;gap:8px;margin-bottom:20px}
-.tabs div{
-padding:8px 14px;border:1px solid var(--border);
-border-radius:999px;font-size:12px;color:var(--muted);cursor:pointer;
+.tabs{
+display:flex;
+gap:8px;
+padding:0 20px;
+flex-wrap:wrap;
+margin-bottom:20px;
 }
-.tabs .active{background:#fff;color:#000}
+
+.tabs div{
+padding:8px 14px;
+border:1px solid var(--border);
+border-radius:999px;
+font-size:12px;
+color:var(--muted);
+cursor:pointer;
+}
+
+.tabs .active{
+background:#fff;
+color:#000;
+}
 
 /* TABLE */
-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0 10px;
+.table{
+width:100%;
+padding:0 20px;
+box-sizing:border-box;
 }
 
-tr{
-  background:#111;
+.row{
+display:grid;
+grid-template-columns:50px 1.5fr 1fr 1fr 1fr 1fr 1fr;
+align-items:center;
+padding:12px;
+border-bottom:1px solid var(--border);
+font-size:13px;
 }
 
-td{
-  padding:14px;
+.row.header{
+color:#888;
+font-size:11px;
 }
-td,th{padding:12px;border-bottom:1px solid var(--border);font-size:13px}
-tr:hover{background:rgba(255,255,255,0.03);cursor:pointer}
 
-/* THUMB */
-.thumb{width:40px;height:40px;border-radius:8px;background:#222;object-fit:cover}
+.row.data{
+background:#111;
+border-radius:10px;
+margin-bottom:8px;
+cursor:pointer;
+}
 
-/* PANEL */
-.panel{
+.row.data:hover{
+background:#161616;
+}
+
+/* PROFILE */
+.avatar{
+width:36px;
+height:36px;
+border-radius:8px;
+object-fit:cover;
+background:#222;
+}
+
+/* STATUS */
+.status{
+padding:4px 10px;
+border-radius:999px;
+font-size:11px;
+font-weight:600;
+display:inline-block;
+}
+
+.paid{background:#2563eb}
+.pending{background:#f59e0b}
+.processing{background:#9333ea}
+.completed{background:#16a34a}
+
+/* MODAL */
+.modal{
 position:fixed;
-right:-420px;
-top:0;
-width:420px;
-height:100%;
-background:var(--panel);
-border-left:1px solid var(--border);
+inset:0;
+background:rgba(0,0,0,0.7);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:999;
+}
+
+.modal.show{
+display:flex;
+}
+
+.modal-box{
+background:#111;
 padding:20px;
-transition:.3s;
-overflow-y:auto;
-
-/* 🔥 FIX: ensure visibility */
-z-index:9999;
+width:90%;
+max-width:400px;
+border-radius:12px;
+max-height:90%;
+overflow:auto;
 }
-.panel.open{right:0}
 
-/* CLOSE BTN */
-.close-btn{
-position:absolute;top:15px;right:15px;
-cursor:pointer;color:var(--muted);
-}
-.close-btn:hover{color:#fff}
-
-/* BUTTONS */
+/* BUTTON */
 .btn{
 margin-top:10px;
 padding:10px;
@@ -98,194 +141,43 @@ border-radius:8px;
 background:none;
 color:#fff;
 cursor:pointer;
-font-size:13px;
+width:100%;
 }
-
-.btn:hover{
-background:#fff;
-color:#000;
-}
-
-/* MODAL */
-.modal{
-position:fixed;inset:0;background:rgba(0,0,0,.9);
-display:none;align-items:center;justify-content:center;
-}
-.modal.show{display:flex}
-.modal img{max-width:90%;max-height:90%}
-/* 📱 MOBILE ADMIN UI */
-@media(max-width:768px){
-
-  body{
-    flex-direction:column;
-  }
-
-  .sidebar{
-    display:none; /* hide sidebar */
-  }
-
-  .main{
-    padding:15px;
-  }
-
-  /* 🔥 HIDE TABLE */
-  table{
-    display:none;
-  }
-
-  /* 📦 CARD LIST */
-  .mobile-list{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-  }
-
-  .mobile-card{
-    background:#111;
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:12px;
-    padding:14px;
-    cursor:pointer;
-  }
-
-  .mobile-card:hover{
-    background:#161616;
-  }
-
-  .mobile-name{
-    font-size:14px;
-    font-weight:600;
-  }
-
-  .mobile-sub{
-    font-size:12px;
-    color:#aaa;
-    margin-top:4px;
-  }
-
-  .mobile-status{
-    margin-top:8px;
-    font-size:12px;
-  }
-
-  /* 🔥 FULLSCREEN PANEL */
-  .panel{
-    width:100%;
-    right:-100%;
-  }
-
-  .panel.open{
-    right:0;
-  }
-
-}
-  /* 📱 MOBILE PANEL HEADER */
-.mobile-header{
-  display:none;
-  font-size:14px;
-  margin-bottom:15px;
-  cursor:pointer;
-  color:#ccc;
-}
-
-@media(max-width:768px){
-  .mobile-header{
-    display:block;
-  }
-
-  .close-btn{
-    display:none; /* hide X on mobile */
-  }
-}
-  /* 📱 STICKY ACTION BAR */
-.actions-wrapper{
-  margin-top:20px;
-}
-
-@media(max-width:768px){
-
-  .actions-wrapper{
-    position:sticky;
-    bottom:0;
-    background:#0f0f10;
-    padding:12px;
-    border-top:1px solid rgba(255,255,255,0.08);
-  }
-
-  .actions-wrapper .btn{
-    width:100%;
-    margin-top:8px;
-  }
-
-}
-  @media(max-width:768px){
-  .panel{
-    padding:18px;
-  }
-  .btn{
-    padding:14px;
-    font-size:14px;
-  }
-
-}
-  .status{
-  padding:5px 10px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:600;
-  display:inline-block;
-}
-
-.status.paid{ background:#1d4ed8; color:#fff; }
-.status.pending{ background:#f59e0b; color:#fff; }
-.status.processing{ background:#7c3aed; color:#fff; }
-.status.completed{ background:#16a34a; color:#fff; }
 </style>
 </head>
 
 <body>
 
-<div class="sidebar">
-<div>
-<img src="/logo.png" class="logo">
-<div class="nav"><a class="active">Orders</a></div>
-</div>
-
-<div class="logout" onclick="logout()">Logout</div>
-</div>
-
-<div class="main">
+<div class="header">Orders</div>
 
 <div class="tabs">
-<div class="active" onclick="setFilter('pending_verification',this)">For Verification</div>
-<div onclick="setFilter('all',this)">All</div>
+<div class="active" onclick="setFilter('all',this)">All</div>
+<div onclick="setFilter('pending_verification',this)">For Verification</div>
 <div onclick="setFilter('pending_payment',this)">Pending</div>
 <div onclick="setFilter('paid',this)">Paid</div>
 <div onclick="setFilter('processing',this)">Processing</div>
 <div onclick="setFilter('completed',this)">Completed</div>
 </div>
 
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Name</th>
-<th>Plan</th>
-<th>Price</th>
-<th>Status</th>
-<th>Shipping</th>
-</tr>
-</thead>
-<tbody id="table"></tbody>
-</table>
-<!-- 📱 MOBILE LIST (MUST BE OUTSIDE TABLE) -->
-<div id="mobileList" class="mobile-list"></div>
+<div class="table">
+
+<div class="row header">
+<div></div>
+<div>Name</div>
+<div>Plan</div>
+<div>Price</div>
+<div>Status</div>
+<div>Shipping</div>
+<div>Date</div>
+</div>
+
+<div id="table"></div>
 
 </div>
-<div class="panel" id="panel"></div>
 
-<div class="modal" id="modal" onclick="closeModal()">
-<img id="modalImg">
+<!-- MODAL -->
+<div class="modal" id="modal">
+<div class="modal-box" id="modalBox"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
