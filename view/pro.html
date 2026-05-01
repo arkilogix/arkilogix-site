@@ -800,32 +800,35 @@ if(data.facebook){
     }
 
  
-  /* PROJECTS */
-  const container = document.getElementById("projects");
-  const projectContainer = container;
+/* PROJECTS */
+const container = document.getElementById("projects");
+const projectContainer = container;
 container.innerHTML = "";
 
-/* NO PROJECTS */
-if(!data.projectImages || data.projectImages.length === 0){
+// 🔥 normalize images
+let images = [];
+
+if(Array.isArray(data.projectImages)){
+  images = data.projectImages;
+}else if(typeof data.projectImages === "string"){
+  images = [data.projectImages];
+}
+
+// ❌ NO PROJECTS
+if(images.length === 0){
   document.getElementById("projectsHeader").style.display = "none";
   container.innerHTML = "<p style='color:#777;font-size:13px;'>No projects yet</p>";
 }
 
-/* HAS PROJECTS */
+// ✅ HAS PROJECTS
 else{
 
-  data.projectImages.slice(0,3).forEach(img => {
+  images.slice(0,3).forEach(img => {
     const div = document.createElement("div");
     div.className = "project-card";
 
     const image = document.createElement("img");
     image.src = img;
-
-    image.style.boxShadow = "0 10px 25px rgba(0,0,0,0.15)";
-    image.style.transition = "0.25s";
-
-    image.onmouseenter = () => image.style.transform = "scale(1.03)";
-    image.onmouseleave = () => image.style.transform = "scale(1)";
 
     image.onclick = () => window.open(img, "_blank");
 
@@ -835,6 +838,7 @@ else{
 
 }
 
+/* ACTIVE CARD LOGIC */
 function updateActiveCard(){
   const cards = document.querySelectorAll(".project-card");
 
@@ -856,11 +860,10 @@ function updateActiveCard(){
   if(closest) closest.classList.add("active");
 }
 
-if(data.projectImages && data.projectImages.length){
+if(images.length){
   projectContainer.addEventListener("scroll", updateActiveCard);
 }
 
-// run once after render
 setTimeout(updateActiveCard, 300);
 
     
