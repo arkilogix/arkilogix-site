@@ -17,11 +17,6 @@ let users = [];
 let filter = "pending_verification";
 let selected = null;
 
-/* AUTH */
-firebase.auth().onAuthStateChanged(user=>{
-  if(!user) window.location.href="/auth/login.html";
-});
-
 /* LOGOUT */
 window.logout = function(){
   firebase.auth().signOut();
@@ -375,19 +370,18 @@ function formatStatus(s){
 }
 
 function formatShipping(s){
-  if(!s) return "Pending";
+  if(!s) return "";
 
   const label = s.replace("_"," ").replace(/\b\w/g,l=>l.toUpperCase());
 
-  let color = "#888";
+  let cls = "status";
 
-  if(s === "printing") color = "#3b82f6";
-  if(s === "encoding") color = "#a855f7";
-  if(s === "ready") color = "#22c55e";
-  if(s === "shipped") color = "#06b6d4";
-  if(s === "completed") color = "#16a34a";
+  if(s === "printing") cls += " paid";
+  if(s === "encoding") cls += " processing";
+  if(s === "ready") cls += " completed";
+  if(s === "shipped") cls += " pending";
 
-  return `<span style="color:${color};font-weight:600;">${label}</span>`;
+  return `<span class="${cls}">${label}</span>`;
 }
 
 /* MARK AS PAID */
