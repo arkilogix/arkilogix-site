@@ -180,15 +180,28 @@ ${u.link ? `
 /* SHIPPING ACTIONS */
 function shippingActions(u){
 
-  if(u.shippingStatus==="pending"){
-    return `<button class="btn" onclick="updateShipping('in_production')">Start Production</button>`;
+  // ❗ must be paid first
+  if(u.status !== "paid"){
+    return `<p style="color:#888;">Waiting for payment</p>`;
   }
 
-  if(u.shippingStatus==="in_production"){
+  if(u.shippingStatus === "pending"){
+    return `<button class="btn" onclick="updateShipping('printing')">Start Production</button>`;
+  }
+
+  if(u.shippingStatus === "printing"){
+    return `<button class="btn" onclick="updateShipping('encoding')">Mark as Encoding</button>`;
+  }
+
+  if(u.shippingStatus === "encoding"){
+    return `<button class="btn" onclick="updateShipping('ready')">Mark as Ready</button>`;
+  }
+
+  if(u.shippingStatus === "ready"){
     return `<button class="btn" onclick="updateShipping('shipped')">Mark as Shipped</button>`;
   }
 
-  if(u.shippingStatus==="shipped"){
+  if(u.shippingStatus === "shipped"){
     return `<button class="btn" onclick="updateShipping('completed')">Mark Completed</button>`;
   }
 
@@ -344,7 +357,9 @@ window.markPaid = async(id)=>{
     await db.collection("clients").doc(id).update({
       status: "paid",
       paidAt: firebase.firestore.FieldValue.serverTimestamp(),
+      
       isLocked: false // 🔥 ensure unlock
+      
     });
 
     alert("Client activated ✅");
