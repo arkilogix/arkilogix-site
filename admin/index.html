@@ -45,7 +45,19 @@ border-radius:999px;font-size:12px;color:var(--muted);cursor:pointer;
 .tabs .active{background:#fff;color:#000}
 
 /* TABLE */
-table{width:100%;border-collapse:collapse}
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0 10px;
+}
+
+tr{
+  background:#111;
+}
+
+td{
+  padding:14px;
+}
 td,th{padding:12px;border-bottom:1px solid var(--border);font-size:13px}
 tr:hover{background:rgba(255,255,255,0.03);cursor:pointer}
 
@@ -216,6 +228,18 @@ display:none;align-items:center;justify-content:center;
   }
 
 }
+  .status{
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:600;
+  display:inline-block;
+}
+
+.status.paid{ background:#1d4ed8; color:#fff; }
+.status.pending{ background:#f59e0b; color:#fff; }
+.status.processing{ background:#7c3aed; color:#fff; }
+.status.completed{ background:#16a34a; color:#fff; }
 </style>
 </head>
 
@@ -249,16 +273,15 @@ display:none;align-items:center;justify-content:center;
 <th>Plan</th>
 <th>Price</th>
 <th>Status</th>
-<th>Shipping</th> <!-- 🔥 ADDED -->
-<th>Date</th>
+<th>Shipping</th>
 </tr>
 </thead>
 <tbody id="table"></tbody>
-<div id="mobileList" class="mobile-list"></div>
 </table>
+<!-- 📱 MOBILE LIST (MUST BE OUTSIDE TABLE) -->
+<div id="mobileList" class="mobile-list"></div>
 
 </div>
-
 <div class="panel" id="panel"></div>
 
 <div class="modal" id="modal" onclick="closeModal()">
