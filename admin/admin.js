@@ -361,12 +361,33 @@ function format(d){
 
 function formatStatus(s){
   if(!s) return "Pending Verification";
-  return s.replace("_"," ").replace(/\b\w/g,l=>l.toUpperCase());
+
+  const label = s.replace("_"," ").replace(/\b\w/g,l=>l.toUpperCase());
+
+  let color = "#888";
+
+  if(s === "paid") color = "#3b82f6";         // blue
+  if(s === "processing") color = "#a855f7";   // purple
+  if(s === "completed") color = "#22c55e";    // green
+  if(s === "pending_payment") color = "#f59e0b"; // orange
+
+  return `<span style="color:${color};font-weight:600;">${label}</span>`;
 }
 
 function formatShipping(s){
   if(!s) return "Pending";
-  return s.replace("_"," ").replace(/\b\w/g,l=>l.toUpperCase());
+
+  const label = s.replace("_"," ").replace(/\b\w/g,l=>l.toUpperCase());
+
+  let color = "#888";
+
+  if(s === "printing") color = "#3b82f6";
+  if(s === "encoding") color = "#a855f7";
+  if(s === "ready") color = "#22c55e";
+  if(s === "shipped") color = "#06b6d4";
+  if(s === "completed") color = "#16a34a";
+
+  return `<span style="color:${color};font-weight:600;">${label}</span>`;
 }
 
 /* MARK AS PAID */
@@ -378,12 +399,20 @@ window.markPaid = async(id)=>{
     await db.collection("clients").doc(id).update({
       status: "paid",
       paidAt: firebase.firestore.FieldValue.serverTimestamp(),
-      
-      isLocked: false // 🔥 ensure unlock
-      
+      isLocked: false,
+      shippingStatus: "pending" // 🔥 ensure workflow starts
     });
 
-    alert("Client activated ✅");
+    // 🔥 AUTO DOWNLOAD QR
+    if(selected && selected.link){
+      const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(selected.link)}`;
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = (selected.name || "client") + "-qr.png";
+      a.click();
+    }
+
+    alert("Client activated + QR downloaded ✅");
 
     closePanel();
 
