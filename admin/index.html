@@ -185,6 +185,37 @@ display:none;align-items:center;justify-content:center;
     display:none; /* hide X on mobile */
   }
 }
+  /* 📱 STICKY ACTION BAR */
+.actions-wrapper{
+  margin-top:20px;
+}
+
+@media(max-width:768px){
+
+  .actions-wrapper{
+    position:sticky;
+    bottom:0;
+    background:#0f0f10;
+    padding:12px;
+    border-top:1px solid rgba(255,255,255,0.08);
+  }
+
+  .actions-wrapper .btn{
+    width:100%;
+    margin-top:8px;
+  }
+
+}
+  @media(max-width:768px){
+  .panel{
+    padding:18px;
+  }
+  .btn{
+    padding:14px;
+    font-size:14px;
+  }
+
+}
 </style>
 </head>
 
