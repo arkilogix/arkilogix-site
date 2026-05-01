@@ -188,7 +188,9 @@ ${u.link ? `
 
   <hr>
 
-  ${actions(u)}
+    <div class="actions-wrapper">
+    ${actions(u)}
+  </div>
 
   <br>
 
