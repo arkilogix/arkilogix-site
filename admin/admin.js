@@ -6,17 +6,14 @@ let selected = null;
 
 /* FETCH */
 db.collection("clients").onSnapshot(s=>{
-  users = s.docs.map(d=>({
-    id:d.id,
-    ...d.data()
-  }));
+  users = s.docs.map(d=>({id:d.id,...d.data()}));
   render();
 });
 
 /* FILTER */
 window.setFilter = (f,el)=>{
   filter = f;
-  document.querySelectorAll(".tabs div").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".filter").forEach(t=>t.classList.remove("active"));
   el.classList.add("active");
   render();
 };
@@ -24,8 +21,8 @@ window.setFilter = (f,el)=>{
 /* RENDER */
 function render(){
 
-  const table = document.getElementById("table");
-  table.innerHTML = "";
+  const list = document.getElementById("list");
+  list.innerHTML = "";
 
   let data = filter==="all"
     ? users
@@ -33,29 +30,23 @@ function render(){
 
   data.forEach(u=>{
 
-    const row = document.createElement("div");
-    row.className = "row data";
-    row.onclick = ()=>openModal(u);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.onclick = ()=>openModal(u);
 
-    row.innerHTML = `
+    card.innerHTML = `
       <img class="avatar" src="${u.profile || '/logo.png'}">
-      <div>${u.name || "-"}</div>
-      <div>${u.plan || "-"}</div>
-      <div>₱${(u.price||0).toLocaleString()}</div>
-      <div>${statusBadge(u.status)}</div>
-      <div>${u.shippingStatus || "pending"}</div>
-      <div>${format(u.createdAt)}</div>
+
+      <div style="flex:1">
+        <div class="name">${u.name || "-"}</div>
+        <div class="sub">${u.plan || "-"} • ₱${(u.price||0).toLocaleString()}</div>
+      </div>
+
+      <div class="badge ${u.status}">${u.status || "pending"}</div>
     `;
 
-    table.appendChild(row);
+    list.appendChild(card);
   });
-}
-
-/* STATUS */
-function statusBadge(s){
-  if(!s) return "";
-
-  return `<span class="status ${s}">${s}</span>`;
 }
 
 /* MODAL */
@@ -77,12 +68,21 @@ function openModal(u){
 
     ${u.link ? `
       <hr>
-      <p>Digital Card</p>
-      <input value="${u.link}" style="width:100%">
+
+      <p><b>Digital Card</b></p>
+
+      <input value="${u.link}" style="width:100%;padding:10px;border-radius:10px;border:none">
+
+      <img 
+        src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(u.link)}"
+        style="width:100%;margin-top:12px;border-radius:10px;background:#fff;padding:10px"
+      >
+
+      <button class="btn glass" onclick="downloadQR()">Download QR</button>
     ` : ""}
 
-    <button class="btn" onclick="markPaid('${u.id}')">Mark Paid</button>
-    <button class="btn" onclick="closeModal()">Close</button>
+    <button class="btn primary" onclick="markPaid('${u.id}')">Mark Paid</button>
+    <button class="btn glass" onclick="closeModal()">Close</button>
   `;
 }
 
@@ -99,9 +99,14 @@ window.markPaid = async(id)=>{
   closeModal();
 };
 
-/* HELPERS */
-function format(d){
-  if(!d) return "-";
-  if(d.seconds) return new Date(d.seconds*1000).toLocaleDateString();
-  return new Date(d).toLocaleDateString();
-}
+/* QR */
+window.downloadQR = function(){
+  if(!selected || !selected.link) return;
+
+  const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(selected.link)}`;
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "qr.png";
+  a.click();
+};
