@@ -123,7 +123,11 @@ function openPanel(u){
   `;
 
   p.innerHTML = `
-  <div class="close-btn" onclick="closePanel()">✕</div>
+    <div class="mobile-header">
+      <span onclick="closePanel()">← Back</span>
+    </div>
+  
+    <div class="close-btn" onclick="closePanel()">✕</div>
 
   <h2>${u.name || "-"}</h2>
 
