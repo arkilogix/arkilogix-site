@@ -687,6 +687,27 @@ window.editProfile = function(){
   document.getElementById("editModal").style.display = "flex";
   showStep(1);
   const photoInput = document.getElementById("editProfilePhoto");
+  const projectInput = document.getElementById("editProjects");
+
+    if(projectInput){
+      projectInput.onchange = async function(e){
+    
+        const files = Array.from(e.target.files);
+        if(!files.length) return;
+    
+        const uploaded = [];
+    
+        for(const file of files){
+          const url = await uploadProjectImage(file);
+          uploaded.push(url);
+        }
+    
+        // 🔥 store temporarily
+        currentData.projectImages = uploaded;
+    
+        console.log("Uploaded project images:", uploaded);
+      };
+    }
 
 if(photoInput){
   photoInput.onchange = function(e){
@@ -756,6 +777,7 @@ window.saveEdit = async function(){
       website: document.getElementById("editWebsite")?.value || "",
       profile: profileUrl,
       services: services
+      projectImages: currentData.projectImages || []
     });
   
   currentData.profile = profileUrl;
@@ -785,6 +807,23 @@ async function uploadEditImage(file){
   const data = await res.json();
   return data.secure_url;
 }
+
+async function uploadProjectImage(file){
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "nfc_upload");
+  formData.append("folder", `nfc-clients/${currentDocId}/projects`);
+
+  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+  return data.secure_url;
+}
+
 
 function createServiceField(value = ""){
 
@@ -971,6 +1010,7 @@ async function autoSaveEdit(){
     
       profile: currentData.profile || "",
       services: services
+      projectImages: currentData.projectImages || []
     });
 
     console.log("Auto-saved");
