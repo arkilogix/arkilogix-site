@@ -334,7 +334,7 @@ window.downloadQR = function(){
   const page = selected.plan === "elite" ? "elite.html" :
                selected.plan === "pro" ? "pro.html" : "basic.html";
 
-  const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+  const link = window.location.origin + "/view/" + page + "?id=" + selected.id;
 
   const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(link)}`;
 
@@ -493,7 +493,7 @@ window.toggleLock = async function(){
     const page = selected.plan === "elite" ? "elite.html" :
                  selected.plan === "pro" ? "pro.html" : "basic.html";
   
-    const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+    const link = window.location.origin + "/view/" + page + "?id=" + selected.id;
   
     window.open(link, "_blank");
   };
@@ -521,7 +521,7 @@ window.copyLink = function(){
   const page = selected.plan === "elite" ? "elite.html" :
                selected.plan === "pro" ? "pro.html" : "basic.html";
 
-  const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+  const link = window.location.origin + "/view/" + page + "?id=" + selected.id;
 
   navigator.clipboard.writeText(link);
   alert("Link copied");
@@ -534,7 +534,7 @@ window.emailClient = function(){
   const page = selected.plan === "elite" ? "elite.html" :
                selected.plan === "pro" ? "pro.html" : "basic.html";
 
-  const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+  const link = window.location.origin + "/view/" + page + "?id=" + selected.id;
 
   const subject = "Your NFC Digital Card";
   const body = `Hi ${selected.name || ""},
