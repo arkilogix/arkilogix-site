@@ -661,16 +661,30 @@ window.editProfile = function(){
   const overlay = document.getElementById("advancedOverlay");
   const plan = (currentData.plan || "basic").toLowerCase();
 
-  if(plan !== "elite"){
-  // 🔒 LOCK (Basic + Pro)
+// 🔥 STEP 4 LOGIC (CORRECTED)
+if(plan === "basic"){
+  // 🔒 FULL LOCK
   if(advancedLock) advancedLock.style.opacity = "0.5";
   projectInputs.forEach(i => i.disabled = true);
   if(overlay) overlay.style.display = "flex";
 
-} else {
-  // 🔓 UNLOCK (Elite only)
+} else if(plan === "pro"){
+  // 🔓 PARTIAL UNLOCK
   if(advancedLock) advancedLock.style.opacity = "1";
+
+  projectInputs.forEach((input, index) => {
+    // allow only first 3 inputs
+    input.disabled = index >= 3;
+  });
+
+  if(overlay) overlay.style.display = "none";
+
+} else if(plan === "elite"){
+  // 🔓 FULL UNLOCK
+  if(advancedLock) advancedLock.style.opacity = "1";
+
   projectInputs.forEach(i => i.disabled = false);
+
   if(overlay) overlay.style.display = "none";
 }
 
