@@ -658,7 +658,7 @@ window.editProfile = function(){
   // 🔥 STEP 4 LOCK (ADVANCED FEATURES ONLY)
   const advancedLock = document.getElementById("advancedLock");
   const lockedContent = document.getElementById("advancedContent");
-  const projectInputs = advancedLock ? advancedLock.querySelectorAll("input") : [];
+  const projectInputs = document.querySelectorAll(".highlightInput");
   const overlay = document.getElementById("advancedOverlay");
   const plan = (currentData.plan || "basic").toLowerCase();
 
@@ -711,38 +711,123 @@ if(plan === "basic"){
   document.getElementById("editModal").style.display = "flex";
   showStep(1);
   const photoInput = document.getElementById("editProfilePhoto");
-  const projectInput = document.getElementById("editProjects");
+  const bannerBox = document.getElementById("bannerBox");
+  const bannerInput = bannerBox?.querySelector("input");
+  const bannerRemove = document.getElementById("bannerRemove");
 
-    if(projectInput){
-      projectInput.onchange = async function(e){
-    
-        const files = Array.from(e.target.files);
-        if(!files.length) return;
-    
-        const uploaded = [];
-    
-        for(const file of files){
-          const url = await uploadProjectImage(file);
-          uploaded.push(url);
-        }
-    
-        // 🔥 store temporarily
-        currentData.projectImages = [
-        ...(currentData.projectImages || []),
-        ...uploaded
-      ];
-    const plan = (currentData.plan || "basic").toLowerCase();
+if(bannerInput){
+  bannerInput.onchange = function(e){
 
-      let limit = 0;
-      if(plan === "pro") limit = 3;
-      if(plan === "elite") limit = 6;
-      
-      // apply limit
-      currentData.projectImages = currentData.projectImages.slice(0, limit);
-        
-        console.log("Uploaded project images:", uploaded);
-      };
-    }
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+
+    // remove old image if exists
+    const oldImg = bannerBox.querySelector("img");
+    if(oldImg) oldImg.remove();
+
+    const img = document.createElement("img");
+    img.src = previewUrl;
+
+    bannerBox.appendChild(img);
+    bannerBox.classList.add("has-image");
+
+    if(bannerRemove) bannerRemove.style.display = "block";
+  };
+}
+
+// 🔥 REMOVE IMAGE
+if(bannerRemove){
+  bannerRemove.onclick = function(e){
+    e.stopPropagation();
+
+    const img = bannerBox.querySelector("img");
+    if(img) img.remove();
+
+    bannerBox.classList.remove("has-image");
+
+    bannerInput.value = "";
+
+    bannerRemove.style.display = "none";
+  };
+}
+// 🔥 NEW HIGHLIGHT BOX SYSTEM
+const highlightBoxes = document.querySelectorAll(".highlight-box");
+
+highlightBoxes.forEach((box, index) => {
+
+  const input = box.querySelector(".highlightInput");
+  const removeBtn = box.querySelector(".removeHighlight");
+
+  // ✅ LOAD EXISTING IMAGES
+const existing = currentData.projectImages?.[index];
+
+if(existing){
+  renderHighlight(box, existing);
+} else {
+  // 🔥 CLEAR BOX IF EMPTY
+  const old = box.querySelector("img");
+  if(old) old.remove();
+
+  box.classList.remove("has-image");
+
+  if(removeBtn){
+    removeBtn.style.display = "none";
+  }
+}
+
+  // ✅ UPLOAD PER BOX
+  if(input){
+    input.onchange = async function(e){
+
+      const file = e.target.files[0];
+      if(!file) return;
+
+      const url = await uploadProjectImage(file);
+
+      if(!currentData.projectImages){
+        currentData.projectImages = [];
+      }
+
+      currentData.projectImages[index] = url;
+
+      renderHighlight(box, url);
+    };
+  }
+
+  // ✅ REMOVE IMAGE
+if(removeBtn){
+  removeBtn.onclick = function(e){
+    e.stopPropagation();
+
+    const img = box.querySelector("img");
+    if(img) img.remove();
+
+    box.classList.remove("has-image");
+    removeBtn.style.display = "none";
+
+  if(Array.isArray(currentData.projectImages)){
+    currentData.projectImages.splice(index, 1);
+  }
+
+    highlightBoxes.forEach((b, i)=>{
+      const img = currentData.projectImages?.[i];
+      if(img){
+        renderHighlight(b, img);
+      } else {
+        const old = b.querySelector("img");
+        if(old) old.remove();
+        b.classList.remove("has-image");
+        const btn = b.querySelector(".removeHighlight");
+        if(btn) btn.style.display = "none";
+      }
+    });
+
+  };
+}
+
+});
 
 if(photoInput){
   photoInput.onchange = function(e){
@@ -1222,7 +1307,23 @@ function validateAll(){
 
   return true;
 }
+function renderHighlight(box, url){
 
+  // remove old image
+  const old = box.querySelector("img");
+  if(old) old.remove();
+
+  const img = document.createElement("img");
+  img.src = url;
+
+  box.appendChild(img);
+  box.classList.add("has-image");
+
+  const removeBtn = box.querySelector(".removeHighlight");
+  if(removeBtn){
+    removeBtn.style.display = "block";
+  }
+}
 /* LOGOUT */
 window.logout = function(){
   signOut(auth).then(()=>{
