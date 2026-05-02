@@ -93,6 +93,30 @@ onAuthStateChanged(auth, async (user)=>{
   }
 });
 
+function handleRealtimeUpdate(data){
+
+  // FIRST LOAD
+  if(previousStatus === null){
+    previousStatus = data.status;
+    currentData = data;
+
+    render();
+    return;
+  }
+
+  // STATUS CHANGE
+  if(previousStatus !== data.status){
+    if(data.status === "paid"){
+      console.log("Card activated");
+    }
+  }
+
+  previousStatus = data.status;
+  currentData = data;
+
+  render();
+}
+
 /* RENDER */
 function render(){
 
