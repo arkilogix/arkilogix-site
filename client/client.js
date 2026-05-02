@@ -747,7 +747,7 @@ if(bannerRemove){
 
     bannerBox.classList.remove("has-image");
 
-    bannerInput.value = "";
+    if(bannerInput) bannerInput.value = "";
 
     bannerRemove.style.display = "none";
   };
@@ -868,7 +868,17 @@ window.closeEdit = function(){
 };
 
 window.saveEdit = async function(){
-
+  
+  const overlay = document.getElementById("saveOverlay");
+  if(overlay) overlay.classList.add("show");
+  
+  // 🔒 prevent spam click
+  const saveBtn = document.getElementById("saveBtn");
+  if(saveBtn){
+    saveBtn.disabled = true;
+    saveBtn.innerText = "Saving...";
+  }
+  
   const ref = doc(db, "clients", currentDocId);
 
   let profileUrl = currentData.profile || "";
@@ -885,7 +895,7 @@ window.saveEdit = async function(){
     .map(i => i.value.trim())
     .filter(v => v);
 
-    await updateDoc(ref, {
+    await updateDoc(ref, { 
       name: document.getElementById("editName").value,
       position: document.getElementById("editPosition").value,
       company: document.getElementById("editCompany").value,
@@ -899,11 +909,16 @@ window.saveEdit = async function(){
       services: services,
       projectImages: currentData.projectImages || []
     });
+  if(overlay){
+  overlay.querySelector(".save-text").innerText = "Saved ✓";
+}
+
+await new Promise(res => setTimeout(res, 800));
   
   currentData.profile = profileUrl;
   render();
   hasUnsavedChanges = false;
-
+  if(overlay) overlay.classList.remove("show");
   closeEdit();
 };
 
