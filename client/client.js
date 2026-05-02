@@ -121,16 +121,19 @@ function handleRealtimeUpdate(data){
 /* RENDER */
 function render(){
 
+  const img = currentData.profile || "/logo.png"; // ✅ MOVE THIS FIRST
+
   const hero = document.getElementById("heroProfile");
+  const header = document.getElementById("headerProfile");
+
   if(hero) hero.src = img;
+  if(header) header.src = img;
 
-  const img = currentData.profile || "/logo.png";
+  const nameEl = document.getElementById("cardName");
+  const posEl = document.getElementById("cardPosition");
 
-  document.getElementById("heroProfile").src = img;
-  document.getElementById("headerProfile").src = img;
-
-  document.getElementById("cardName").innerText = currentData.name || "Your Name";
-  document.getElementById("cardPosition").innerText = currentData.position || "Your Position";
+  if(nameEl) nameEl.innerText = currentData.name || "Your Name";
+  if(posEl) posEl.innerText = currentData.position || "Your Position";
 
   const preview = document.getElementById("projectPreview");
 
@@ -143,9 +146,9 @@ function render(){
     if(plan === "pro") limit = 3;
     if(plan === "elite") limit = 6;
 
-    currentData.projectImages.slice(0, limit).forEach(img=>{
+    currentData.projectImages.slice(0, limit).forEach(imgUrl=>{
       const el = document.createElement("img");
-      el.src = img;
+      el.src = imgUrl;
       el.style.width = "60px";
       el.style.borderRadius = "8px";
       el.style.objectFit = "cover";
