@@ -88,8 +88,27 @@ else if(filter === "needs_action"){
     u.status === "pending_payment"
   );
 }
+else if(filter === "paid"){
+  data = users.filter(u => u.status === "paid");
+}
+else if(filter === "processing"){
+  data = users.filter(u =>
+    ["printing","encoding"].includes(u.shippingStatus)
+  );
+}
+else if(filter === "completed"){
+  data = users.filter(u =>
+    u.shippingStatus === "completed"
+  );
+}
+else if(filter === "pending_verification"){
+  data = users.filter(u => u.status === "pending_verification");
+}
+else if(filter === "pending_payment"){
+  data = users.filter(u => u.status === "pending_payment");
+}
 else{
-  data = users.filter(u => (u.status || "pending_verification") === filter);
+  data = users;
 }
 
 // 🔍 SEARCH
@@ -160,21 +179,37 @@ data.sort((a,b)=>{
 
 function renderActionButton(u){
 
-  const action = getNextAction(u);
-
-  if(!action) return "";
+  const actions = getNextAction(u);
+  if(!actions) return "";
 
   return `
-    <button class="btn primary" onclick="handleAction()">
-      ${action.label}
-    </button>
+    ${actions.nextAction ? `
+      <button class="btn primary" onclick="handleAction('next')">
+        ${actions.nextAction.label}
+      </button>
+    ` : ""}
+
+    ${actions.prevAction ? `
+      <button class="btn glass" onclick="handleAction('prev')">
+        ${actions.prevAction.label}
+      </button>
+    ` : ""}
   `;
 }
 
-window.handleAction = async function(){
-  const action = getNextAction(selected);
-  if(!action) return;
-  await action.action();
+window.handleAction = async function(type){
+
+  const actions = getNextAction(selected);
+  if(!actions) return;
+
+  if(type === "next" && actions.nextAction){
+    await actions.nextAction.action();
+  }
+
+  if(type === "prev" && actions.prevAction){
+    await actions.prevAction.action();
+  }
+
   setTimeout(()=>closeModal(), 200);
 };
 
@@ -346,7 +381,7 @@ window.downloadQR = function(){
 
 function getNextAction(u){
 
-  // ❗ NOT PAID YET
+  // ❗ NOT PAID
   if(!u.status || u.status === "pending_verification" || u.status === "pending_payment"){
     return {
       label: "Mark as Paid",
@@ -354,22 +389,32 @@ function getNextAction(u){
     };
   }
 
-  // 🔥 PRODUCTION FLOW
   const flow = ["pending","printing","encoding","ready","shipped","completed"];
   let current = u.shippingStatus || "pending";
-
   let index = flow.indexOf(current);
 
+  let nextAction = null;
+  let prevAction = null;
+
+  // 👉 NEXT
   if(index < flow.length - 1){
     let next = flow[index + 1];
-
-    return {
+    nextAction = {
       label: "Mark as " + capitalize(next),
       action: () => updateShipping(u.id, next)
     };
   }
 
-  return null;
+  // 👉 PREVIOUS (UNDO)
+  if(index > 0){
+    let prev = flow[index - 1];
+    prevAction = {
+      label: "Undo (" + capitalize(prev) + ")",
+      action: () => updateShipping(u.id, prev)
+    };
+  }
+
+  return { nextAction, prevAction };
 }
 
 async function updateShipping(id, status){
