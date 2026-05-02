@@ -708,34 +708,33 @@ window.editProfile = function(){
     
         const files = Array.from(e.target.files);
         if(!files.length) return;
-            // 🔒 BLOCK BASIC PLAN
+    
         const plan = (currentData.plan || "basic").toLowerCase();
-    if(plan === "basic"){
-      alert("Upgrade to Pro to add highlight projects.");
-      return;
-    }
-        
-      const uploaded = [];
-      
-      for(const file of files){
-        const url = await uploadProjectImage(file);
-        uploaded.push(url);
-      }
-      
-      // 🔥 PLAN LIMIT
-      const plan = (currentData.plan || "basic").toLowerCase();
-      
-      let limit = 0;
-      if(plan === "pro") limit = 3;
-      if(plan === "elite") limit = 6;
-      
-      // merge + trim
-      currentData.projectImages = [
-        ...(currentData.projectImages || []),
-        ...uploaded
-      ].slice(0, limit);
-      
-      console.log("Saved project images:", currentData.projectImages);
+    
+        // 🔒 BLOCK BASIC
+        if(plan === "basic"){
+          alert("Upgrade to Pro to add highlight projects.");
+          return;
+        }
+    
+        const uploaded = [];
+    
+        for(const file of files){
+          const url = await uploadProjectImage(file);
+          uploaded.push(url);
+        }
+    
+        // 🔥 PLAN LIMIT
+        let limit = 3;
+        if(plan === "elite") limit = 6;
+    
+        currentData.projectImages = [
+          ...(currentData.projectImages || []),
+          ...uploaded
+        ].slice(0, limit);
+    
+        console.log("Saved project images:", currentData.projectImages);
+    
         render();
       };
     }
