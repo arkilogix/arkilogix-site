@@ -31,38 +31,30 @@ onAuthStateChanged(auth, async (user)=>{
   currentUserEmail = user.email;
 
   try{
-
     const params = new URLSearchParams(window.location.search);
     const clientId = params.get("clientId");
 
     let data = null;
 
-    // 🔥 1. LOAD USING clientId (PRIMARY)
-  if(clientId){
-  
-    const ref = doc(db, "clients", clientId);
-  
-    onSnapshot(ref, async (snap)=>{
-  
-      if(!snap.exists()) return;
-  
-      const data = snap.data();
-      currentDocId = clientId;
-  
-      // 🔥 AUTO LINK UID IF MISSING
-      if(!data.authUid){
-        await updateDoc(ref, {
-          authUid: user.uid
-        });
-      }
-  
-      handleRealtimeUpdate(data);
-  
-    });
-  
-    return;
-  }
-    // 🔥 2. FALLBACK TO UID (OLD METHOD)
+    if(clientId){
+      const ref = doc(db, "clients", clientId);
+
+      onSnapshot(ref, async (snap)=>{
+        if(!snap.exists()) return;
+
+        const data = snap.data();
+        currentDocId = clientId;
+
+        if(!data.authUid){
+          await updateDoc(ref, { authUid: user.uid });
+        }
+
+        handleRealtimeUpdate(data);
+      });
+
+      return;
+    }
+
     if(!data){
       const q = query(
         collection(db, "clients"),
@@ -77,767 +69,151 @@ onAuthStateChanged(auth, async (user)=>{
       }
     }
 
-    // ❌ STILL NOTHING
-   if(!data){
-  console.warn("No UID match, forcing clientId link...");
+    if(!data){
+      if(clientId){
+        const ref = doc(db, "clients", clientId);
+        const snap = await getDoc(ref);
 
-  const params = new URLSearchParams(window.location.search);
-  const clientId = params.get("clientId");
+        if(snap.exists()){
+          data = snap.data();
+          currentDocId = clientId;
 
-  if(clientId){
-    const ref = doc(db, "clients", clientId);
-    const snap = await getDoc(ref);
-
-    if(snap.exists()){
-      data = snap.data();
-      currentDocId = clientId;
-
-      // 🔥 LINK CURRENT USER SAFELY
-      await updateDoc(ref, {
-        authUid: user.uid
-      });
-
-      console.log("✅ UID FIXED AUTOMATICALLY");
+          await updateDoc(ref, { authUid: user.uid });
+        }
+      }
     }
-  }
-}
 
-if(!data){
-  console.error("Still no client found.");
-  return;
-}
+    if(!data){
+      console.error("Still no client found.");
+      return;
+    }
 
   } catch(err){
     console.error("Firestore error:", err);
   }
 });
 
-/* ACCESS CONTROL */
-function checkAccess(){
-
-  const status = (currentData.status || "").toLowerCase();
-  const adminLock = currentData.isLocked === true;
-
-  if(adminLock){
-    showLocked("🔒 Account Locked", "Please contact support.");
-    return true;
-  }
-
-  const lockStates = [
-    "pending",
-    "pending_verification",
-    "processing",
-    "unpaid"
-  ];
-
-if(lockStates.includes(status)){
-  applySoftLock(status);
-  return false;
-}
-
-  hideLock();
-  // 🔓 ensure UI fully clean
-["views","taps","clicks"].forEach(id=>{
-  const el = document.getElementById(id);
-  if(el){
-    el.style.filter = "none";
-    el.style.opacity = "1";
-  }
-});
-
-["viewBtn","shareBtn"].forEach(id=>{
-  const btn = document.getElementById(id);
-  if(btn){
-    btn.style.pointerEvents = "auto";
-    btn.style.opacity = "1";
-  }
-});
-  return false;
-}
-
-function showLocked(title, message){
-
-  let overlay = document.getElementById("lockOverlay");
-
-  if(!overlay){
-    overlay = document.createElement("div");
-    overlay.id = "lockOverlay";
-    document.body.appendChild(overlay);
-  }
-
-  overlay.innerHTML = `
-    <div class="lock-screen">
-      <div class="lock-card">
-        <div class="lock-logo">ARKILOGIX</div>
-        <div class="lock-title">${title}</div>
-        <div class="lock-message">${message}</div>
-        <div class="lock-loader">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    </div>
-  `;
-
-  overlay.style.display = "block";
-  overlay.classList.remove("unlocking");
-}
-
-function hideLock(){
-  const overlay = document.getElementById("lockOverlay");
-  if(!overlay) return;
-
-  overlay.classList.add("unlocking");
-
-  setTimeout(()=>{
-    overlay.remove();
-  }, 400);
-}
-
-function applySoftLock(status){
-
-  // remove any fullscreen lock
-  const overlay = document.getElementById("lockOverlay");
-  if(overlay) overlay.remove();
-
-  // 🔒 blur stats
-  ["views","taps","clicks"].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el){
-      el.style.filter = "blur(6px)";
-      el.style.opacity = "0.6";
-    }
-  });
-
-  // 🔒 disable actions
-  const buttons = [
-    "viewBtn",
-    "shareBtn"
-  ];
-
-  buttons.forEach(id=>{
-    const btn = document.getElementById(id);
-    if(btn){
-      btn.style.pointerEvents = "none";
-      btn.style.opacity = "0.5";
-    }
-  });
-
-}
-
-function showPaymentBanner(status){
-  return; // 🔥 DISABLED (we use floating button instead)
-}
-
-function formatLink(url, type){
-  if(!url) return "";
-
-  url = url.trim();
-
-  // 🔥 INSTAGRAM SPECIAL HANDLING
-  if(type === "instagram"){
-
-    // remove @ if present
-    if(url.startsWith("@")){
-      url = url.substring(1);
-    }
-
-    // if it's just username
-    if(!url.includes("http") && !url.includes("instagram.com")){
-      return "https://instagram.com/" + url;
-    }
-  }
-
-  // 🔥 FACEBOOK OPTIONAL CLEANUP
-  if(type === "facebook"){
-    if(!url.includes("http")){
-      return "https://" + url;
-    }
-  }
-
-  // 🔥 WEBSITE / GENERAL
-  if(!url.startsWith("http://") && !url.startsWith("https://")){
-    return "https://" + url;
-  }
-
-  return url;
-}
-
 /* RENDER */
 function render(){
-  console.log("NAME:", currentData.name);
-  console.log("POSITION:", currentData.position);
- 
+
   if(!document.getElementById("heroProfile")) return;
 
   const img = currentData.profile || "/logo.png";
 
-  const hero = document.getElementById("heroProfile");
-  if(hero) hero.src = img;
+  document.getElementById("heroProfile").src = img;
+  document.getElementById("headerProfile").src = img;
 
-  const headerImg = document.getElementById("headerProfile");
-  if(headerImg) headerImg.src = img;
-
-  const nameEl = document.getElementById("cardName");
-  const posEl = document.getElementById("cardPosition");
-  
-  if(nameEl){
-    nameEl.innerText = currentData.name || "Your Name";
-  }
-  
-  if(posEl){
-    posEl.innerText = currentData.position || "Your Position";
-  }
-
-  const viewsEl = document.getElementById("views");
-  const tapsEl = document.getElementById("taps");
-  const clicksEl = document.getElementById("clicks");
-
-  animateNumberSafe(viewsEl, currentData?.stats?.views || 0);
-  animateNumberSafe(tapsEl, currentData?.stats?.taps || 0);
-  animateNumberSafe(clicksEl, currentData?.stats?.clicks || 0);
-
-  const status = (currentData.status || "").toLowerCase();
-  const chip = document.getElementById("statusChip");
-
-  if(chip){
-    chip.className = "status";
-    chip.innerText = "";
-
-    if(status === "paid"){
-      chip.innerText = "Verified";
-      chip.classList.add("verified");
-    }
-
-    if(status === "processing" || status === "pending"){
-      chip.innerText = "Processing";
-      chip.classList.add("processing");
-    }
-  }
-
-  const planEl = document.getElementById("planBadge");
-
-  if(planEl){
-    const lockScreen = document.getElementById("lockScreen");
-    const plan = (currentData.plan || "basic").toLowerCase();
-
-    let label = "Basic Plan";
-    let planClass = "plan-basic";
-
-    if(plan === "pro"){
-      label = "Pro Plan";
-      planClass = "plan-pro";
-    }
-
-    if(plan === "elite"){
-      label = "Elite Plan";
-      planClass = "plan-elite";
-    }
-
-    let statusText = "";
-    if(currentData.status === "pending_verification"){
-      lockScreen.style.display = "flex";
-    } else {
-      lockScreen.style.display = "none";
-    }
-
-    planEl.innerText = statusText + label;
-    planEl.className = "plan-badge " + planClass;
-  }
-
-  const container = document.getElementById("cardServices");
-  if(container){
-    container.innerHTML = "";
-
-    if(currentData.services){
-      const plan = (currentData.plan || "basic").toLowerCase();
-
-      let limit = 4;
-      if(plan === "pro") limit = 6;
-      if(plan === "elite") limit = 999;
-
-    currentData.services.slice(0, limit).forEach(s=>{
-        const span = document.createElement("span");
-        span.innerText = s;
-        container.appendChild(span);
-      });
-    }
-  }
+  document.getElementById("cardName").innerText = currentData.name || "Your Name";
+  document.getElementById("cardPosition").innerText = currentData.position || "Your Position";
 
   const preview = document.getElementById("projectPreview");
 
-if(preview && currentData.projectImages){
-  preview.innerHTML = "";
+  if(preview && currentData.projectImages){
+    preview.innerHTML = "";
 
-  currentData.projectImages.slice(0,3).forEach(img=>{
-    const el = document.createElement("img");
-    el.src = img;
-    el.style.width = "60px";
-    el.style.borderRadius = "8px";
-    preview.appendChild(el);
-  });
-}
-  
-// 🔥 TOGGLE CONTACT BUTTONS
-function toggleField(id, value){
-  const el = document.getElementById(id);
-  if(!el) return;
+    const plan = (currentData.plan || "basic").toLowerCase();
+    let limit = 0;
 
-  if(value && value.trim() !== ""){
-    el.style.display = "flex";
-  } else {
-    el.style.display = "none";
+    if(plan === "pro") limit = 3;
+    if(plan === "elite") limit = 6;
+
+    currentData.projectImages.slice(0, limit).forEach(img=>{
+      const el = document.createElement("img");
+      el.src = img;
+      el.style.width = "60px";
+      el.style.borderRadius = "8px";
+      el.style.objectFit = "cover";
+      preview.appendChild(el);
+    });
   }
 }
 
-// APPLY TO BUTTONS
-toggleField("btnFacebook", currentData.facebook);
-toggleField("btnInstagram", currentData.instagram);
-toggleField("btnWebsite", currentData.website);
-toggleField("btnPhone", currentData.phone);
-toggleField("btnEmail", currentData.email);
-  
-const fbBtn = document.getElementById("btnFacebook");
-if(fbBtn && currentData.facebook){
-  fbBtn.href = formatLink(currentData.facebook, "facebook");
-}
+/* EDIT PROFILE */
+window.editProfile = function(){
 
-const igBtn = document.getElementById("btnInstagram");
-if(igBtn && currentData.instagram){
-  igBtn.href = formatLink(currentData.instagram, "instagram");
-}
-
-const webBtn = document.getElementById("btnWebsite");
-if(webBtn && currentData.website){
-  webBtn.href = formatLink(currentData.website);
-}
-
-const phoneBtn = document.getElementById("btnPhone");
-if(phoneBtn && currentData.phone){
-  phoneBtn.href = "tel:" + currentData.phone;
-}
-
-const emailBtn = document.getElementById("btnEmail");
-if(emailBtn && currentData.email){
-  emailBtn.href = "mailto:" + currentData.email;
-}
-}
-
-function animateNumberSafe(el, value){
-  if(!el) return;
-
-  let start = 0;
-  const duration = 400;
-  const step = value / (duration / 16);
-
-  const interval = setInterval(()=>{
-    start += step;
-
-    if(start >= value){
-      el.innerText = value;
-      clearInterval(interval);
-    } else {
-      el.innerText = Math.floor(start);
-    }
-  },16);
-}
-
-/* VIEW CARD */
-window.viewCard = function(){
-  let page = "basic.html";
-  if(currentData.plan==="pro") page="pro.html";
-  if(currentData.plan==="elite") page="elite.html";
-
-  window.open(`/view/${page}?id=${currentDocId}`);
-}
-
-/* SHARE */
-window.shareCard = function(){
-  let page = "basic.html";
-  if(currentData.plan==="pro") page="pro.html";
-  if(currentData.plan==="elite") page="elite.html";
-
-  const url = `${window.location.origin}/view/${page}?id=${currentDocId}`;
-
-  if(navigator.share){
-    navigator.share({title:"My Card",url});
-  }else{
-    navigator.clipboard.writeText(url);
-    alert("Link copied!");
-  }
-}
-
-/* PASSWORD RESET */
-window.resetPassword = function(){
-  if(!currentUserEmail){
-    alert("No email found.");
+  if(currentData.status !== "paid"){
+    alert("Please activate your card first.");
     return;
   }
 
-  sendPasswordResetEmail(auth, currentUserEmail)
-    .then(()=> alert("Password reset email sent."))
-    .catch(()=> alert("Error sending email."));
-}
+  document.getElementById("editName").value = currentData.name || "";
+  document.getElementById("editPosition").value = currentData.position || "";
 
-/* UPGRADE */
-window.upgradeToPro = function(){
-
-  if(!confirm("Upgrade to Pro? You will send a request via email.")) return;
-
-  const name = currentData?.name || "Client";
-  const email = currentData?.email || "";
-
-  const subject = encodeURIComponent("Upgrade to Pro Request");
-  const body = encodeURIComponent(
-`Hello ArkiLogix,
-
-I would like to upgrade my card to Pro.
-
-Name: ${name}
-Email: ${email}
-
-Please assist me with the upgrade.
-
-Thank you.`
-  );
-
-  window.location.href =
-    `mailto:info@arkilogix.com?subject=${subject}&body=${body}`;
-};
-
-
-
-function handleRealtimeUpdate(data){
-
-  // 🔥 FIRST LOAD
-  if(previousStatus === null){
-    previousStatus = data.status;
-    currentData = data;
-    setupActivateButton();
-    setupFeatureLocks();
-    const locked = checkAccess();
-
-    if(!locked){
-      render();
-    }
-    hideLoader();
-    return; // ✅ STOP HERE on first load
-  }
-
-  // 🔥 STATUS CHANGE DETECTED
-  if(previousStatus !== data.status){
-
-    if(data.status === "paid"){
-      smoothUnlock();
-    }
-
-  }
-
-  previousStatus = data.status;
-
-  currentData = data;
-  setupActivateButton();
-  setupFeatureLocks(); // 🔥 ADD THIS
-  const locked = checkAccess();
-
-  if(!locked){
-    render();
-  }
-}
-
-function smoothUnlock(){
-
-  // 🔓 remove blur smoothly
-  ["views","taps","clicks"].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el){
-      el.style.transition = "0.5s ease";
-      el.style.filter = "blur(0px)";
-      el.style.opacity = "1";
-    }
-  });
-
-  // 🔓 enable buttons smoothly
-  ["viewBtn","shareBtn"].forEach(id=>{
-    const btn = document.getElementById(id);
-    if(btn){
-      btn.style.transition = "0.3s ease";
-      btn.style.pointerEvents = "auto";
-      btn.style.opacity = "1";
-    }
-  });
-
-  // 🔓 remove banner
-  const banner = document.getElementById("paymentBanner");
-  if(banner){
-    banner.style.transition = "0.4s ease";
-    banner.style.opacity = "0";
-    setTimeout(()=> banner.remove(), 400);
-  }
-
-  // 🔓 subtle message (optional clean)
-  const msg = document.createElement("div");
-  msg.innerText = "Card Activated";
-  msg.style = `
-    position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#111;
-    color:#fff;
-    padding:10px 20px;
-    border-radius:20px;
-    font-size:13px;
-    opacity:0;
-    transition:0.4s;
-  `;
-
-  document.body.appendChild(msg);
-
-  setTimeout(()=> msg.style.opacity = "1", 50);
-  setTimeout(()=>{
-    msg.style.opacity = "0";
-    setTimeout(()=> msg.remove(), 400);
-  }, 2000);
-}
-function setupActivateButton(){
-
-  const btn = document.getElementById("activateBtn");
-  if(!btn || !currentData) return;
-
-  if(currentData.status === "unpaid"){
-
-    btn.style.display = "block";
-    btn.innerText = "Activate My Card";
-
-    btn.onclick = () => {
-      window.location.href =
-        "/payment.html?clientId=" + currentDocId;
-    };
-
-  }
-
-  else if(currentData.status === "pending_verification"){
-
-    btn.style.display = "block";
-    btn.innerText = "Verifying Payment...";
-    btn.style.opacity = "0.6";
-    btn.style.pointerEvents = "none";
-
-  }
-
-  else{
-    btn.style.display = "none";
-  }
-}
-
-
-
-window.editProfile = function(){
-    if(currentData.status !== "paid"){
-      alert("Please activate your card first.");
-      return;
-    }
-    const nameInput = document.getElementById("editName");
-    if(nameInput) nameInput.value = currentData.name || "";
-    
-    const positionInput = document.getElementById("editPosition");
-    if(positionInput) positionInput.value = currentData.position || "";
-    
-    const companyInput = document.getElementById("editCompany");
-    if(companyInput) companyInput.value = currentData.company || "";
-  
-    const phoneInput = document.getElementById("editPhone");
-    if(phoneInput) phoneInput.value = currentData.phone || "";
-    
-    const emailInput = document.getElementById("editEmail");
-    if(emailInput) emailInput.value = currentData.email || "";
-
-    const fbInput = document.getElementById("editFacebook");
-    if(fbInput) fbInput.value = currentData.facebook || "";
-    
-    const igInput = document.getElementById("editInstagram");
-    if(igInput) igInput.value = currentData.instagram || "";
-    
-    const webInput = document.getElementById("editWebsite");
-    if(webInput) webInput.value = currentData.website || "";
-  
-    const container = document.getElementById("servicesContainer");
-    container.innerHTML = "";
-
-  // 🔥 STEP 4 LOCK (ADVANCED FEATURES ONLY)
-  const advancedLock = document.getElementById("advancedLock");
-  const projectInputs = advancedLock ? advancedLock.querySelectorAll("input") : [];
-  const overlay = document.getElementById("advancedOverlay");
-  const plan = (currentData.plan || "basic").toLowerCase();
-
-  if(plan === "basic"){
-    // 🔒 LOCK
-    if(advancedLock) advancedLock.style.opacity = "0.5";
-    projectInputs.forEach(i => i.disabled = true);
-    if(overlay) overlay.style.display = "flex";
-  
-  } else {
-    // 🔓 UNLOCK (PRO + ELITE)
-    if(advancedLock) advancedLock.style.opacity = "1";
-    projectInputs.forEach(i => i.disabled = false);
-    if(overlay) overlay.style.display = "none";
-  }
-
-  // 🔥 PLAN LIMIT
-  if(currentData.plan === "basic") serviceLimit = 4;
-  else if(currentData.plan === "pro") serviceLimit = 6;
-  else serviceLimit = 999;
-
-  const services = currentData.services || [];
-
-  services.forEach(s => createServiceField(s));
-
-  if(services.length === 0){
-    createServiceField();
-  }
-
-  document.getElementById("editModal").style.display = "flex";
-  showStep(1);
-  const photoInput = document.getElementById("editProfilePhoto");
   const projectInput = document.getElementById("editProjects");
 
-    if(projectInput){
-      projectInput.onchange = async function(e){
-    
-        const files = Array.from(e.target.files);
-        if(!files.length) return;
-    
-        const plan = (currentData.plan || "basic").toLowerCase();
-    
-        // 🔒 BLOCK BASIC
-        if(plan === "basic"){
-          alert("Upgrade to Pro to add highlight projects.");
-          return;
-        }
-    
-        const uploaded = [];
-    
-        for(const file of files){
-          const url = await uploadProjectImage(file);
-          uploaded.push(url);
-        }
-    
-        // 🔥 PLAN LIMIT
-        let limit = 3;
-        if(plan === "elite") limit = 6;
-    
-        currentData.projectImages = [
-          ...(currentData.projectImages || []),
-          ...uploaded
-        ].slice(0, limit);
-    
-        console.log("Saved project images:", currentData.projectImages);
-    
-        render();
-      };
-    }
+  if(projectInput){
+    projectInput.onchange = async function(e){
 
-if(photoInput){
-  photoInput.onchange = function(e){
+      const files = Array.from(e.target.files);
+      if(!files.length) return;
 
-    const file = e.target.files[0];
-    if(!file) return;
+      const plan = (currentData.plan || "basic").toLowerCase();
 
-    const preview = document.getElementById("profilePreview");
+      // 🔒 BLOCK BASIC
+      if(plan === "basic"){
+        alert("Upgrade to Pro to add highlight projects.");
+        return;
+      }
 
-    if(preview){
-      preview.src = URL.createObjectURL(file);
-      preview.style.display = "block";
-    }
-  };
-}
-  clearInterval(autoSaveInterval);
-  autoSaveInterval = setInterval(autoSaveEdit, 30000);
-};
+      const uploaded = [];
 
-window.closeEdit = function(){
+      for(const file of files){
+        const url = await uploadProjectImage(file);
+        uploaded.push(url);
+      }
 
-  if(hasUnsavedChanges){
-    const confirmClose = confirm("You have unsaved changes. Exit anyway?");
-    if(!confirmClose) return;
+      let limit = 3;
+      if(plan === "elite") limit = 6;
+
+      currentData.projectImages = [
+        ...(currentData.projectImages || []),
+        ...uploaded
+      ].slice(0, limit);
+
+      console.log("Saved project images:", currentData.projectImages);
+
+      render();
+    };
   }
-
-  const modal = document.getElementById("editModal");
-
-  modal.classList.add("modal-closing");
-
-  setTimeout(()=>{
-    modal.style.display = "none";
-    modal.classList.remove("modal-closing");
-    clearInterval(autoSaveInterval);
-    hasUnsavedChanges = false;
-  }, 200);
-
 };
 
+/* SAVE */
 window.saveEdit = async function(){
 
   const ref = doc(db, "clients", currentDocId);
 
-  let profileUrl = currentData.profile || "";
-
-  const file = document.getElementById("editProfilePhoto").files[0];
-
-  if(file){
-    profileUrl = await uploadEditImage(file);
-  }
-
-  const serviceInputs = document.querySelectorAll("#servicesContainer input");
-
-  const services = Array.from(serviceInputs)
-    .map(i => i.value.trim())
-    .filter(v => v);
-
-    await updateDoc(ref, {
-      name: document.getElementById("editName").value,
-      position: document.getElementById("editPosition").value,
-      company: document.getElementById("editCompany").value,
-    
-      phone: document.getElementById("editPhone")?.value || "",
-      email: document.getElementById("editEmail")?.value || "",
-      facebook: document.getElementById("editFacebook")?.value || "",
-      instagram: document.getElementById("editInstagram")?.value || "",
-      website: document.getElementById("editWebsite")?.value || "",
-      profile: profileUrl,
-      services: services,
-      projectImages: currentData.projectImages || []
-    });
-  
-  currentData.profile = profileUrl;
-  render();
-  hasUnsavedChanges = false;
-
-  closeEdit();
-};
-
-async function uploadEditImage(file){
-
-  if(!file) return null;
-
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "nfc_upload");
-
-  // 🔥 KEEP SAME STRUCTURE
-  formData.append("folder", `nfc-clients/${currentDocId}/profile`);
-  formData.append("public_id", `profile_${Date.now()}`);
-
-  const res = await fetch("https://api.cloudinary.com/v1_1/dnlzwtkhs/image/upload", {
-    method: "POST",
-    body: formData
+  await updateDoc(ref, {
+    name: document.getElementById("editName").value,
+    position: document.getElementById("editPosition").value,
+    projectImages: currentData.projectImages || []
   });
 
-  const data = await res.json();
-  return data.secure_url;
+  render();
+};
+
+/* AUTO SAVE */
+async function autoSaveEdit(){
+
+  if(!currentDocId) return;
+
+  try{
+    const ref = doc(db, "clients", currentDocId);
+
+    const services = [];
+
+    await updateDoc(ref, {
+      services: services, // ✅ FIXED COMMA
+      projectImages: currentData.projectImages || []
+    });
+
+    console.log("Auto-saved");
+
+  } catch(err){
+    console.log("Auto-save failed", err);
+  }
 }
 
+/* UPLOAD */
 async function uploadProjectImage(file){
 
   const formData = new FormData();
@@ -854,373 +230,10 @@ async function uploadProjectImage(file){
   return data.secure_url;
 }
 
-
-function createServiceField(value = ""){
-
-  const container = document.getElementById("servicesContainer");
-
-  const row = document.createElement("div");
-  row.className = "service-row";
-
-  const input = document.createElement("input");
-  input.value = value;
-  input.placeholder = "Service";
-
-  const remove = document.createElement("button");
-  remove.innerText = "×";
-  remove.className = "remove-btn";
-
-  remove.onclick = () => row.remove();
-
-  row.appendChild(input);
-  row.appendChild(remove);
-
-  container.appendChild(row);
-}
-
-window.addServiceField = function(){
-
-  const container = document.getElementById("servicesContainer");
-  const msg = document.getElementById("serviceLimitMsg");
-
-  const currentCount = container.children.length;
-
-if(currentCount >= serviceLimit){
-  const box = document.getElementById("servicesContainer");
-    if(box){
-      box.classList.add("shake");
-      setTimeout(()=> box.classList.remove("shake"), 300);
-    }
-  
-    const overlay = document.getElementById("serviceLockOverlay");
-    if(overlay){
-      overlay.classList.add("show");
-      setTimeout(()=>{
-        overlay.classList.remove("show");
-      }, 2000);
-    }
-  
-    return;
-  }
-
-  // ✅ CLEAR MESSAGE
-  msg.innerHTML = "";
-  container.classList.remove("limit-glow");
-
-  createServiceField();
-};
-
-let currentStep = 1;
-
-
-
-function showStep(step){
-  console.log("STEP:", step);
-  console.log(document.getElementById("step"+step));
-
-  document.querySelectorAll(".edit-step").forEach(s=>{
-    s.classList.remove("active");
-    s.style.display = "none";
-  });
-
-  const targetStep = document.getElementById("step"+step);
-
-    if(targetStep){
-      targetStep.classList.add("active");
-      targetStep.style.display = "block"; 
-    } else {
-      console.error("Missing step:", step);
-    }
-
-    const nextBtn = document.querySelector(".edit-nav .primary");
-    const backBtn = document.querySelector(".edit-nav .glass");
-    if(backBtn){
-      if(step === 1){
-        backBtn.innerText = "Cancel";
-        backBtn.onclick = closeEdit; // 🔥 close modal
-      } else {
-        backBtn.innerText = "Back";
-        backBtn.onclick = prevEditStep; // 🔥 normal behavior
-      }
-    }
-
-  if(!nextBtn) return;
-  
-  const isValid = validateStep(step);
-  
-  nextBtn.disabled = !isValid;
-  nextBtn.style.opacity = isValid ? "1" : "0.5";
-  nextBtn.style.pointerEvents = isValid ? "auto" : "none";
-  
-  nextBtn.innerText = (step === 4) ? "Confirm" : "Next";
-
-  // PROGRESS
-  const progress = (step / 5) * 100;
-  document.getElementById("stepProgressFill").style.width = progress + "%";
-
-  // LABEL
-  document.getElementById("stepLabel").innerText = `Step ${step} of 5`;
-
-  // FINAL STEP
-  if(step === 5){
-    document.querySelector(".edit-nav").style.display = "none";
-    document.getElementById("finalActions").style.display = "flex";
-  } else {
-    document.querySelector(".edit-nav").style.display = "flex";
-    document.getElementById("finalActions").style.display = "none";
-  }
-
-  const saveBtn = document.getElementById("saveBtn");
-
-  if(currentStep === 5 && saveBtn){
-
-  const isValid = validateAll();
-
-  saveBtn.disabled = !isValid;
-  saveBtn.style.opacity = isValid ? "1" : "0.5";
-  saveBtn.style.pointerEvents = isValid ? "auto" : "none";
-  saveBtn.innerText = isValid ? "Save" : "Complete required fields"; 
-}
-  
-  // 🔥 CONFIRM DATA
-  if(step === 5){
-
-    const name = document.getElementById("editName")?.value || "-";
-    const position = document.getElementById("editPosition")?.value || "-";
-    const company = document.getElementById("editCompany")?.value || "-";
-
-    const services = document.querySelectorAll("#servicesContainer input");
-    const count = Array.from(services).filter(i => i.value.trim()).length;
-
-    document.getElementById("confirmName").innerText = name;
-    document.getElementById("confirmPosition").innerText = position;
-    document.getElementById("confirmCompany").innerText = company;
-    document.getElementById("confirmServices").innerText = count + " items";
-  }
-
-  currentStep = step;
-}
-
-window.nextEditStep = function(){
-  if(currentStep < 5){
-    showStep(currentStep + 1);
-  }
-}
-
-window.prevEditStep = function(){
-  if(currentStep > 1){
-    showStep(currentStep - 1);
-  }
-}
-
-async function autoSaveEdit(){
-
-  if(!currentDocId) return;
-
-  try{
-
-    const ref = doc(db, "clients", currentDocId);
-
-    const serviceInputs = document.querySelectorAll("#servicesContainer input");
-
-    const services = Array.from(serviceInputs)
-      .map(i => i.value.trim())
-      .filter(v => v);
-
-    await updateDoc(ref, {
-      name: document.getElementById("editName").value,
-      position: document.getElementById("editPosition").value,
-      company: document.getElementById("editCompany").value,
-    
-      phone: document.getElementById("editPhone")?.value || "",
-      email: document.getElementById("editEmail")?.value || "",
-      facebook: document.getElementById("editFacebook")?.value || "",
-      instagram: document.getElementById("editInstagram")?.value || "",
-      website: document.getElementById("editWebsite")?.value || "",
-    
-      profile: currentData.profile || "",
-      services: services
-      projectImages: currentData.projectImages || []
-    });
-
-    console.log("Auto-saved");
-
-    const indicator = document.getElementById("saveIndicator");
-
-    indicator.innerText = "Saving...";
-    setTimeout(()=>{
-      indicator.innerText = "Saved ✓";
-    }, 500);
-  
-  hasUnsavedChanges = false;
-  
-  // fade out after 2 sec
-  setTimeout(()=>{
-    indicator.innerText = "";
-  }, 2000);
-  } catch(err){
-    console.log("Auto-save failed", err);
-  }
-}
-
-document.addEventListener("keydown", function(e){
-  // ESC key
-  if(e.key === "Escape"){
-    const modal = document.getElementById("editModal");
-    // only close if modal is open
-    if(modal && modal.style.display === "flex"){
-      closeEdit();
-    }
-  }
-});
-
+/* SAFE CLICK OUTSIDE */
 window.handleEditOutsideClick = function(e){
   const box = document.querySelector(".edit-box");
-  // if click is outside modal box
   if(box && !box.contains(e.target)){
     closeEdit();
   }
-
 };
-
-document.addEventListener("input", function(e){
-  const saveBtn = document.getElementById("saveBtn");
-
-if(currentStep === 5 && saveBtn){
-
-  const isValid = validateAll();
-
-  saveBtn.disabled = !isValid;
-  saveBtn.style.opacity = isValid ? "1" : "0.5";
-  saveBtn.style.pointerEvents = isValid ? "auto" : "none";
-  
-  saveBtn.innerText = isValid ? "Save" : "Complete required fields";
-}
-  const modal = document.getElementById("editModal");
-  if(modal.style.display === "flex" && modal.contains(e.target)){
-    hasUnsavedChanges = true;
-  }
-
-});
-
-function setupFeatureLocks(){
-
-  if(!currentData) return;
-
-  const isLocked = currentData.status !== "paid";
-
-  const viewBtn = document.getElementById("viewBtn");
-  const editBtn = document.getElementById("editBtn");
-  const shareBtn = document.getElementById("shareBtn");
-
-  const overlay = document.getElementById("cardLockOverlay");
-  const card = document.querySelector(".card");
-
-  if(isLocked){
-
-    // 🔒 overlay + blur
-    if(overlay) overlay.style.display = "flex";
-    if(card) card.classList.add("locked");
-
-    // 🔒 buttons → redirect to payment
-    [viewBtn, editBtn, shareBtn].forEach(btn=>{
-      if(!btn) return;
-
-      btn.classList.add("locked");
-
-      btn.onclick = () => {
-        window.location.href = "/payment.html?clientId=" + currentDocId;
-      };
-    });
-
-    if(viewBtn) viewBtn.innerText = "Activate to View";
-    if(editBtn) editBtn.innerText = "Activate to Edit";
-    if(shareBtn) shareBtn.innerText = "Activate to Share";
-
-  } else {
-
-    // ✅ remove overlay
-    if(overlay) overlay.style.display = "none";
-    if(card) card.classList.remove("locked");
-
-    // ✅ restore normal buttons
-    if(viewBtn){
-      viewBtn.classList.remove("locked");
-      viewBtn.innerText = "View My Card";
-      viewBtn.onclick = viewCard;
-    }
-
-    if(editBtn){
-      editBtn.classList.remove("locked");
-      editBtn.innerText = "Edit Profile";
-      editBtn.onclick = editProfile;
-    }
-
-    if(shareBtn){
-      shareBtn.classList.remove("locked");
-      shareBtn.innerText = "Share";
-      shareBtn.onclick = shareCard;
-    }
-  }
-}
-
-function hideLoader(){
-
-  const loader = document.getElementById("appLoader");
-  if(!loader) return;
-
-  setTimeout(()=>{
-    loader.classList.add("hide");
-
-    setTimeout(()=>{
-      loader.remove();
-    }, 500);
-
-  }, 300); // small delay for smooth feel
-}
-
-function validateStep(step){
-
-  if(step === 1){
-    const name = document.getElementById("editName")?.value.trim();
-    const position = document.getElementById("editPosition")?.value.trim();
-
-    return name && position;
-  }
-
-  if(step === 2){
-    // optional step — always allow
-    return true;
-  }
-
-  if(step === 3){
-    // at least 1 service
-    const services = document.querySelectorAll("#servicesContainer input");
-    const hasOne = Array.from(services).some(i => i.value.trim());
-    return hasOne;
-  }
-
-  return true;
-}
-
-function validateAll(){
-
-  const name = document.getElementById("editName")?.value.trim();
-  const position = document.getElementById("editPosition")?.value.trim();
-
-  const services = document.querySelectorAll("#servicesContainer input");
-  const hasService = Array.from(services).some(i => i.value.trim());
-
-  if(!name) return false;
-  if(!position) return false;
-  if(!hasService) return false;
-
-  return true;
-}
-
-/* LOGOUT */
-window.logout = function(){
-  signOut(auth).then(()=>{
-    window.location.href="/auth/login.html";
-  });
-}
