@@ -621,7 +621,7 @@ body{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
   
 const firebaseConfig = {
@@ -659,6 +659,14 @@ async function loadUser(){
   if(!snap.exists()) return;
 
   const data = snap.data();
+    // 🔥 TRACK VIEW
+  try{
+    await updateDoc(ref, {
+      "stats.views": (data?.stats?.views || 0) + 1
+    });
+  }catch(e){
+    console.log("View tracking failed", e);
+  }
   window.currentData = data;
 // 🔒 LOCK IF NOT PAID
 const isUnlocked = data.status === "paid" || data.status === "completed";
