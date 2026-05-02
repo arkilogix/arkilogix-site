@@ -212,8 +212,8 @@ function applySoftLock(status){
 
   // 🔒 disable actions
   const buttons = [
-    "viewCardBtn",
-    "shareCardBtn"
+    "viewBtn",
+    "shareBtn"
   ];
 
   buttons.forEach(id=>{
@@ -346,7 +346,6 @@ function render(){
     planEl.className = "plan-badge " + planClass;
   }
 
-  const lockScreen = document.getElementById("lockScreen");
   const container = document.getElementById("cardServices");
   if(container){
     container.innerHTML = "";
@@ -365,6 +364,21 @@ function render(){
       });
     }
   }
+
+  const preview = document.getElementById("projectPreview");
+
+if(preview && currentData.projectImages){
+  preview.innerHTML = "";
+
+  currentData.projectImages.slice(0,3).forEach(img=>{
+    const el = document.createElement("img");
+    el.src = img;
+    el.style.width = "60px";
+    el.style.borderRadius = "8px";
+    preview.appendChild(el);
+  });
+}
+  
 // 🔥 TOGGLE CONTACT BUTTONS
 function toggleField(id, value){
   const el = document.getElementById(id);
@@ -694,18 +708,35 @@ window.editProfile = function(){
     
         const files = Array.from(e.target.files);
         if(!files.length) return;
-    
-        const uploaded = [];
-    
-        for(const file of files){
-          const url = await uploadProjectImage(file);
-          uploaded.push(url);
-        }
-    
-        // 🔥 store temporarily
-        currentData.projectImages = uploaded;
-    
-        console.log("Uploaded project images:", uploaded);
+            // 🔒 BLOCK BASIC PLAN
+        const plan = (currentData.plan || "basic").toLowerCase();
+    if(plan === "basic"){
+      alert("Upgrade to Pro to add highlight projects.");
+      return;
+    }
+        
+      const uploaded = [];
+      
+      for(const file of files){
+        const url = await uploadProjectImage(file);
+        uploaded.push(url);
+      }
+      
+      // 🔥 PLAN LIMIT
+      const plan = (currentData.plan || "basic").toLowerCase();
+      
+      let limit = 0;
+      if(plan === "pro") limit = 3;
+      if(plan === "elite") limit = 6;
+      
+      // merge + trim
+      currentData.projectImages = [
+        ...(currentData.projectImages || []),
+        ...uploaded
+      ].slice(0, limit);
+      
+      console.log("Saved project images:", currentData.projectImages);
+        render();
       };
     }
 
@@ -776,7 +807,7 @@ window.saveEdit = async function(){
       instagram: document.getElementById("editInstagram")?.value || "",
       website: document.getElementById("editWebsite")?.value || "",
       profile: profileUrl,
-      services: services
+      services: services,
       projectImages: currentData.projectImages || []
     });
   
@@ -1047,7 +1078,7 @@ document.addEventListener("keydown", function(e){
 window.handleEditOutsideClick = function(e){
   const box = document.querySelector(".edit-box");
   // if click is outside modal box
-  if(!box.contains(e.target)){
+  if(box && !box.contains(e.target)){
     closeEdit();
   }
 
