@@ -36,7 +36,9 @@ function render(){
     ["printing","encoding","ready"].includes(u.shippingStatus)
   ).length;
 
-  const completed = users.filter(u => u.status === "completed").length;
+  const completed = users.filter(u =>
+  ["shipped","completed"].includes(u.shippingStatus)
+  ).length;
   const revenue = users
   .filter(u => u.status === "paid")
   .reduce((sum,u)=> sum + (u.price || 0), 0);
@@ -224,7 +226,10 @@ window.handleAction = async function(type){
 
   await chosen.action();
 
-  setTimeout(()=>closeModal(), 200);
+  setTimeout(()=>{
+  closeModal();
+  render(); // 🔥 force refresh
+  }, 200);
 };
 
 /* MODAL */
@@ -345,10 +350,7 @@ ${renderProgress(u.shippingStatus)}
   </button>
 
 </div>
-<button class="btn glass" onclick="closeModal()">Close</button>
-`;
-
-  <!-- 🧾 HISTORY -->
+<!-- 🧾 HISTORY -->
 ${u.history && u.history.length ? `
 <div style="margin-top:16px">
 
@@ -368,6 +370,8 @@ ${u.history && u.history.length ? `
 </div>
 ` : ""}
 
+<button class="btn glass" onclick="closeModal()">Close</button>
+`;
 }
 
 window.closeModal = function(){
@@ -491,8 +495,10 @@ function capitalize(str){
 
 function getStatusClass(s){
   if(!s) return "pending";
-  if(s.includes("pending")) return "pending";
-  return s;
+  if(s === "pending_verification") return "processing"; 
+  if(s === "pending_payment") return "pending";     
+  if(s === "paid") return "paid";
+  return "pending";
 }
 
 window.copyAddress = function(){
