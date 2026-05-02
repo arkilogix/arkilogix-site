@@ -148,14 +148,49 @@ body{
   background:rgba(255,255,255,0.05);
   color:#fff;
 }
+  .kpi{
+  display:flex;
+  gap:10px;
+  padding:0 20px;
+  margin-bottom:10px;
+  overflow-x:auto;
+}
+
+.kpi-box{
+  min-width:120px;
+  padding:12px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.kpi-title{
+  font-size:11px;
+  color:#94a3b8;
+}
+
+.kpi-value{
+  font-size:18px;
+  font-weight:600;
+}
 </style>
 </head>
 
 <body>
 
 <div class="header">Orders</div>
-
+<div class="kpi" id="kpi"></div>
+  <div style="padding:0 20px;margin-bottom:10px">
+  <input 
+    id="search"
+    placeholder="Search name, email, phone..."
+    style="width:100%;padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.05);color:#fff"
+    oninput="render()"
+  >
+</div>
 <div class="filters">
+<div class="filter" onclick="setFilter('needs_action',this)">Needs Action</div>
 <div class="filter active" onclick="setFilter('all',this)">All</div>
 <div class="filter" onclick="setFilter('pending_verification',this)">Verify</div>
 <div class="filter" onclick="setFilter('pending_payment',this)">Pending</div>
