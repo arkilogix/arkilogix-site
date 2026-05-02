@@ -66,6 +66,7 @@ onAuthStateChanged(auth, async (user)=>{
       if(!snap.empty){
         data = snap.docs[0].data();
         currentDocId = snap.docs[0].id;
+        handleRealtimeUpdate(data);
       }
     }
 
@@ -120,7 +121,8 @@ function handleRealtimeUpdate(data){
 /* RENDER */
 function render(){
 
-  if(!document.getElementById("heroProfile")) return;
+  const hero = document.getElementById("heroProfile");
+  if(hero) hero.src = img;
 
   const img = currentData.profile || "/logo.png";
 
