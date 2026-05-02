@@ -728,7 +728,7 @@ if(data.services && data.services.length){
 }
   
   /* HERO */
-  const heroImg = data.projectImages?.[0] || data.profile || "";
+  const heroImg = images[0] || data.profile || "";
 
 document.getElementById("highlightImage").src = heroImg;
 
@@ -809,7 +809,7 @@ container.innerHTML = "";
 let images = [];
 
 if(Array.isArray(data.projectImages)){
-  images = data.projectImages;
+  images = data.projectImages.filter(img => img);
 }else if(typeof data.projectImages === "string"){
   images = [data.projectImages];
 }
@@ -825,7 +825,7 @@ if(images.length === 2){
 // ❌ NO PROJECTS
 if(images.length === 0){
   document.getElementById("projectsHeader").style.display = "none";
-  container.innerHTML = "<p style='color:#777;font-size:13px;'>No projects yet</p>";
+  document.querySelector(".projects-wrapper").style.display = "none";
 }
 
 // ✅ HAS PROJECTS
