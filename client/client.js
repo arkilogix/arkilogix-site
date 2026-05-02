@@ -1023,7 +1023,7 @@ async function autoSaveEdit(){
       website: document.getElementById("editWebsite")?.value || "",
     
       profile: currentData.profile || "",
-      services: services
+      services: services,
       projectImages: currentData.projectImages || []
     });
 
