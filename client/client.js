@@ -661,7 +661,7 @@ window.editProfile = function(){
   const overlay = document.getElementById("advancedOverlay");
   const plan = (currentData.plan || "basic").toLowerCase();
 
-// 🔥 STEP 4 LOGIC (CORRECTED)
+// 🔥 STEP 4 FINAL LOGIC
 if(plan === "basic"){
   // 🔒 FULL LOCK
   if(advancedLock) advancedLock.style.opacity = "0.5";
@@ -669,22 +669,19 @@ if(plan === "basic"){
   if(overlay) overlay.style.display = "flex";
 
 } else if(plan === "pro"){
-  // 🔓 PARTIAL UNLOCK
-  if(advancedLock) advancedLock.style.opacity = "1";
+  // 🔓 PARTIAL (NO BLUR)
+  if(advancedLock) advancedLock.style.opacity = "1"; // ✅ REMOVE BLUR
 
   projectInputs.forEach((input, index) => {
-    // allow only first 3 inputs
     input.disabled = index >= 3;
   });
 
   if(overlay) overlay.style.display = "none";
 
 } else if(plan === "elite"){
-  // 🔓 FULL UNLOCK
+  // 🔓 FULL
   if(advancedLock) advancedLock.style.opacity = "1";
-
   projectInputs.forEach(i => i.disabled = false);
-
   if(overlay) overlay.style.display = "none";
 }
 
