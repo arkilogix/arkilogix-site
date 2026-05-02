@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, onSnapshot }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCUw-qxeRg8YaihNcJPmJDHL2z6zBE6PK4",
@@ -16,10 +16,6 @@ const auth = getAuth(app);
 let currentData = {};
 let previousStatus = null;
 let currentDocId = "";
-let currentUserEmail = "";
-let serviceLimit = 4;
-let autoSaveInterval = null;
-let hasUnsavedChanges = false;
 
 /* AUTH */
 onAuthStateChanged(auth, async (user)=>{
@@ -28,14 +24,13 @@ onAuthStateChanged(auth, async (user)=>{
     return;
   }
 
-  currentUserEmail = user.email;
-
   try{
     const params = new URLSearchParams(window.location.search);
     const clientId = params.get("clientId");
 
     let data = null;
 
+    // ✅ REALTIME MODE
     if(clientId){
       const ref = doc(db, "clients", clientId);
 
@@ -55,37 +50,36 @@ onAuthStateChanged(auth, async (user)=>{
       return;
     }
 
-    if(!data){
-      const q = query(
-        collection(db, "clients"),
-        where("authUid", "==", user.uid)
-      );
+    // ✅ UID QUERY MODE
+    const q = query(
+      collection(db, "clients"),
+      where("authUid", "==", user.uid)
+    );
 
-      const snap = await getDocs(q);
+    const snap = await getDocs(q);
 
-      if(!snap.empty){
-        data = snap.docs[0].data();
-        currentDocId = snap.docs[0].id;
-        handleRealtimeUpdate(data);
+    if(!snap.empty){
+      data = snap.docs[0].data();
+      currentDocId = snap.docs[0].id;
+
+      handleRealtimeUpdate(data); // 🔥 REQUIRED
+    }
+
+    // ✅ FAILSAFE FETCH
+    if(!data && clientId){
+      const ref = doc(db, "clients", clientId);
+      const snap2 = await getDoc(ref);
+
+      if(snap2.exists()){
+        data = snap2.data();
+        currentDocId = clientId;
+
+        handleRealtimeUpdate(data); // 🔥 REQUIRED
       }
     }
 
     if(!data){
-      if(clientId){
-        const ref = doc(db, "clients", clientId);
-        const snap = await getDoc(ref);
-
-        if(snap.exists()){
-          data = snap.data();
-          currentDocId = clientId;
-
-          await updateDoc(ref, { authUid: user.uid });
-        }
-      }
-    }
-
-    if(!data){
-      console.error("Still no client found.");
+      console.error("No client data found.");
       return;
     }
 
@@ -94,23 +88,8 @@ onAuthStateChanged(auth, async (user)=>{
   }
 });
 
+/* REALTIME HANDLER */
 function handleRealtimeUpdate(data){
-
-  // FIRST LOAD
-  if(previousStatus === null){
-    previousStatus = data.status;
-    currentData = data;
-
-    render();
-    return;
-  }
-
-  // STATUS CHANGE
-  if(previousStatus !== data.status){
-    if(data.status === "paid"){
-      console.log("Card activated");
-    }
-  }
 
   previousStatus = data.status;
   currentData = data;
@@ -121,7 +100,7 @@ function handleRealtimeUpdate(data){
 /* RENDER */
 function render(){
 
-  const img = currentData.profile || "/logo.png"; // ✅ MOVE THIS FIRST
+  const img = currentData.profile || "/logo.png";
 
   const hero = document.getElementById("heroProfile");
   const header = document.getElementById("headerProfile");
@@ -137,7 +116,7 @@ function render(){
 
   const preview = document.getElementById("projectPreview");
 
-  if(preview && currentData.projectImages){
+  if(preview){
     preview.innerHTML = "";
 
     const plan = (currentData.plan || "basic").toLowerCase();
@@ -146,14 +125,16 @@ function render(){
     if(plan === "pro") limit = 3;
     if(plan === "elite") limit = 6;
 
-    currentData.projectImages.slice(0, limit).forEach(imgUrl=>{
-      const el = document.createElement("img");
-      el.src = imgUrl;
-      el.style.width = "60px";
-      el.style.borderRadius = "8px";
-      el.style.objectFit = "cover";
-      preview.appendChild(el);
-    });
+    if(currentData.projectImages){
+      currentData.projectImages.slice(0, limit).forEach(imgUrl=>{
+        const el = document.createElement("img");
+        el.src = imgUrl;
+        el.style.width = "60px";
+        el.style.borderRadius = "8px";
+        el.style.objectFit = "cover";
+        preview.appendChild(el);
+      });
+    }
   }
 }
 
@@ -178,7 +159,6 @@ window.editProfile = function(){
 
       const plan = (currentData.plan || "basic").toLowerCase();
 
-      // 🔒 BLOCK BASIC
       if(plan === "basic"){
         alert("Upgrade to Pro to add highlight projects.");
         return;
@@ -199,8 +179,6 @@ window.editProfile = function(){
         ...uploaded
       ].slice(0, limit);
 
-      console.log("Saved project images:", currentData.projectImages);
-
       render();
     };
   }
@@ -220,28 +198,6 @@ window.saveEdit = async function(){
   render();
 };
 
-/* AUTO SAVE */
-async function autoSaveEdit(){
-
-  if(!currentDocId) return;
-
-  try{
-    const ref = doc(db, "clients", currentDocId);
-
-    const services = [];
-
-    await updateDoc(ref, {
-      services: services, // ✅ FIXED COMMA
-      projectImages: currentData.projectImages || []
-    });
-
-    console.log("Auto-saved");
-
-  } catch(err){
-    console.log("Auto-save failed", err);
-  }
-}
-
 /* UPLOAD */
 async function uploadProjectImage(file){
 
@@ -259,6 +215,7 @@ async function uploadProjectImage(file){
   return data.secure_url;
 }
 
+/* CLOSE MODAL */
 function closeEdit(){
   const modal = document.getElementById("editModal");
   if(modal){
@@ -266,7 +223,6 @@ function closeEdit(){
   }
 }
 
-/* SAFE CLICK OUTSIDE */
 window.handleEditOutsideClick = function(e){
   const box = document.querySelector(".edit-box");
   if(box && !box.contains(e.target)){
