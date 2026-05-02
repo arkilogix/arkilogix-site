@@ -183,7 +183,7 @@ function openModal(u){
   const page = u.plan === "elite" ? "elite.html" :
              u.plan === "pro" ? "pro.html" : "basic.html";
 
-  const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + u.id;
+  const link = window.location.origin + "/view/" + page + "?id=" + u.id;
     
   selected = u;
 
@@ -314,7 +314,7 @@ window.markPaid = async(id)=>{
 const page = selected.plan === "elite" ? "elite.html" :
              selected.plan === "pro" ? "pro.html" : "basic.html";
 
-const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+const link = window.location.origin + "/view/" + page + "?id=" + selected.id;
 
 const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(link)}`;
 
