@@ -657,33 +657,38 @@ window.editProfile = function(){
 
   // 🔥 STEP 4 LOCK (ADVANCED FEATURES ONLY)
   const advancedLock = document.getElementById("advancedLock");
+  const lockedContent = document.getElementById("advancedContent");
   const projectInputs = advancedLock ? advancedLock.querySelectorAll("input") : [];
   const overlay = document.getElementById("advancedOverlay");
   const plan = (currentData.plan || "basic").toLowerCase();
 
 // 🔥 STEP 4 FINAL LOGIC
 if(plan === "basic"){
+  if(lockedContent){
+  lockedContent.classList.add("locked-content");
+}
   // 🔒 FULL LOCK
   if(advancedLock) advancedLock.style.opacity = "0.5";
   projectInputs.forEach(i => i.disabled = true);
   if(overlay) overlay.style.display = "flex";
 
 } else if(plan === "pro"){
-  // 🔓 PARTIAL (NO BLUR)
-  if(advancedLock) advancedLock.style.opacity = "1"; // ✅ REMOVE BLUR
- 
-  const lockedContent = document.querySelector("#advancedLock .locked-content");
+  if(advancedLock) advancedLock.style.opacity = "1";
+
   if(lockedContent){
     lockedContent.classList.remove("locked-content");
   }
-  
+
   projectInputs.forEach((input, index) => {
     input.disabled = index >= 3;
   });
 
   if(overlay) overlay.style.display = "none";
-
+  
 } else if(plan === "elite"){
+  if(lockedContent){
+  lockedContent.classList.remove("locked-content");
+}
   // 🔓 FULL
   if(advancedLock) advancedLock.style.opacity = "1";
   projectInputs.forEach(i => i.disabled = false);
