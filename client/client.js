@@ -95,6 +95,15 @@ function handleRealtimeUpdate(data){
   currentData = data;
 
   render();
+
+  // 🔥 FIX: hide loader (matches your HTML exactly)
+  const loader = document.getElementById("appLoader");
+  if(loader){
+    loader.style.opacity = "0";
+    setTimeout(()=>{
+      loader.style.display = "none";
+    }, 300);
+  }
 }
 
 /* RENDER */
