@@ -202,13 +202,27 @@ window.handleAction = async function(type){
   const actions = getNextAction(selected);
   if(!actions) return;
 
-  if(type === "next" && actions.nextAction){
-    await actions.nextAction.action();
+  let chosen = null;
+
+  if(type === "next") chosen = actions.nextAction;
+  if(type === "prev") chosen = actions.prevAction;
+
+  if(!chosen) return;
+
+  // 🔒 CONFIRM if completing
+  if(type === "next" && selected){
+    const flow = ["pending","printing","encoding","ready","shipped","completed"];
+    const current = selected.shippingStatus || "pending";
+    const nextIndex = flow.indexOf(current) + 1;
+    const nextStep = flow[nextIndex];
+
+    if(nextStep === "completed"){
+      const ok = confirm("Mark this order as COMPLETED?");
+      if(!ok) return;
+    }
   }
 
-  if(type === "prev" && actions.prevAction){
-    await actions.prevAction.action();
-  }
+  await chosen.action();
 
   setTimeout(()=>closeModal(), 200);
 };
@@ -333,6 +347,27 @@ ${renderProgress(u.shippingStatus)}
 </div>
 <button class="btn glass" onclick="closeModal()">Close</button>
 `;
+
+  <!-- 🧾 HISTORY -->
+${u.history && u.history.length ? `
+<div style="margin-top:16px">
+
+  <div style="font-size:12px;color:#94a3b8;margin-bottom:6px">History</div>
+
+  <div style="background:rgba(255,255,255,0.05);padding:10px;border-radius:12px;font-size:12px;max-height:120px;overflow:auto">
+
+    ${u.history.slice().reverse().map(h=>`
+      <div style="margin-bottom:6px">
+        • ${h.action}<br>
+        <span style="color:#888">${new Date(h.date).toLocaleString()}</span>
+      </div>
+    `).join("")}
+
+  </div>
+
+</div>
+` : ""}
+
 }
 
 window.closeModal = function(){
@@ -341,9 +376,22 @@ window.closeModal = function(){
 
 /* ACTION */
 window.markPaid = async(id)=>{
-  await db.collection("clients").doc(id).update({
+  const ref = db.collection("clients").doc(id);
+  
+  const doc = await ref.get();
+  const data = doc.data();
+  
+  const history = data.history || [];
+  
+  history.push({
+    action: "Marked as Paid",
+    date: Date.now()
+  });
+  
+  await ref.update({
     status:"paid",
-    shippingStatus:"pending"
+    shippingStatus:"pending",
+    history
   });
 
 const page = selected.plan === "elite" ? "elite.html" :
@@ -419,10 +467,22 @@ function getNextAction(u){
 
 async function updateShipping(id, status){
 
-  await db.collection("clients").doc(id).update({
-    shippingStatus: status
+  const ref = db.collection("clients").doc(id);
+
+  const doc = await ref.get();
+  const data = doc.data();
+
+  const history = data.history || [];
+
+  history.push({
+    action: "Shipping → " + capitalize(status),
+    date: Date.now()
   });
 
+  await ref.update({
+    shippingStatus: status,
+    history
+  });
 }
 
 function capitalize(str){
@@ -591,3 +651,9 @@ Thank you!`;
 
   window.location.href = `mailto:${selected.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 };
+
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape"){
+    closeModal();
+  }
+});
