@@ -661,18 +661,18 @@ window.editProfile = function(){
   const overlay = document.getElementById("advancedOverlay");
   const plan = (currentData.plan || "basic").toLowerCase();
 
-  if(plan === "basic"){
-    // 🔒 LOCK
-    if(advancedLock) advancedLock.style.opacity = "0.5";
-    projectInputs.forEach(i => i.disabled = true);
-    if(overlay) overlay.style.display = "flex";
-  
-  } else {
-    // 🔓 UNLOCK (PRO + ELITE)
-    if(advancedLock) advancedLock.style.opacity = "1";
-    projectInputs.forEach(i => i.disabled = false);
-    if(overlay) overlay.style.display = "none";
-  }
+  if(plan !== "elite"){
+  // 🔒 LOCK (Basic + Pro)
+  if(advancedLock) advancedLock.style.opacity = "0.5";
+  projectInputs.forEach(i => i.disabled = true);
+  if(overlay) overlay.style.display = "flex";
+
+} else {
+  // 🔓 UNLOCK (Elite only)
+  if(advancedLock) advancedLock.style.opacity = "1";
+  projectInputs.forEach(i => i.disabled = false);
+  if(overlay) overlay.style.display = "none";
+}
 
   // 🔥 PLAN LIMIT
   if(currentData.plan === "basic") serviceLimit = 4;
