@@ -212,8 +212,8 @@ function applySoftLock(status){
 
   // 🔒 disable actions
   const buttons = [
-    "viewCardBtn",
-    "shareCardBtn"
+    "viewBtn",
+    "shareBtn"
   ];
 
   buttons.forEach(id=>{
@@ -269,7 +269,10 @@ function render(){
   console.log("NAME:", currentData.name);
   console.log("POSITION:", currentData.position);
  
-  if(!document.getElementById("heroProfile")) return;
+  const heroCheck = document.getElementById("heroProfile");
+    if(!heroCheck){
+      console.warn("heroProfile missing");
+    }
 
   const img = currentData.profile || "/logo.png";
 
@@ -703,8 +706,19 @@ window.editProfile = function(){
         }
     
         // 🔥 store temporarily
-        currentData.projectImages = uploaded;
-    
+        currentData.projectImages = [
+        ...(currentData.projectImages || []),
+        ...uploaded
+      ];
+    const plan = (currentData.plan || "basic").toLowerCase();
+
+      let limit = 0;
+      if(plan === "pro") limit = 3;
+      if(plan === "elite") limit = 6;
+      
+      // apply limit
+      currentData.projectImages = currentData.projectImages.slice(0, limit);
+        
         console.log("Uploaded project images:", uploaded);
       };
     }
@@ -776,7 +790,7 @@ window.saveEdit = async function(){
       instagram: document.getElementById("editInstagram")?.value || "",
       website: document.getElementById("editWebsite")?.value || "",
       profile: profileUrl,
-      services: services
+      services: services,
       projectImages: currentData.projectImages || []
     });
   
@@ -1047,7 +1061,7 @@ document.addEventListener("keydown", function(e){
 window.handleEditOutsideClick = function(e){
   const box = document.querySelector(".edit-box");
   // if click is outside modal box
-  if(!box.contains(e.target)){
+  if(box && !box.contains(e.target)){
     closeEdit();
   }
 
