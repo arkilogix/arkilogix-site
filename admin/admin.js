@@ -180,7 +180,11 @@ window.handleAction = async function(){
 
 /* MODAL */
 function openModal(u){
+  const page = u.plan === "elite" ? "elite.html" :
+             u.plan === "pro" ? "pro.html" : "basic.html";
 
+  const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + u.id;
+    
   selected = u;
 
   const modal = document.getElementById("modal");
@@ -215,22 +219,30 @@ box.innerHTML = `
 </div>
 
 <!-- 🔗 DIGITAL CARD -->
-${u.link ? `
 <div style="margin-top:16px">
+
   <div style="font-size:12px;color:#94a3b8;margin-bottom:6px">Digital Card</div>
 
-  <input value="${u.link}" 
+  <!-- LINK -->
+  <input value="${link}" 
     style="width:100%;padding:10px;border-radius:10px;border:none;background:#020617;color:#fff">
 
+  <!-- ACTIONS -->
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button class="btn glass" onclick="window.open('${link}','_blank')">Open</button>
+    <button class="btn glass" onclick="copyLink()">Copy</button>
+  </div>
+
+  <!-- QR -->
   <img 
-    src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(u.link)}"
+    src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(link)}"
     style="width:100%;margin-top:10px;border-radius:12px;background:#fff;padding:12px"
   >
 
+  <!-- DOWNLOAD -->
   <button class="btn glass" onclick="downloadQR()">Download QR</button>
-</div>
-` : ""}
 
+</div>
 <!-- 🏭 PRODUCTION -->
 <div style="margin-top:16px">
   <div style="font-size:12px;color:#94a3b8;margin-bottom:6px">Production</div>
@@ -269,15 +281,9 @@ ${renderProgress(u.shippingStatus)}
 
   ${renderLockButton(u)}
 
-  ${u.link ? `
-    <button class="btn glass" onclick="window.open('${u.link}','_blank')">
-      View Card
-    </button>
-  ` : ""}
-
-  <button class="btn glass" onclick="viewDetails()">
-    View Details
-  </button>
+<button class="btn glass" onclick="window.open('${link}','_blank')">
+  View Card
+</button>
 
   ${u.email ? `
     <button class="btn glass" onclick="emailClient()">
@@ -305,27 +311,36 @@ window.markPaid = async(id)=>{
     shippingStatus:"pending"
   });
 
-  if(selected?.link){
-  const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(selected.link)}`;
+const page = selected.plan === "elite" ? "elite.html" :
+             selected.plan === "pro" ? "pro.html" : "basic.html";
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = (selected.name || "client") + "-qr.png";
-  a.click();
-}
-  
+const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+
+const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(link)}`;
+
+const a = document.createElement("a");
+a.href = url;
+a.download = (selected.name || "client") + "-qr.png";
+a.click();
+    
   closeModal();
 };
 
 /* QR */
 window.downloadQR = function(){
-  if(!selected || !selected.link) return;
 
-  const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(selected.link)}`;
+  if(!selected) return;
+
+  const page = selected.plan === "elite" ? "elite.html" :
+               selected.plan === "pro" ? "pro.html" : "basic.html";
+
+  const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+
+  const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(link)}`;
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "qr.png";
+  a.download = (selected.name || "client") + "-qr.png";
   a.click();
 };
 
@@ -471,27 +486,18 @@ window.toggleLock = async function(){
 
 };
 
-window.viewDetails = function(){
+  window.viewDetails = function(){
+  
+    if(!selected) return;
+  
+    const page = selected.plan === "elite" ? "elite.html" :
+                 selected.plan === "pro" ? "pro.html" : "basic.html";
+  
+    const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+  
+    window.open(link, "_blank");
+  };
 
-  if(!selected) return;
-
-  alert(JSON.stringify(selected, null, 2));
-};
-
-window.emailClient = function(){
-
-  if(!selected?.email) return;
-
-  const subject = "Your NFC Digital Card";
-  const body = `Hi ${selected.name || ""},
-
-Here is your digital card:
-${selected.link || ""}
-
-Thank you!`;
-
-  window.location.href = `mailto:${selected.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-};
 
 window.upgradeToPro = async function(){
 
@@ -507,3 +513,36 @@ window.upgradeToPro = async function(){
 document.getElementById("search")?.addEventListener("input", () => {
   render();
 });
+
+window.copyLink = function(){
+
+  if(!selected) return;
+
+  const page = selected.plan === "elite" ? "elite.html" :
+               selected.plan === "pro" ? "pro.html" : "basic.html";
+
+  const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+
+  navigator.clipboard.writeText(link);
+  alert("Link copied");
+};
+
+window.emailClient = function(){
+
+  if(!selected?.email) return;
+
+  const page = selected.plan === "elite" ? "elite.html" :
+               selected.plan === "pro" ? "pro.html" : "basic.html";
+
+  const link = window.location.origin + "/arkilogix-site/view/" + page + "?id=" + selected.id;
+
+  const subject = "Your NFC Digital Card";
+  const body = `Hi ${selected.name || ""},
+
+Here is your digital card:
+${link}
+
+Thank you!`;
+
+  window.location.href = `mailto:${selected.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};
