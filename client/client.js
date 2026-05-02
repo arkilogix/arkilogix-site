@@ -671,7 +671,12 @@ if(plan === "basic"){
 } else if(plan === "pro"){
   // 🔓 PARTIAL (NO BLUR)
   if(advancedLock) advancedLock.style.opacity = "1"; // ✅ REMOVE BLUR
-
+ 
+  const lockedContent = document.querySelector("#advancedLock .locked-content");
+  if(lockedContent){
+    lockedContent.classList.remove("locked-content");
+  }
+  
   projectInputs.forEach((input, index) => {
     input.disabled = index >= 3;
   });
