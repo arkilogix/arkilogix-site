@@ -90,27 +90,24 @@ else if(filter === "needs_action"){
     u.status === "pending_payment"
   );
 }
-else if(filter === "paid"){
-  data = users.filter(u => u.status === "paid");
+if(filter === "all"){
+  data = users;
 }
-else if(filter === "processing"){
+else if(filter === "needs_action"){
   data = users.filter(u =>
-    ["printing","encoding"].includes(u.shippingStatus)
+    !u.status ||
+    u.status === "pending_verification" ||
+    u.status === "pending_payment"
   );
 }
-else if(filter === "completed"){
+else if(filter === "pending"){
   data = users.filter(u =>
-    u.shippingStatus === "completed"
+    u.status === "paid" &&
+    (!u.shippingStatus || u.shippingStatus === "pending")
   );
-}
-else if(filter === "pending_verification"){
-  data = users.filter(u => u.status === "pending_verification");
-}
-else if(filter === "pending_payment"){
-  data = users.filter(u => u.status === "pending_payment");
 }
 else{
-  data = users;
+  data = users.filter(u => u.shippingStatus === filter);
 }
 
 // 🔍 SEARCH
