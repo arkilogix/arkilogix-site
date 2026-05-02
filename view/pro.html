@@ -727,10 +727,6 @@ if(data.services && data.services.length){
   if(servicesHeader) servicesHeader.style.display = "none";
 }
   
-  /* HERO */
-  const heroImg = images[0] || data.profile || "";
-
-document.getElementById("highlightImage").src = heroImg;
 
   // slight zoom effect
   document.getElementById("highlightImage").style.transform = "scale(1.05)";
@@ -814,6 +810,11 @@ if(Array.isArray(data.projectImages)){
   images = [data.projectImages];
 }
 
+  // ✅ ADD HERO HERE (CORRECT PLACE)
+const heroImg = images[0] || data.profile || "";
+document.getElementById("highlightImage").src = heroImg;
+
+  
   // fallback to always show 3
 if(images.length === 1){
   images.push(images[0], images[0]);
