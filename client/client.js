@@ -254,6 +254,13 @@ async function uploadProjectImage(file){
   return data.secure_url;
 }
 
+function closeEdit(){
+  const modal = document.getElementById("editModal");
+  if(modal){
+    modal.style.display = "none";
+  }
+}
+
 /* SAFE CLICK OUTSIDE */
 window.handleEditOutsideClick = function(e){
   const box = document.querySelector(".edit-box");
