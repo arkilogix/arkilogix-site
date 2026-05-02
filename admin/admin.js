@@ -73,7 +73,7 @@ function render(){
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-let search = document.getElementById("search")?.value?.toLowerCase() || "";
+let search = document.getElementById("search")?.value?.toLowerCase().trim() || "";
 
 let data;
 
@@ -94,11 +94,20 @@ else{
 
 // 🔍 SEARCH
 if(search){
-  data = data.filter(u =>
-    (u.name || "").toLowerCase().includes(search) ||
-    (u.email || "").toLowerCase().includes(search) ||
-    (u.phone || "").toLowerCase().includes(search)
-  );
+  data = data.filter(u => {
+
+    const name = (u.name || u.fullName || "").toLowerCase();
+    const email = (u.email || "").toLowerCase();
+    const phone = (u.phone || "").toLowerCase();
+    const company = (u.company || "").toLowerCase();
+
+    return (
+      name.includes(search) ||
+      email.includes(search) ||
+      phone.includes(search) ||
+      company.includes(search)
+    );
+  });
 }
 
 // 🧠 SMART SORT
@@ -494,3 +503,7 @@ window.upgradeToPro = async function(){
 
   alert("Upgraded to Pro");
 };
+
+document.getElementById("search")?.addEventListener("input", () => {
+  render();
+});
