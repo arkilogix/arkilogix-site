@@ -215,7 +215,7 @@ ${u.link ? `
 
   <img 
     src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(u.link)}"
-    style="width:100%;margin-top:10px;border-radius:10px;background:#fff;padding:10px"
+    style="width:100%;margin-top:10px;border-radius:12px;background:#fff;padding:12px"
   >
 
   <button class="btn glass" onclick="downloadQR()">Download QR</button>
@@ -253,7 +253,34 @@ ${renderProgress(u.shippingStatus)}
 
   <button class="btn glass" onclick="copyAddress()">Copy Address</button>
 </div>
+<!-- ⚙️ ACTIONS -->
+<div style="margin-top:20px">
 
+  <div style="font-size:12px;color:#94a3b8;margin-bottom:6px">Actions</div>
+
+  ${renderLockButton(u)}
+
+  ${u.link ? `
+    <button class="btn glass" onclick="window.open('${u.link}','_blank')">
+      View Card
+    </button>
+  ` : ""}
+
+  <button class="btn glass" onclick="viewDetails()">
+    View Details
+  </button>
+
+  ${u.email ? `
+    <button class="btn glass" onclick="emailClient()">
+      Email Client
+    </button>
+  ` : ""}
+
+  <button class="btn primary" onclick="upgradeToPro()">
+    Upgrade to Pro
+  </button>
+
+</div>
 <button class="btn glass" onclick="closeModal()">Close</button>
 `;
 }
@@ -411,3 +438,59 @@ function getShippingClass(s){
 
   return "pending";
 }
+
+function renderLockButton(u){
+
+  const isLocked = u.locked === true;
+
+  return `
+    <button class="btn glass" onclick="toggleLock()">
+      ${isLocked ? "Unlock Dashboard" : "Lock Dashboard"}
+    </button>
+  `;
+}
+
+window.toggleLock = async function(){
+
+  if(!selected) return;
+
+  const newState = !(selected.locked === true);
+
+  await db.collection("clients").doc(selected.id).update({
+    locked: newState
+  });
+
+};
+
+window.viewDetails = function(){
+
+  if(!selected) return;
+
+  alert(JSON.stringify(selected, null, 2));
+};
+
+window.emailClient = function(){
+
+  if(!selected?.email) return;
+
+  const subject = "Your NFC Digital Card";
+  const body = `Hi ${selected.name || ""},
+
+Here is your digital card:
+${selected.link || ""}
+
+Thank you!`;
+
+  window.location.href = `mailto:${selected.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};
+
+window.upgradeToPro = async function(){
+
+  if(!selected) return;
+
+  await db.collection("clients").doc(selected.id).update({
+    plan: "pro"
+  });
+
+  alert("Upgraded to Pro");
+};
