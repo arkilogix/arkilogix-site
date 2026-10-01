@@ -963,11 +963,15 @@ window.addEventListener("scroll", () => {
 }
 
 loadUser().then(()=>{
+  const loader = document.getElementById("loader");
+
+  if(!loader) return;
+
   setTimeout(()=>{
-    document.getElementById("loader").style.opacity = "0";
+    loader.style.opacity = "0";
 
     setTimeout(()=>{
-      document.getElementById("loader").style.display = "none";
+      loader.style.display = "none";
     },500);
 
   },300);
