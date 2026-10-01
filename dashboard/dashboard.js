@@ -106,6 +106,43 @@ function render(){
 
       <div class="divider"></div>
 
+${c.paymentStatus === "pending_verification" ? `
+  <div style="
+    width:100%;
+    margin-bottom:12px;
+    padding:10px 12px;
+    border-radius:12px;
+    background:rgba(245,158,11,0.12);
+    border:1px solid rgba(245,158,11,0.25);
+    color:#fbbf24;
+    font-size:12px;
+  ">
+    ⚠ Payment awaiting verification
+
+    <div style="
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+    ">
+
+      <button
+        class="btn gold"
+        onclick="event.stopPropagation(); verifyPayment('${c.id}')"
+      >
+        ✓ Verify Payment
+      </button>
+
+      <button
+        class="btn"
+        onclick="event.stopPropagation(); rejectPayment('${c.id}')"
+      >
+        Reject
+      </button>
+
+    </div>
+  </div>
+` : ""}
+
       <div class="client-actions">
 
         <div class="actions-left">
@@ -160,6 +197,55 @@ window.toggleDisable = async(id,state)=>{
   await updateDoc(doc(db,"clients",id),{disabled:!state});
   loadClients();
 };
+
+/* ================= PAYMENT VERIFICATION ================= */
+
+window.verifyPayment = async (id) => {
+
+  const client = clients.find(c => c.id === id);
+  if (!client) return;
+
+  const confirmed = confirm(
+    `Verify payment for ${client.name || "this client"}?`
+  );
+
+  if (!confirmed) return;
+
+  await updateDoc(doc(db, "clients", id), {
+    paymentStatus: "paid",
+    status: "paid",
+    shippingStatus: "pending",
+    paymentVerifiedAt: new Date().toISOString()
+  });
+
+  alert("Payment verified successfully.");
+
+  await loadClients();
+};
+
+
+window.rejectPayment = async (id) => {
+
+  const client = clients.find(c => c.id === id);
+  if (!client) return;
+
+  const confirmed = confirm(
+    `Reject the payment for ${client.name || "this client"}?`
+  );
+
+  if (!confirmed) return;
+
+  await updateDoc(doc(db, "clients", id), {
+    paymentStatus: "rejected",
+    status: "pending_payment"
+  });
+
+  alert("Payment marked as rejected.");
+
+  await loadClients();
+};
+
+
 
 /* UPGRADE */
 window.openUpgrade = (id)=>{
