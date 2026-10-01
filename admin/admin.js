@@ -341,7 +341,16 @@ ${renderProgress(u.shippingStatus)}
       Email Client
     </button>
   ` : ""}
-
+  
+  ${u.status === "paid" || u.status === "pending_payment" ? `
+    <button
+      class="btn glass"
+      onclick="resetPaymentVerification()"
+    >
+      ↻ Reset Verification
+    </button>
+  ` : ""}
+  
   <button class="btn primary" onclick="upgradeToPro()">
     Upgrade to Pro
   </button>
@@ -409,6 +418,42 @@ a.click();
     
   closeModal();
 };
+
+/* ================= RESET PAYMENT VERIFICATION ================= */
+
+window.resetPaymentVerification = async function(){
+
+  if(!selected) return;
+
+  const confirmed = confirm(
+    `Reset payment verification for ${selected.name || "this client"}?\n\n` +
+    `This will return the payment to "Pending Verification".`
+  );
+
+  if(!confirmed) return;
+
+  const ref = db.collection("clients").doc(selected.id);
+
+  await ref.update({
+    status: "pending_verification",
+    paymentStatus: "pending_verification",
+    shippingStatus: "pending"
+  });
+
+  alert("Payment verification has been reset.");
+
+  selected = {
+    ...selected,
+    status: "pending_verification",
+    paymentStatus: "pending_verification",
+    shippingStatus: "pending"
+  };
+
+  closeModal();
+  render();
+};
+
+
 
 /* QR */
 window.downloadQR = function(){
