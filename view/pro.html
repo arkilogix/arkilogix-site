@@ -669,32 +669,32 @@ async function loadUser(){
   }
   window.currentData = data;
 // 🔒 LOCK IF NOT PAID
-const isUnlocked = data.status === "completed";
-if(!isUnlocked){
-  document.body.innerHTML = `
-    <div class="lock-premium">
+// const isUnlocked = data.status === "completed";
+// if(!isUnlocked){
+  // document.body.innerHTML = `
+    // <div class="lock-premium">
 
-      <div class="lock-card">
+    //  <div class="lock-card">
 
-        <img src="../logo.png" class="lock-logo">
+ //       <img src="../logo.png" class="lock-logo">
 
-        <h2 class="lock-title">Card Not Active</h2>
-        <p class="lock-sub">This digital card is not yet activated.</p>
+ //       <h2 class="lock-title">Card Not Active</h2>
+  //      <p class="lock-sub">This digital card is not yet activated.</p>
 
-        <div class="lock-loader">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+  //      <div class="lock-loader">
+  //        <span></span>
+    //      <span></span>
+   //       <span></span>
+   //     </div>
 
-        <p class="lock-note">Please complete payment to activate.</p>
+   //     <p class="lock-note">Please complete payment to activate.</p>
 
-      </div>
+  //    </div>
 
-    </div>
-  `;
-  return;
-}
+ //   </div>
+//  `;
+//  return;
+//}
   /* BLOCK DISABLED */
   if (data.status === "disabled") {
     document.body.innerHTML = "<h2 style='text-align:center;margin-top:50px;'>Account Disabled</h2>";
