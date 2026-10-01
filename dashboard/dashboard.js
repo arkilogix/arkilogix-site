@@ -125,19 +125,26 @@ ${c.paymentStatus === "pending_verification" ? `
       margin-top:8px;
     ">
 
-      <button
-        class="btn gold"
-        onclick="event.stopPropagation(); verifyPayment('${c.id}')"
-      >
-        ✓ Verify Payment
-      </button>
-
-      <button
-        class="btn"
-        onclick="event.stopPropagation(); rejectPayment('${c.id}')"
-      >
-        Reject
-      </button>
+  <button
+    class="btn gold"
+    onclick="event.stopPropagation(); verifyPayment('${c.id}')"
+  >
+    ✓ Verify Payment
+  </button>
+  
+  <button
+    class="btn"
+    onclick="event.stopPropagation(); rejectPayment('${c.id}')"
+  >
+    Reject
+  </button>
+  
+  <button
+    class="btn"
+    onclick="event.stopPropagation(); resetPaymentVerification('${c.id}')"
+  >
+    ↻ Reset Verification
+  </button>
 
     </div>
   </div>
@@ -245,7 +252,30 @@ window.rejectPayment = async (id) => {
   await loadClients();
 };
 
+/* ================= RESET PAYMENT VERIFICATION ================= */
 
+window.resetPaymentVerification = async (id) => {
+
+  const client = clients.find(c => c.id === id);
+  if (!client) return;
+
+  const confirmed = confirm(
+    `Reset payment verification for ${client.name || "this client"}?\n\n` +
+    `This will return the payment to "Pending Verification".`
+  );
+
+  if (!confirmed) return;
+
+  await updateDoc(doc(db, "clients", id), {
+    paymentStatus: "pending_verification",
+    status: "pending_verification",
+    shippingStatus: "pending"
+  });
+
+  alert("Payment verification has been reset.");
+
+  await loadClients();
+};
 
 /* UPGRADE */
 window.openUpgrade = (id)=>{
