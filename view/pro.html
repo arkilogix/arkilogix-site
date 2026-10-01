@@ -669,7 +669,7 @@ async function loadUser(){
   }
   window.currentData = data;
 // 🔒 LOCK IF NOT PAID
-const isUnlocked = data.status === "paid" || data.status === "completed";
+const isUnlocked = data.status === "completed";
 if(!isUnlocked){
   document.body.innerHTML = `
     <div class="lock-premium">
